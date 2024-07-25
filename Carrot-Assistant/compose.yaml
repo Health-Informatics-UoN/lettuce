@@ -1,0 +1,17 @@
+version: '3.8'                                    # Docker Compose file version
+
+services:
+  app:                                            # Service name
+    build:  
+      context: .                                  # Path to the Dockerfile (current directory)
+      dockerfile: Dockerfile                      # Dockerfile name
+    container_name: Lettuce                       # Container name
+    image: Lettuce:latest                         # Image name
+    ports:  
+      - "8000:8000"                               # Map host port 8000 to container port 8000
+    environment:  
+      - PYTHONDONTWRITEBYTECODE=1                 # Disable writing Python bytecode
+      - PYTHONUNBUFFERED=1                        # Ensure Python output is unbuffered
+      - PIP_NO_CACHE_DIR=off                      # Disable pip caching
+      - PIP_DISABLE_PIP_VERSION_CHECK=on          # Disable pip version check
+    user: "1000:1000"                             # Specify UID:GID for running the container process

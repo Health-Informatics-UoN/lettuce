@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>app &#8212; Llettuce 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=61cd365c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+    <script src="../../_static/documentation_options.js?v=2709fde1"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="utils" href="../utils/index.html" />
+    <link rel="prev" title="ui" href="../ui/index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-app">
+<span id="app"></span><h1>app<a class="headerlink" href="#module-app" title="Link to this heading">¶</a></h1>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.logger" title="app.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.app" title="app.app"><code class="xref py py-obj docutils literal notranslate"><span class="pre">app</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.LLMModel" title="app.LLMModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LLMModel</span></code></a></p></td>
+<td><p>This enum holds the names of the different models the assistant can use</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.PipelineOptions" title="app.PipelineOptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PipelineOptions</span></code></a></p></td>
+<td><p>This class holds the options available to the Llettuce pipeline</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.PipelineRequest" title="app.PipelineRequest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PipelineRequest</span></code></a></p></td>
+<td><p>This class takes the format of a request to the API</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.parse_pipeline_args" title="app.parse_pipeline_args"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_pipeline_args</span></code></a>(→ None)</p></td>
+<td><p>Use the values of a PipelineOptions object to override defaults</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.generate_events" title="app.generate_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_events</span></code></a>(→ collections.abc.AsyncGenerator[str])</p></td>
+<td><p>Generate LLM output and OMOP results for an informal medication name</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.run_pipeline" title="app.run_pipeline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_pipeline</span></code></a>(→ sse_starlette.sse.EventSourceResponse)</p></td>
+<td><p>Call generate_events to run the pipeline</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.run_db" title="app.run_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_db</span></code></a>(→ dict)</p></td>
+<td><p>Fetch OMOP concepts for a medication name</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="app.logger">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#app.logger" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="app.app">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">app</span></span><a class="headerlink" href="#app.app" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.LLMModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">LLMModel</span></span><a class="headerlink" href="#app.LLMModel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>This enum holds the names of the different models the assistant can use</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.LLMModel.GPT_3_5_TURBO">
+<span class="sig-name descname"><span class="pre">GPT_3_5_TURBO</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('gpt-3.5-turbo-0125',)</span></em><a class="headerlink" href="#app.LLMModel.GPT_3_5_TURBO" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.LLMModel.GPT_4">
+<span class="sig-name descname"><span class="pre">GPT_4</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('gpt-4',)</span></em><a class="headerlink" href="#app.LLMModel.GPT_4" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.LLMModel.LLAMA_2_7B">
+<span class="sig-name descname"><span class="pre">LLAMA_2_7B</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('llama-2-7B-chat',)</span></em><a class="headerlink" href="#app.LLMModel.LLAMA_2_7B" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.LLMModel.LLAMA_3_8B">
+<span class="sig-name descname"><span class="pre">LLAMA_3_8B</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('llama-3-8B',)</span></em><a class="headerlink" href="#app.LLMModel.LLAMA_3_8B" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.LLMModel.LLAMA_3_70B">
+<span class="sig-name descname"><span class="pre">LLAMA_3_70B</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('llama-3-70B',)</span></em><a class="headerlink" href="#app.LLMModel.LLAMA_3_70B" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.LLMModel.GEMMA_7B">
+<span class="sig-name descname"><span class="pre">GEMMA_7B</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'gemma-7b'</span></em><a class="headerlink" href="#app.LLMModel.GEMMA_7B" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.PipelineOptions">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">PipelineOptions</span></span><a class="headerlink" href="#app.PipelineOptions" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></p>
+<p>This class holds the options available to the Llettuce pipeline</p>
+<p>These are all the options in the BaseOptions parser. The defaults provided here match the default options in BaseOptions. Using a pydantic model means FastAPI can take these as input in the API request</p>
+<section id="id1">
+<h3>Attributes<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>llm_model: LLMModel</dt><dd><p>The name of the LLM used in the pipeline. The permitted values are the possibilities in the LLMModel enum</p>
+</dd>
+<dt>temperature: float</dt><dd><p>Temperature supplied to the LLM that tunes the variability of responses</p>
+</dd>
+<dt>concept_ancestor: bool</dt><dd><p>If true, the concept_ancestor table of the OMOP vocabularies is queried for the results of an OMOP search. Defaults to false</p>
+</dd>
+<dt>concept_relationship: bool</dt><dd><p>If true, the concept_relationship table of the OMOP vocabularies is queried for the results of an OMOP search. Defaults to false</p>
+</dd>
+<dt>concept_synonym: bool</dt><dd><p>If true, the concept_synonym table of the OMOP vocabularies is queried when OMOP concepts are fetched. Defaults to false</p>
+</dd>
+<dt>search_threshold: int</dt><dd><p>The threshold on fuzzy string matching for returned results</p>
+</dd>
+<dt>max_separation_descendant: int</dt><dd><p>The maximum separation to search for concept descendants</p>
+</dd>
+<dt>max_separation_ancestor: int</dt><dd><p>The maximum separation to search for concept ancestors</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineOptions.llm_model">
+<span class="sig-name descname"><span class="pre">llm_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#app.LLMModel" title="app.LLMModel"><span class="pre">LLMModel</span></a></em><a class="headerlink" href="#app.PipelineOptions.llm_model" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineOptions.temperature">
+<span class="sig-name descname"><span class="pre">temperature</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#app.PipelineOptions.temperature" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineOptions.vocabulary_id">
+<span class="sig-name descname"><span class="pre">vocabulary_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'RxNorm'</span></em><a class="headerlink" href="#app.PipelineOptions.vocabulary_id" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineOptions.concept_ancestor">
+<span class="sig-name descname"><span class="pre">concept_ancestor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#app.PipelineOptions.concept_ancestor" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineOptions.concept_relationship">
+<span class="sig-name descname"><span class="pre">concept_relationship</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#app.PipelineOptions.concept_relationship" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineOptions.concept_synonym">
+<span class="sig-name descname"><span class="pre">concept_synonym</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#app.PipelineOptions.concept_synonym" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineOptions.search_threshold">
+<span class="sig-name descname"><span class="pre">search_threshold</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">80</span></em><a class="headerlink" href="#app.PipelineOptions.search_threshold" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineOptions.max_separation_descendants">
+<span class="sig-name descname"><span class="pre">max_separation_descendants</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#app.PipelineOptions.max_separation_descendants" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineOptions.max_separation_ancestor">
+<span class="sig-name descname"><span class="pre">max_separation_ancestor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#app.PipelineOptions.max_separation_ancestor" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.PipelineRequest">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">PipelineRequest</span></span><a class="headerlink" href="#app.PipelineRequest" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></p>
+<p>This class takes the format of a request to the API</p>
+<section id="id2">
+<h3>Attributes<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>name: str</dt><dd><p>The drug name sent to a pipeline</p>
+</dd>
+<dt>pipeline_options: Optional[PipelineOptions]</dt><dd><p>Optionally, the default values can be overridden by instantiating a PipelineOptions object. If none is supplied, default arguments are used</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineRequest.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#app.PipelineRequest.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineRequest.pipeline_options">
+<span class="sig-name descname"><span class="pre">pipeline_options</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#app.PipelineOptions" title="app.PipelineOptions"><span class="pre">PipelineOptions</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#app.PipelineRequest.pipeline_options" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.parse_pipeline_args">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">parse_pipeline_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">options.base_options.BaseOptions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.PipelineOptions" title="app.PipelineOptions"><span class="pre">PipelineOptions</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#app.parse_pipeline_args" title="Link to this definition">¶</a></dt>
+<dd><p>Use the values of a PipelineOptions object to override defaults</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>base_options: BaseOptions</dt><dd><p>The base options from the command-line application</p>
+</dd>
+<dt>options: PipelineOptions</dt><dd><p>Overrides from an API request</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h3>
+<p>None</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.generate_events">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">generate_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.PipelineRequest" title="app.PipelineRequest"><span class="pre">PipelineRequest</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">collections.abc.AsyncGenerator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app.generate_events" title="Link to this definition">¶</a></dt>
+<dd><p>Generate LLM output and OMOP results for an informal medication name</p>
+<p>The first event is the reply from the LLM
+The second event fetches relevant concepts from the OMOP database using the LLM output</p>
+<p>The function yields results as they become available, allowing for real-time streaming.</p>
+<section id="id3">
+<h3>Parameters<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>request: InformalNameRequest</dt><dd><p>The request containing the informal name of the medication</p>
+</dd>
+</dl>
+</section>
+<section id="yields">
+<h3>Yields<a class="headerlink" href="#yields" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>str</dt><dd><p>JSON encoded strings of the event results. Two types are yielded:
+1. “llm_output”: The result from the language model processing.
+2. “omop_output”: The result from the OMOP database matching.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.run_pipeline">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">run_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.PipelineRequest" title="app.PipelineRequest"><span class="pre">PipelineRequest</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">sse_starlette.sse.EventSourceResponse</span></span></span><a class="headerlink" href="#app.run_pipeline" title="Link to this definition">¶</a></dt>
+<dd><p>Call generate_events to run the pipeline</p>
+<section id="id4">
+<h3>Parameters<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>request: InformalNameRequest</dt><dd><p>The request containing the informal name of the medication</p>
+</dd>
+</dl>
+</section>
+<section id="id5">
+<h3>Returns<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>EventSourceResponse</dt><dd><p>The response containing the events</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.run_db">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">run_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.PipelineRequest" title="app.PipelineRequest"><span class="pre">PipelineRequest</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#app.run_db" title="Link to this definition">¶</a></dt>
+<dd><p>Fetch OMOP concepts for a medication name</p>
+<p>Default options can be overridden by the pipeline_options in the request</p>
+<section id="id6">
+<h3>Parameters<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>request: PipelineRequest</dt><dd><p>An API request containing a medication name</p>
+</dd>
+</dl>
+</section>
+<section id="id7">
+<h3>Returns<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>dict</dt><dd><p>Details of OMOP concept(s) fetched from a database query</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Llettuce</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../ui/index.html">ui</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">app</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils/index.html">utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models/index.html">models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../prompt/index.html">prompt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline/index.html">pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assistant/index.html">assistant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../preprocess/index.html">preprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../OMOP_match/index.html">OMOP_match</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../base_options/index.html">base_options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logging_utils/index.html">logging_utils</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">API Reference</a><ul>
+      <li>Previous: <a href="../ui/index.html" title="previous chapter">ui</a></li>
+      <li>Next: <a href="../utils/index.html" title="next chapter">utils</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Reza Omidvar, James Mitchell-White, Grazziela Figueredo, Philip Quinlan.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="../../_sources/autoapi/app/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

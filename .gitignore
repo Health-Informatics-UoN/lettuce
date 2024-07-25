@@ -1,0 +1,15 @@
+/Carrot-Assistant/.env
+*.pyc
+/*/__pycache__/
+.env
+.vscode/settings.json
+AI Assistant/tmp.ipynb
+AI Assistant/.vscode/settings.json
+AI Assistant/data/
+AI Assistant/results/
+Carrot-Assistant/data/
+Carrot-Assistant/log/
+Carrot-Assistant/tmp.ipynb
+RAG/tmp.py
+Carrot-Assistant/omop_tmp.py
+RAG/.cache/
