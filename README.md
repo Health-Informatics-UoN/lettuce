@@ -130,4 +130,4 @@ The response will be streamed asynchronously so the llm_output will arrive befor
 
 ## Contact
 
-If there are any bugs, please [email me](mailto:james.mitchell-white1@nottingham.ac.uk)
+If there are any bugs, please [email us](mailto:james.mitchell-white1@nottingham.ac.uk)
