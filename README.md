@@ -123,3 +123,7 @@ The response will be provided in the format
 ```
 
 The response will be streamed asynchronously so the llm_output will arrive before any omop_output
+
+## Contact
+
+If there are any bugs, please [email me](mailto:james.mitchell-white1@nottingham.ac.uk)
