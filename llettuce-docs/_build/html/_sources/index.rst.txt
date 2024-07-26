@@ -24,13 +24,12 @@ This is the rough process that the Llettuce API follows. Subject to change
     omop[(OMOP database)]
     fuzz[[Fuzzy matching]]
     usr -- User sends an informal name to the API --> api_in
-    api_out -- API responds with concept information --> usr
+    api_out -- API responds with concept\ninformation as JSON --> usr
     api_in -- LLM sent informal name --> llm
-    llm -- LLM responds with possible formal name --> api_in
-    api_in --> strpr
+    llm -- LLM responds with possible formal name --> strpr
     strpr --> omop
     omop --> fuzz
-    fuzz --> api_out
+    fuzz -- Matches meeting threshold --> api_out
 
 .. toctree::
    :maxdepth: 2

@@ -56,13 +56,12 @@
  omop[(OMOP database)]
  fuzz[[Fuzzy matching]]
  usr -- User sends an informal name to the API --&gt; api_in
- api_out -- API responds with concept information --&gt; usr
+ api_out -- API responds with concept\ninformation as JSON --&gt; usr
  api_in -- LLM sent informal name --&gt; llm
- llm -- LLM responds with possible formal name --&gt; api_in
- api_in --&gt; strpr
+ llm -- LLM responds with possible formal name --&gt; strpr
  strpr --&gt; omop
  omop --&gt; fuzz
- fuzz --&gt; api_out
+ fuzz -- Matches meeting threshold --&gt; api_out
         </div><div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
