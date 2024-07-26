@@ -52,6 +52,10 @@ or conda
 $ conda create -f environment.yml
 ```
 
+There are two ways of interacting with Llettuce: either by using the graphical user interface, or through the command line. Both of these rely on starting a Llettuce server locally, then making requests to this server.
+The GUI is useful for people who want to interactively run a few examples and be presented with a visual representation of the relevant OMOP concepts.
+The command line can be used if a user is more interested in running Llettuce programmatically and retrieving a large number of concepts.
+
 ### Connecting to a database
 
 Llettuce works by querying a database with the OMOP schema, so you should have access to one. Your database access credentials should be kept in `.env`. An example of the format can be found in `/Carrot-Assistant/.env.example`
