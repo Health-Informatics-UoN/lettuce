@@ -8,6 +8,8 @@ import pandas as pd
 from dotenv import load_dotenv
 from rapidfuzz import fuzz
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker 
+from omop.omop_models import Concept, ConceptSynonym, build_query
 
 from utils.logging_utils import Logger
 from omop.preprocess import preprocess_search_term
@@ -57,7 +59,7 @@ class OMOPMatcher:
     def calculate_best_matches(
         self,
         search_terms: list[str],
-        vocabulary_id: str | None = None,
+        vocabulary_id: list | None = None,
         concept_ancestor: str = "y",
         concept_relationship: str = "y",
         concept_synonym: str = "y",
@@ -111,10 +113,6 @@ class OMOPMatcher:
             self.logger.info(f"Calculating best OMOP matches for {search_terms}")
             overall_results = []
 
-            # Assuming vocabulary_id is meant to be a not empty string
-            if not isinstance(vocabulary_id, str) or not vocabulary_id.strip():
-                vocabulary_id = None
-
             # search_threshold should be a float or integer, so check if it's a number
             if not isinstance(search_threshold, (float, int)):
                 search_threshold = 0
@@ -146,7 +144,7 @@ class OMOPMatcher:
     def fetch_OMOP_concepts(
         self,
         search_term: str,
-        vocabulary_id: str | None,
+        vocabulary_id: list | None,
         concept_ancestor: str,
         concept_relationship: str,
         concept_synonym: str,
@@ -168,8 +166,8 @@ class OMOPMatcher:
         ----------
         search_term: str
             A search term for a concept inserted into a query to the OMOP database
-        vocabulary_id: str
-            An OMOP vocabulary to filter the findings by
+        vocabulary_id: list[str]
+            A list of OMOP vocabularies to filter the findings by
         concept_ancestor: str
             If 'y' then appends the results of a call to fetch_concept_ancestor to the output
         concept_relationship: str
@@ -190,85 +188,13 @@ class OMOPMatcher:
         list | None
             A list of search results from the OMOP database if the query comes back with results, otherwise returns None
         """
-
-        query1 = f"""
-        WITH concept_matches AS (
-            SELECT DISTINCT concept_id
-            FROM {self.schema}.concept
-            WHERE
-                standard_concept = 'S' AND
-                (%s IS NULL OR vocabulary_id = %s) AND
-                to_tsvector('english', concept_name) @@ to_tsquery('english', %s)
-        ),
-        synonym_matches AS (
-            SELECT DISTINCT cs.concept_id
-            FROM {self.schema}.concept_synonym cs
-            JOIN {self.schema}.concept c ON cs.concept_id = c.concept_id
-            WHERE 
-                c.standard_concept = 'S' AND
-                (%s IS NULL OR c.vocabulary_id = %s) AND
-                to_tsvector('english', cs.concept_synonym_name) @@ to_tsquery('english', %s)
-        ),
-        combined_matches AS (
-            SELECT concept_id FROM concept_matches
-            UNION
-            SELECT concept_id FROM synonym_matches
-        )
-        SELECT
-            C.concept_id,
-            C.concept_name,
-            CS.concept_synonym_name,
-            C.vocabulary_id,
-            C.concept_code
-        FROM
-            combined_matches CM
-        JOIN {self.schema}.concept C ON CM.concept_id = C.concept_id
-        LEFT JOIN {self.schema}.concept_synonym CS ON C.concept_id = CS.concept_id
-        WHERE
-            C.standard_concept = 'S' AND
-            (%s IS NULL OR C.vocabulary_id = %s)
-        """
-
-        query2 = f"""
-            SELECT
-                concept_id,
-                concept_name,
-                NULL as concept_synonym_name,
-                vocabulary_id,
-                concept_code
-            FROM
-                {self.schema}.concept
-            WHERE
-                standard_concept = 'S' AND
-                (%s IS NULL OR vocabulary_id = %s) AND
-                to_tsvector('english', concept_name) @@ to_tsquery('english', %s)
-            """
-        # If we want to use multiple vocabulary_ids, we can change (%s IS NULL OR vocabulary_id = %s) to (%s IS NULL OR vocabulary_id IN %s)
-        # This will require a processing step. I had thought supplying a comma separated list as a string to the args might do it, but then we have to be careful about the double/single quotes supplied, so it might be worth simply splitting them into a list as they come in, then making a string [e.g 'RxNorm', 'UK Biobank'] from the list to insert.
-        processed_term = preprocess_search_term(search_term)
-        # should these parameters be bools rather than 'y' or 'n'?
-        if concept_synonym == "y":
-            params = (
-                vocabulary_id,
-                vocabulary_id,
-                processed_term,
-                vocabulary_id,
-                vocabulary_id,
-                processed_term,
-                vocabulary_id,
-                vocabulary_id
-            )
-            results = pd.read_sql(query1, con=self.engine, params=params)
-        else:
-            params = (
-                vocabulary_id,
-                vocabulary_id,
-                processed_term,
-            )
-            results = pd.read_sql(query2, con=self.engine, params=params).replace(
-                "", None
-            )
-
+        query = build_query(preprocess_search_term(search_term), vocabulary_id, concept_synonym)
+        print(query.compile(compile_kwargs={"literal_binds": True}))
+        Session = sessionmaker(self.engine)
+        session = Session()
+        results = session.execute(query).fetchall()
+        results = pd.DataFrame(results)
+        session.close()
         if not results.empty:
             # Define a function to calculate similarity score using the provided logic
             def calculate_similarity(row):
