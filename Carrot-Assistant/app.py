@@ -3,7 +3,7 @@ from collections.abc import AsyncGenerator
 import json
 from enum import Enum
 from typing import Optional
-from typing import List
+from typing import List, Dict, Any
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -45,11 +45,11 @@ class LLMModel(str, Enum):
     This enum holds the names of the different models the assistant can use
     """
 
-    GPT_3_5_TURBO = ("gpt-3.5-turbo-0125",)
-    GPT_4 = ("gpt-4",)
-    LLAMA_2_7B = ("llama-2-7B-chat",)
-    LLAMA_3_8B = ("llama-3-8B",)
-    LLAMA_3_70B = ("llama-3-70B",)
+    GPT_3_5_TURBO = "gpt-3.5-turbo-0125",
+    GPT_4 = "gpt-4",
+    LLAMA_2_7B = "llama-2-7B-chat",
+    LLAMA_3_8B = "llama-3-8B",
+    LLAMA_3_70B = "llama-3-70B",
     GEMMA_7B = "gemma-7b"
 
 
@@ -203,7 +203,7 @@ async def run_pipeline(request: PipelineRequest) -> EventSourceResponse:
 
 
 @app.post("/run_db")
-async def run_db(request: PipelineRequest) -> dict:
+async def run_db(request: PipelineRequest) -> List[Dict[str,Any]]:
     """
     Fetch OMOP concepts for a medication name
 

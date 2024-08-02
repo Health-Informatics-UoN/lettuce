@@ -74,4 +74,4 @@ if __name__ == "__main__":
 
     opt = BaseOptions().parse()
     informal_names = opt.informal_names
-    run(opt=opt, informal_name=informal_names)
+    run(opt=opt, informal_names=informal_names)
