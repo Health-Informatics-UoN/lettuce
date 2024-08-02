@@ -17,15 +17,15 @@ st.markdown(
     "<p style='text-align: center;'>Hello, I'm Lettuce. Give me the name of a medication and I will tell you what Carrot knows about it!</p>",
     unsafe_allow_html=True,
 )
-informal_name = st.text_input(
-    "Informal name", placeholder="Enter the informal name of a medication", key="input"
+informal_names = st.text_area(
+    "Enter Informal names by (comma-separated) values. For example: (paracetamol, tylenol, omepra)",
+    placeholder="Enter informal names of medications",
+    key="input",
 )
 
 with st.expander("Search options"):
-    skip_llm = st.checkbox('Ask the LLM first?', value=True)
-    vocab_id = st.selectbox(label='Vocabulary ID', options=["RxNorm", "UK Biobank"])
-    llm_temperature = st.number_input(label='LLM temperature', min_value=0.0, max_value=3.0, step=0.1)
-    
+    skip_llm = st.checkbox("Ask the LLM first?", value=True)
+    vocab_id = st.selectbox(label="Vocabulary ID", options=["RxNorm", "UK Biobank"])
 
 
 def stream_message(message: str) -> None:
@@ -64,14 +64,14 @@ def capitalize_words(s: str) -> str:
     return " ".join(capitalized_words)
 
 
-def make_api_call(name: str) -> sseclient.SSEClient:
+def make_api_call(names: list[str]) -> sseclient.SSEClient:
     """
-    Make a call to the Llettuce API to retrieve OMOP concepts.
+    Make a call to the Lettuce API to retrieve OMOP concepts.
 
     Parameters
     ----------
-    name: str
-        The informal name to send to the API
+    names: list[str]
+        The informal names to send to the API
 
     Returns
     -------
@@ -80,13 +80,10 @@ def make_api_call(name: str) -> sseclient.SSEClient:
     """
     url = "http://127.0.0.1:8000/run"
     if not skip_llm:
-        url = url+'_db'
+        url = url + "_db"
     headers = {"Content-Type": "application/json"}
-    pipe_opts = PipelineOptions(
-        vocabulary_id=vocab_id,
-        temperature=llm_temperature
-    )
-    data = {"name": name, "pipeline_options": pipe_opts.model_dump()}
+    pipe_opts = PipelineOptions(vocabulary_id=vocab_id)
+    data = {"names": names, "pipeline_options": pipe_opts.model_dump()}
     response = requests.post(url, headers=headers, json=data, stream=True)
     return sseclient.SSEClient(response)
 
@@ -134,9 +131,12 @@ def display_concept_info(concept: dict) -> None:
 
 
 if st.button("Send"):
-    if informal_name:
+    if informal_names:
+        names_list = [
+            capitalize_words(name.strip()) for name in informal_names.split(",")
+        ]
         with st.spinner("Processing..."):
-            result_stream: sseclient.SSEClient = make_api_call(capitalize_words(informal_name))
+            result_stream: sseclient.SSEClient = make_api_call(names_list)
 
             # Stream the results
             for event in result_stream.events():
@@ -146,13 +146,16 @@ if st.button("Send"):
                 # Stream the LLM output
                 if event_type == "llm_output":
                     stream_message(
-                        f'<p style="color: #34A853;">I found <b>{response["data"]["reply"]}</b> as the formal name for <b>{informal_name}</b></p>'
+                        f'<p style="color: #34A853;">I found <b>{response["data"]["reply"]}</b> as the formal name for <b>{response["data"]["informal_name"]}</b></p>'
                     )
 
                 # Stream the OMOP output
                 elif event_type == "omop_output":
                     for j, omop_data in enumerate(response["data"]):
-                        if omop_data["CONCEPT"] is None or len(omop_data["CONCEPT"]) == 0:
+                        if (
+                            omop_data["CONCEPT"] is None
+                            or len(omop_data["CONCEPT"]) == 0
+                        ):
                             stream_message(
                                 f"<p style='color: #EA4335;'>No concepts found for {omop_data['search_term']}.</p>"
                             )
