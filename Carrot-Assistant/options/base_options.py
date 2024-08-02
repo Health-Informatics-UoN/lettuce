@@ -69,10 +69,11 @@ class BaseOptions:
 
         self._parser.add_argument(
             "--vocabulary_id",
-            type=str, #  If we want to have multiple vocabularies (which we might) then we can make this lamdba s: s.split(',') and have them separated by commas (I think)
+            type=lambda s: s.split(','), #  If we want to have multiple vocabularies (which we might) then we can make this lamdba s: s.split(',') and have them separated by commas (I think)
+            #type=str,
             required=False,
             default="RxNorm",
-            help="vocabulary id",
+            help="Vocabulary IDs to be queried. If you want multiple vocabularies to be used, supply a comma separated list",
         )
 
         self._parser.add_argument(
