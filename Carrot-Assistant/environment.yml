@@ -19,4 +19,5 @@ dependencies:
   - numpy=1.26.4
   - pip
   - pip:
+      - llama-cpp-python==0.2.69
       - llama-cpp-haystack==0.4.0
