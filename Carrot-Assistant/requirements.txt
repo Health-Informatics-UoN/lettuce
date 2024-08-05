@@ -1,4 +1,4 @@
-haystack-ai==2.1.1
+haystack-ai==2.3.1
 huggingface_hub==0.22.2
 python-dotenv==1.0.1
 llama-cpp-haystack==0.4.0
@@ -10,4 +10,3 @@ psycopg2-binary==2.9.9
 streamlit==1.36.0
 rapidfuzz==3.5.2
 sqlalchemy==2.0.30
-
