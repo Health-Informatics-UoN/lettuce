@@ -11,5 +11,4 @@ psycopg2-binary==2.9.9
 streamlit==1.36.0
 rapidfuzz==3.5.2
 sqlalchemy==2.0.30
-openssl=3.1.4
 sseclient-py==1.8.0
