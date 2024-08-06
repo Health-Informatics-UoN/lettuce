@@ -2,7 +2,7 @@ import asyncio
 from collections.abc import AsyncGenerator
 import json
 from enum import Enum
-from typing import Optional
+from typing import Optional, List, Dict, Any
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -35,11 +35,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# the LLMModel class could be more powerful if we remove the option of using the GPTs. Then it can be an Enum of dicts, and the dicts can be unpacked into the arguments for the hf download
+# the LLMModel class could be more powerful if we remove the option of using the GPTs.
+# Then it can be an Enum of dicts, and the dicts can be unpacked into the arguments for the hf download
+
 class LLMModel(str, Enum):
     """
     This enum holds the names of the different models the assistant can use
     """
+
     GPT_3_5_TURBO = "gpt-3.5-turbo-0125",
     GPT_4 = "gpt-4",
     LLAMA_2_7B = "llama-2-7B-chat",
@@ -73,6 +76,7 @@ class PipelineOptions(BaseModel):
     max_separation_ancestor: int
         The maximum separation to search for concept ancestors
     """
+
     llm_model: LLMModel = LLMModel.LLAMA_3_8B
     temperature: float = 0
     vocabulary_id: str = "RxNorm" # TODO: make multiples possible
@@ -100,8 +104,10 @@ class PipelineRequest(BaseModel):
     pipeline_options: Optional[PipelineOptions]
         Optionally, the default values can be overridden by instantiating a PipelineOptions object. If none is supplied, default arguments are used
     """
-    name: str
+
+    names: List[str]
     pipeline_options: Optional[PipelineOptions] = Field(default_factory=PipelineOptions)
+
 
 def parse_pipeline_args(base_options: BaseOptions, options: PipelineOptions) -> None:
     """
@@ -133,17 +139,31 @@ def parse_pipeline_args(base_options: BaseOptions, options: PipelineOptions) -> 
 
 async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
     """
-    Generate LLM output and OMOP results for an informal medication name
-
-    The first event is the reply from the LLM
-    The second event fetches relevant concepts from the OMOP database using the LLM output
-
-    The function yields results as they become available, allowing for real-time streaming.
+    Generate LLM output and OMOP results for a list of informal medication names
 
     Parameters
     ----------
-    request: InformalNameRequest
-        The request containing the informal name of the medication
+    request: PipelineRequest
+        The request containing the list of informal names of the medications.
+
+    Workflow
+    --------
+    For each informal name:
+        The first event is to Query the OMOP database for a match
+        The second event is to fetches relevant concepts from the OMOP database
+        Finally,The function yields results as they become available,
+        allowing for real-time streaming.
+
+    Conditions
+    ----------
+    If the OMOP database returns a match, the LLM is not queried
+
+    If the OMOP database does not return a match, 
+    the LLM is used to find the formal name and the OMOP database is 
+    queried for the LLM output.
+    
+    Finally, the function yields the results for real-time streaming.
+
 
     Yields
     ------
@@ -151,26 +171,53 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
         JSON encoded strings of the event results. Two types are yielded:
         1. "llm_output": The result from the language model processing.
         2. "omop_output": The result from the OMOP database matching.
-
     """
-    informal_name = request.name
+    informal_names = request.names
     opt = BaseOptions()
     opt.initialize()
     parse_pipeline_args(opt, request.pipeline_options)
-    opt=opt.parse()
+    opt = opt.parse()
 
-    llm_output = assistant.run(opt=opt, informal_name=informal_name, logger=logger)
-    output = {"event": "llm_output", "data": llm_output}
-    yield json.dumps(output)
+    print("Received informal names:", informal_names)
+    
+    # Query OMOP for each informal name
 
-    # Simulate some delay before sending the next part
-    await asyncio.sleep(2)
+    for informal_name in informal_names:
+        print(f"Querying OMOP for informal name: {informal_name}")
+        omop_output = OMOP_match.run(opt=opt, search_term=informal_name, logger=logger)
 
-    omop_output = OMOP_match.run(
-        opt=opt, search_term=llm_output["reply"], logger=logger
-    )
-    output = {"event": "omop_output", "data": omop_output}
-    yield json.dumps(output)
+        if omop_output and any(concept["CONCEPT"] for concept in omop_output):
+            print(f"OMOP match found for {informal_name}: {omop_output}")
+            output = {"event": "omop_output", "data": omop_output}
+            yield json.dumps(output)
+            continue
+
+        else:
+            print("No satisfactory OMOP results found for {informal_name}, using LLM...")
+
+    # Use LLM to find the formal name and query OMOP for the LLM output
+
+    llm_outputs = assistant.run(opt=opt, informal_names=informal_names, logger=logger)
+    for llm_output in llm_outputs:
+        
+        print("LLM output for", llm_output["informal_name"], ":", llm_output["reply"])
+        
+        print("Querying OMOP for LLM output:", llm_output["reply"])
+
+        output = {"event": "llm_output", "data": llm_output}
+        yield json.dumps(output)
+
+        # Simulate some delay before sending the next part
+        await asyncio.sleep(2)
+
+        omop_output = OMOP_match.run(
+            opt=opt, search_term=llm_output["reply"], logger=logger
+        )
+
+        print("OMOP output for", llm_output["reply"], ":", omop_output)
+
+        output = {"event": "omop_output", "data": omop_output}
+        yield json.dumps(output)
 
 
 @app.post("/run")
@@ -190,8 +237,9 @@ async def run_pipeline(request: PipelineRequest) -> EventSourceResponse:
     """
     return EventSourceResponse(generate_events(request))
 
+
 @app.post("/run_db")
-async def run_db(request: PipelineRequest) -> dict:
+async def run_db(request: PipelineRequest) -> List[Dict[str,Any]]:
     """
     Fetch OMOP concepts for a medication name
 
@@ -207,16 +255,23 @@ async def run_db(request: PipelineRequest) -> dict:
     dict
         Details of OMOP concept(s) fetched from a database query
     """
-    search_term = request.name
+    search_terms = request.names
     opt = BaseOptions()
     opt.initialize()
     parse_pipeline_args(opt, request.pipeline_options)
     opt = opt.parse()
-    return {'event': 'omop_output', 'content': OMOP_match.run(opt=opt, search_term=search_term, logger=logger)}
+
+    omop_outputs = []
+    for search_term in search_terms:
+        omop_output = OMOP_match.run(opt=opt, search_term=search_term, logger=logger)
+        omop_outputs.append({"event": "omop_output", "content": omop_output})
+
+    return omop_outputs
+
     
 @app.post("/run_vector_search")
 async def run_vector_search(request: PipelineRequest):
-    search_term = request.name
+    search_terms = request.names
     embeddings = Embeddings(
             embeddings_path=request.pipeline_options.embeddings_path,
             force_rebuild=request.pipeline_options.force_rebuild,
@@ -224,7 +279,7 @@ async def run_vector_search(request: PipelineRequest):
             model=request.pipeline_options.embedding_model,
             search_kwargs=request.pipeline_options.embedding_search_kwargs,
             )
-    return {'event': 'vector_search_output', 'content': embeddings.search(search_term)}
+    return {'event': 'vector_search_output', 'content': embeddings.search(search_terms)}
 
 if __name__ == "__main__":
     import uvicorn

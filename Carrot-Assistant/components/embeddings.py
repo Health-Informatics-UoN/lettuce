@@ -9,7 +9,7 @@ import os
 from os import environ
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
-from typing import List
+from typing import Any, List, Dict
 
 from omop.omop_models import Concept
 
@@ -87,12 +87,12 @@ class Embeddings:
             recreate_index=False  # We're loading existing embeddings, don't recreate
         )
 
-    def search(self, query: str, top_k: int = 5):
+    def search(self, query: List[str]) -> List[List[Dict[str,Any]]]:
         retriever = QdrantEmbeddingRetriever(
             document_store=self.embeddings_store
         )
         query_embedder = FastembedTextEmbedder(model=self.model.path, parallel=0, prefix="query:")
         query_embedder.warm_up()
-        query_embedding = query_embedder.run(query)
-        result = retriever.run(query_embedding['embedding'], **self.search_kwargs)
-        return [{"concept_id": doc.meta["concept_id"], "concept": doc.content, "score": doc.score} for doc in result["documents"]]
+        query_embeddings = [query_embedder.run(name) for name in query]
+        result = [retriever.run(query_embedding['embedding'], **self.search_kwargs) for query_embedding in query_embeddings]
+        return [[{"concept_id": doc.meta["concept_id"], "concept": doc.content, "score": doc.score} for doc in res["documents"]] for res in result]
