@@ -92,5 +92,7 @@ class Embeddings:
             document_store=self.embeddings_store
         )
         query_embedder = FastembedTextEmbedder(model=self.model.path, parallel=0, prefix="query:")
+        query_embedder.warm_up()
         query_embedding = query_embedder.run(query)
-        return retriever.run(query_embedding, **self.search_kwargs)
+        result = retriever.run(query_embedding['embedding'], **self.search_kwargs)
+        return [{"concept_id": doc.meta["concept_id"], "concept": doc.content, "score": doc.score} for doc in result["documents"]]
