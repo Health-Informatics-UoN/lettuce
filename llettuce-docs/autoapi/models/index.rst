@@ -1,19 +1,21 @@
-models
-======
+:py:mod:`models`
+================
 
 .. py:module:: models
 
 
+Module Contents
+---------------
+
+
 Functions
----------
+~~~~~~~~~
 
 .. autoapisummary::
 
    models.get_model
 
 
-Module Contents
----------------
 
 .. py:function:: get_model(model_name: str, temperature: float = 0.7, logger: logging.Logger | None = None) -> object
 

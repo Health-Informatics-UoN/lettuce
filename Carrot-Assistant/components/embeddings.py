@@ -1,5 +1,6 @@
 from enum import Enum
 from urllib.parse import quote_plus
+from click.core import ParameterSource
 from dotenv import load_dotenv
 from haystack.dataclasses import Document
 from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
@@ -14,6 +15,9 @@ from typing import Any, List, Dict
 from omop.omop_models import Concept
 
 class EmbeddingModel(Enum):
+    """
+    An Enum for models used to generate concept embeddings
+    """
     BGESMALL = "BAAI/bge-small-en-v1.5", 384
     MINILM = "sentence-transformers/all-MiniLM-L6-v2", 384
     
@@ -22,6 +26,14 @@ class EmbeddingModel(Enum):
         self.dimensions = dimensions
 
 class Embeddings:
+    """
+    This class allows the building or loading of a vector database of concept names. This database can then be used for vector search.
+
+    Methods
+    -------
+    search:
+        Query the attached embeddings database with provided search terms
+    """
     def __init__(
             self,
             embeddings_path: str,
@@ -30,6 +42,22 @@ class Embeddings:
             model: EmbeddingModel,
             search_kwargs: dict,
             ) -> None:
+        """
+        Initialises the connection to an embeddings database
+
+        Parameters
+        ----------
+        embeddings_path: str
+            A path for the embeddings database. If one is not found, it will be built, which takes a long time. This is built from concepts fetched from the OMOP database
+        force_rebuild: bool
+            If true, the embeddings database will be rebuilt.
+        embed_vocab: List[str]
+            A list of OMOP vocabulary_ids. If the embeddings database is built, these will be the vocabularies used in the OMOP query
+        model: EmbeddingModel
+            The model used to create embeddings
+        search_kwargs: dict
+            kwargs for vector search
+        """
         self.embeddings_path = embeddings_path
         self.model = model
         self.embed_vocab = embed_vocab
@@ -41,6 +69,9 @@ class Embeddings:
             self._load_embeddings()
 
     def _build_embeddings(self):
+        """
+        Build a vector database of embeddings
+        """
         # Create the directory if it doesn't exist
         if os.path.dirname(self.embeddings_path):
             os.makedirs(os.path.dirname(self.embeddings_path), exist_ok=True)
@@ -81,6 +112,9 @@ class Embeddings:
         self.embeddings_store.write_documents(concept_embeddings.get("documents"))
 
     def _load_embeddings(self):
+        """
+        If available, load a vector database of concept embeddings
+        """
         self.embeddings_store = QdrantDocumentStore(
             path=self.embeddings_path,
             embedding_dim=self.model.dimensions,
@@ -88,6 +122,19 @@ class Embeddings:
         )
 
     def search(self, query: List[str]) -> List[List[Dict[str,Any]]]:
+        """
+        Search the attached vector database with a list of informal medications
+
+        Parameters
+        ----------
+        query: List[str]
+            A list of informal medication names
+
+        Returns
+        -------
+        List[List[Dict[str, Any]]]
+            For each medication in the query, the result of searching the vector database
+        """
         retriever = QdrantEmbeddingRetriever(
             document_store=self.embeddings_store
         )

@@ -23,13 +23,19 @@ This is the rough process that the Llettuce API follows. Subject to change
     strpr[[String pre-processing]]
     omop[(OMOP database)]
     fuzz[[Fuzzy matching]]
+    l_query[LLM queries database]
+    posmatch{Threshold}
     usr -- User sends an informal name to the API --> api_in
     api_out -- API responds with concept\ninformation as JSON --> usr
-    api_in -- LLM sent informal name --> llm
-    llm -- LLM responds with possible formal name --> strpr
+    api_in -- API queries database--> strpr
+    llm -- LLM responds with possible formal name --> l_query
     strpr --> omop
     omop --> fuzz
-    fuzz -- Matches meeting threshold --> api_out
+    fuzz --> posmatch
+    posmatch -- Matches meeting threshold --> api_out
+    posmatch -- No matches meeting threshold --> llm
+    l_query -- API responds with concepts as JSON --> usr
+    
 
 .. toctree::
    :maxdepth: 2

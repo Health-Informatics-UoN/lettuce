@@ -1,21 +1,15 @@
-ui
-==
+:py:mod:`ui`
+============
 
 .. py:module:: ui
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   ui.informal_name
-   ui.skip_llm
-   ui.result_stream
+Module Contents
+---------------
 
 
 Functions
----------
+~~~~~~~~~
 
 .. autoapisummary::
 
@@ -25,12 +19,24 @@ Functions
    ui.display_concept_info
 
 
-Module Contents
----------------
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   ui.informal_name
+   ui.skip_llm
+   ui.result_stream
+
 
 .. py:data:: informal_name
 
+   
+
 .. py:data:: skip_llm
+
+   
 
 .. py:function:: stream_message(message: str) -> None
 
@@ -86,5 +92,7 @@ Module Contents
 
 
 .. py:data:: result_stream
-   :type:  sseclient.SSEClient
+   :type: sseclient.SSEClient
+
+   
 

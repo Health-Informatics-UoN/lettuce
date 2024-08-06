@@ -1,24 +1,26 @@
-pipeline
-========
+:py:mod:`pipeline`
+==================
 
 .. py:module:: pipeline
 
 
+Module Contents
+---------------
+
 Classes
--------
+~~~~~~~
 
 .. autoapisummary::
 
    pipeline.llm_pipeline
 
 
-Module Contents
----------------
+
 
 .. py:class:: llm_pipeline(opt: argparse.Namespace, logger: logging.Logger | None = None)
 
-   This class is used to generate a pipeline for the model
 
+   This class is used to generate a pipeline for the model
 
    .. py:method:: get_simple_assistant() -> haystack.Pipeline
 

@@ -1,19 +1,21 @@
-preprocess
-==========
+:py:mod:`preprocess`
+====================
 
 .. py:module:: preprocess
 
 
+Module Contents
+---------------
+
+
 Functions
----------
+~~~~~~~~~
 
 .. autoapisummary::
 
    preprocess.preprocess_search_term
 
 
-Module Contents
----------------
 
 .. py:function:: preprocess_search_term(term) -> str
 

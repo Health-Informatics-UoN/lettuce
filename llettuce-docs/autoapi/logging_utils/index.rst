@@ -1,24 +1,26 @@
-logging_utils
-=============
+:py:mod:`logging_utils`
+=======================
 
 .. py:module:: logging_utils
 
 
+Module Contents
+---------------
+
 Classes
--------
+~~~~~~~
 
 .. autoapisummary::
 
    logging_utils.Logger
 
 
-Module Contents
----------------
+
 
 .. py:class:: Logger(logging_level='INFO', console_logger=True, multi_module=True)
 
-   Bases: :py:obj:`object`
 
+   Bases: :py:obj:`object`
 
    logger preparation
 
@@ -39,7 +41,6 @@ Module Contents
    logger: logging.Logger
        logger object
 
-
    .. py:method:: _make_level()
 
       Sets the level of logging
@@ -53,7 +54,6 @@ Module Contents
       Returns
       -------
       None
-
 
 
    .. py:method:: make_logger()

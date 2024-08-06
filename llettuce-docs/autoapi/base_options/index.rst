@@ -1,25 +1,27 @@
-base_options
-============
+:py:mod:`base_options`
+======================
 
 .. py:module:: base_options
 
 
+Module Contents
+---------------
+
 Classes
--------
+~~~~~~~
 
 .. autoapisummary::
 
    base_options.BaseOptions
 
 
-Module Contents
----------------
+
 
 .. py:class:: BaseOptions
 
+
    This class defines options used during all types of experiments.
    It also implements several helper functions such as parsing, printing, and saving the options.
-
 
    .. py:method:: initialize() -> None
 
@@ -34,7 +36,6 @@ Module Contents
       None
 
 
-
    .. py:method:: parse() -> argparse.Namespace
 
       Parses the arguments passed to the script
@@ -47,7 +48,6 @@ Module Contents
       -------
       opt: argparse.Namespace
           The parsed arguments
-
 
 
    .. py:method:: _print(args: Dict) -> None

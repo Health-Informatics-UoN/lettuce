@@ -3,19 +3,20 @@
 <html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>app &#8212; Llettuce 0.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=61cd365c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
     <script src="../../_static/documentation_options.js?v=2709fde1"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="utils" href="../utils/index.html" />
-    <link rel="prev" title="ui" href="../ui/index.html" />
+    <link rel="next" title="base_options" href="../base_options/index.html" />
+    <link rel="prev" title="assistant" href="../assistant/index.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -34,22 +35,11 @@
           <div class="body" role="main">
             
   <section id="module-app">
-<span id="app"></span><h1>app<a class="headerlink" href="#module-app" title="Link to this heading">¶</a></h1>
-<section id="attributes">
-<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#app.logger" title="app.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#app.app" title="app.app"><code class="xref py py-obj docutils literal notranslate"><span class="pre">app</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-</section>
+<span id="app"></span><h1><a class="reference internal" href="#module-app" title="app"><code class="xref py py-mod docutils literal notranslate"><span class="pre">app</span></code></a><a class="headerlink" href="#module-app" title="Link to this heading">¶</a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
 <section id="classes">
-<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#app.LLMModel" title="app.LLMModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LLMModel</span></code></a></p></td>
@@ -65,26 +55,39 @@
 </table>
 </section>
 <section id="functions">
-<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#app.parse_pipeline_args" title="app.parse_pipeline_args"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_pipeline_args</span></code></a>(→ None)</p></td>
 <td><p>Use the values of a PipelineOptions object to override defaults</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#app.generate_events" title="app.generate_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_events</span></code></a>(→ collections.abc.AsyncGenerator[str])</p></td>
-<td><p>Generate LLM output and OMOP results for an informal medication name</p></td>
+<td><p>Generate LLM output and OMOP results for a list of informal medication names</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#app.run_pipeline" title="app.run_pipeline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_pipeline</span></code></a>(→ sse_starlette.sse.EventSourceResponse)</p></td>
 <td><p>Call generate_events to run the pipeline</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#app.run_db" title="app.run_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_db</span></code></a>(→ dict)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.run_db" title="app.run_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_db</span></code></a>(→ List[Dict[str, Any]])</p></td>
 <td><p>Fetch OMOP concepts for a medication name</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.run_vector_search" title="app.run_vector_search"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_vector_search</span></code></a>(request)</p></td>
+<td><p>Search a vector database for a medication name</p></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#app.logger" title="app.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#app.app" title="app.app"><code class="xref py py-obj docutils literal notranslate"><span class="pre">app</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
 <dl class="py data">
 <dt class="sig sig-object py" id="app.logger">
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#app.logger" title="Link to this definition">¶</a></dt>
@@ -139,7 +142,7 @@
 <p>This class holds the options available to the Llettuce pipeline</p>
 <p>These are all the options in the BaseOptions parser. The defaults provided here match the default options in BaseOptions. Using a pydantic model means FastAPI can take these as input in the API request</p>
 <section id="id1">
-<h3>Attributes<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<h4>Attributes<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h4>
 <dl class="simple">
 <dt>llm_model: LLMModel</dt><dd><p>The name of the LLM used in the pipeline. The permitted values are the possibilities in the LLMModel enum</p>
 </dd>
@@ -203,6 +206,31 @@
 <span class="sig-name descname"><span class="pre">max_separation_ancestor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#app.PipelineOptions.max_separation_ancestor" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineOptions.embeddings_path">
+<span class="sig-name descname"><span class="pre">embeddings_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'concept_embeddings.qdrant'</span></em><a class="headerlink" href="#app.PipelineOptions.embeddings_path" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineOptions.force_rebuild">
+<span class="sig-name descname"><span class="pre">force_rebuild</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#app.PipelineOptions.force_rebuild" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineOptions.embed_vocab">
+<span class="sig-name descname"><span class="pre">embed_vocab</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['RxNorm',</span> <span class="pre">'RxNorm</span> <span class="pre">Extension']</span></em><a class="headerlink" href="#app.PipelineOptions.embed_vocab" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineOptions.embedding_model">
+<span class="sig-name descname"><span class="pre">embedding_model</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">components.embeddings.EmbeddingModel</span></em><a class="headerlink" href="#app.PipelineOptions.embedding_model" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.PipelineOptions.embedding_search_kwargs">
+<span class="sig-name descname"><span class="pre">embedding_search_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#app.PipelineOptions.embedding_search_kwargs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </section>
 </dd></dl>
 
@@ -212,7 +240,7 @@
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></p>
 <p>This class takes the format of a request to the API</p>
 <section id="id2">
-<h3>Attributes<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<h4>Attributes<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h4>
 <dl class="simple">
 <dt>name: str</dt><dd><p>The drug name sent to a pipeline</p>
 </dd>
@@ -220,8 +248,8 @@
 </dd>
 </dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="app.PipelineRequest.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#app.PipelineRequest.name" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="app.PipelineRequest.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#app.PipelineRequest.names" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -237,7 +265,7 @@
 <span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">parse_pipeline_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">options.base_options.BaseOptions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.PipelineOptions" title="app.PipelineOptions"><span class="pre">PipelineOptions</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#app.parse_pipeline_args" title="Link to this definition">¶</a></dt>
 <dd><p>Use the values of a PipelineOptions object to override defaults</p>
 <section id="parameters">
-<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h3>
+<h4>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h4>
 <dl class="simple">
 <dt>base_options: BaseOptions</dt><dd><p>The base options from the command-line application</p>
 </dd>
@@ -246,7 +274,7 @@
 </dl>
 </section>
 <section id="returns">
-<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h3>
+<h4>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h4>
 <p>None</p>
 </section>
 </dd></dl>
@@ -254,19 +282,34 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="app.generate_events">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">generate_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.PipelineRequest" title="app.PipelineRequest"><span class="pre">PipelineRequest</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">collections.abc.AsyncGenerator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app.generate_events" title="Link to this definition">¶</a></dt>
-<dd><p>Generate LLM output and OMOP results for an informal medication name</p>
-<p>The first event is the reply from the LLM
-The second event fetches relevant concepts from the OMOP database using the LLM output</p>
-<p>The function yields results as they become available, allowing for real-time streaming.</p>
+<dd><p>Generate LLM output and OMOP results for a list of informal medication names</p>
 <section id="id3">
-<h3>Parameters<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<h4>Parameters<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h4>
 <dl class="simple">
-<dt>request: InformalNameRequest</dt><dd><p>The request containing the informal name of the medication</p>
+<dt>request: PipelineRequest</dt><dd><p>The request containing the list of informal names of the medications.</p>
 </dd>
 </dl>
 </section>
+<section id="workflow">
+<h4>Workflow<a class="headerlink" href="#workflow" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>For each informal name:</dt><dd><p>The first event is to Query the OMOP database for a match
+The second event is to fetches relevant concepts from the OMOP database
+Finally,The function yields results as they become available,
+allowing for real-time streaming.</p>
+</dd>
+</dl>
+</section>
+<section id="conditions">
+<h4>Conditions<a class="headerlink" href="#conditions" title="Link to this heading">¶</a></h4>
+<p>If the OMOP database returns a match, the LLM is not queried</p>
+<p>If the OMOP database does not return a match,
+the LLM is used to find the formal name and the OMOP database is
+queried for the LLM output.</p>
+<p>Finally, the function yields the results for real-time streaming.</p>
+</section>
 <section id="yields">
-<h3>Yields<a class="headerlink" href="#yields" title="Link to this heading">¶</a></h3>
+<h4>Yields<a class="headerlink" href="#yields" title="Link to this heading">¶</a></h4>
 <dl class="simple">
 <dt>str</dt><dd><p>JSON encoded strings of the event results. Two types are yielded:
 1. “llm_output”: The result from the language model processing.
@@ -281,14 +324,14 @@ The second event fetches relevant concepts from the OMOP database using the LLM 
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">run_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.PipelineRequest" title="app.PipelineRequest"><span class="pre">PipelineRequest</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">sse_starlette.sse.EventSourceResponse</span></span></span><a class="headerlink" href="#app.run_pipeline" title="Link to this definition">¶</a></dt>
 <dd><p>Call generate_events to run the pipeline</p>
 <section id="id4">
-<h3>Parameters<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<h4>Parameters<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
 <dl class="simple">
-<dt>request: InformalNameRequest</dt><dd><p>The request containing the informal name of the medication</p>
+<dt>request: PipelineRequest</dt><dd><p>The request containing a list of informal namse of medications</p>
 </dd>
 </dl>
 </section>
 <section id="id5">
-<h3>Returns<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<h4>Returns<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h4>
 <dl class="simple">
 <dt>EventSourceResponse</dt><dd><p>The response containing the events</p>
 </dd>
@@ -298,18 +341,18 @@ The second event fetches relevant concepts from the OMOP database using the LLM 
 
 <dl class="py function">
 <dt class="sig sig-object py" id="app.run_db">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">run_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.PipelineRequest" title="app.PipelineRequest"><span class="pre">PipelineRequest</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#app.run_db" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">run_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.PipelineRequest" title="app.PipelineRequest"><span class="pre">PipelineRequest</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app.run_db" title="Link to this definition">¶</a></dt>
 <dd><p>Fetch OMOP concepts for a medication name</p>
 <p>Default options can be overridden by the pipeline_options in the request</p>
 <section id="id6">
-<h3>Parameters<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<h4>Parameters<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
 <dl class="simple">
-<dt>request: PipelineRequest</dt><dd><p>An API request containing a medication name</p>
+<dt>request: PipelineRequest</dt><dd><p>An API request containing a list of informal names for medications and the options of a pipeline</p>
 </dd>
 </dl>
 </section>
 <section id="id7">
-<h3>Returns<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<h4>Returns<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h4>
 <dl class="simple">
 <dt>dict</dt><dd><p>Details of OMOP concept(s) fetched from a database query</p>
 </dd>
@@ -317,6 +360,29 @@ The second event fetches relevant concepts from the OMOP database using the LLM 
 </section>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="app.run_vector_search">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">run_vector_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.PipelineRequest" title="app.PipelineRequest"><span class="pre">PipelineRequest</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.run_vector_search" title="Link to this definition">¶</a></dt>
+<dd><p>Search a vector database for a medication name</p>
+<p>Default options can be overridden by pipeline_options
+A warning: if you don’t have a vector database set up under the embeddings_path, it will build one. This takes a while, an hour on a 2019 macbook pro.</p>
+<section id="id8">
+<h4>Parameters<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>request: PipelineRequest</dt><dd><p>An API request containing a list of informal names for medications and the options of a pipeline</p>
+</dd>
+</dl>
+</section>
+<section id="id9">
+<h4>Returns<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>list</dt><dd><p>Details of OMOP concept(s) fetched from a vector database query</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
 </section>
 </section>
 
@@ -325,7 +391,7 @@ The second event fetches relevant concepts from the OMOP database using the LLM 
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="../../index.html">Llettuce</a></h1>
 
@@ -336,23 +402,34 @@ The second event fetches relevant concepts from the OMOP database using the LLM 
 
 
 
-<h3>Navigation</h3>
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../ui/index.html">ui</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">app</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utils/index.html">utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../models/index.html">models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../prompt/index.html">prompt</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../pipeline/index.html">pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../assistant/index.html">assistant</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../preprocess/index.html">preprocess</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../OMOP_match/index.html">OMOP_match</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../base_options/index.html">base_options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../logging_utils/index.html">logging_utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ui/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ui</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assistant/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">assistant</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">app</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../base_options/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base_options</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">utils</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logging_utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging_utils</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">models</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../embeddings/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">embeddings</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pipeline</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../prompt/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">prompt</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../omop_models/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">omop_models</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../preprocess/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">preprocess</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../OMOP_match/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">OMOP_match</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -362,22 +439,12 @@ The second event fetches relevant concepts from the OMOP database using the LLM 
 <ul>
   <li><a href="../../index.html">Documentation overview</a><ul>
   <li><a href="../index.html">API Reference</a><ul>
-      <li>Previous: <a href="../ui/index.html" title="previous chapter">ui</a></li>
-      <li>Next: <a href="../utils/index.html" title="next chapter">utils</a></li>
+      <li>Previous: <a href="../assistant/index.html" title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">assistant</span></code></a></li>
+      <li>Next: <a href="../base_options/index.html" title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base_options</span></code></a></li>
   </ul></li>
   </ul></li>
 </ul>
 </div>
-<search id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</search>
-<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -394,8 +461,8 @@ The second event fetches relevant concepts from the OMOP database using the LLM 
       &#169;2024, Reza Omidvar, James Mitchell-White, Grazziela Figueredo, Philip Quinlan.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="../../_sources/autoapi/app/index.rst.txt"

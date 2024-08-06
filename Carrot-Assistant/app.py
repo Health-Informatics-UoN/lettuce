@@ -227,8 +227,8 @@ async def run_pipeline(request: PipelineRequest) -> EventSourceResponse:
 
     Parameters
     ----------
-    request: InformalNameRequest
-        The request containing the informal name of the medication
+    request: PipelineRequest
+        The request containing a list of informal namse of medications
 
     Returns
     -------
@@ -248,7 +248,7 @@ async def run_db(request: PipelineRequest) -> List[Dict[str,Any]]:
     Parameters
     ----------
     request: PipelineRequest
-        An API request containing a medication name
+        An API request containing a list of informal names for medications and the options of a pipeline
 
     Returns
     -------
@@ -271,6 +271,22 @@ async def run_db(request: PipelineRequest) -> List[Dict[str,Any]]:
     
 @app.post("/run_vector_search")
 async def run_vector_search(request: PipelineRequest):
+    """
+    Search a vector database for a medication name
+
+    Default options can be overridden by pipeline_options
+    A warning: if you don't have a vector database set up under the embeddings_path, it will build one. This takes a while, an hour on a 2019 macbook pro.
+
+    Parameters
+    ----------
+    request: PipelineRequest
+        An API request containing a list of informal names for medications and the options of a pipeline
+
+    Returns
+    -------
+    list
+        Details of OMOP concept(s) fetched from a vector database query
+    """
     search_terms = request.names
     embeddings = Embeddings(
             embeddings_path=request.pipeline_options.embeddings_path,

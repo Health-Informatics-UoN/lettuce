@@ -1,27 +1,29 @@
-assistant
-=========
+:py:mod:`assistant`
+===================
 
 .. py:module:: assistant
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   assistant.opt
+Module Contents
+---------------
 
 
 Functions
----------
+~~~~~~~~~
 
 .. autoapisummary::
 
    assistant.run
 
 
-Module Contents
----------------
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   assistant.opt
+
 
 .. py:function:: run(opt: argparse.Namespace = None, informal_name: str = None, logger: utils.logging_utils.Logger | None = None) -> dict | None
 
@@ -51,4 +53,6 @@ Module Contents
 
 
 .. py:data:: opt
+
+   
 

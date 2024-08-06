@@ -1,40 +1,41 @@
-OMOP_match
-==========
+:py:mod:`OMOP_match`
+====================
 
 .. py:module:: OMOP_match
 
 
+Module Contents
+---------------
+
 Classes
--------
+~~~~~~~
 
 .. autoapisummary::
 
    OMOP_match.OMOPMatcher
 
 
+
 Functions
----------
+~~~~~~~~~
 
 .. autoapisummary::
 
    OMOP_match.run
 
 
-Module Contents
----------------
 
 .. py:class:: OMOPMatcher(logger: Optional[utils.logging_utils.Logger] = None)
 
-   This class retrieves matches from an OMOP database and returns the best
 
+   This class retrieves matches from an OMOP database and returns the best
 
    .. py:method:: close()
 
       Close the engine connection.
 
 
-
-   .. py:method:: calculate_best_matches(search_terms: list[str], vocabulary_id: str | None = None, concept_ancestor: str = 'y', concept_relationship: str = 'y', concept_synonym: str = 'y', search_threshold: int = 0, max_separation_descendant: int = 1, max_separation_ancestor: int = 1) -> list
+   .. py:method:: calculate_best_matches(search_terms: list[str], vocabulary_id: list | None = None, concept_ancestor: str = 'y', concept_relationship: str = 'y', concept_synonym: str = 'y', search_threshold: int = 0, max_separation_descendant: int = 1, max_separation_ancestor: int = 1) -> list
 
       Calculate best OMOP matches for given search terms
 
@@ -72,8 +73,7 @@ Module Contents
           A list of results for the search terms run with the other parameters provided.
 
 
-
-   .. py:method:: fetch_OMOP_concepts(search_term: str, vocabulary_id: str | None, concept_ancestor: str, concept_relationship: str, concept_synonym: str, search_threshold: int, max_separation_descendant: int, max_separation_ancestor: int) -> list | None
+   .. py:method:: fetch_OMOP_concepts(search_term: str, vocabulary_id: list | None, concept_ancestor: str, concept_relationship: str, concept_synonym: str, search_threshold: int, max_separation_descendant: int, max_separation_ancestor: int) -> list | None
 
       Fetch OMOP concepts for a given search term
 
@@ -88,8 +88,8 @@ Module Contents
       ----------
       search_term: str
           A search term for a concept inserted into a query to the OMOP database
-      vocabulary_id: str
-          An OMOP vocabulary to filter the findings by
+      vocabulary_id: list[str]
+          A list of OMOP vocabularies to filter the findings by
       concept_ancestor: str
           If 'y' then appends the results of a call to fetch_concept_ancestor to the output
       concept_relationship: str
@@ -111,7 +111,6 @@ Module Contents
           A list of search results from the OMOP database if the query comes back with results, otherwise returns None
 
 
-
    .. py:method:: fetch_concept_ancestor(concept_id: str, max_separation_descendant: int, max_separation_ancestor: int)
 
       Fetch concept ancestor for a given concept_id
@@ -131,7 +130,6 @@ Module Contents
       -------
       list
           A list of retrieved concepts and their relationships to the provided concept_id
-
 
 
    .. py:method:: fetch_concept_relationship(concept_id)

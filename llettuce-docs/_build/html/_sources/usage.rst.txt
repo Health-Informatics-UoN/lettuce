@@ -61,7 +61,7 @@ To get a response without the GUI, a request can be made using curl, e.g. for Be
 
 .. code-block:: console
    
-   $ curl -X POST "http://127.0.0.1:8000/run" -H "Content-Type: application/json" -d '{"name": "Betnovate Scalp Application"}'
+   $ curl -X POST "http://127.0.0.1:8000/run" -H "Content-Type: application/json" -d '{"names": ["Betnovate Scalp Application", "Panadol"]}'
 
 The API endpoint is `/run`, and uses a `POST` method
 
@@ -70,7 +70,7 @@ The request body should have the format
 .. code-block::
 
    {
-    "name": <Drug informal name>,
+    "names": <Drug informal names>,
     "pipeline_options": {
       <options>
     }
