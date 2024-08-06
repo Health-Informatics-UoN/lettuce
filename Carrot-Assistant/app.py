@@ -138,15 +138,29 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
     """
     Generate LLM output and OMOP results for a list of informal medication names
 
-    The first event is the reply from the LLM for each informal name
-    The second event fetches relevant concepts from the OMOP database using the LLM output
-
-    The function yields results as they become available, allowing for real-time streaming.
-
     Parameters
     ----------
     request: PipelineRequest
-        The request containing the list of informal names of the medications
+        The request containing the list of informal names of the medications.
+
+    Workflow
+    --------
+    For each informal name:
+        The first event is to Query the OMOP database for a match
+        The second event is to fetches relevant concepts from the OMOP database
+        Finally,The function yields results as they become available,
+        allowing for real-time streaming.
+
+    Conditions
+    ----------
+    If the OMOP database returns a match, the LLM is not queried
+
+    If the OMOP database does not return a match, 
+    the LLM is used to find the formal name and the OMOP database is 
+    queried for the LLM output.
+    
+    Finally, the function yields the results for real-time streaming.
+
 
     Yields
     ------
@@ -162,11 +176,30 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
     opt = opt.parse()
 
     print("Received informal names:", informal_names)
+    
+    # Query OMOP for each informal name
+
+    for informal_name in informal_names:
+        print(f"Querying OMOP for informal name: {informal_name}")
+        omop_output = OMOP_match.run(opt=opt, search_term=informal_name, logger=logger)
+
+        if omop_output and any(concept["CONCEPT"] for concept in omop_output):
+            print(f"OMOP match found for {informal_name}: {omop_output}")
+            output = {"event": "omop_output", "data": omop_output}
+            yield json.dumps(output)
+            continue
+
+        else:
+            print("No satisfactory OMOP results found for {informal_name}, using LLM...")
+
+    # Use LLM to find the formal name and query OMOP for the LLM output
 
     llm_outputs = assistant.run(opt=opt, informal_names=informal_names, logger=logger)
     for llm_output in llm_outputs:
 
         print("LLM output for", llm_output["informal_name"], ":", llm_output["reply"])
+        
+        print("Querying OMOP for LLM output:", llm_output["reply"])
 
         output = {"event": "llm_output", "data": llm_output}
         yield json.dumps(output)
