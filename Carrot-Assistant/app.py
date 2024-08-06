@@ -8,12 +8,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
-from torch.cuda import temperature
 
 import assistant
 from omop import OMOP_match
 from options.base_options import BaseOptions
 from utils.logging_utils import Logger
+from components.embeddings import Embeddings
+from components.embeddings import EmbeddingModel
 
 logger = Logger().make_logger()
 app = FastAPI(
@@ -81,6 +82,11 @@ class PipelineOptions(BaseModel):
     search_threshold: int = 80
     max_separation_descendants: int = 1
     max_separation_ancestor: int = 1
+    embeddings_path: str = "concept_embeddings.qdrant"
+    force_rebuild: bool = False
+    embed_vocab: list[str] = ["RxNorm", "RxNorm Extension"]
+    embedding_model: EmbeddingModel = EmbeddingModel.BGESMALL
+    embedding_search_kwargs: dict = {}
 
 
 class PipelineRequest(BaseModel):
@@ -208,6 +214,17 @@ async def run_db(request: PipelineRequest) -> dict:
     opt = opt.parse()
     return {'event': 'omop_output', 'content': OMOP_match.run(opt=opt, search_term=search_term, logger=logger)}
     
+@app.post("/run_vector_search")
+async def run_vector_search(request: PipelineRequest):
+    search_term = request.name
+    embeddings = Embeddings(
+            embeddings_path=request.pipeline_options.embeddings_path,
+            force_rebuild=request.pipeline_options.force_rebuild,
+            embed_vocab=request.pipeline_options.embed_vocab,
+            model=request.pipeline_options.embedding_model,
+            search_kwargs=request.pipeline_options.embedding_search_kwargs,
+            )
+    return {'event': 'vector_search_output', 'content': embeddings.search(search_term)}
 
 if __name__ == "__main__":
     import uvicorn

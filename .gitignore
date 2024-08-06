@@ -13,3 +13,4 @@ Carrot-Assistant/tmp.ipynb
 RAG/tmp.py
 Carrot-Assistant/omop_tmp.py
 RAG/.cache/
+*.qdrant

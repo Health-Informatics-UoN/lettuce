@@ -21,3 +21,5 @@ dependencies:
   - pip:
       - llama-cpp-python==0.2.69
       - llama-cpp-haystack==0.4.0
+      - fastembed-haystack==1.2.0
+      - qdrant-haystack==4.1.2
