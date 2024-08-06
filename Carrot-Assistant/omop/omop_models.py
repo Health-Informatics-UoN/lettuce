@@ -44,6 +44,25 @@ class ConceptSynonym(Base):
 
 
 def build_query(search_term: str, vocabulary_id: list[str] | None, concept_synonym: str) -> Select:
+    """
+    Builds an OMOP query to search for concepts
+
+    Uses the ORM models for the concept and concept_synonym tables to build a query
+
+    Parameters
+    ----------
+    search_term: str
+        The term to use when searching the relevant tables for concepts
+    vocabulary_id: list[str]
+        A list of vocabulary_ids in the concepts table. The returned concepts will have one of these vocabulary_ids
+    concept_synonym: str
+        If 'y', then the query is expanded to find matches using the concept_synonym table
+
+    Returns
+    -------
+    Select
+        An SQLAlchemy Select for the desired query
+    """
     concept_ts_condition = text("to_tsvector('english', concept_name) @@ to_tsquery('english', :search_term)")
     synonym_ts_condition = text("to_tsvector('english', concept_synonym_name) @@ to_tsquery('english', :search_term)")
 

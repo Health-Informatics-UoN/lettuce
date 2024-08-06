@@ -4,6 +4,7 @@ import json
 from enum import Enum
 from typing import Optional, List, Dict, Any
 
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -79,7 +80,7 @@ class PipelineOptions(BaseModel):
 
     llm_model: LLMModel = LLMModel.LLAMA_3_8B
     temperature: float = 0
-    vocabulary_id: str = "RxNorm" # TODO: make multiples possible
+    vocabulary_id: str = "RxNorm"  # TODO: make multiples possible
     concept_ancestor: bool = False
     concept_relationship: bool = False
     concept_synonym: bool = False
@@ -128,12 +129,12 @@ def parse_pipeline_args(base_options: BaseOptions, options: PipelineOptions) -> 
         llm_model=options.llm_model.value,
         temperature=options.temperature,
         vocabulary_id=options.vocabulary_id,
-        concept_ancestor='y' if options.concept_ancestor else 'n',
-        concept_relationship='y' if options.concept_relationship else 'n',
-        concept_synonym='y' if options.concept_synonym else 'n',
+        concept_ancestor="y" if options.concept_ancestor else "n",
+        concept_relationship="y" if options.concept_relationship else "n",
+        concept_synonym="y" if options.concept_synonym else "n",
         search_threshold=options.search_threshold,
         max_separation_descendants=options.max_separation_descendants,
-        max_separation_ancestor=options.max_separation_ancestor
+        max_separation_ancestor=options.max_separation_ancestor,
     )
 
 
@@ -199,7 +200,8 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
 
     llm_outputs = assistant.run(opt=opt, informal_names=informal_names, logger=logger)
     for llm_output in llm_outputs:
-        
+
+
         print("LLM output for", llm_output["informal_name"], ":", llm_output["reply"])
         
         print("Querying OMOP for LLM output:", llm_output["reply"])
@@ -267,7 +269,6 @@ async def run_db(request: PipelineRequest) -> List[Dict[str,Any]]:
         omop_outputs.append({"event": "omop_output", "content": omop_output})
 
     return omop_outputs
-
     
 @app.post("/run_vector_search")
 async def run_vector_search(request: PipelineRequest):
@@ -297,8 +298,8 @@ async def run_vector_search(request: PipelineRequest):
             )
     return {'event': 'vector_search_output', 'content': embeddings.search(search_terms)}
 
+
 if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
-

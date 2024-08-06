@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from rapidfuzz import fuzz
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker 
-from omop.omop_models import build_query
+from omop.omop_models import  build_query
 
 from utils.logging_utils import Logger
 from omop.preprocess import preprocess_search_term

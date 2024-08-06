@@ -59,11 +59,12 @@ class BaseOptions:
         )
 
         self._parser.add_argument(
-            "--informal_name",
+            "--informal_names",
             type=str,
+            nargs="+",  
             required=False,
-            default="Omepra",
-            help="informal medication name",
+            default=["Omepra", "paracetamol"],
+            help="informal medication names",
         )
 
         self._parser.add_argument(
