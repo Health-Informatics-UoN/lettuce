@@ -1,6 +1,6 @@
-# Lettuce
+# LLettuce
 
-Lettuce is a FastAPI application designed to assist in identifying medications by converting informal names to formal names and searching the OMOP (Observational Medical Outcomes Partnership) database.
+LLettuce is a FastAPI application designed to assist in identifying medications by converting informal names to formal names and searching the OMOP (Observational Medical Outcomes Partnership) database.
 
 ## Table of Contents
 
