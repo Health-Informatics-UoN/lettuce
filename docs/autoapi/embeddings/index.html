@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>embeddings &#8212; Llettuce 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=fd3f3429" />
+    <script src="../../_static/documentation_options.js?v=2709fde1"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="pipeline" href="../pipeline/index.html" />
+    <link rel="prev" title="models" href="../models/index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-embeddings">
+<span id="embeddings"></span><h1><a class="reference internal" href="#module-embeddings" title="embeddings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">embeddings</span></code></a><a class="headerlink" href="#module-embeddings" title="Link to this heading">¶</a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#embeddings.EmbeddingModel" title="embeddings.EmbeddingModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EmbeddingModel</span></code></a></p></td>
+<td><p>An Enum for models used to generate concept embeddings</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#embeddings.Embeddings" title="embeddings.Embeddings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Embeddings</span></code></a></p></td>
+<td><p>This class allows the building or loading of a vector database of concept names. This database can then be used for vector search.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="embeddings.EmbeddingModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">embeddings.</span></span><span class="sig-name descname"><span class="pre">EmbeddingModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#embeddings.EmbeddingModel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An Enum for models used to generate concept embeddings</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="embeddings.EmbeddingModel.BGESMALL">
+<span class="sig-name descname"><span class="pre">BGESMALL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('BAAI/bge-small-en-v1.5',</span> <span class="pre">384)</span></em><a class="headerlink" href="#embeddings.EmbeddingModel.BGESMALL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="embeddings.EmbeddingModel.MINILM">
+<span class="sig-name descname"><span class="pre">MINILM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('sentence-transformers/all-MiniLM-L6-v2',</span> <span class="pre">384)</span></em><a class="headerlink" href="#embeddings.EmbeddingModel.MINILM" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="embeddings.Embeddings">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">embeddings.</span></span><span class="sig-name descname"><span class="pre">Embeddings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_rebuild</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed_vocab</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#embeddings.EmbeddingModel" title="embeddings.EmbeddingModel"><span class="pre">EmbeddingModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#embeddings.Embeddings" title="Link to this definition">¶</a></dt>
+<dd><p>This class allows the building or loading of a vector database of concept names. This database can then be used for vector search.</p>
+<section id="methods">
+<h4>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>search:</dt><dd><p>Query the attached embeddings database with provided search terms</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="embeddings.Embeddings._build_embeddings">
+<span class="sig-name descname"><span class="pre">_build_embeddings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#embeddings.Embeddings._build_embeddings" title="Link to this definition">¶</a></dt>
+<dd><p>Build a vector database of embeddings</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="embeddings.Embeddings._load_embeddings">
+<span class="sig-name descname"><span class="pre">_load_embeddings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#embeddings.Embeddings._load_embeddings" title="Link to this definition">¶</a></dt>
+<dd><p>If available, load a vector database of concept embeddings</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="embeddings.Embeddings.search">
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#embeddings.Embeddings.search" title="Link to this definition">¶</a></dt>
+<dd><p>Search the attached vector database with a list of informal medications</p>
+<section id="parameters">
+<h5>Parameters<a class="headerlink" href="#parameters" title="Link to this heading">¶</a></h5>
+<dl class="simple">
+<dt>query: List[str]</dt><dd><p>A list of informal medication names</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h5>Returns<a class="headerlink" href="#returns" title="Link to this heading">¶</a></h5>
+<dl class="simple">
+<dt>List[List[Dict[str, Any]]]</dt><dd><p>For each medication in the query, the result of searching the vector database</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Llettuce</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../text_input/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">text_input</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ui/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ui</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assistant/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">assistant</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../csv_input/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">csv_input</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ui_utilities/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ui_utilities</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../app/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">app</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../base_options/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base_options</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">utils</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logging_utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging_utils</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../models/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">models</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">embeddings</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pipeline/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pipeline</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../prompt/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">prompt</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../omop_models/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">omop_models</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../preprocess/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">preprocess</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../OMOP_match/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">OMOP_match</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../eval/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">eval</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">API Reference</a><ul>
+      <li>Previous: <a href="../models/index.html" title="previous chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">models</span></code></a></li>
+      <li>Next: <a href="../pipeline/index.html" title="next chapter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pipeline</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Reza Omidvar, James Mitchell-White, Grazziela Figueredo, Philip Quinlan.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../../_sources/autoapi/embeddings/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
