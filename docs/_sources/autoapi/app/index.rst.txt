@@ -240,12 +240,12 @@ Attributes
 .. py:function:: generate_events(request: PipelineRequest) -> collections.abc.AsyncGenerator[str]
    :async:
 
-   Generate LLM output and OMOP results for a list of informal medication names
+   Generate LLM output and OMOP results for a list of informal names
 
    Parameters
    ----------
    request: PipelineRequest
-       The request containing the list of informal names of the medications.
+       The request containing the list of informal names.
 
    Workflow
    --------
@@ -282,8 +282,7 @@ Attributes
    Parameters
    ----------
    request: PipelineRequest
-       The request containing a list of informal namse of medications
-
+       The request containing a list of informal names 
    Returns
    -------
    EventSourceResponse
@@ -293,14 +292,14 @@ Attributes
 .. py:function:: run_db(request: PipelineRequest) -> List[Dict[str, Any]]
    :async:
 
-   Fetch OMOP concepts for a medication name
+   Fetch OMOP concepts for a name
 
    Default options can be overridden by the pipeline_options in the request
 
    Parameters
    ----------
    request: PipelineRequest
-       An API request containing a list of informal names for medications and the options of a pipeline
+       An API request containing a list of informal names and the options of a pipeline
 
    Returns
    -------
@@ -311,15 +310,15 @@ Attributes
 .. py:function:: run_vector_search(request: PipelineRequest)
    :async:
 
-   Search a vector database for a medication name
+   Search a vector database for a name
 
    Default options can be overridden by pipeline_options
-   A warning: if you don't have a vector database set up under the embeddings_path, it will build one. This takes a while, an hour on a 2019 macbook pro.
+   A warning: if you don't have a vector database set up under the embeddings_path, this method will build one for you. This takes a while, an hour using 2.8 GHz intel I7, 16 Gb RAM.
 
    Parameters
    ----------
    request: PipelineRequest
-       An API request containing a list of informal names for medications and the options of a pipeline
+       An API request containing a list of informal names and the options of a pipeline
 
    Returns
    -------

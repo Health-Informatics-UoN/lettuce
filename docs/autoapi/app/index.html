@@ -62,16 +62,16 @@
 <td><p>Use the values of a PipelineOptions object to override defaults</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#app.generate_events" title="app.generate_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_events</span></code></a>(→ collections.abc.AsyncGenerator[str])</p></td>
-<td><p>Generate LLM output and OMOP results for a list of informal medication names</p></td>
+<td><p>Generate LLM output and OMOP results for a list of informal names</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#app.run_pipeline" title="app.run_pipeline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_pipeline</span></code></a>(→ sse_starlette.sse.EventSourceResponse)</p></td>
 <td><p>Call generate_events to run the pipeline</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#app.run_db" title="app.run_db"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_db</span></code></a>(→ List[Dict[str, Any]])</p></td>
-<td><p>Fetch OMOP concepts for a medication name</p></td>
+<td><p>Fetch OMOP concepts for a name</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#app.run_vector_search" title="app.run_vector_search"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run_vector_search</span></code></a>(request)</p></td>
-<td><p>Search a vector database for a medication name</p></td>
+<td><p>Search a vector database for a name</p></td>
 </tr>
 </tbody>
 </table>
@@ -282,11 +282,11 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="app.generate_events">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">generate_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.PipelineRequest" title="app.PipelineRequest"><span class="pre">PipelineRequest</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">collections.abc.AsyncGenerator</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app.generate_events" title="Link to this definition">¶</a></dt>
-<dd><p>Generate LLM output and OMOP results for a list of informal medication names</p>
+<dd><p>Generate LLM output and OMOP results for a list of informal names</p>
 <section id="id3">
 <h4>Parameters<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h4>
 <dl class="simple">
-<dt>request: PipelineRequest</dt><dd><p>The request containing the list of informal names of the medications.</p>
+<dt>request: PipelineRequest</dt><dd><p>The request containing the list of informal names.</p>
 </dd>
 </dl>
 </section>
@@ -326,7 +326,7 @@ queried for the LLM output.</p>
 <section id="id4">
 <h4>Parameters<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
 <dl class="simple">
-<dt>request: PipelineRequest</dt><dd><p>The request containing a list of informal namse of medications</p>
+<dt>request: PipelineRequest</dt><dd><p>The request containing a list of informal names</p>
 </dd>
 </dl>
 </section>
@@ -342,12 +342,12 @@ queried for the LLM output.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.run_db">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">run_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.PipelineRequest" title="app.PipelineRequest"><span class="pre">PipelineRequest</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#app.run_db" title="Link to this definition">¶</a></dt>
-<dd><p>Fetch OMOP concepts for a medication name</p>
+<dd><p>Fetch OMOP concepts for a name</p>
 <p>Default options can be overridden by the pipeline_options in the request</p>
 <section id="id6">
 <h4>Parameters<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
 <dl class="simple">
-<dt>request: PipelineRequest</dt><dd><p>An API request containing a list of informal names for medications and the options of a pipeline</p>
+<dt>request: PipelineRequest</dt><dd><p>An API request containing a list of informal names and the options of a pipeline</p>
 </dd>
 </dl>
 </section>
@@ -363,13 +363,13 @@ queried for the LLM output.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="app.run_vector_search">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">run_vector_search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#app.PipelineRequest" title="app.PipelineRequest"><span class="pre">PipelineRequest</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#app.run_vector_search" title="Link to this definition">¶</a></dt>
-<dd><p>Search a vector database for a medication name</p>
+<dd><p>Search a vector database for a name</p>
 <p>Default options can be overridden by pipeline_options
-A warning: if you don’t have a vector database set up under the embeddings_path, it will build one. This takes a while, an hour on a 2019 macbook pro.</p>
+A warning: if you don’t have a vector database set up under the embeddings_path, this method will build one for you. This takes a while, an hour using 2.8 GHz intel I7, 16 Gb RAM.</p>
 <section id="id8">
 <h4>Parameters<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h4>
 <dl class="simple">
-<dt>request: PipelineRequest</dt><dd><p>An API request containing a list of informal names for medications and the options of a pipeline</p>
+<dt>request: PipelineRequest</dt><dd><p>An API request containing a list of informal names and the options of a pipeline</p>
 </dd>
 </dl>
 </section>
