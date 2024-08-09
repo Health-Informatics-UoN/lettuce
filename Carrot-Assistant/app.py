@@ -2,24 +2,25 @@ import asyncio
 from collections.abc import AsyncGenerator
 import json
 from enum import Enum
-from typing import Optional
-from typing import List, Dict, Any
+from typing import Optional, List, Dict, Any
+
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
-from torch.cuda import temperature
 
 import assistant
 from omop import OMOP_match
 from options.base_options import BaseOptions
 from utils.logging_utils import Logger
+from components.embeddings import Embeddings
+from components.embeddings import EmbeddingModel
 
 logger = Logger().make_logger()
 app = FastAPI(
-    title="Medication Assistant",
-    description="The API to assist in identifying medications",
+    title="OMOP concpet Assistant",
+    description="The API to assist in identifying OMOP concepts",
     version="0.1.0",
     contact={
         "name": "Reza Omidvar",
@@ -35,10 +36,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-# the LLMModel class could be more powerful if we remove the option of using the GPTs. /
+# the LLMModel class could be more powerful if we remove the option of using the GPTs.
 # Then it can be an Enum of dicts, and the dicts can be unpacked into the arguments for the hf download
-
 
 class LLMModel(str, Enum):
     """
@@ -88,6 +87,11 @@ class PipelineOptions(BaseModel):
     search_threshold: int = 80
     max_separation_descendants: int = 1
     max_separation_ancestor: int = 1
+    embeddings_path: str = "concept_embeddings.qdrant"
+    force_rebuild: bool = False
+    embed_vocab: list[str] = ["RxNorm", "RxNorm Extension"]
+    embedding_model: EmbeddingModel = EmbeddingModel.BGESMALL
+    embedding_search_kwargs: dict = {}
 
 
 class PipelineRequest(BaseModel):
@@ -136,12 +140,12 @@ def parse_pipeline_args(base_options: BaseOptions, options: PipelineOptions) -> 
 
 async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
     """
-    Generate LLM output and OMOP results for a list of informal medication names
+    Generate LLM output and OMOP results for a list of informal names
 
     Parameters
     ----------
     request: PipelineRequest
-        The request containing the list of informal names of the medications.
+        The request containing the list of informal names.
 
     Workflow
     --------
@@ -197,6 +201,7 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
     llm_outputs = assistant.run(opt=opt, informal_names=informal_names, logger=logger)
     for llm_output in llm_outputs:
 
+
         print("LLM output for", llm_output["informal_name"], ":", llm_output["reply"])
         
         print("Querying OMOP for LLM output:", llm_output["reply"])
@@ -224,9 +229,8 @@ async def run_pipeline(request: PipelineRequest) -> EventSourceResponse:
 
     Parameters
     ----------
-    request: InformalNameRequest
-        The request containing the informal name of the medication
-
+    request: PipelineRequest
+        The request containing a list of informal names 
     Returns
     -------
     EventSourceResponse
@@ -238,14 +242,14 @@ async def run_pipeline(request: PipelineRequest) -> EventSourceResponse:
 @app.post("/run_db")
 async def run_db(request: PipelineRequest) -> List[Dict[str,Any]]:
     """
-    Fetch OMOP concepts for a medication name
+    Fetch OMOP concepts for a name
 
     Default options can be overridden by the pipeline_options in the request
 
     Parameters
     ----------
     request: PipelineRequest
-        An API request containing a medication name
+        An API request containing a list of informal names and the options of a pipeline
 
     Returns
     -------
@@ -264,6 +268,34 @@ async def run_db(request: PipelineRequest) -> List[Dict[str,Any]]:
         omop_outputs.append({"event": "omop_output", "content": omop_output})
 
     return omop_outputs
+    
+@app.post("/run_vector_search")
+async def run_vector_search(request: PipelineRequest):
+    """
+    Search a vector database for a name
+
+    Default options can be overridden by pipeline_options
+    A warning: if you don't have a vector database set up under the embeddings_path, this method will build one for you. This takes a while, an hour using 2.8 GHz intel I7, 16 Gb RAM.
+
+    Parameters
+    ----------
+    request: PipelineRequest
+        An API request containing a list of informal names and the options of a pipeline
+
+    Returns
+    -------
+    list
+        Details of OMOP concept(s) fetched from a vector database query
+    """
+    search_terms = request.names
+    embeddings = Embeddings(
+            embeddings_path=request.pipeline_options.embeddings_path,
+            force_rebuild=request.pipeline_options.force_rebuild,
+            embed_vocab=request.pipeline_options.embed_vocab,
+            model=request.pipeline_options.embedding_model,
+            search_kwargs=request.pipeline_options.embedding_search_kwargs,
+            )
+    return {'event': 'vector_search_output', 'content': embeddings.search(search_terms)}
 
 
 if __name__ == "__main__":
