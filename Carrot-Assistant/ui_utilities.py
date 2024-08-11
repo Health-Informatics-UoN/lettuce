@@ -3,6 +3,7 @@ import sseclient
 import time
 import requests
 from app import PipelineOptions
+from typing import List, Union
 
 def display_concept_info(concept: dict) -> None:
     """
@@ -81,26 +82,47 @@ def capitalize_words(s: str) -> str:
     return " ".join(capitalized_words)
 
 
-def make_api_call(names: list[str], skip_llm: bool, vocab_id: str | None) -> sseclient.SSEClient:
+def make_api_call(
+    names: List[str], use_llm: bool, vocab_id: Union[str, None]
+) -> sseclient.SSEClient:
     """
-    Make a call to the Lettuce API to retrieve OMOP concepts.
-
+    This function makes an API call to the backend server to process the input names.
+    
     Parameters
     ----------
-    names: list[str]
-        The informal names to send to the API
-
+    names: List[str]
+        The list of names to process
+        
+    use_llm: bool
+        Whether to use the LLM model for processing
+        
+    vocab_id: Union[str, None]
+        The vocabulary ID to use for processing
+        
     Returns
     -------
     sseclient.SSEClient
-        The stream of events from the API
+        The server-sent event client to stream the results
     """
     url = "http://127.0.0.1:8000/run"
-    if not skip_llm:
-        url = url + "_db"
     headers = {"Content-Type": "application/json"}
     pipe_opts = PipelineOptions(vocabulary_id=vocab_id)
-    data = {"names": names, "pipeline_options": pipe_opts.model_dump()}
+    data = {
+        "names": names,
+        "pipeline_options": {
+            "llm_model": pipe_opts.llm_model.value,
+            "temperature": pipe_opts.temperature,
+            "vocabulary_id": pipe_opts.vocabulary_id,
+            "concept_ancestor": pipe_opts.concept_ancestor,
+            "concept_relationship": pipe_opts.concept_relationship,
+            "concept_synonym": pipe_opts.concept_synonym,
+            "search_threshold": pipe_opts.search_threshold,
+            "max_separation_descendants": pipe_opts.max_separation_descendants,
+            "max_separation_ancestor": pipe_opts.max_separation_ancestor,
+        },
+        "use_llm": use_llm,
+    }
+    print("Making API call with data:", data)
     response = requests.post(url, headers=headers, json=data, stream=True)
     return sseclient.SSEClient(response)
 

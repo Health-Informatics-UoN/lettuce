@@ -5,7 +5,7 @@ from enum import Enum
 from typing import Optional, List, Dict, Any
 
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
@@ -136,16 +136,22 @@ def parse_pipeline_args(base_options: BaseOptions, options: PipelineOptions) -> 
         max_separation_descendants=options.max_separation_descendants,
         max_separation_ancestor=options.max_separation_ancestor,
     )
-
-
-async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
+        
+        
+async def generate_events(
+    request: PipelineRequest, use_llm: bool
+) -> AsyncGenerator[str]:
     """
-    Generate LLM output and OMOP results for a list of informal names
-
-    Parameters
+    Generate LLM output and OMOP results for a list of informal names.
+    
+    parameters
     ----------
     request: PipelineRequest
         The request containing the list of informal names.
+        
+    use_llm: bool
+        A flag to determine whether to use LLM to find the formal name.
+        
 
     Workflow
     --------
@@ -154,18 +160,18 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
         The second event is to fetches relevant concepts from the OMOP database
         Finally,The function yields results as they become available,
         allowing for real-time streaming.
-
+        
     Conditions
     ----------
     If the OMOP database returns a match, the LLM is not queried
-
-    If the OMOP database does not return a match, 
-    the LLM is used to find the formal name and the OMOP database is 
+    
+    If the OMOP database does not return a match,
+    the LLM is used to find the formal name and the OMOP database is
     queried for the LLM output.
     
     Finally, the function yields the results for real-time streaming.
-
-
+    
+    
     Yields
     ------
     str
@@ -173,6 +179,7 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
         1. "llm_output": The result from the language model processing.
         2. "omop_output": The result from the OMOP database matching.
     """
+    
     informal_names = request.names
     opt = BaseOptions()
     opt.initialize()
@@ -180,9 +187,10 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
     opt = opt.parse()
 
     print("Received informal names:", informal_names)
-    
-    # Query OMOP for each informal name
+    print(f"use_llm flag is set to: {use_llm}")
 
+    # Query OMOP for each informal name and appends the names that have no match
+    no_match_names = []
     for informal_name in informal_names:
         print(f"Querying OMOP for informal name: {informal_name}")
         omop_output = OMOP_match.run(opt=opt, search_term=informal_name, logger=logger)
@@ -191,52 +199,78 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
             print(f"OMOP match found for {informal_name}: {omop_output}")
             output = {"event": "omop_output", "data": omop_output}
             yield json.dumps(output)
-            continue
-
         else:
-            print("No satisfactory OMOP results found for {informal_name}, using LLM...")
+            print(f"No satisfactory OMOP results found for {informal_name}")
+            output = {
+                "event": "omop_output",
+                "data": omop_output,
+                "message": f"No match found in OMOP database for {informal_name}.",
+            }
+            yield json.dumps(output)
+            no_match_names.append(informal_name)
 
+    
     # Use LLM to find the formal name and query OMOP for the LLM output
-
-    llm_outputs = assistant.run(opt=opt, informal_names=informal_names, logger=logger)
-    for llm_output in llm_outputs:
-
-
-        print("LLM output for", llm_output["informal_name"], ":", llm_output["reply"])
-        
-        print("Querying OMOP for LLM output:", llm_output["reply"])
-
-        output = {"event": "llm_output", "data": llm_output}
-        yield json.dumps(output)
-
-        # Simulate some delay before sending the next part
-        await asyncio.sleep(2)
-
-        omop_output = OMOP_match.run(
-            opt=opt, search_term=llm_output["reply"], logger=logger
+    
+    if no_match_names and use_llm:
+        llm_outputs = assistant.run(
+            opt=opt, informal_names=informal_names, logger=logger
         )
 
-        print("OMOP output for", llm_output["reply"], ":", omop_output)
+        for llm_output in llm_outputs:
 
-        output = {"event": "omop_output", "data": omop_output}
-        yield json.dumps(output)
+            print(
+                "LLM output for", llm_output["informal_name"], ":", llm_output["reply"]
+            )
+
+            print("Querying OMOP for LLM output:", llm_output["reply"])
+
+            output = {"event": "llm_output", "data": llm_output}
+            yield json.dumps(output)
+
+            # Simulate some delay before sending the next part
+            await asyncio.sleep(2)
+
+            omop_output = OMOP_match.run(
+                opt=opt, search_term=llm_output["reply"], logger=logger
+            )
+
+            print("OMOP output for", llm_output["reply"], ":", omop_output)
+
+            output = {"event": "omop_output", "data": omop_output}
+            yield json.dumps(output)
+
 
 
 @app.post("/run")
-async def run_pipeline(request: PipelineRequest) -> EventSourceResponse:
+async def run_pipeline(request: Request) -> EventSourceResponse:
     """
-    Call generate_events to run the pipeline
-
+    This function runs the pipeline for a list of informal names.
+    
     Parameters
     ----------
-    request: PipelineRequest
-        The request containing a list of informal names 
+    request: Request
+        The request containing the list of informal names.
+        
+    Workflow
+    --------
+    The function generates events for each informal name in the list.
+    
+    use_llm: bool
+        A flag to determine whether to use LLM to find the formal name.
+        
     Returns
     -------
     EventSourceResponse
-        The response containing the events
+        The response containing the results of the pipeline.
     """
-    return EventSourceResponse(generate_events(request))
+    body = await request.json()
+    pipeline_request = PipelineRequest(**body)
+    use_llm = body.get("use_llm", False)
+    print(f"Running pipeline with use_llm: {use_llm}")
+    return EventSourceResponse(generate_events(pipeline_request, use_llm))
+    
+    
 
 
 @app.post("/run_db")
