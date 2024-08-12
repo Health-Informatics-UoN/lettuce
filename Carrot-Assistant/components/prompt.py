@@ -66,7 +66,7 @@ Response: Naproxen
 
 Task:
 
-Informal name: {{informal_name}}
+Informal name: {{informal_name}}<|eot_id|>
 Response:
 """
 
