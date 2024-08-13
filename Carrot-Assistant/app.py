@@ -15,7 +15,7 @@ from omop import OMOP_match
 from options.base_options import BaseOptions
 from utils.logging_utils import Logger
 from components.embeddings import Embeddings
-from components.embeddings import EmbeddingModel
+from components.embeddings import EmbeddingModelName
 
 logger = Logger().make_logger()
 app = FastAPI(
@@ -91,7 +91,7 @@ class PipelineOptions(BaseModel):
     embeddings_path: str = "concept_embeddings.qdrant"
     force_rebuild: bool = False
     embed_vocab: list[str] = ["RxNorm", "RxNorm Extension"]
-    embedding_model: EmbeddingModel = EmbeddingModel.BGESMALL
+    embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL
     embedding_search_kwargs: dict = {}
 
 
