@@ -189,7 +189,6 @@ class OMOPMatcher:
             A list of search results from the OMOP database if the query comes back with results, otherwise returns None
         """
         query = build_query(preprocess_search_term(search_term), vocabulary_id, concept_synonym)
-        print(query.compile(compile_kwargs={"literal_binds": True}))
         Session = sessionmaker(self.engine)
         session = Session()
         results = session.execute(query).fetchall()

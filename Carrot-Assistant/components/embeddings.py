@@ -1,6 +1,5 @@
 from enum import Enum
 from urllib.parse import quote_plus
-from click.core import ParameterSource
 from dotenv import load_dotenv
 from haystack.dataclasses import Document
 from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
@@ -11,19 +10,29 @@ from os import environ
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from typing import Any, List, Dict
+from pydantic import BaseModel
 
 from omop.omop_models import Concept
 
-class EmbeddingModel(Enum):
-    """
-    An Enum for models used to generate concept embeddings
-    """
-    BGESMALL = "BAAI/bge-small-en-v1.5", 384
-    MINILM = "sentence-transformers/all-MiniLM-L6-v2", 384
-    
-    def __init__(self, path: str, dimensions: int) -> None:
-        self.path = path
-        self.dimensions = dimensions
+class EmbeddingModelName(str, Enum):
+    BGESMALL = "BGESMALL"
+    MINILM = "MINILM"
+
+class EmbeddingModelInfo(BaseModel):
+    path: str
+    dimensions: int
+
+class EmbeddingModel(BaseModel):
+    name: EmbeddingModelName
+    info: EmbeddingModelInfo
+
+EMBEDDING_MODELS = {
+    EmbeddingModelName.BGESMALL: EmbeddingModelInfo(path="BAAI/bge-small-en-v1.5", dimensions=384),
+    EmbeddingModelName.MINILM: EmbeddingModelInfo(path="sentence-transformers/all-MiniLM-L6-v2", dimensions=384),
+}
+
+def get_embedding_model(name: EmbeddingModelName) -> EmbeddingModel:
+    return EmbeddingModel(name=name, info=EMBEDDING_MODELS[name])
 
 class Embeddings:
     """
@@ -39,7 +48,7 @@ class Embeddings:
             embeddings_path: str,
             force_rebuild: bool,
             embed_vocab: List[str],
-            model: EmbeddingModel,
+            model_name: EmbeddingModelName,
             search_kwargs: dict,
             ) -> None:
         """
@@ -59,7 +68,7 @@ class Embeddings:
             kwargs for vector search
         """
         self.embeddings_path = embeddings_path
-        self.model = model
+        self.model = get_embedding_model(model_name)
         self.embed_vocab = embed_vocab
         self.search_kwargs = search_kwargs
         
@@ -78,7 +87,7 @@ class Embeddings:
 
         self.embeddings_store = QdrantDocumentStore(
             path=self.embeddings_path,
-            embedding_dim=self.model.dimensions,
+            embedding_dim=self.model.info.dimensions,
             recreate_index=True  # We're building from scratch, so recreate the index
         )
         
@@ -106,7 +115,7 @@ class Embeddings:
             content = concept.concept_name,
             meta = {"concept_id": concept.concept_id}
             ) for concept in concepts]
-        concept_embedder = FastembedDocumentEmbedder(model=self.model.path, parallel=0)
+        concept_embedder = FastembedDocumentEmbedder(model=self.model.info.path, parallel=0)
         concept_embedder.warm_up()
         concept_embeddings = concept_embedder.run(concept_docs)
         self.embeddings_store.write_documents(concept_embeddings.get("documents"))
@@ -117,7 +126,7 @@ class Embeddings:
         """
         self.embeddings_store = QdrantDocumentStore(
             path=self.embeddings_path,
-            embedding_dim=self.model.dimensions,
+            embedding_dim=self.model.info.dimensions,
             recreate_index=False  # We're loading existing embeddings, don't recreate
         )
 
@@ -138,7 +147,7 @@ class Embeddings:
         retriever = QdrantEmbeddingRetriever(
             document_store=self.embeddings_store
         )
-        query_embedder = FastembedTextEmbedder(model=self.model.path, parallel=0, prefix="query:")
+        query_embedder = FastembedTextEmbedder(model=self.model.info.path, parallel=0, prefix="query:")
         query_embedder.warm_up()
         query_embeddings = [query_embedder.run(name) for name in query]
         result = [retriever.run(query_embedding['embedding'], **self.search_kwargs) for query_embedding in query_embeddings]
