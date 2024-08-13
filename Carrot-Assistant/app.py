@@ -293,7 +293,7 @@ async def run_vector_search(request: PipelineRequest):
             embeddings_path=request.pipeline_options.embeddings_path,
             force_rebuild=request.pipeline_options.force_rebuild,
             embed_vocab=request.pipeline_options.embed_vocab,
-            model=request.pipeline_options.embedding_model,
+            model_name=request.pipeline_options.embedding_model,
             search_kwargs=request.pipeline_options.embedding_search_kwargs,
             )
     return {'event': 'vector_search_output', 'content': embeddings.search(search_terms)}

@@ -87,7 +87,7 @@ class Embeddings:
 
         self.embeddings_store = QdrantDocumentStore(
             path=self.embeddings_path,
-            embedding_dim=self.model.dimensions,
+            embedding_dim=self.model.info.dimensions,
             recreate_index=True  # We're building from scratch, so recreate the index
         )
         
@@ -115,7 +115,7 @@ class Embeddings:
             content = concept.concept_name,
             meta = {"concept_id": concept.concept_id}
             ) for concept in concepts]
-        concept_embedder = FastembedDocumentEmbedder(model=self.model.path, parallel=0)
+        concept_embedder = FastembedDocumentEmbedder(model=self.model.info.path, parallel=0)
         concept_embedder.warm_up()
         concept_embeddings = concept_embedder.run(concept_docs)
         self.embeddings_store.write_documents(concept_embeddings.get("documents"))
@@ -126,7 +126,7 @@ class Embeddings:
         """
         self.embeddings_store = QdrantDocumentStore(
             path=self.embeddings_path,
-            embedding_dim=self.model.dimensions,
+            embedding_dim=self.model.info.dimensions,
             recreate_index=False  # We're loading existing embeddings, don't recreate
         )
 
@@ -147,7 +147,7 @@ class Embeddings:
         retriever = QdrantEmbeddingRetriever(
             document_store=self.embeddings_store
         )
-        query_embedder = FastembedTextEmbedder(model=self.model.path, parallel=0, prefix="query:")
+        query_embedder = FastembedTextEmbedder(model=self.model.info.path, parallel=0, prefix="query:")
         query_embedder.warm_up()
         query_embeddings = [query_embedder.run(name) for name in query]
         result = [retriever.run(query_embedding['embedding'], **self.search_kwargs) for query_embedding in query_embeddings]
