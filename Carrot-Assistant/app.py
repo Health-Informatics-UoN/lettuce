@@ -15,7 +15,7 @@ from omop import OMOP_match
 from options.base_options import BaseOptions
 from utils.logging_utils import Logger
 from components.embeddings import Embeddings
-from components.embeddings import EmbeddingModel
+from components.embeddings import EmbeddingModelName
 
 logger = Logger().make_logger()
 app = FastAPI(
@@ -44,12 +44,13 @@ class LLMModel(str, Enum):
     This enum holds the names of the different models the assistant can use
     """
 
-    GPT_3_5_TURBO = "gpt-3.5-turbo-0125",
-    GPT_4 = "gpt-4",
-    LLAMA_2_7B = "llama-2-7B-chat",
-    LLAMA_3_8B = "llama-3-8B",
-    LLAMA_3_70B = "llama-3-70B",
+    GPT_3_5_TURBO = "gpt-3.5-turbo-0125"
+    GPT_4 = "gpt-4"
+    LLAMA_2_7B = "llama-2-7B-chat"
+    LLAMA_3_8B = "llama-3-8b"
+    LLAMA_3_70B = "llama-3-70b"
     GEMMA_7B = "gemma-7b"
+    LLAMA_3_1_8B = "llama-3.1-8b"
 
 
 class PipelineOptions(BaseModel):
@@ -78,7 +79,7 @@ class PipelineOptions(BaseModel):
         The maximum separation to search for concept ancestors
     """
 
-    llm_model: LLMModel = LLMModel.LLAMA_3_8B
+    llm_model: LLMModel = LLMModel.LLAMA_3_1_8B
     temperature: float = 0
     vocabulary_id: str = "RxNorm"  # TODO: make multiples possible
     concept_ancestor: bool = False
@@ -90,7 +91,7 @@ class PipelineOptions(BaseModel):
     embeddings_path: str = "concept_embeddings.qdrant"
     force_rebuild: bool = False
     embed_vocab: list[str] = ["RxNorm", "RxNorm Extension"]
-    embedding_model: EmbeddingModel = EmbeddingModel.BGESMALL
+    embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL
     embedding_search_kwargs: dict = {}
 
 
@@ -292,7 +293,7 @@ async def run_vector_search(request: PipelineRequest):
             embeddings_path=request.pipeline_options.embeddings_path,
             force_rebuild=request.pipeline_options.force_rebuild,
             embed_vocab=request.pipeline_options.embed_vocab,
-            model=request.pipeline_options.embedding_model,
+            model_name=request.pipeline_options.embedding_model,
             search_kwargs=request.pipeline_options.embedding_search_kwargs,
             )
     return {'event': 'vector_search_output', 'content': embeddings.search(search_terms)}
