@@ -19,7 +19,29 @@ class OMOPMatcher:
     """
     This class retrieves matches from an OMOP database and returns the best
     """
-
+    _instance = None
+    
+    @classmethod
+    def get_instance(cls, logger: Optional[Logger] = None):
+        """
+        This method returns the singleton instance of the OMOPMatcher class
+        and creates it if it does not exist.
+        
+        Parameters
+        ----------
+        logger: Logger
+            A logger for logging runs of the tool        
+            
+        Returns
+        -------
+        OMOPMatcher
+            The singleton instance of the OMOPMatcher class
+        """
+        if cls._instance is None:
+            cls._instance = cls(logger)
+        return cls._instance
+    
+    
     def __init__(self, logger: Optional[Logger] = None):
         # Connect to database
         if logger is None:
@@ -52,7 +74,9 @@ class OMOPMatcher:
         self.schema = DB_SCHEMA
 
     def close(self):
-        """Close the engine connection."""
+        """
+        Close the engine connection.
+        """
         self.engine.dispose()
         self.logger.info("PostgreSQL connection closed.")
 
@@ -482,5 +506,4 @@ def run(opt: argparse.Namespace, search_term:str, logger: Logger):
         max_separation_descendant,
         max_separation_ancestor,
     )
-    omop_matcher.close()
     return res

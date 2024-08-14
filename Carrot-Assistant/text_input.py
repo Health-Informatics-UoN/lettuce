@@ -7,6 +7,7 @@ from ui_utilities import (
 )
 import sseclient
 import streamlit as st
+from omop.OMOP_match import OMOPMatcher
 
 
 # ---> Process
@@ -47,6 +48,9 @@ if "session_ended" not in st.session_state:
 
 if st.session_state["session_ended"]:
     st.write("Session has ended. Thank you for using Carrot!")
+    
+    # Close the OMOP connection
+    OMOPMatcher.get_instance().close() 
     st.stop()
 
 if st.button("Send"):
@@ -117,6 +121,9 @@ if "no_match_names" in st.session_state and not st.session_state.get(
             st.write(
                 "Thank you for using Carrot. Feel free to ask me more about informal names!"
             )
+            
+            # Close the connection if the session ends
+            OMOPMatcher.get_instance().close() 
             st.stop()
 
 # Process LLM predictions
@@ -184,4 +191,7 @@ if st.session_state.get("llm_requested", False):
     # Stop any further API calls after processing
 
     st.session_state["session_ended"] = True
+    
+    # Close the connection if the session ends
+    OMOPMatcher.get_instance().close() 
     st.stop()
