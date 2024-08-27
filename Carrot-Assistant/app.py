@@ -144,7 +144,7 @@ async def generate_events(
     """
     Generate LLM output and OMOP results for a list of informal names.
     
-    parameters
+    Parameters
     ----------
     request: PipelineRequest
         The request containing the list of informal names.
