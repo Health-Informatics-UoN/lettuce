@@ -15,14 +15,23 @@ from pydantic import BaseModel
 from omop.omop_models import Concept
 
 class EmbeddingModelName(str, Enum):
+    """
+    This enumerates the embedding models we have the download details for
+    """
     BGESMALL = "BGESMALL"
     MINILM = "MINILM"
 
 class EmbeddingModelInfo(BaseModel):
+    """
+    A simple class to hold the information for embeddings models
+    """
     path: str
     dimensions: int
 
 class EmbeddingModel(BaseModel):
+    """
+    A class to match the name of an embeddings model with the details required to download and use it.
+    """
     name: EmbeddingModelName
     info: EmbeddingModelInfo
 
@@ -32,6 +41,20 @@ EMBEDDING_MODELS = {
 }
 
 def get_embedding_model(name: EmbeddingModelName) -> EmbeddingModel:
+    """
+    Collects the details of an embedding model when given its name
+
+
+    Parameters
+    ----------
+    name: EmbeddingModelName
+        The name of an embedding model we have the details for
+    
+    Returns
+    -------
+    EmbeddingModel
+        An EmbeddingModel object containing the name and the details used
+    """
     return EmbeddingModel(name=name, info=EMBEDDING_MODELS[name])
 
 class Embeddings:
