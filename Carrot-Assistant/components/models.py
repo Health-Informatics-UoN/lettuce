@@ -1,5 +1,6 @@
 import logging
-
+from haystack.components.generators import OpenAIGenerator
+from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
 import torch
 
 local_models = {
@@ -27,7 +28,7 @@ local_models = {
 
 def get_model(
     model_name: str, temperature: float = 0.7, logger: logging.Logger | None = None
-) -> object:
+) -> OpenAIGenerator | LlamaCppGenerator:
     """
     Get an interface for interacting with an LLM
 
@@ -50,7 +51,6 @@ def get_model(
     """
     if "gpt" in model_name.lower():
         logger.info(f"Loading {model_name} model")
-        from haystack.components.generators import OpenAIGenerator
 
         llm = OpenAIGenerator(
             model=model_name, generation_kwargs={"temperature": temperature}
@@ -58,9 +58,6 @@ def get_model(
 
     else:
         logger.info(f"Loading {model_name} model")
-        from haystack_integrations.components.generators.llama_cpp import (
-            LlamaCppGenerator,
-        )
         from huggingface_hub import hf_hub_download
 
         device = -1 if torch.cuda.is_available() else 0
@@ -78,7 +75,7 @@ def get_model(
         except:
             print(f"Error loading {model_name}")
         finally:
-            logger.info(f"Loading llama-3.1-8b")
+            logger.info("Loading llama-3.1-8b")
             llm = LlamaCppGenerator(
                     model=hf_hub_download(**local_models[model_name]),
                     n_ctx=0,

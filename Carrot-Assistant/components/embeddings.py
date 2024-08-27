@@ -130,6 +130,30 @@ class Embeddings:
             recreate_index=False  # We're loading existing embeddings, don't recreate
         )
 
+    def get_embedder(self) -> FastembedTextEmbedder:
+        """
+        Get an embedder for queries in LLM pipelines
+
+        Returns
+        _______
+        FastembedTextEmbedder
+        """
+        query_embedder = FastembedTextEmbedder(model=self.model.info.path, parallel=0)
+        query_embedder.warm_up()
+        return query_embedder
+
+
+    def get_retriever(self) -> QdrantEmbeddingRetriever:
+        """
+        Get a retriever for LLM pipelines
+
+        Returns
+        -------
+        QdrantEmbeddingRetriever
+        """
+        print(self.search_kwargs)
+        return QdrantEmbeddingRetriever(document_store=self.embeddings_store, **self.search_kwargs)
+
     def search(self, query: List[str]) -> List[List[Dict[str,Any]]]:
         """
         Search the attached vector database with a list of informal medications
