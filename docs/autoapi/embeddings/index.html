@@ -42,34 +42,110 @@
 <h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#embeddings.EmbeddingModelName" title="embeddings.EmbeddingModelName"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EmbeddingModelName</span></code></a></p></td>
+<td><p>str(object='') -&gt; str</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#embeddings.EmbeddingModelInfo" title="embeddings.EmbeddingModelInfo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EmbeddingModelInfo</span></code></a></p></td>
+<td><p></p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#embeddings.EmbeddingModel" title="embeddings.EmbeddingModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EmbeddingModel</span></code></a></p></td>
-<td><p>An Enum for models used to generate concept embeddings</p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#embeddings.Embeddings" title="embeddings.Embeddings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Embeddings</span></code></a></p></td>
 <td><p>This class allows the building or loading of a vector database of concept names. This database can then be used for vector search.</p></td>
 </tr>
 </tbody>
 </table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#embeddings.get_embedding_model" title="embeddings.get_embedding_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_embedding_model</span></code></a>(→ EmbeddingModel)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h3>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#embeddings.EMBEDDING_MODELS" title="embeddings.EMBEDDING_MODELS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EMBEDDING_MODELS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
 <dl class="py class">
-<dt class="sig sig-object py" id="embeddings.EmbeddingModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">embeddings.</span></span><span class="sig-name descname"><span class="pre">EmbeddingModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#embeddings.EmbeddingModel" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>An Enum for models used to generate concept embeddings</p>
+<dt class="sig sig-object py" id="embeddings.EmbeddingModelName">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">embeddings.</span></span><span class="sig-name descname"><span class="pre">EmbeddingModelName</span></span><a class="headerlink" href="#embeddings.EmbeddingModelName" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>str(object=’’) -&gt; str
+str(bytes_or_buffer[, encoding[, errors]]) -&gt; str</p>
+<p>Create a new string object from the given object. If encoding or
+errors is specified, then the object must expose a data buffer
+that will be decoded using the given encoding and error handler.
+Otherwise, returns the result of object.__str__() (if defined)
+or repr(object).
+encoding defaults to sys.getdefaultencoding().
+errors defaults to ‘strict’.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="embeddings.EmbeddingModel.BGESMALL">
-<span class="sig-name descname"><span class="pre">BGESMALL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('BAAI/bge-small-en-v1.5',</span> <span class="pre">384)</span></em><a class="headerlink" href="#embeddings.EmbeddingModel.BGESMALL" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="embeddings.EmbeddingModelName.BGESMALL">
+<span class="sig-name descname"><span class="pre">BGESMALL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'BGESMALL'</span></em><a class="headerlink" href="#embeddings.EmbeddingModelName.BGESMALL" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="embeddings.EmbeddingModel.MINILM">
-<span class="sig-name descname"><span class="pre">MINILM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('sentence-transformers/all-MiniLM-L6-v2',</span> <span class="pre">384)</span></em><a class="headerlink" href="#embeddings.EmbeddingModel.MINILM" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="embeddings.EmbeddingModelName.MINILM">
+<span class="sig-name descname"><span class="pre">MINILM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'MINILM'</span></em><a class="headerlink" href="#embeddings.EmbeddingModelName.MINILM" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="embeddings.EmbeddingModelInfo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">embeddings.</span></span><span class="sig-name descname"><span class="pre">EmbeddingModelInfo</span></span><a class="headerlink" href="#embeddings.EmbeddingModelInfo" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="embeddings.EmbeddingModelInfo.path">
+<span class="sig-name descname"><span class="pre">path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#embeddings.EmbeddingModelInfo.path" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="embeddings.EmbeddingModelInfo.dimensions">
+<span class="sig-name descname"><span class="pre">dimensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#embeddings.EmbeddingModelInfo.dimensions" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="embeddings.EmbeddingModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">embeddings.</span></span><span class="sig-name descname"><span class="pre">EmbeddingModel</span></span><a class="headerlink" href="#embeddings.EmbeddingModel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="embeddings.EmbeddingModel.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#embeddings.EmbeddingModelName" title="embeddings.EmbeddingModelName"><span class="pre">EmbeddingModelName</span></a></em><a class="headerlink" href="#embeddings.EmbeddingModel.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="embeddings.EmbeddingModel.info">
+<span class="sig-name descname"><span class="pre">info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#embeddings.EmbeddingModelInfo" title="embeddings.EmbeddingModelInfo"><span class="pre">EmbeddingModelInfo</span></a></em><a class="headerlink" href="#embeddings.EmbeddingModel.info" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="embeddings.EMBEDDING_MODELS">
+<span class="sig-prename descclassname"><span class="pre">embeddings.</span></span><span class="sig-name descname"><span class="pre">EMBEDDING_MODELS</span></span><a class="headerlink" href="#embeddings.EMBEDDING_MODELS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="embeddings.get_embedding_model">
+<span class="sig-prename descclassname"><span class="pre">embeddings.</span></span><span class="sig-name descname"><span class="pre">get_embedding_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#embeddings.EmbeddingModelName" title="embeddings.EmbeddingModelName"><span class="pre">EmbeddingModelName</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#embeddings.EmbeddingModel" title="embeddings.EmbeddingModel"><span class="pre">EmbeddingModel</span></a></span></span><a class="headerlink" href="#embeddings.get_embedding_model" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="embeddings.Embeddings">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">embeddings.</span></span><span class="sig-name descname"><span class="pre">Embeddings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_rebuild</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed_vocab</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#embeddings.EmbeddingModel" title="embeddings.EmbeddingModel"><span class="pre">EmbeddingModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#embeddings.Embeddings" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">embeddings.</span></span><span class="sig-name descname"><span class="pre">Embeddings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_rebuild</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed_vocab</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#embeddings.EmbeddingModelName" title="embeddings.EmbeddingModelName"><span class="pre">EmbeddingModelName</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#embeddings.Embeddings" title="Link to this definition">¶</a></dt>
 <dd><p>This class allows the building or loading of a vector database of concept names. This database can then be used for vector search.</p>
 <section id="methods">
 <h4>Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h4>

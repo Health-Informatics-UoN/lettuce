@@ -11,7 +11,11 @@ To use Llettuce, you must first clone the repository
    $ git clone <url>
    $ cd Carrot-Assistant
 
-Then install the dependencies, either using pip
+Then install the dependencies.
+
+We recommend using `poetry <https://python-poetry.org/>`_ then running the commands using the poetry shell
+
+Alternatively, dependencies can be installed either using pip
 
 .. code-block:: console
 

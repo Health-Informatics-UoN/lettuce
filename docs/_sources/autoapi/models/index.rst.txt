@@ -17,6 +17,18 @@ Functions
 
 
 
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   models.local_models
+
+
+.. py:data:: local_models
+
+   
+
 .. py:function:: get_model(model_name: str, temperature: float = 0.7, logger: logging.Logger | None = None) -> object
 
    Get an interface for interacting with an LLM
