@@ -56,32 +56,37 @@ Attributes
    This enum holds the names of the different models the assistant can use
 
    .. py:attribute:: GPT_3_5_TURBO
-      :value: ('gpt-3.5-turbo-0125',)
+      :value: 'gpt-3.5-turbo-0125'
 
       
 
    .. py:attribute:: GPT_4
-      :value: ('gpt-4',)
+      :value: 'gpt-4'
 
       
 
    .. py:attribute:: LLAMA_2_7B
-      :value: ('llama-2-7B-chat',)
+      :value: 'llama-2-7B-chat'
 
       
 
    .. py:attribute:: LLAMA_3_8B
-      :value: ('llama-3-8B',)
+      :value: 'llama-3-8b'
 
       
 
    .. py:attribute:: LLAMA_3_70B
-      :value: ('llama-3-70B',)
+      :value: 'llama-3-70b'
 
       
 
    .. py:attribute:: GEMMA_7B
       :value: 'gemma-7b'
+
+      
+
+   .. py:attribute:: LLAMA_3_1_8B
+      :value: 'llama-3.1-8b'
 
       
 
@@ -186,7 +191,7 @@ Attributes
       
 
    .. py:attribute:: embedding_model
-      :type: components.embeddings.EmbeddingModel
+      :type: components.embeddings.EmbeddingModelName
 
       
 

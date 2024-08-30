@@ -12,31 +12,97 @@ Classes
 
 .. autoapisummary::
 
+   embeddings.EmbeddingModelName
+   embeddings.EmbeddingModelInfo
    embeddings.EmbeddingModel
    embeddings.Embeddings
 
 
 
+Functions
+~~~~~~~~~
 
-.. py:class:: EmbeddingModel(path: str, dimensions: int)
+.. autoapisummary::
+
+   embeddings.get_embedding_model
 
 
-   Bases: :py:obj:`enum.Enum`
 
-   An Enum for models used to generate concept embeddings
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   embeddings.EMBEDDING_MODELS
+
+
+.. py:class:: EmbeddingModelName
+
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+   str(object='') -> str
+   str(bytes_or_buffer[, encoding[, errors]]) -> str
+
+   Create a new string object from the given object. If encoding or
+   errors is specified, then the object must expose a data buffer
+   that will be decoded using the given encoding and error handler.
+   Otherwise, returns the result of object.__str__() (if defined)
+   or repr(object).
+   encoding defaults to sys.getdefaultencoding().
+   errors defaults to 'strict'.
 
    .. py:attribute:: BGESMALL
-      :value: ('BAAI/bge-small-en-v1.5', 384)
+      :value: 'BGESMALL'
 
       
 
    .. py:attribute:: MINILM
-      :value: ('sentence-transformers/all-MiniLM-L6-v2', 384)
+      :value: 'MINILM'
 
       
 
 
-.. py:class:: Embeddings(embeddings_path: str, force_rebuild: bool, embed_vocab: List[str], model: EmbeddingModel, search_kwargs: dict)
+.. py:class:: EmbeddingModelInfo
+
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+   .. py:attribute:: path
+      :type: str
+
+      
+
+   .. py:attribute:: dimensions
+      :type: int
+
+      
+
+
+.. py:class:: EmbeddingModel
+
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+   .. py:attribute:: name
+      :type: EmbeddingModelName
+
+      
+
+   .. py:attribute:: info
+      :type: EmbeddingModelInfo
+
+      
+
+
+.. py:data:: EMBEDDING_MODELS
+
+   
+
+.. py:function:: get_embedding_model(name: EmbeddingModelName) -> EmbeddingModel
+
+
+.. py:class:: Embeddings(embeddings_path: str, force_rebuild: bool, embed_vocab: List[str], model_name: EmbeddingModelName, search_kwargs: dict)
 
 
    This class allows the building or loading of a vector database of concept names. This database can then be used for vector search.
