@@ -91,7 +91,7 @@ class PipelineOptions(BaseModel):
     max_separation_ancestor: int = 1
     embeddings_path: str = "concept_embeddings.qdrant"
     force_rebuild: bool = False
-    embed_vocab: list[str] = ["RxNorm", "RxNorm Extension"]
+    embed_vocab: List[str] = ["RxNorm", "RxNorm Extension"]
     embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL
     embedding_search_kwargs: dict = {"top_k":5}
 
