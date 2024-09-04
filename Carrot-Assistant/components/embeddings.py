@@ -15,14 +15,23 @@ from pydantic import BaseModel
 from omop.omop_models import Concept
 
 class EmbeddingModelName(str, Enum):
+    """
+    This enumerates the embedding models we have the download details for
+    """
     BGESMALL = "BGESMALL"
     MINILM = "MINILM"
 
 class EmbeddingModelInfo(BaseModel):
+    """
+    A simple class to hold the information for embeddings models
+    """
     path: str
     dimensions: int
 
 class EmbeddingModel(BaseModel):
+    """
+    A class to match the name of an embeddings model with the details required to download and use it.
+    """
     name: EmbeddingModelName
     info: EmbeddingModelInfo
 
@@ -32,6 +41,20 @@ EMBEDDING_MODELS = {
 }
 
 def get_embedding_model(name: EmbeddingModelName) -> EmbeddingModel:
+    """
+    Collects the details of an embedding model when given its name
+
+
+    Parameters
+    ----------
+    name: EmbeddingModelName
+        The name of an embedding model we have the details for
+    
+    Returns
+    -------
+    EmbeddingModel
+        An EmbeddingModel object containing the name and the details used
+    """
     return EmbeddingModel(name=name, info=EMBEDDING_MODELS[name])
 
 class Embeddings:
@@ -129,6 +152,30 @@ class Embeddings:
             embedding_dim=self.model.info.dimensions,
             recreate_index=False  # We're loading existing embeddings, don't recreate
         )
+
+    def get_embedder(self) -> FastembedTextEmbedder:
+        """
+        Get an embedder for queries in LLM pipelines
+
+        Returns
+        _______
+        FastembedTextEmbedder
+        """
+        query_embedder = FastembedTextEmbedder(model=self.model.info.path, parallel=0)
+        query_embedder.warm_up()
+        return query_embedder
+
+
+    def get_retriever(self) -> QdrantEmbeddingRetriever:
+        """
+        Get a retriever for LLM pipelines
+
+        Returns
+        -------
+        QdrantEmbeddingRetriever
+        """
+        print(self.search_kwargs)
+        return QdrantEmbeddingRetriever(document_store=self.embeddings_store, **self.search_kwargs)
 
     def search(self, query: List[str]) -> List[List[Dict[str,Any]]]:
         """

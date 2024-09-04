@@ -3,7 +3,7 @@ from collections.abc import AsyncGenerator
 import json
 from enum import Enum
 from typing import Optional, List, Dict, Any
-
+import time
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 
 import assistant
+from components.pipeline import llm_pipeline
 from omop import OMOP_match
 from options.base_options import BaseOptions
 from utils.logging_utils import Logger
@@ -90,9 +91,9 @@ class PipelineOptions(BaseModel):
     max_separation_ancestor: int = 1
     embeddings_path: str = "concept_embeddings.qdrant"
     force_rebuild: bool = False
-    embed_vocab: list[str] = ["RxNorm", "RxNorm Extension"]
+    embed_vocab: List[str] = ["RxNorm", "RxNorm Extension"]
     embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL
-    embedding_search_kwargs: dict = {}
+    embedding_search_kwargs: dict = {"top_k":5}
 
 
 class PipelineRequest(BaseModel):
@@ -297,6 +298,69 @@ async def run_vector_search(request: PipelineRequest):
             search_kwargs=request.pipeline_options.embedding_search_kwargs,
             )
     return {'event': 'vector_search_output', 'content': embeddings.search(search_terms)}
+
+@app.post("/run_vector_llm_pipeline")
+async def vector_llm_pipeline(request: PipelineRequest) -> List:
+    """
+    Run a RAG pipeline that first checks a vector database, then uses an LLM
+
+    This has a conditional router in it that checks whether there's an exact match for the term.
+    If there is an exact match, the vector search results are returned.
+    If there is not, the vector search results are used for retrieval augmented generation
+
+    Parameters
+    ----------
+    request: PipelineRequest
+
+    Returns
+    -------
+    list
+    """
+    informal_names = request.names
+    opt = BaseOptions()
+    opt.initialize()
+    parse_pipeline_args(opt, request.pipeline_options)
+    opt = opt.parse()
+    # I think this is what they call technical debt
+    opt.embeddings_path = request.pipeline_options.embeddings_path
+    opt.force_rebuild = request.pipeline_options.force_rebuild
+    opt.embed_vocab = request.pipeline_options.embed_vocab
+    opt.embedding_model = request.pipeline_options.embedding_model
+    opt.embedding_search_kwargs = request.pipeline_options.embedding_search_kwargs
+
+    pl = llm_pipeline(opt=opt, logger=logger).get_rag_assistant()
+    start = time.time()
+    pl.warm_up()
+    logger.info(f"Pipeline warmup in {time.time()-start} seconds")
+    
+    results = []
+    run_start = time.time()
+
+    for informal_name in informal_names:
+        start = time.time()
+        res = pl.run(
+                {
+                    "query_embedder": {"text": informal_name},
+                    "prompt": {"informal_name": informal_name},
+                    },
+                include_outputs_from={"retriever", "llm"},
+                )
+        inference_time = time.time()-start
+
+        def build_output(informal_name, result, inf_time) -> dict:
+            output = {
+                    "informal_name": informal_name,
+                    "inference_time": inf_time,
+                    }
+            if 'llm' in result.keys():
+                output['llm_output'] = result["llm"]["replies"][0].strip()
+            output["vector_search_output"] = [{"content": doc.content, "score": doc.score} for doc in result["retriever"]["documents"]]
+            return output
+
+        results.append(build_output(informal_name, res, inference_time))
+
+    logger.info(f"Complete run in {time.time()-run_start} seconds")
+    return results
 
 
 if __name__ == "__main__":
