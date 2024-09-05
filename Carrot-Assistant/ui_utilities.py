@@ -2,7 +2,7 @@ import streamlit as st
 import sseclient
 import time
 import requests
-from app import PipelineOptions
+from options.pipeline_options import PipelineOptions
 
 def display_concept_info(concept: dict) -> None:
     """
@@ -95,9 +95,9 @@ def make_api_call(names: list[str], skip_llm: bool, vocab_id: str | None) -> sse
     sseclient.SSEClient
         The stream of events from the API
     """
-    url = "http://127.0.0.1:8000/run"
+    url = "http://127.0.0.1:8000/pipeline/"
     if not skip_llm:
-        url = url + "_db"
+        url = url + "db"
     headers = {"Content-Type": "application/json"}
     pipe_opts = PipelineOptions(vocabulary_id=vocab_id)
     data = {"names": names, "pipeline_options": pipe_opts.model_dump()}
