@@ -25,6 +25,7 @@ app.include_router(
         prefix="/pipeline",
         )
 
+
 if __name__ == "__main__":
     import uvicorn
 
