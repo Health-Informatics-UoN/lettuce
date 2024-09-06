@@ -136,8 +136,7 @@ def parse_pipeline_args(base_options: BaseOptions, options: PipelineOptions) -> 
         max_separation_descendants=options.max_separation_descendants,
         max_separation_ancestor=options.max_separation_ancestor,
     )
-        
-        
+
 async def generate_events(
     request: PipelineRequest, use_llm: bool
 ) -> AsyncGenerator[str]:
@@ -189,36 +188,39 @@ async def generate_events(
     print("Received informal names:", informal_names)
     print(f"use_llm flag is set to: {use_llm}")
 
-    # Query OMOP for each informal name and appends the names that have no match
     no_match_names = []
-    for informal_name in informal_names:
-        print(f"Querying OMOP for informal name: {informal_name}")
-        omop_output = OMOP_match.run(opt=opt, search_term=informal_name, logger=logger)
-
-        if omop_output and any(concept["CONCEPT"] for concept in omop_output):
-            print(f"OMOP match found for {informal_name}: {omop_output}")
-            output = {"event": "omop_output", "data": omop_output}
-            yield json.dumps(output)
-        else:
-            print(f"No satisfactory OMOP results found for {informal_name}")
-            output = {
-                "event": "omop_output",
-                "data": omop_output,
-                "message": f"No match found in OMOP database for {informal_name}.",
-            }
-            yield json.dumps(output)
-            no_match_names.append(informal_name)
-
     
+    if not use_llm:
+        
+        # Query OMOP for each informal name and append the names that have no match
+        for informal_name in informal_names:
+            print(f"Querying OMOP for informal name: {informal_name}")
+            omop_output = OMOP_match.run(opt=opt, search_term=informal_name, logger=logger)
+
+            if omop_output and any(concept["CONCEPT"] for concept in omop_output):
+                print(f"OMOP match found for {informal_name}: {omop_output}")
+                output = {"event": "omop_output", "data": omop_output}
+                yield json.dumps(output)
+            else:
+                print(f"No satisfactory OMOP results found for {informal_name}")
+                output = {
+                    "event": "omop_output",
+                    "data": omop_output,
+                    "message": f"No match found in OMOP database for {informal_name}.",
+                }
+                yield json.dumps(output)
+                no_match_names.append(informal_name)
+    else:
+        # Use the informal names as no_match_names if LLM is chosen
+        no_match_names = informal_names
+
     # Use LLM to find the formal name and query OMOP for the LLM output
-    
     if no_match_names and use_llm:
         llm_outputs = assistant.run(
-            opt=opt, informal_names=informal_names, logger=logger
+            opt=opt, informal_names=no_match_names, logger=logger
         )
 
         for llm_output in llm_outputs:
-
             print(
                 "LLM output for", llm_output["informal_name"], ":", llm_output["reply"]
             )
@@ -228,7 +230,6 @@ async def generate_events(
             output = {"event": "llm_output", "data": llm_output}
             yield json.dumps(output)
 
-            # Simulate some delay before sending the next part
             await asyncio.sleep(2)
 
             omop_output = OMOP_match.run(
@@ -239,7 +240,6 @@ async def generate_events(
 
             output = {"event": "omop_output", "data": omop_output}
             yield json.dumps(output)
-
 
 
 @app.post("/run")
