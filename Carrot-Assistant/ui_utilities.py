@@ -5,6 +5,7 @@ import requests
 from app import PipelineOptions
 from typing import List, Union
 
+
 def display_concept_info(concept: dict) -> None:
     """
     Display the concept information.
@@ -46,6 +47,7 @@ def display_concept_info(concept: dict) -> None:
         for relationship in concept["CONCEPT_RELATIONSHIP"]:
             stream_message(f"<p style='color: #EA4335;'>- {relationship}</p>")
 
+
 def stream_message(message: str) -> None:
     """
     Stream a message to the user, rendering HTML with a typewriter effect
@@ -83,22 +85,22 @@ def capitalize_words(s: str) -> str:
 
 
 def make_api_call(
-    names: List[str], use_llm: bool, vocab_id: Union[str, None]
+    names: List[str], use_llm: bool, final_api_call: bool, vocab_id: Union[str, None]
 ) -> sseclient.SSEClient:
     """
     This function makes an API call to the backend server to process the input names.
-    
+
     Parameters
     ----------
     names: List[str]
         The list of names to process
-        
+
     use_llm: bool
         Whether to use the LLM model for processing
-        
+
     vocab_id: Union[str, None]
         The vocabulary ID to use for processing
-        
+
     Returns
     -------
     sseclient.SSEClient
@@ -121,9 +123,8 @@ def make_api_call(
             "max_separation_ancestor": pipe_opts.max_separation_ancestor,
         },
         "use_llm": use_llm,
+        "final_api_call": final_api_call,
     }
     print("Making API call with data:", data)
     response = requests.post(url, headers=headers, json=data, stream=True)
     return sseclient.SSEClient(response)
-
-

@@ -5,20 +5,17 @@ from ui_utilities import (
     capitalize_words,
     make_api_call,
 )
-import sseclient
 import streamlit as st
-from omop.OMOP_match import OMOPMatcher
 
 
 # ---> Process
 
-#1. User enters informal names of medications.
-#2. Send the informal names to the OMOP database.
-#3. If no matches are found, ask the user if they want to try the LLM.
-#4. If the user agrees, send the informal names to the LLM.
-#5. Use the LLM-predicted names to query the OMOP database.
-#6. Display the results to the user.
-
+# 1. User enters informal names of medications.
+# 2. Send the informal names to the OMOP database.
+# 3. If no matches are found, ask the user if they want to try the LLM.
+# 4. If the user agrees, send the unmatched informal names to the LLM.
+# 5. Use the LLM-predicted names to query the OMOP database.
+# 6. Display the results to the user.
 
 # Page configuration
 
@@ -38,7 +35,9 @@ informal_names = st.text_area(
 )
 
 with st.expander("Search options"):
-    skip_llm = st.checkbox("Ask the LLM first?", value=True)
+    skip_llm = st.checkbox(
+        "Ask the LLM first?", value=False
+    )  # Changed to False as default
     vocab_id = st.selectbox(label="Vocabulary ID", options=["RxNorm", "UK Biobank"])
 
 # Initialize session state
@@ -48,9 +47,6 @@ if "session_ended" not in st.session_state:
 
 if st.session_state["session_ended"]:
     st.write("Session has ended. Thank you for using Carrot!")
-    
-    # Close the OMOP connection
-    OMOPMatcher.get_instance().close() 
     st.stop()
 
 if st.button("Send"):
@@ -59,7 +55,11 @@ if st.button("Send"):
             capitalize_words(name.strip()) for name in informal_names.split(",")
         ]
         with st.spinner("Processing..."):
-            result_stream = make_api_call(names_list, use_llm=False, vocab_id=vocab_id)
+
+            # Step 1: Query OMOP database with the initial list of names
+            result_stream = make_api_call(
+                names_list, use_llm=False, final_api_call=False, vocab_id=vocab_id
+            )
             no_match_names = []
 
             for event in result_stream.events():
@@ -88,12 +88,11 @@ if st.button("Send"):
                                 ):
                                     display_concept_info(concept)
 
+            # Save unmatched names in session state if no match was found
             if no_match_names:
                 st.session_state["no_match_names"] = no_match_names
                 st.session_state["vocab_id"] = vocab_id
                 st.session_state["llm_requested"] = False
-
-                st.rerun()
 
 # Ask the user if they want to try the LLM if no matches are found in the OMOP database
 
@@ -121,9 +120,6 @@ if "no_match_names" in st.session_state and not st.session_state.get(
             st.write(
                 "Thank you for using Carrot. Feel free to ask me more about informal names!"
             )
-            
-            # Close the connection if the session ends
-            OMOPMatcher.get_instance().close() 
             st.stop()
 
 # Process LLM predictions
@@ -138,9 +134,12 @@ if st.session_state.get("llm_requested", False):
     llm_results = []
 
     # Processing LLM predictions
-
     with st.spinner("Processing with LLM..."):
-        result_stream = make_api_call(no_match_names, use_llm=True, vocab_id=vocab_id)
+
+        # Step 2: Query LLM for unmatched names
+        result_stream = make_api_call(
+            no_match_names, use_llm=True, final_api_call=False, vocab_id=vocab_id
+        )
 
         for event in result_stream.events():
             response = json.loads(event.data)
@@ -162,12 +161,11 @@ if st.session_state.get("llm_requested", False):
                     st.session_state["llm_processed_names"].append(informal_name)
                     llm_results.append(formal_name)
 
-    # Start querying OMOP database with LLM-predicted names
-
+    # Step 3: Re-query OMOP database with the LLM-predicted names
     if llm_results:
         with st.spinner("Processing final OMOP query..."):
             new_result_stream = make_api_call(
-                llm_results, use_llm=False, vocab_id=vocab_id
+                llm_results, use_llm=False, final_api_call=True, vocab_id=vocab_id
             )
 
             for new_event in new_result_stream.events():
@@ -189,9 +187,5 @@ if st.session_state.get("llm_requested", False):
                                     display_concept_info(concept)
 
     # Stop any further API calls after processing
-
     st.session_state["session_ended"] = True
-    
-    # Close the connection if the session ends
-    OMOPMatcher.get_instance().close() 
     st.stop()

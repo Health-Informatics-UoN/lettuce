@@ -12,6 +12,7 @@ from sse_starlette.sse import EventSourceResponse
 
 import assistant
 from omop import OMOP_match
+from omop.OMOP_match import OMOPMatcher
 from options.base_options import BaseOptions
 from utils.logging_utils import Logger
 from components.embeddings import Embeddings
@@ -39,16 +40,17 @@ app.add_middleware(
 # the LLMModel class could be more powerful if we remove the option of using the GPTs.
 # Then it can be an Enum of dicts, and the dicts can be unpacked into the arguments for the hf download
 
+
 class LLMModel(str, Enum):
     """
     This enum holds the names of the different models the assistant can use
     """
 
-    GPT_3_5_TURBO = "gpt-3.5-turbo-0125",
-    GPT_4 = "gpt-4",
-    LLAMA_2_7B = "llama-2-7B-chat",
-    LLAMA_3_8B = "llama-3-8B",
-    LLAMA_3_70B = "llama-3-70B",
+    GPT_3_5_TURBO = ("gpt-3.5-turbo-0125",)
+    GPT_4 = ("gpt-4",)
+    LLAMA_2_7B = ("llama-2-7B-chat",)
+    LLAMA_3_8B = ("llama-3-8B",)
+    LLAMA_3_70B = ("llama-3-70B",)
     GEMMA_7B = "gemma-7b"
 
 
@@ -136,22 +138,27 @@ def parse_pipeline_args(base_options: BaseOptions, options: PipelineOptions) -> 
         max_separation_descendants=options.max_separation_descendants,
         max_separation_ancestor=options.max_separation_ancestor,
     )
-        
-        
+
+
 async def generate_events(
-    request: PipelineRequest, use_llm: bool
+    request: PipelineRequest,
+    use_llm: bool,
+    final_api_call: bool
 ) -> AsyncGenerator[str]:
     """
     Generate LLM output and OMOP results for a list of informal names.
-    
+
     parameters
     ----------
     request: PipelineRequest
         The request containing the list of informal names.
-        
+
     use_llm: bool
         A flag to determine whether to use LLM to find the formal name.
         
+    final_api_call: bool
+        A flag to determine whether this is the final API call.
+
 
     Workflow
     --------
@@ -160,26 +167,24 @@ async def generate_events(
         The second event is to fetches relevant concepts from the OMOP database
         Finally,The function yields results as they become available,
         allowing for real-time streaming.
-        
+
     Conditions
     ----------
     If the OMOP database returns a match, the LLM is not queried
-    
+
     If the OMOP database does not return a match,
     the LLM is used to find the formal name and the OMOP database is
     queried for the LLM output.
-    
+
     Finally, the function yields the results for real-time streaming.
-    
-    
+
+
     Yields
     ------
-    str
-        JSON encoded strings of the event results. Two types are yielded:
-        1. "llm_output": The result from the language model processing.
-        2. "omop_output": The result from the OMOP database matching.
+    str:
+        JSON encoded strings of the event results.
     """
-    
+    # Extract the list of informal names from the incoming request and parse the pipeline options
     informal_names = request.names
     opt = BaseOptions()
     opt.initialize()
@@ -188,77 +193,79 @@ async def generate_events(
 
     print("Received informal names:", informal_names)
     print(f"use_llm flag is set to: {use_llm}")
+    print(f"final_api_call flag is set to: {final_api_call}")
 
-    # Query OMOP for each informal name and appends the names that have no match
-    no_match_names = []
-    for informal_name in informal_names:
-        print(f"Querying OMOP for informal name: {informal_name}")
-        omop_output = OMOP_match.run(opt=opt, search_term=informal_name, logger=logger)
+    if informal_names:
+        
+        try:
+        
+            no_match_names = []
+            
+            if not use_llm:
+                
+                for informal_name in informal_names:
+                    print(f"Querying OMOP for informal name: {informal_name}")
+                    omop_output = OMOP_match.run(opt=opt, search_term=informal_name, logger=logger)
 
-        if omop_output and any(concept["CONCEPT"] for concept in omop_output):
-            print(f"OMOP match found for {informal_name}: {omop_output}")
-            output = {"event": "omop_output", "data": omop_output}
-            yield json.dumps(output)
-        else:
-            print(f"No satisfactory OMOP results found for {informal_name}")
-            output = {
-                "event": "omop_output",
-                "data": omop_output,
-                "message": f"No match found in OMOP database for {informal_name}.",
-            }
-            yield json.dumps(output)
-            no_match_names.append(informal_name)
+                    if omop_output and any(concept["CONCEPT"] for concept in omop_output):
+                        print(f"OMOP match found for {informal_name}: {omop_output}")
+                        output = {"event": "omop_output", "data": omop_output}
+                        yield json.dumps(output)
+                    else:
+                        print(f"No satisfactory OMOP results found for {informal_name}")
+                        output = {
+                            "event": "omop_output",
+                            "data": omop_output,
+                            "message": f"No match found in OMOP database for {informal_name}.",
+                        }
+                        yield json.dumps(output)
+                        no_match_names.append(informal_name)
+                        print(f"\nno_match_names: {no_match_names}\n")       
+                    
+            else:
 
+                no_match_names = informal_names     
+
+            # Use LLM to find the formal name and query OMOP for the LLM output
+            if no_match_names and use_llm:
+                llm_outputs = assistant.run(
+                    opt=opt, informal_names=no_match_names, logger=logger
+                )
+
+                for llm_output in llm_outputs:
+                    print(
+                        "LLM output for", llm_output["informal_name"], ":", llm_output["reply"]
+                    )
+
+                    output = {"event": "llm_output", "data": llm_output}
+                    yield json.dumps(output)
     
-    # Use LLM to find the formal name and query OMOP for the LLM output
-    
-    if no_match_names and use_llm:
-        llm_outputs = assistant.run(
-            opt=opt, informal_names=informal_names, logger=logger
-        )
-
-        for llm_output in llm_outputs:
-
-            print(
-                "LLM output for", llm_output["informal_name"], ":", llm_output["reply"]
-            )
-
-            print("Querying OMOP for LLM output:", llm_output["reply"])
-
-            output = {"event": "llm_output", "data": llm_output}
-            yield json.dumps(output)
-
-            # Simulate some delay before sending the next part
-            await asyncio.sleep(2)
-
-            omop_output = OMOP_match.run(
-                opt=opt, search_term=llm_output["reply"], logger=logger
-            )
-
-            print("OMOP output for", llm_output["reply"], ":", omop_output)
-
-            output = {"event": "omop_output", "data": omop_output}
-            yield json.dumps(output)
-
+        finally:
+                # Ensure database connection is closed at the end of processing
+            if final_api_call or not no_match_names:
+                print("Final API call or no matches found. Closing the database connection...")
+                OMOPMatcher.get_instance().close()
+            else:
+                print("Database connection remains open.")
 
 
 @app.post("/run")
 async def run_pipeline(request: Request) -> EventSourceResponse:
     """
     This function runs the pipeline for a list of informal names.
-    
+
     Parameters
     ----------
     request: Request
         The request containing the list of informal names.
-        
+
     Workflow
     --------
     The function generates events for each informal name in the list.
-    
+
     use_llm: bool
         A flag to determine whether to use LLM to find the formal name.
-        
+
     Returns
     -------
     EventSourceResponse
@@ -266,15 +273,16 @@ async def run_pipeline(request: Request) -> EventSourceResponse:
     """
     body = await request.json()
     pipeline_request = PipelineRequest(**body)
+    
     use_llm = body.get("use_llm", False)
-    print(f"Running pipeline with use_llm: {use_llm}")
-    return EventSourceResponse(generate_events(pipeline_request, use_llm))
+    final_api_call = body.get("final_api_call", False)
     
-    
+    print(f"Running pipeline with use_llm: {use_llm} and final_api_call: {final_api_call}")
+    return EventSourceResponse(generate_events(pipeline_request, use_llm, final_api_call))
 
 
 @app.post("/run_db")
-async def run_db(request: PipelineRequest) -> List[Dict[str,Any]]:
+async def run_db(request: PipelineRequest) -> List[Dict[str, Any]]:
     """
     Fetch OMOP concepts for a name
 
@@ -302,7 +310,8 @@ async def run_db(request: PipelineRequest) -> List[Dict[str,Any]]:
         omop_outputs.append({"event": "omop_output", "content": omop_output})
 
     return omop_outputs
-    
+
+
 @app.post("/run_vector_search")
 async def run_vector_search(request: PipelineRequest):
     """
@@ -323,13 +332,13 @@ async def run_vector_search(request: PipelineRequest):
     """
     search_terms = request.names
     embeddings = Embeddings(
-            embeddings_path=request.pipeline_options.embeddings_path,
-            force_rebuild=request.pipeline_options.force_rebuild,
-            embed_vocab=request.pipeline_options.embed_vocab,
-            model=request.pipeline_options.embedding_model,
-            search_kwargs=request.pipeline_options.embedding_search_kwargs,
-            )
-    return {'event': 'vector_search_output', 'content': embeddings.search(search_terms)}
+        embeddings_path=request.pipeline_options.embeddings_path,
+        force_rebuild=request.pipeline_options.force_rebuild,
+        embed_vocab=request.pipeline_options.embed_vocab,
+        model=request.pipeline_options.embedding_model,
+        search_kwargs=request.pipeline_options.embedding_search_kwargs,
+    )
+    return {"event": "vector_search_output", "content": embeddings.search(search_terms)}
 
 
 if __name__ == "__main__":
