@@ -19,6 +19,27 @@ class OMOPMatcher:
     """
     This class retrieves matches from an OMOP database and returns the best
     """
+    _instance = None
+    
+    @classmethod
+    def get_instance(cls, logger: Optional[Logger] = None):
+        """
+        This method returns the singleton instance of the OMOPMatcher class
+        and creates it if it does not exist.
+        
+        Parameters
+        ----------
+        logger: Logger
+            A logger for logging runs of the tool        
+            
+        Returns
+        -------
+        OMOPMatcher
+            The singleton instance of the OMOPMatcher class
+        """
+        if cls._instance is None:
+            cls._instance = cls(logger)
+        return cls._instance
 
     def __init__(self, logger: Optional[Logger] = None):
         # Connect to database
@@ -27,34 +48,37 @@ class OMOPMatcher:
         self.logger = logger
         load_dotenv()
 
-        try:
-            self.logger.info(
-                "Initialize the PostgreSQL connection based on the environment variables"
-            )
-            DB_HOST = environ["DB_HOST"]
-            DB_USER = environ["DB_USER"]
-            DB_PASSWORD = quote_plus(environ["DB_PASSWORD"])
-            DB_NAME = environ["DB_NAME"]
-            DB_PORT = environ["DB_PORT"]
-            DB_SCHEMA = environ["DB_SCHEMA"]
+        if not hasattr(self, 'engine'): 
+            
+            try:
+                self.logger.info(
+                    "Initialize the PostgreSQL connection based on the environment variables"
+                )
+                DB_HOST = environ["DB_HOST"]
+                DB_USER = environ["DB_USER"]
+                DB_PASSWORD = quote_plus(environ["DB_PASSWORD"])
+                DB_NAME = environ["DB_NAME"]
+                DB_PORT = environ["DB_PORT"]
+                DB_SCHEMA = environ["DB_SCHEMA"]
 
-            connection_string = (
-                f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-            )
-            engine = create_engine(connection_string)
-            logger.info(f"Connected to PostgreSQL database {DB_NAME} on {DB_HOST}")
+                connection_string = (
+                    f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+                )
+                engine = create_engine(connection_string)
+                logger.info(f"Connected to PostgreSQL database {DB_NAME} on {DB_HOST}")
 
-        except Exception as e:
-            logger.error(f"Failed to connect to PostgreSQL: {e}")
-            raise ValueError(f"Failed to connect to PostgreSQL: {e}")
+            except Exception as e:
+                logger.error(f"Failed to connect to PostgreSQL: {e}")
+                raise ValueError(f"Failed to connect to PostgreSQL: {e}")
 
-        self.engine = engine
-        self.schema = DB_SCHEMA
+            self.engine = engine
+            self.schema = DB_SCHEMA
 
     def close(self):
         """Close the engine connection."""
-        self.engine.dispose()
-        self.logger.info("PostgreSQL connection closed.")
+        if hasattr(self, 'engine'):
+            self.engine.dispose()
+            self.logger.info("PostgreSQL connection closed.")
 
     def calculate_best_matches(
         self,
@@ -193,7 +217,7 @@ class OMOPMatcher:
         session = Session()
         results = session.execute(query).fetchall()
         results = pd.DataFrame(results)
-        session.close()
+   
         if not results.empty:
             # Define a function to calculate similarity score using the provided logic
             def calculate_similarity(row):
@@ -481,5 +505,5 @@ def run(opt: argparse.Namespace, search_term:str, logger: Logger):
         max_separation_descendant,
         max_separation_ancestor,
     )
-    omop_matcher.close()
+
     return res
