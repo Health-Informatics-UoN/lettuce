@@ -3,6 +3,8 @@ import sseclient
 import time
 import requests
 from options.pipeline_options import PipelineOptions
+from typing import List, Union
+
 
 def display_concept_info(concept: dict) -> None:
     """
@@ -45,6 +47,7 @@ def display_concept_info(concept: dict) -> None:
         for relationship in concept["CONCEPT_RELATIONSHIP"]:
             stream_message(f"<p style='color: #EA4335;'>- {relationship}</p>")
 
+
 def stream_message(message: str) -> None:
     """
     Stream a message to the user, rendering HTML with a typewriter effect
@@ -81,27 +84,43 @@ def capitalize_words(s: str) -> str:
     return " ".join(capitalized_words)
 
 
-def make_api_call(names: list[str], skip_llm: bool, vocab_id: str | None) -> sseclient.SSEClient:
+def make_api_call(
+    names: List[str],
+    use_llm: bool,
+    vocab_id: Union[str, None],
+    end_session: bool,
+) -> sseclient.SSEClient:
     """
-    Make a call to the Lettuce API to retrieve OMOP concepts.
+    This function makes an API call to the backend server to process the input names.
 
     Parameters
     ----------
-    names: list[str]
-        The informal names to send to the API
+    names: List[str]
+        The list of names to process
+
+    use_llm: bool
+        Whether to use the LLM model for processing
+
+    vocab_id: Union[str, None]
+        The vocabulary ID to use for processing
+        
+    end_session: bool
+        Whether to end the session after processing
 
     Returns
     -------
     sseclient.SSEClient
-        The stream of events from the API
+        The server-sent event client to stream the results
     """
     url = "http://127.0.0.1:8000/pipeline/"
-    if not skip_llm:
-        url = url + "db"
     headers = {"Content-Type": "application/json"}
     pipe_opts = PipelineOptions(vocabulary_id=vocab_id)
-    data = {"names": names, "pipeline_options": pipe_opts.model_dump()}
+    data = {
+        "names": names,
+        "pipeline_options": pipe_opts.model_dump(),
+        "use_llm": use_llm,
+        "end_session": end_session,
+    }
+    print("Making API call with data:", data)
     response = requests.post(url, headers=headers, json=data, stream=True)
     return sseclient.SSEClient(response)
-
-
