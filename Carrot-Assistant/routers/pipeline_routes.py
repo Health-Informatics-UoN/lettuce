@@ -142,12 +142,8 @@ async def run_db(request: PipelineRequest) -> List[Dict[str,Any]]:
     parse_pipeline_args(opt, request.pipeline_options)
     opt = opt.parse()
 
-    omop_outputs = []
-    for search_term in search_terms:
-        omop_output = OMOP_match.run(opt=opt, search_term=search_term, logger=logger)
-        omop_outputs.append({"event": "omop_output", "content": omop_output})
-
-    return omop_outputs
+    omop_output = OMOP_match.run(opt=opt, search_term=search_terms, logger=logger)
+    return [{"event": "omop_output", "content": result} for result in omop_output]
     
 @router.post("/vector_search")
 async def run_vector_search(request: PipelineRequest):
