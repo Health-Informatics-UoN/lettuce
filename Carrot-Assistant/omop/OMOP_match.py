@@ -2,7 +2,7 @@ import re
 from os import environ
 from urllib.parse import quote_plus
 import argparse
-from typing import Optional
+from typing import Optional, List
 
 import pandas as pd
 from dotenv import load_dotenv
@@ -58,7 +58,7 @@ class OMOPMatcher:
 
     def calculate_best_matches(
         self,
-        search_terms: list[str],
+        search_terms: List[str],
         vocabulary_id: list | None = None,
         concept_ancestor: str = "y",
         concept_relationship: str = "y",
@@ -76,7 +76,7 @@ class OMOPMatcher:
 
         Parameters
         ----------
-        search_terms: list[str]
+        search_terms: List[str]
             A list of queries to send to the OMOP database
 
         vocabulary_id: str
@@ -442,7 +442,7 @@ class OMOPMatcher:
         ]
 
 
-def run(opt: argparse.Namespace, search_term:str, logger: Logger):
+def run(opt: argparse.Namespace, search_term: List[str], logger: Logger):
     """
     Runs queries against the OMOP database
 
@@ -472,7 +472,7 @@ def run(opt: argparse.Namespace, search_term:str, logger: Logger):
 
     omop_matcher = OMOPMatcher(logger)
     res = omop_matcher.calculate_best_matches(
-        [search_term],
+        search_term,
         vocabulary_id,
         concept_ancestor,
         concept_relationship,
