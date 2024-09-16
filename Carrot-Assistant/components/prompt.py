@@ -45,8 +45,7 @@ Response: Naproxen
 
 Task:
 
-Informal name: {{informal_name}}<|eot_id|>
-Response:
+Informal name: {{informal_name}}
 """,
                 "top_n_RAG": """
 You are an assistant that suggests formal RxNorm names for a medication. You will be given the name of a medication, along with some possibly related RxNorm terms. If you do not think these terms are related, ignore them when making your suggestion.
@@ -71,8 +70,7 @@ Possible related terms:
 {% endfor %}
 
 Task:
-Informal name: {{informal_name}}<|eot_id|>
-Response:
+Informal name: {{informal_name}}
 """,
                 }
 
@@ -88,7 +86,13 @@ Response:
             - If the _prompt_type of the object is "simple", returns a simple prompt for few-shot learning of formal drug names.
         """
         try:
-            return PromptBuilder(self._prompt_templates[self._prompt_type])
+            template = self._prompt_templates[self._prompt_type]
+            if "llama-3.1" in self._model_name:
+                template += """<|eot_id|>
+                Response:"""
+            else:
+                template += "\nResponse:"
+            return PromptBuilder(template)
         except KeyError:
             print(f"No prompt named {self._prompt_type}")
         
