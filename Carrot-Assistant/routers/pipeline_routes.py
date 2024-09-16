@@ -79,21 +79,6 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
 
     print("Received informal names:", informal_names)
     
-    # Query OMOP for each informal name
-
-    for informal_name in informal_names:
-        print(f"Querying OMOP for informal name: {informal_name}")
-        omop_output = OMOP_match.run(opt=opt, search_term=informal_name, logger=logger)
-
-        if omop_output and any(concept["CONCEPT"] for concept in omop_output):
-            print(f"OMOP match found for {informal_name}: {omop_output}")
-            output = {"event": "omop_output", "data": omop_output}
-            yield json.dumps(output)
-            continue
-
-        else:
-            print("No satisfactory OMOP results found for {informal_name}, using LLM...")
-
     # Use LLM to find the formal name and query OMOP for the LLM output
 
     llm_outputs = assistant.run(opt=opt, informal_names=informal_names, logger=logger)
@@ -107,17 +92,14 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
         output = {"event": "llm_output", "data": llm_output}
         yield json.dumps(output)
 
-        # Simulate some delay before sending the next part
-        await asyncio.sleep(2)
 
-        omop_output = OMOP_match.run(
-            opt=opt, search_term=llm_output["reply"], logger=logger
-        )
+    
+    omop_output = OMOP_match.run(
+            opt=opt, search_term=[llm_output['reply'] for llm_output in llm_outputs], logger=logger
+    )
 
-        print("OMOP output for", llm_output["reply"], ":", omop_output)
-
-        output = {"event": "omop_output", "data": omop_output}
-        yield json.dumps(output)
+    output = [{"event": "omop_output", "data": result} for result in omop_output]
+    yield json.dumps(output)
 
 
 @router.post("/")
@@ -160,12 +142,8 @@ async def run_db(request: PipelineRequest) -> List[Dict[str,Any]]:
     parse_pipeline_args(opt, request.pipeline_options)
     opt = opt.parse()
 
-    omop_outputs = []
-    for search_term in search_terms:
-        omop_output = OMOP_match.run(opt=opt, search_term=search_term, logger=logger)
-        omop_outputs.append({"event": "omop_output", "content": omop_output})
-
-    return omop_outputs
+    omop_output = OMOP_match.run(opt=opt, search_term=search_terms, logger=logger)
+    return [{"event": "omop_output", "content": result} for result in omop_output]
     
 @router.post("/vector_search")
 async def run_vector_search(request: PipelineRequest):
