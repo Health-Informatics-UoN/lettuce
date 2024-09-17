@@ -9,7 +9,8 @@ class Prompts:
     def __init__(
         self,
         model_name: str,
-        prompt_type: str = "simple",
+        prompt_type: str="simple",
+        eot_token: str=""
     ) -> None:
         """
         Initializes the Prompts class
@@ -23,6 +24,7 @@ class Prompts:
         """
         self._model_name = model_name
         self._prompt_type = prompt_type
+        self._eot_token = eot_token
         # I hate how the triple-quoted strings look, but if you indent them they preserve the indentation. You can use textwrap.dedent to solve it, but that's not pleasing either.
         # modify this so it only adds the EOT token for llama 3.1
         self._prompt_templates = {
@@ -87,11 +89,7 @@ Informal name: {{informal_name}}
         """
         try:
             template = self._prompt_templates[self._prompt_type]
-            if "llama-3.1" in self._model_name:
-                template += """<|eot_id|>
-                Response:"""
-            else:
-                template += "\nResponse:"
+            template += self._eot_token + "\nResponse:"
             return PromptBuilder(template)
         except KeyError:
             print(f"No prompt named {self._prompt_type}")
