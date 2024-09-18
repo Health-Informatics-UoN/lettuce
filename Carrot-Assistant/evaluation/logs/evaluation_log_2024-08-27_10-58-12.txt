@@ -1,0 +1,83 @@
+==========================================================================================
+          Llettuce Medication Name Evaluation EVALUATION LOG          
+==========================================================================================
+
+Evaluation started at: 2024-08-27 10:54:40
+
+Model Utilised for the Evaluation: Llama-3-8B
+
+==========================================================================================
+EVALUATION START RESULTS:
+
+  Status: Evaluation started
+--------------------------------------------------------------------------------
+EVALUATION METRICS USED RESULTS:
+
+  Metrics: ['informal_name_match', 'llm_output_match', 'all_llm_output_exact_match', 'all_llm_output_partial_match', 'calculate_accuracy_metrics', 'calculate_informal_omop_accuracy', 'calculate_llm_omop_accuracy']
+--------------------------------------------------------------------------------
+RUNNING METRIC RESULTS:
+
+  Metric: calculate_llm_omop_accuracy
+--------------------------------------------------------------------------------
+INFORMAL NAME MATCH RESULTS:
+
+  Total: 9
+  Match count: 4
+  No match count: 5
+  Informal match percentage: 44.44444444444444
+  No match percentage: 55.55555555555556
+--------------------------------------------------------------------------------
+LLM OUTPUT MATCH RESULTS:
+
+  Total: 9
+  Total llm used: 5
+  Llm omop match: 3
+  Llm no match: 2
+  Llm not used: 4
+  Llm omop match percentage: 60.0
+  Llm no match percentage: 40.0
+  Llm not used percentage: 44.44444444444444
+--------------------------------------------------------------------------------
+ALL LLM OUTPUT EXACT MATCH RESULTS:
+
+  Total words: 9
+  Correct predictions: 2
+  Wrong predictions: 7
+  Correct percentage: 22.22222222222222
+  Wrong percentage: 77.77777777777779
+--------------------------------------------------------------------------------
+ALL LLM OUTPUT PARTIAL MATCH RESULTS:
+
+  Total words: 9
+  Correct predictions: 2
+  Partial matches: 3
+  Wrong predictions: 4
+  Correct percentage: 22.22222222222222
+  Partial match percentage: 33.33333333333333
+  Overall including partial percentage: 55.55555555555556
+--------------------------------------------------------------------------------
+CALCULATE ACCURACY METRICS RESULTS:
+
+  Total: 9
+  Total correct matches: 7
+  Total no matches: 2
+  Accuracy percentage: 77.77777777777779
+  No match percentage: 22.22222222222222
+--------------------------------------------------------------------------------
+CALCULATE INFORMAL OMOP ACCURACY RESULTS:
+
+  Total: 9
+  Correct informal match: 4
+  Accuracy: 44.44444444444444
+--------------------------------------------------------------------------------
+CALCULATE LLM OMOP ACCURACY RESULTS:
+
+  Total: 9
+  Correct llm match: 3
+  Accuracy: 33.33333333333333
+--------------------------------------------------------------------------------
+EVALUATION END RESULTS:
+
+  Status: Evaluation completed
+--------------------------------------------------------------------------------
+==========================================================================================
