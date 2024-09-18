@@ -9,6 +9,7 @@ from haystack.components.routers import ConditionalRouter
 from components.embeddings import Embeddings
 from components.models import get_model
 from components.prompt import Prompts
+from tests.test_prompt_build import mock_rag_results
 
 
 class llm_pipeline:
@@ -32,6 +33,10 @@ class llm_pipeline:
         self._opt = opt
         self._model_name = opt.llm_model
         self._logger = logger
+        if "llama-3.1" in opt.llm_model:
+            self._eot_token = "<|eot_id|>"
+        else:
+            self._eot_token = ""
 
     def get_simple_assistant(self) -> Pipeline:
         """
@@ -47,7 +52,10 @@ class llm_pipeline:
         self._logger.info(f"Pipeline initialized in {time.time()-start} seconds")
         start = time.time()
 
-        pipeline.add_component("prompt", Prompts(self._model_name).get_prompt())
+        pipeline.add_component("prompt", Prompts(
+            model_name=self._model_name,
+            eot_token=self._eot_token
+            ).get_prompt())
         self._logger.info(f"Prompt added to pipeline in {time.time()-start} seconds")
         start = time.time()
 
@@ -112,7 +120,11 @@ class llm_pipeline:
         pipeline.add_component("query_embedder", vec_embedder)
         pipeline.add_component("retriever", vec_retriever)
         pipeline.add_component("router", router)
-        pipeline.add_component("prompt", Prompts(self._model_name, "top_n_RAG").get_prompt())
+        pipeline.add_component("prompt", Prompts(
+            model_name=self._model_name,
+            prompt_type="top_n_RAG",
+            eot_token=self._eot_token
+            ).get_prompt())
         pipeline.add_component("llm", llm)
 
         pipeline.connect("query_embedder.embedding", "retriever.query_embedding")

@@ -9,7 +9,8 @@ class Prompts:
     def __init__(
         self,
         model_name: str,
-        prompt_type: str = "simple",
+        prompt_type: str="simple",
+        eot_token: str=""
     ) -> None:
         """
         Initializes the Prompts class
@@ -23,6 +24,7 @@ class Prompts:
         """
         self._model_name = model_name
         self._prompt_type = prompt_type
+        self._eot_token = eot_token
         # I hate how the triple-quoted strings look, but if you indent them they preserve the indentation. You can use textwrap.dedent to solve it, but that's not pleasing either.
         # modify this so it only adds the EOT token for llama 3.1
         self._prompt_templates = {
@@ -45,8 +47,7 @@ Response: Naproxen
 
 Task:
 
-Informal name: {{informal_name}}<|eot_id|>
-Response:
+Informal name: {{informal_name}}
 """,
                 "top_n_RAG": """
 You are an assistant that suggests formal RxNorm names for a medication. You will be given the name of a medication, along with some possibly related RxNorm terms. If you do not think these terms are related, ignore them when making your suggestion.
@@ -71,8 +72,7 @@ Possible related terms:
 {% endfor %}
 
 Task:
-Informal name: {{informal_name}}<|eot_id|>
-Response:
+Informal name: {{informal_name}}
 """,
                 }
 
@@ -88,7 +88,9 @@ Response:
             - If the _prompt_type of the object is "simple", returns a simple prompt for few-shot learning of formal drug names.
         """
         try:
-            return PromptBuilder(self._prompt_templates[self._prompt_type])
+            template = self._prompt_templates[self._prompt_type]
+            template += self._eot_token + "\nResponse:"
+            return PromptBuilder(template)
         except KeyError:
             print(f"No prompt named {self._prompt_type}")
         
