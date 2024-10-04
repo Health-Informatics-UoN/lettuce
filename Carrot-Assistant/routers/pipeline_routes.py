@@ -175,7 +175,7 @@ async def run_vector_search(request: PipelineRequest):
             )
     return {'event': 'vector_search_output', 'content': embeddings.search(search_terms)}
 
-@app.post("/vector_llm")
+@router.post("/vector_llm")
 async def vector_llm_pipeline(request: PipelineRequest) -> List:
     """
     Run a RAG pipeline that first checks a vector database, then uses an LLM
