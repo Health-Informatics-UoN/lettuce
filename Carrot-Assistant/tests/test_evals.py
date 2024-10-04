@@ -2,9 +2,6 @@ import pytest
 from evaluation.evaltypes import SingleResultPipeline, SingleResultPipelineTest
 from evaluation.metrics import ExactMatchMetric
 
-def test_simple():
-    assert True
-
 class IdentityPipeline(SingleResultPipeline):
     def run(self, input_data):
         return input_data
