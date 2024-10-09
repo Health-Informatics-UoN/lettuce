@@ -1,4 +1,4 @@
-from evaluation.evaltypes import SingleResultMetric
+from evaluation.evaltypes import SingleResultMetric, InformationRetrievalMetric
 
 
 class ExactMatchMetric(SingleResultMetric):
@@ -21,7 +21,7 @@ class ExactMatchMetric(SingleResultMetric):
         return int(predicted == actual)
 
 
-class PrecisionMetric(SingleResultMetric):
+class PrecisionMetric(InformationRetrievalMetric):
     """
     This class calculates the precision metric for a pipeline
     that outputs a list of relationships and concepts.

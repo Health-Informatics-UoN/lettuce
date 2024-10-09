@@ -1,5 +1,10 @@
 import pytest
-from evaluation.evaltypes import SingleResultPipeline, SingleResultPipelineTest
+from evaluation.evaltypes import (
+    SingleResultPipeline,
+    InformationRetrievalPipeline,
+    SingleResultPipelineTest,
+    InformationRetrievalPipelineTest,
+)
 from evaluation.metrics import ExactMatchMetric, PrecisionMetric
 
 
@@ -46,8 +51,8 @@ class ExactMatchTest(SingleResultPipelineTest):
         return self.pipeline.run(input_data)
 
 
-class PrecisionTest(SingleResultPipelineTest):
-    def __init__(self, name: str, pipeline: SingleResultPipeline):
+class PrecisionTest(InformationRetrievalPipelineTest):
+    def __init__(self, name: str, pipeline: InformationRetrievalPipeline):
         """
         Initialize the PrecisionTest with a name and pipeline.
 
@@ -271,7 +276,7 @@ class TestPrecisionOnly:
             A test that evaluates the precision between the
             pipeline output and the expected output.
         """
-        return SingleResultPipelineTest(
+        return InformationRetrievalPipelineTest(
             "Precision Test", identity_pipeline, [PrecisionMetric()]
         )
 
