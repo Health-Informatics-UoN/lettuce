@@ -262,7 +262,7 @@ class TestPrecisionOnly:
     @pytest.fixture
     def precision_test(self, identity_pipeline):
         """
-        Fixture to create a SingleResultPipelineTest
+        Fixture to create a InformationRetrievalPipelineTest
         using PrecisionMetric.
 
         Parameters
@@ -272,7 +272,7 @@ class TestPrecisionOnly:
 
         Returns
         -------
-        SingleResultPipelineTest
+        InformationRetrievalPipelineTest
             A test that evaluates the precision between the
             pipeline output and the expected output.
         """
@@ -365,6 +365,41 @@ class TestPrecisionOnly:
             ),
         ]
 
+    @pytest.fixture
+    def single_result_dataset(self):
+        """
+        Fixture to provide a dataset where there is only one correct answer.
+
+        Returns
+        -------
+        list of tuples
+            A list of input-output pairs where only one input
+            matches the expected output exactly.
+        """
+        return [
+            ("paracetamol", "paracetamol"),
+            ("aspirin", "aspirin"),
+            ("ibuprofen", "ibuprofen"),
+        ]
+
+    @pytest.fixture
+    def partial_single_result_dataset(self):
+        """
+        Fixture to provide a dataset where only partial results match.
+
+        Returns
+        -------
+        list of tuples
+            A list of input-output pairs where some inputs partially match the expected outputs.
+        """
+        return [
+            ("paracetam", "paracetamol"),
+            ("aspirin", "aspirin"),
+            ("ibu", "ibuprofen"),
+            ("ibuprofen", "paracetamol"),
+            ("fish oil", "fish plate"),
+        ]
+
     def run_precision_test(self, test, dataset):
         """
         Runs the precision test on the dataset and calculates the average precision.
@@ -452,6 +487,28 @@ class TestPrecisionOnly:
         actual_precision = self.run_precision_test(precision_test, all_match_dataset)
         print(f"Calculated All Match Precision: {actual_precision}%")
         assert actual_precision == 100.0
+
+    def test_single_result(self, precision_test, single_result_dataset):
+        """
+        Test to ensure that precision calculation works correctly for a single correct answer.
+        """
+        print("Running Single Result Test:")
+        actual_precision = self.run_precision_test(
+            precision_test, single_result_dataset
+        )
+        print(f"Calculated Precision for Single Results: {actual_precision}%")
+        assert actual_precision == 100.0
+
+    def test_partial_single_result(self, precision_test, partial_single_result_dataset):
+        """
+        Test to ensure that precision calculation handles partial matches for single results correctly.
+        """
+        print("Running Partial Single Result Test:")
+        actual_precision = self.run_precision_test(
+            precision_test, partial_single_result_dataset
+        )
+        print(f"Calculated Partial Precision for Single Results: {actual_precision}%")
+        assert actual_precision > 0
 
 
 # pytest -s test_evals.py (To run all the tests)

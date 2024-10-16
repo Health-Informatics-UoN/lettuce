@@ -227,13 +227,6 @@ class InformationRetrievalPipelineTest(PipelineTest[InformationRetrievalMetric])
         """
         pipeline_output = self.run_pipeline(input_data)
 
-        # Assert that the pipeline returns more than one result
-        assert len(pipeline_output) > 1, (
-            "Expected multiple results, but got a single result."
-            "Ensure this test is used with pipelines that return multiple results."
-            "Consider using SingleResultPipelineTest for pipelines that return a single result."
-        )
-
         # Calculate and return metrics for multiple results
         return {
             metric.__class__.__name__: metric.calculate(
