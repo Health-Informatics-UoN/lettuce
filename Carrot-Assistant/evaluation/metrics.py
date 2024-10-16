@@ -331,8 +331,8 @@ class RecallMetric(InformationRetrievalMetric):
 
     def _word_match_recall(self, predicted_str, actual_str):
         """
-        This method calculates recall as the fraction of matched words
-        between predicted and actual strings.
+        This method calculates recall as the fraction of matched
+        words between predicted and actual strings.
 
         Parameters
         ----------
@@ -355,3 +355,77 @@ class RecallMetric(InformationRetrievalMetric):
 
         # Recall is the fraction of matched words over the total words in the actual string
         return len(matched_words) / len(actual_words) if len(actual_words) > 0 else 0.0
+
+
+# ----------- F1 Score Metric ----------- >
+
+
+class F1ScoreMetric(InformationRetrievalMetric):
+    """
+    This class calculates the F1 score for a pipeline that
+    outputs a list  of relationships and concepts or simple strings.
+
+    Formula for F1 Score
+    ---------------------
+    F1 Score = 2 * (Precision * Recall) / (Precision + Recall)
+    """
+
+    def calculate(self, predicted, actual):
+        """
+        Calculate the average F1 score across all instances.
+
+        Parameters
+        ----------
+        predicted
+            The predicted output from the pipeline.
+
+        actual
+            The desired output.
+
+        Returns
+        -------
+        Mean F1 score percentage.
+        """
+        if not isinstance(predicted[0], (tuple, list)) and isinstance(
+            predicted[0][0], str
+        ):
+
+            if isinstance(predicted, str):
+                predicted = [predicted]
+
+            if isinstance(actual, str):
+                actual = [actual]
+
+        precision_metric = PrecisionMetric()
+        recall_metric = RecallMetric()
+
+        total_f1_score = 0.0
+        count = 0
+
+        # Iterate through the predicted and actual values
+        for pred_str, actual_str in zip(predicted, actual):
+
+            # Calculate precision and recall for each instance
+            precision = precision_metric.calculate([pred_str], [actual_str])
+            recall = recall_metric.calculate([pred_str], [actual_str])
+
+            # Assert that precision and recall calculations were performed
+            assert precision is not None, "Precision calculation failed."
+            assert recall is not None, "Recall calculation failed."
+
+            # Handle edge case when precision and recall are both 0
+            if precision + recall == 0:
+                f1_score = 0.0
+            else:
+                f1_score = 2 * (precision * recall) / (precision + recall)
+
+            total_f1_score += f1_score
+            count += 1
+
+            # Print debug information
+            print(
+                f"Predicted: {pred_str}, Actual: {actual_str}, Precision: {precision}, Recall: {recall}, F1 Score: {f1_score}"
+            )
+
+        # Return the mean F1 score across all instances
+        return total_f1_score / count if count > 0 else 0.0

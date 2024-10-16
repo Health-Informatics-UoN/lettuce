@@ -5,7 +5,12 @@ from evaluation.evaltypes import (
     SingleResultPipelineTest,
     InformationRetrievalPipelineTest,
 )
-from evaluation.metrics import ExactMatchMetric, PrecisionMetric, RecallMetric
+from evaluation.metrics import (
+    ExactMatchMetric,
+    PrecisionMetric,
+    RecallMetric,
+    F1ScoreMetric,
+)
 
 
 class IdentityPipeline(SingleResultPipeline):
@@ -21,6 +26,7 @@ class IdentityPipeline(SingleResultPipeline):
         return input_data
 
 
+# --- Exact Match --->
 class ExactMatchTest(SingleResultPipelineTest):
     def __init__(self, name: str, pipeline: SingleResultPipeline):
         """
@@ -51,6 +57,7 @@ class ExactMatchTest(SingleResultPipelineTest):
         return self.pipeline.run(input_data)
 
 
+# --- Precision --->
 class PrecisionTest(InformationRetrievalPipelineTest):
     def __init__(self, name: str, pipeline: InformationRetrievalPipeline):
         """
@@ -81,6 +88,7 @@ class PrecisionTest(InformationRetrievalPipelineTest):
         return self.pipeline.run(input_data)
 
 
+# --- Recall --->
 class RecallTest(InformationRetrievalPipelineTest):
     def __init__(self, name: str, pipeline: InformationRetrievalPipeline):
         """
@@ -109,6 +117,40 @@ class RecallTest(InformationRetrievalPipelineTest):
         The output from the pipeline.
         """
         return self.pipeline.run(input_data)
+
+
+# --- F1 Score --->
+class F1ScoreTest(InformationRetrievalPipelineTest):
+    def __init__(self, name: str, pipeline: InformationRetrievalPipeline):
+        """
+        Initialize the F1ScoreTest with a name and pipeline.
+
+        Parameters
+        ----------
+        name
+            The name of the test.
+        pipeline
+            The pipeline to be tested.
+        """
+        super().__init__(name, pipeline, [F1ScoreMetric()])
+
+    def run_pipeline(self, input_data):
+        """
+        Run the pipeline and return the result.
+
+        Parameters
+        ----------
+        input_data
+            The input data to be processed by the pipeline.
+
+        Returns
+        -------
+        The output from the pipeline.
+        """
+        return self.pipeline.run(input_data)
+
+
+# ADD OTHER TESTS HERE --->
 
 
 # ------- Exact Match Tests ------- >
@@ -465,9 +507,9 @@ class TestPrecisionOnly:
 
         Returns
         -------
-            The mean precision score across the dataset.
+        The mean precision score across the dataset.
         """
-        print("\n========== Running Precision Test ==========\n")
+        print("\n========== Precision Test Start ==========\n")
         results = [
             test.evaluate(input_data, expected_output)
             for input_data, expected_output in dataset
@@ -476,20 +518,16 @@ class TestPrecisionOnly:
 
         for i, (input_data, expected_output) in enumerate(dataset):
             print(
-                "\n--------------------- Test Case {} ---------------------".format(
-                    i + 1
-                )
-            )
-            print(
-                f"Input: {input_data}, Expected: {expected_output}, Precision: {precision_results[i]}"
+                f"\nTest Case {i+1}:"
+                f"\n  Input: {input_data}"
+                f"\n  Expected: {expected_output}"
+                f"\n  Precision: {precision_results[i]:.2f}%"
             )
             print("-------------------------------------------------------")
 
-        # Print the overall mean precision
         mean_precision = sum(precision_results) / len(precision_results)
-        print(
-            "\n========== Mean Precision: {:.2f}% ==========\n".format(mean_precision)
-        )
+        print(f"\nSummary: Mean Precision = {mean_precision:.2f}%")
+        print("\n========== Precision Test End ==========\n")
 
         return mean_precision
 
@@ -732,10 +770,9 @@ class TestRecallOnly:
 
         Returns
         -------
-        float
-            The mean recall score across the dataset.
+        The mean recall score across the dataset.
         """
-        print("\n========== Running Precision Test ==========\n")
+        print("\n========== Recall Test Start ==========\n")
 
         results = [
             test.evaluate(input_data, expected_output)
@@ -745,19 +782,16 @@ class TestRecallOnly:
 
         for i, (input_data, expected_output) in enumerate(dataset):
             print(
-                "\n--------------------- Test Case {} ---------------------".format(
-                    i + 1
-                )
-            )
-            print(
-                f"Input: {input_data}, Expected: {expected_output}, Recall: {recall_results[i]}"
+                f"\nTest Case {i+1}:"
+                f"\n  Input: {input_data}"
+                f"\n  Expected: {expected_output}"
+                f"\n  Recall: {recall_results[i]:.2f}%"
             )
             print("-------------------------------------------------------")
 
-        # Print the overall mean recall
         mean_recall = sum(recall_results) / len(recall_results)
-
-        print("\n========== Mean Recall: {:.2f}% ==========\n".format(mean_recall))
+        print(f"\nSummary: Mean Recall = {mean_recall:.2f}%")
+        print("\n========== Recall Test End ==========\n")
 
         return mean_recall
 
@@ -822,4 +856,262 @@ class TestRecallOnly:
         assert actual_recall > 0
 
 
-# pytest -s test_evals.py (To run all the tests)
+# ------- F1 Tests ------- >
+
+
+class TestF1ScoreOnly:
+    @pytest.fixture
+    def identity_pipeline(self):
+        """
+        Fixture to return an instance of the IdentityPipeline.
+
+        Returns
+        -------
+        IdentityPipeline
+            A pipeline that returns the input data unchanged.
+        """
+        return IdentityPipeline()
+
+    @pytest.fixture
+    def f1_score_test(self, identity_pipeline):
+        """
+        Fixture to create an InformationRetrievalPipelineTest
+        using F1ScoreMetric.
+
+        Parameters
+        ----------
+        identity_pipeline
+            The pipeline that will be tested for F1 score.
+
+        Returns
+        -------
+        InformationRetrievalPipelineTest
+            A test that evaluates the F1 score between the
+            pipeline output and the expected output.
+        """
+        return InformationRetrievalPipelineTest(
+            "F1 Score Test", identity_pipeline, [F1ScoreMetric()]
+        )
+
+    @pytest.fixture
+    def all_f1_match_dataset(self):
+        """
+        Fixture to provide a dataset where all input and expected output values match exactly.
+
+        Returns
+        -------
+        list of tuples
+            A list of input-output pairs where all inputs match the expected outputs exactly.
+        """
+        return [
+            (
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (
+                        ":relationship",
+                        "Maps to value",
+                        ":concept",
+                        "Malignant neoplasm of skin",
+                    ),
+                ],
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (
+                        ":relationship",
+                        "Maps to value",
+                        ":concept",
+                        "Malignant neoplasm of skin",
+                    ),
+                ],
+            ),
+            (
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (":relationship", "Maps to value", ":concept", "Fibromyalgia"),
+                ],
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (":relationship", "Maps to value", ":concept", "Fibromyalgia"),
+                ],
+            ),
+        ]
+
+    @pytest.fixture
+    def partial_f1_match_dataset(self):
+        """
+        Fixture to provide a dataset where some input-output pairs partially match.
+
+        Returns
+        -------
+        list of tuples
+            A list of input-output pairs where some inputs match the expected outputs, while others only partially match.
+        """
+        return [
+            (
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (
+                        ":relationship",
+                        "Maps to value",
+                        ":concept",
+                        "Malignant neoplasm of skin",
+                    ),
+                ],
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (":relationship", "Maps to value", ":concept", "History of event"),
+                ],
+            ),
+            (
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (":relationship", "Maps to value", ":concept", "Fibromyalgia"),
+                ],
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (":relationship", "Maps to value", ":concept", "Fibromyalgia"),
+                ],
+            ),
+        ]
+
+    @pytest.fixture
+    def single_f1_result_dataset(self):
+        """
+        Fixture to provide a dataset where there is only one correct answer.
+
+        Returns
+        -------
+        list of tuples
+            A list of input-output pairs where only one input matches the expected output exactly.
+        """
+        return [
+            ("paracetamol", "paracetamol"),
+            ("aspirin", "aspirin"),
+            ("ibuprofen", "ibuprofen"),
+        ]
+
+    @pytest.fixture
+    def partial_single_f1_result_dataset(self):
+        """
+        Fixture to provide a dataset where only partial results match.
+
+        Returns
+        -------
+        list of tuples
+            A list of input-output pairs where some inputs partially match the expected outputs.
+        """
+        return [
+            ("paracetam", "paracetamol"),
+            ("aspirin", "aspirin"),
+            ("ibu", "ibuprofen"),
+            ("ibuprofen", "paracetamol"),
+        ]
+
+    def run_f1_test(self, test, dataset):
+        """
+        Runs the F1 score test on the dataset and calculates the average F1 score.
+
+        Parameters
+        ----------
+        test
+            The F1 score test to be run.
+
+        dataset
+            The dataset of input-output pairs to evaluate.
+
+        Returns
+        -------
+        float
+            The mean F1 score across the dataset.
+        """
+        print("\n========== F1 Score Test Start ==========\n")
+
+        results = [
+            test.evaluate(input_data, expected_output)
+            for input_data, expected_output in dataset
+        ]
+        f1_results = [result["F1ScoreMetric"] for result in results]
+
+        for i, (input_data, expected_output) in enumerate(dataset):
+            print(
+                f"\nTest Case {i+1}:"
+                f"\n  Input: {input_data}"
+                f"\n  Expected: {expected_output}"
+                f"\n  F1 Score: {f1_results[i]:.2f}%"
+            )
+            print("-------------------------------------------------------")
+
+        mean_f1_score = sum(f1_results) / len(f1_results)
+        print(f"\nSummary: Mean F1 Score = {mean_f1_score:.2f}%")
+        print("\n========== F1 Score Test End ==========\n")
+
+        return mean_f1_score
+
+    def test_partial_match(self, f1_score_test, partial_f1_match_dataset):
+        """
+        Test to ensure that the F1 score test handles partial matches correctly.
+
+        Parameters
+        ----------
+        f1_score_test
+            The F1 score test to be run.
+
+        partial_f1_match_dataset
+            The dataset where some inputs match the expected outputs and some partially match.
+
+        Asserts
+        -------
+        The mean F1 score should be greater than 0, indicating some matches.
+        """
+        print("Running Partial Match Test:")
+        actual_f1_score = self.run_f1_test(f1_score_test, partial_f1_match_dataset)
+        print(f"Calculated Partial Match F1 Score: {actual_f1_score}%")
+        assert actual_f1_score > 0
+
+    def test_all_match(self, f1_score_test, all_f1_match_dataset):
+        """
+        Test to ensure that the F1 score test passes when all inputs match the expected outputs.
+
+        Parameters
+        ----------
+        f1_score_test
+            The F1 score test to be run.
+
+        all_f1_match_dataset
+            The dataset where all inputs match the expected outputs exactly.
+
+        Asserts
+        -------
+        The mean F1 score should be 100.0%.
+        """
+        print("Running All Match Test:")
+        actual_f1_score = self.run_f1_test(f1_score_test, all_f1_match_dataset)
+        print(f"Calculated All Match F1 Score: {actual_f1_score}%")
+        assert actual_f1_score == 100.0
+
+    def test_single_result(self, f1_score_test, single_f1_result_dataset):
+        """
+        Test to ensure that F1 score calculation works correctly for a single correct answer.
+        """
+        print("Running Single Result Test:")
+        actual_f1_score = self.run_f1_test(f1_score_test, single_f1_result_dataset)
+        print(f"Calculated F1 Score for Single Results: {actual_f1_score}%")
+        assert actual_f1_score == 100.0
+
+    def test_partial_single_result(
+        self, f1_score_test, partial_single_f1_result_dataset
+    ):
+        """
+        Test to ensure that F1 score calculation handles partial matches for single results correctly.
+        """
+        print("Running Partial Single Result Test:")
+        actual_f1_score = self.run_f1_test(
+            f1_score_test, partial_single_f1_result_dataset
+        )
+        print(f"Calculated Partial F1 Score for Single Results: {actual_f1_score}%")
+        assert actual_f1_score > 0
+
+
+# TO RUN THE TESTS:
+# -> Locate the tests folder in the terminal.
+# -> pytest -s test_evals.py (To run all the tests).
