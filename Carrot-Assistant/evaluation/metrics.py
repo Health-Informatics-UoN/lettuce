@@ -1,5 +1,7 @@
 from evaluation.evaltypes import SingleResultMetric, InformationRetrievalMetric
 
+# ----------- Accuracy Metric ----------- >
+
 
 class ExactMatchMetric(SingleResultMetric):
     def calculate(self, predicted, actual):
@@ -19,6 +21,9 @@ class ExactMatchMetric(SingleResultMetric):
         the exact match metric
         """
         return int(predicted == actual)
+
+
+# ----------- Precision Metric ----------- >
 
 
 class PrecisionMetric(InformationRetrievalMetric):
@@ -51,12 +56,10 @@ class PrecisionMetric(InformationRetrievalMetric):
         """
         # If predicted or actual is a list of tuples, assume CoConnect-style data
         if isinstance(predicted[0], (tuple, list)) and isinstance(predicted[0][0], str):
-            print("Using CoConnect-style precision calculation")
             # Process CoConnect-style tuples (multiple results)
             return self._calculate_coconnect_precision(predicted, actual)
         else:
             # Process single result predictions (simple string or single concept)
-            print("Using single result precision calculation")
             return self._calculate_single_result_precision(predicted, actual)
 
     def _calculate_coconnect_precision(self, predicted, actual):
@@ -186,3 +189,169 @@ class PrecisionMetric(InformationRetrievalMetric):
             if len(predicted_words) > 0
             else 0.0
         )
+
+
+# ----------- Recall Metric ----------- >
+
+
+class RecallMetric(InformationRetrievalMetric):
+    """
+    This class calculates the recall metric for a pipeline
+    that outputs a list of relationships and concepts or
+    simple strings.
+
+    Formula for recall
+    ---------------------
+    Recall = (number of correct words) /
+    (number of words in ground truth).
+    """
+
+    def calculate(self, predicted, actual):
+        """
+        Calculate recall percentage for each concept or single
+        result and return the mean recall.
+
+        Parameters
+        ----------
+        predicted
+            The predicted output from the pipeline.
+
+        actual
+            The desired output.
+
+        Returns
+        -------
+        Mean recall percentage.
+        """
+        # If predicted or actual is a list of tuples, assume CoConnect-style data
+        if isinstance(predicted[0], (tuple, list)) and isinstance(predicted[0][0], str):
+
+            # Process CoConnect-style tuples (multiple results)
+            return self._calculate_coconnect_recall(predicted, actual)
+        else:
+            # Process single result predictions (simple string or single concept)
+            return self._calculate_single_result_recall(predicted, actual)
+
+    def _calculate_coconnect_recall(self, predicted, actual):
+        """
+        Calculate recall for CoConnect-style data (relationship
+        and concept pairs).
+
+        Parameters
+        ----------
+        predicted : list of tuples
+            The predicted relationships and concepts.
+
+        actual : list of tuples
+            The actual (expected) relationships and concepts.
+
+        Returns
+        -------
+        float
+            The mean recall percentage for the CoConnect-style data.
+        """
+        predicted_relationships, actual_relationships = predicted, actual
+
+        total_recall = 0.0
+        count = 0
+
+        # Compare each pair of (relationship, concept) from predicted and actual
+        for (pred_rel, pred_rel_value, pred_concept, pred_concept_value), (
+            act_rel,
+            act_rel_value,
+            act_concept,
+            act_concept_value,
+        ) in zip(predicted_relationships, actual_relationships):
+
+            # Calculate word recall for the relationship and concept
+            rel_recall = self._word_match_recall(pred_rel_value, act_rel_value)
+            concept_recall = self._word_match_recall(
+                pred_concept_value, act_concept_value
+            )
+
+            # Calculate the average recall for this concept (relationship + concept)
+            avg_recall = (rel_recall + concept_recall) / 2
+
+            # Convert to percentage and add to total
+            total_recall += avg_recall * 100
+            count += 1
+
+        # Return the mean recall percentage
+        return total_recall / count if count > 0 else 0.0
+
+    def _calculate_single_result_recall(self, predicted, actual):
+        """
+        Calculate recall for single result or string-based predictions.
+
+        Parameters
+        ----------
+        predicted : list of str
+            The predicted output strings or single concept
+            (can be multiple words).
+
+        actual : list of str
+            The actual (expected) output strings or single
+            concept (can be multiple words).
+
+        Returns
+        -------
+        float
+            The mean recall percentage for the single result.
+        """
+        total_recall = 0.0
+        count = 0
+
+        # Convert the predicted and actual strings into lists of one element if they are not already lists
+        if isinstance(predicted, str):
+            predicted = [predicted]
+        if isinstance(actual, str):
+            actual = [actual]
+
+        # Iterate through the predicted and actual values
+        for pred_str, actual_str in zip(predicted, actual):
+
+            predicted_words = pred_str.split(" ")
+            actual_words = actual_str.split(" ")
+
+            # Calculate the number of matched words
+            matched_words = sum(
+                1 for actual_word in actual_words if actual_word in predicted_words
+            )
+
+            # Recall is the ratio of matched words to the total number of actual words
+            word_recall = (
+                matched_words / len(actual_words) if len(actual_words) > 0 else 0.0
+            )
+
+            total_recall += word_recall * 100  # Convert to percentage
+            count += 1
+
+        # Return the mean recall percentage across all predictions
+        return total_recall / count if count > 0 else 0.0
+
+    def _word_match_recall(self, predicted_str, actual_str):
+        """
+        This method calculates recall as the fraction of matched words
+        between predicted and actual strings.
+
+        Parameters
+        ----------
+        predicted_str
+            The predicted string.
+
+        actual_str
+            The actual string.
+
+        Returns
+        -------
+        float
+            Word recall score.
+        """
+        predicted_words = set(predicted_str.split())
+        actual_words = set(actual_str.split())
+
+        # Find the intersection of predicted and actual words
+        matched_words = predicted_words.intersection(actual_words)
+
+        # Recall is the fraction of matched words over the total words in the actual string
+        return len(matched_words) / len(actual_words) if len(actual_words) > 0 else 0.0
