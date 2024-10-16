@@ -5,7 +5,7 @@ from evaluation.evaltypes import (
     SingleResultPipelineTest,
     InformationRetrievalPipelineTest,
 )
-from evaluation.metrics import ExactMatchMetric, PrecisionMetric
+from evaluation.metrics import ExactMatchMetric, PrecisionMetric, RecallMetric
 
 
 class IdentityPipeline(SingleResultPipeline):
@@ -64,6 +64,36 @@ class PrecisionTest(InformationRetrievalPipelineTest):
             The pipeline to be tested.
         """
         super().__init__(name, pipeline, [PrecisionMetric()])
+
+    def run_pipeline(self, input_data):
+        """
+        Run the pipeline and return the result.
+
+        Parameters
+        ----------
+        input_data
+            The input data to be processed by the pipeline.
+
+        Returns
+        -------
+        The output from the pipeline.
+        """
+        return self.pipeline.run(input_data)
+
+
+class RecallTest(InformationRetrievalPipelineTest):
+    def __init__(self, name: str, pipeline: InformationRetrievalPipeline):
+        """
+        Initialize the RecallTest with a name and pipeline.
+
+        Parameters
+        ----------
+        name
+            The name of the test.
+        pipeline
+            The pipeline to be tested.
+        """
+        super().__init__(name, pipeline, [RecallMetric()])
 
     def run_pipeline(self, input_data):
         """
@@ -182,12 +212,33 @@ class TestExactMatch:
         float
             The average exact match score across the dataset.
         """
+        print("\n========== Running Exact Match Test ==========\n")
         results = [
             test.evaluate(input_data, expected_output)
             for input_data, expected_output in dataset
         ]
         exact_match_results = [result["ExactMatchMetric"] for result in results]
-        return sum(exact_match_results) / len(exact_match_results)
+
+        # Print details of each test case
+        for i, (input_data, expected_output) in enumerate(dataset):
+            print(
+                "\n--------------------- Test Case {} ---------------------".format(
+                    i + 1
+                )
+            )
+            print(
+                f"Input: {input_data}, Expected: {expected_output}, Exact Match: {exact_match_results[i]}"
+            )
+            print("-------------------------------------------------------")
+
+        mean_exact_match = sum(exact_match_results) / len(exact_match_results)
+
+        print(
+            "\n========== Mean Exact Match: {:.2f} ==========\n".format(
+                mean_exact_match
+            )
+        )
+        return mean_exact_match
 
     def test_all_match(self, exact_match_test, all_match_dataset):
         """
@@ -416,6 +467,7 @@ class TestPrecisionOnly:
         -------
             The mean precision score across the dataset.
         """
+        print("\n========== Running Precision Test ==========\n")
         results = [
             test.evaluate(input_data, expected_output)
             for input_data, expected_output in dataset
@@ -423,17 +475,21 @@ class TestPrecisionOnly:
         precision_results = [result["PrecisionMetric"] for result in results]
 
         for i, (input_data, expected_output) in enumerate(dataset):
-            print("\n---------------------")
+            print(
+                "\n--------------------- Test Case {} ---------------------".format(
+                    i + 1
+                )
+            )
             print(
                 f"Input: {input_data}, Expected: {expected_output}, Precision: {precision_results[i]}"
             )
-            print("---------------------\n")
+            print("-------------------------------------------------------")
 
         # Print the overall mean precision
         mean_precision = sum(precision_results) / len(precision_results)
-        print("\n---------------------")
-        print(f"Mean Precision: {mean_precision}")
-        print("---------------------\n")
+        print(
+            "\n========== Mean Precision: {:.2f}% ==========\n".format(mean_precision)
+        )
 
         return mean_precision
 
@@ -509,6 +565,261 @@ class TestPrecisionOnly:
         )
         print(f"Calculated Partial Precision for Single Results: {actual_precision}%")
         assert actual_precision > 0
+
+
+# ------- Recall Tests ------- >
+
+
+class TestRecallOnly:
+    @pytest.fixture
+    def identity_pipeline(self):
+        """
+        Fixture to return an instance of the IdentityPipeline.
+
+        Returns
+        -------
+        IdentityPipeline
+            A pipeline that returns the input data unchanged.
+        """
+        return IdentityPipeline()
+
+    @pytest.fixture
+    def recall_test(self, identity_pipeline):
+        """
+        Fixture to create an InformationRetrievalPipelineTest
+        using RecallMetric.
+
+        Parameters
+        ----------
+        identity_pipeline
+            The pipeline that will be tested for recall.
+
+        Returns
+        -------
+        InformationRetrievalPipelineTest
+            A test that evaluates the recall between the
+            pipeline output and the expected output.
+        """
+        return InformationRetrievalPipelineTest(
+            "Recall Test", identity_pipeline, [RecallMetric()]
+        )
+
+    @pytest.fixture
+    def all_match_dataset(self):
+        """
+        Fixture to provide a dataset where all input and expected output values match exactly.
+
+        Returns
+        -------
+        list of tuples
+            A list of input-output pairs where all inputs match the expected outputs exactly.
+        """
+        return [
+            (
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (
+                        ":relationship",
+                        "Maps to value",
+                        ":concept",
+                        "Malignant neoplasm of skin",
+                    ),
+                ],
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (
+                        ":relationship",
+                        "Maps to value",
+                        ":concept",
+                        "Malignant neoplasm of skin",
+                    ),
+                ],
+            ),
+            (
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (":relationship", "Maps to value", ":concept", "Fibromyalgia"),
+                ],
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (":relationship", "Maps to value", ":concept", "Fibromyalgia"),
+                ],
+            ),
+        ]
+
+    @pytest.fixture
+    def partial_match_dataset(self):
+        """
+        Fixture to provide a dataset where some input-output pairs partially match.
+
+        Returns
+        -------
+        list of tuples
+            A list of input-output pairs where some inputs match the expected outputs, while others only partially match.
+        """
+        return [
+            (
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (
+                        ":relationship",
+                        "Maps to value",
+                        ":concept",
+                        "Malignant neoplasm of skin",
+                    ),
+                ],
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (":relationship", "Maps to value", ":concept", "History of event"),
+                ],
+            ),
+            (
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (":relationship", "Maps to value", ":concept", "Fibromyalgia"),
+                ],
+                [
+                    (":relationship", "Maps to", ":concept", "History of event"),
+                    (":relationship", "Maps to value", ":concept", "Fibromyalgia"),
+                ],
+            ),
+        ]
+
+    @pytest.fixture
+    def single_result_dataset(self):
+        """
+        Fixture to provide a dataset where there is only one correct answer.
+
+        Returns
+        -------
+        list of tuples
+            A list of input-output pairs where only one input matches the expected output exactly.
+        """
+        return [
+            ("paracetamol", "paracetamol"),
+            ("aspirin", "aspirin"),
+            ("ibuprofen", "ibuprofen"),
+        ]
+
+    @pytest.fixture
+    def partial_single_result_dataset(self):
+        """
+        Fixture to provide a dataset where only partial results match.
+
+        Returns
+        -------
+        list of tuples
+            A list of input-output pairs where some inputs partially match the expected outputs.
+        """
+        return [
+            ("paracetam", "paracetamol"),
+            ("aspirin", "aspirin"),
+            ("ibu", "ibuprofen"),
+            ("ibuprofen", "paracetamol"),
+        ]
+
+    def run_recall_test(self, test, dataset):
+        """
+        Runs the recall test on the dataset and calculates the average recall.
+
+        Parameters
+        ----------
+        test
+            The recall test to be run.
+
+        dataset
+            The dataset of input-output pairs to evaluate.
+
+        Returns
+        -------
+        float
+            The mean recall score across the dataset.
+        """
+        print("\n========== Running Precision Test ==========\n")
+
+        results = [
+            test.evaluate(input_data, expected_output)
+            for input_data, expected_output in dataset
+        ]
+        recall_results = [result["RecallMetric"] for result in results]
+
+        for i, (input_data, expected_output) in enumerate(dataset):
+            print(
+                "\n--------------------- Test Case {} ---------------------".format(
+                    i + 1
+                )
+            )
+            print(
+                f"Input: {input_data}, Expected: {expected_output}, Recall: {recall_results[i]}"
+            )
+            print("-------------------------------------------------------")
+
+        # Print the overall mean recall
+        mean_recall = sum(recall_results) / len(recall_results)
+
+        print("\n========== Mean Recall: {:.2f}% ==========\n".format(mean_recall))
+
+        return mean_recall
+
+    def test_partial_match(self, recall_test, partial_match_dataset):
+        """
+        Test to ensure that the recall test handles partial matches correctly.
+
+        Parameters
+        ----------
+        recall_test
+            The recall test to be run.
+
+        partial_match_dataset
+            The dataset where some inputs match the expected outputs and some partially match.
+
+        Asserts
+        -------
+        The mean recall score should be greater than 0, indicating some matches.
+        """
+        print("Running Partial Match Test:")
+        actual_recall = self.run_recall_test(recall_test, partial_match_dataset)
+        print(f"Calculated Partial Match Recall: {actual_recall}%")
+        assert actual_recall > 0
+
+    def test_all_match(self, recall_test, all_match_dataset):
+        """
+        Test to ensure that the recall test passes when all inputs match the expected outputs.
+
+        Parameters
+        ----------
+        recall_test
+            The recall test to be run.
+
+        all_match_dataset
+            The dataset where all inputs match the expected outputs exactly.
+
+        Asserts
+        -------
+        The mean recall score should be 100.0%.
+        """
+        print("Running All Match Test:")
+        actual_recall = self.run_recall_test(recall_test, all_match_dataset)
+        print(f"Calculated All Match Recall: {actual_recall}%")
+        assert actual_recall == 100.0
+
+    def test_single_result(self, recall_test, single_result_dataset):
+        """
+        Test to ensure that recall calculation works correctly for a single correct answer.
+        """
+        print("Running Single Result Test:")
+        actual_recall = self.run_recall_test(recall_test, single_result_dataset)
+        print(f"Calculated Recall for Single Results: {actual_recall}%")
+        assert actual_recall == 100.0
+
+    def test_partial_single_result(self, recall_test, partial_single_result_dataset):
+        """
+        Test to ensure that recall calculation handles partial matches for single results correctly.
+        """
+        print("Running Partial Single Result Test:")
+        actual_recall = self.run_recall_test(recall_test, partial_single_result_dataset)
+        print(f"Calculated Partial Recall for Single Results: {actual_recall}%")
+        assert actual_recall > 0
 
 
 # pytest -s test_evals.py (To run all the tests)
