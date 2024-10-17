@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from components.embeddings import EmbeddingModelName
 from options.base_options import BaseOptions
 
+
 class LLMModel(str, Enum):
     """
     This enum holds the names of the different models the assistant can use
@@ -15,6 +16,13 @@ class LLMModel(str, Enum):
     LLAMA_3_70B = "llama-3-70b"
     GEMMA_7B = "gemma-7b"
     LLAMA_3_1_8B = "llama-3.1-8b"
+    MISTRAL_7B = "mistral-7b"
+    PYTHIA_70M = "pythia-70m"
+    PYTHIA_410M = "pythia-410m"
+    PYTHIA_1B = "pythia-1b"
+    PYTHIA_1_4B = "pythia-1.4b"
+    PYTHIA_2_8B = "pythia-2.8b"
+    ALPACA_LORA_7B = "alpaca-lora-7b"
 
 
 class PipelineOptions(BaseModel):
@@ -58,6 +66,7 @@ class PipelineOptions(BaseModel):
     embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL
     embedding_search_kwargs: dict = {}
 
+
 def parse_pipeline_args(base_options: BaseOptions, options: PipelineOptions) -> None:
     """
     Use the values of a PipelineOptions object to override defaults
@@ -84,4 +93,3 @@ def parse_pipeline_args(base_options: BaseOptions, options: PipelineOptions) -> 
         max_separation_descendants=options.max_separation_descendants,
         max_separation_ancestor=options.max_separation_ancestor,
     )
-
