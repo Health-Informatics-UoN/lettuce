@@ -11,7 +11,7 @@ class LLMPipeline(SingleResultPipeline):
     def __init__(self, llm: LLMModel, prompt_template: Template) -> None:
         self.llm = llm
         self.prompt_template = prompt_template
-        self._model = Llama(hf_hub_download(**local_models[self.llm]))
+        self._model = Llama(hf_hub_download(**local_models[self.llm.value]))
 
     def run(self, input: Dict[str, str]) -> str:
         prompt = self.prompt_template.render(input)
