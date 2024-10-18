@@ -17,4 +17,4 @@ class LLMPipeline(SingleResultPipeline):
         prompt = self.prompt_template.render(input)
         return self._model.create_chat_completion(
             messages=[{"role": "user", "content": prompt}]
-        )["choices"][0]["message"]
+        )["choices"][0]["message"]["content"]
