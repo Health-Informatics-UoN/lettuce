@@ -85,7 +85,7 @@ class TestBasicLLM:
 
     @pytest.fixture
     def llm_pipeline(self, llm_prompt):
-        return LLMPipeline(LLMModel["llama-3.1-8b"], llm_prompt)
+        return LLMPipeline(LLMModel.LLAMA_3_1_8B, llm_prompt)
 
     def test_returns_string(self, llm_pipeline):
         model_output = llm_pipeline.run({"input_sentence": "Polly wants a cracker"})
