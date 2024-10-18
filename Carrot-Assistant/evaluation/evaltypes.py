@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Any
 
 
 class EvaluationFramework:
@@ -32,7 +32,7 @@ class TestPipeline(ABC):
     """
 
     @abstractmethod
-    def run(self, *args, **kwargs):
+    def run(self, *args, **kwargs) -> Any:
         """
         Run the pipeline
         """
@@ -48,6 +48,7 @@ class PipelineTest(Generic[M]):
     """
 
     def __init__(self, name: str, pipeline: TestPipeline, metrics: list[M]):
+        self.name = name
         self.pipeline = pipeline
         self.metrics = metrics
 
