@@ -1,5 +1,5 @@
 from typing import Dict
-from evaltypes import SingleResultPipeline
+from evaluation.evaltypes import SingleResultPipeline
 from options.pipeline_options import LLMModel
 from components.models import local_models
 from jinja2 import Template
