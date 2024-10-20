@@ -29,7 +29,9 @@ class PipelineRequest(BaseModel):
     name: str
         The drug name sent to a pipeline
     pipeline_options: Optional[PipelineOptions]
-        Optionally, the default values can be overridden by instantiating a PipelineOptions object. If none is supplied, default arguments are used
+        Optionally, the default values can be overridden by instantiating
+        a PipelineOptions object. If none is supplied,
+        default arguments are used.
     """
 
     names: List[str]
@@ -151,12 +153,16 @@ async def run_vector_search(request: PipelineRequest):
     Search a vector database for a name
 
     Default options can be overridden by pipeline_options
-    A warning: if you don't have a vector database set up under the embeddings_path, this method will build one for you. This takes a while, an hour using 2.8 GHz intel I7, 16 Gb RAM.
+    A warning: if you don't have a vector database set up under the
+    embeddings_path, this method will build one for you.
+
+    This takes a while, an hour using 2.8 GHz intel I7, 16 Gb RAM.
 
     Parameters
     ----------
     request: PipelineRequest
-        An API request containing a list of informal names and the options of a pipeline
+        An API request containing a list of informal names and the
+        options of a pipeline.
 
     Returns
     -------
@@ -179,9 +185,13 @@ async def vector_llm_pipeline(request: PipelineRequest) -> List:
     """
     Run a RAG pipeline that first checks a vector database, then uses an LLM
 
-    This has a conditional router in it that checks whether there's an exact match for the term.
+    This has a conditional router in it that checks whether there's
+    an exact match for the term.
+
     If there is an exact match, the vector search results are returned.
-    If there is not, the vector search results are used for retrieval augmented generation
+
+    If there is not, the vector search results are used for retrieval
+    augmented generation.
 
     Parameters
     ----------
