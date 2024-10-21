@@ -113,20 +113,33 @@ class SingleResultPipelineTest(PipelineTest[SingleResultPipeline, SingleResultMe
         }
 
 
+class EvalDataLoader:
+    def __init__(self, file_path) -> None:
+        self.file_path = file_path
+
+
 class EvaluationFramework:
     def __init__(
         self,
         pipelineTests: List[PipelineTest],
+        dataset,
         description: str,
         results_path: str = "results.json",
     ):
         self._pipeline_tests = pipelineTests
         self._description = description
         self._results_path = results_path
+        self.input_data = dataset.input_data
+        self.expected_output = dataset.expected_output
 
     def run_evaluations(self):
         # Run some tests
-
+        self.evaluation_results = {
+            pipeline_test.name: [
+                [pipeline_test.evaluate() for data_point in input_data]
+            ]
+            for pipeline_test in self._pipeline_tests
+        }
         self._save_evaluations
 
     def _save_evaluations(self):
