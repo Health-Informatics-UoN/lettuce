@@ -1,10 +1,17 @@
 import pytest
 from jinja2 import Environment
+import os
+import json
 
 from evaluation.eval_tests import LLMPipelineTest
-from evaluation.evaltypes import SingleResultPipeline, SingleResultPipelineTest
+from evaluation.evaltypes import (
+    SingleResultPipeline,
+    SingleResultPipelineTest,
+    EvaluationFramework,
+)
 from evaluation.metrics import ExactMatchMetric
 from evaluation.pipelines import LLMPipeline
+from evaluation.eval_data_loaders import SingleInputSimpleCSV
 
 from options.pipeline_options import LLMModel
 
@@ -104,8 +111,75 @@ class TestBasicLLM:
 
     def test_llm_pipelinetest_evaluates(self, llm_pipeline_test):
         model_eval = llm_pipeline_test.evaluate(
-            name="Testing the parrot pipeline",
             input_data={"input_sentence": "Polly wants a cracker"},
             expected_output="Polly wants a cracker",
         )
         assert isinstance(model_eval, dict)
+
+
+class TestEvaluationFramework:
+    @pytest.fixture
+    def identity_pipeline(self):
+        return IdentityPipeline()
+
+    @pytest.fixture
+    def exact_match_test(self, identity_pipeline):
+        return SingleResultPipelineTest(
+            name="Exact Match Test",
+            pipeline=identity_pipeline,
+            metrics=[ExactMatchMetric()],
+        )
+
+    @pytest.fixture(scope="session")
+    def matching_set(self, tmp_path_factory):
+        tmp_dir = tmp_path_factory.mktemp("data")
+        csv_path = tmp_dir / "matching_set.csv"
+        filestring = """input_data,expected_output
+input1,input1
+input2,input2
+input3,input3"""
+        csv_path.write_text(filestring)
+        return str(csv_path)
+
+    @pytest.fixture
+    def data_loader(self, matching_set):
+        return SingleInputSimpleCSV(matching_set)
+
+    @pytest.fixture
+    def eval_framework(self, exact_match_test, data_loader, tmp_path):
+        return EvaluationFramework(
+            name="Test Experiment",
+            pipeline_tests=[exact_match_test],
+            dataset=data_loader,
+            description="Test Description",
+            results_path=str(tmp_path / "results.json"),
+        )
+
+    def test_creates_new_results_file(self, eval_framework, tmp_path):
+        results_path = tmp_path / "results.json"
+
+        assert not os.path.exists(results_path)
+
+        eval_framework.run_evaluations()
+
+        assert os.path.exists(results_path)
+
+        with open(results_path, "r") as f:
+            results = json.load(f)
+
+        assert len(results) == 1
+        assert results[0]["Experiment"] == "Test Experiment"
+
+    def test_appends_to_existing_results_file(self, eval_framework, tmp_path):
+        results_path = tmp_path / "results.json"
+
+        eval_framework.run_evaluations()
+
+        eval_framework.run_evaluations()
+
+        with open(results_path, "r") as f:
+            results = json.load(f)
+
+        assert len(results) == 2
+        assert results[0]["Experiment"] == "Test Experiment"
+        assert results[1]["Experiment"] == "Test Experiment"

@@ -28,8 +28,8 @@ class TestPipeline(ABC):
         """
         ...
 
-    @abstractmethod
-    def drop(self) -> None: ...
+    def drop(self) -> None:
+        pass
 
 
 M = TypeVar("M", bound=Metric)
@@ -54,8 +54,8 @@ class PipelineTest(Generic[P, M]):
     def evaluate(self, *args, **kwargs) -> dict[str, float]:
         pass
 
-    @abstractmethod
-    def drop_pipeline(self) -> None: ...
+    def drop_pipeline(self) -> None:
+        pass
 
 
 class SingleResultMetric(Metric):
@@ -122,12 +122,12 @@ class EvalDataLoader(ABC):
 
     @property
     @abstractmethod
-    def input_data(self):
+    def input_data(self) -> Any:
         pass
 
     @property
     @abstractmethod
-    def expected_output(self):
+    def expected_output(self) -> Any:
         pass
 
 
