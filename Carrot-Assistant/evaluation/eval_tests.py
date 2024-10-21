@@ -1,7 +1,6 @@
 from evaluation.evaltypes import (
     SingleResultPipelineTest,
     SingleResultMetric,
-    SingleResultPipeline,
 )
 from evaluation.pipelines import LLMPipeline
 
@@ -10,7 +9,7 @@ class LLMPipelineTest(SingleResultPipelineTest):
     def __init__(
         self,
         name: str,
-        pipeline: SingleResultPipeline,
+        pipeline: LLMPipeline,
         metrics: list[SingleResultMetric],
     ):
         super().__init__(name, pipeline, metrics)
