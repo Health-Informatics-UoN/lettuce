@@ -1,18 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Any
-
-
-class EvaluationFramework:
-    def __init__(self, results_file="results.json"):
-        self.results_file = results_file
-
-    def run_evaluations(self):
-        # Run some tests
-        self._save_evaluations
-
-    def _save_evaluations(self):
-        # Append to 'results.json'
-        pass
+from typing import TypeVar, Generic, Any, List
 
 
 class Metric(ABC):
@@ -118,3 +105,23 @@ class SingleResultPipelineTest(PipelineTest[SingleResultPipeline, SingleResultMe
             )
             for metric in self.metrics
         }
+
+
+class EvaluationFramework:
+    def __init__(
+        self,
+        pipelineTests: List[PipelineTest],
+        description: str,
+        results_path: str = "results.json",
+    ):
+        self._pipeline_tests = pipelineTests
+        self._description = description
+        self._results_path = results_path
+
+    def run_evaluations(self):
+        # Run some tests
+        self._save_evaluations
+
+    def _save_evaluations(self):
+        # Append to 'results.json'
+        pass
