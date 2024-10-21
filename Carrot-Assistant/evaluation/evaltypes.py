@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
+import time
 from typing import TypeVar, Generic, Any, List
+import json
+import os
 
 
 class Metric(ABC):
@@ -113,20 +116,32 @@ class SingleResultPipelineTest(PipelineTest[SingleResultPipeline, SingleResultMe
         }
 
 
-class EvalDataLoader:
+class EvalDataLoader(ABC):
     def __init__(self, file_path) -> None:
         self.file_path = file_path
+
+    @property
+    @abstractmethod
+    def input_data(self):
+        pass
+
+    @property
+    @abstractmethod
+    def expected_output(self):
+        pass
 
 
 class EvaluationFramework:
     def __init__(
         self,
-        pipelineTests: List[PipelineTest],
-        dataset,
+        name: str,
+        pipeline_tests: List[PipelineTest],
+        dataset: EvalDataLoader,
         description: str,
         results_path: str = "results.json",
     ):
-        self._pipeline_tests = pipelineTests
+        self.name = name
+        self._pipeline_tests = pipeline_tests
         self._description = description
         self._results_path = results_path
         self.input_data = dataset.input_data
@@ -134,14 +149,32 @@ class EvaluationFramework:
 
     def run_evaluations(self):
         # Run some tests
-        self.evaluation_results = {
-            pipeline_test.name: [
-                [pipeline_test.evaluate() for data_point in input_data]
+        self.evaluation_results = []
+
+        for pipeline_test in self._pipeline_tests:
+            result = [
+                pipeline_test.evaluate(i, o)
+                for i, o in zip(self.input_data, self.expected_output)
             ]
-            for pipeline_test in self._pipeline_tests
-        }
-        self._save_evaluations
+            self.evaluation_results.append({pipeline_test.name: result})
+
+        self._save_evaluations()
 
     def _save_evaluations(self):
         # Append to 'results.json'
-        pass
+        new_data = {
+            "Experiment": self.name,
+            "Description": self._description,
+            "Time": time.time(),
+            "Results": self.evaluation_results,
+        }
+
+        if os.path.exists(self._results_path):
+            with open(self._results_path, "r") as f:
+                previous_runs = json.load(f)
+            previous_runs.append(new_data)
+        else:
+            previous_runs = [new_data]
+
+        with open(self._results_path, "w") as f:
+            json.dump(previous_runs, f)
