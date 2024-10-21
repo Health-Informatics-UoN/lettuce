@@ -25,6 +25,9 @@ class TestPipeline(ABC):
         """
         ...
 
+    @abstractmethod
+    def drop(self) -> None: ...
+
 
 M = TypeVar("M", bound=Metric)
 P = TypeVar("P", bound=TestPipeline)
@@ -47,6 +50,9 @@ class PipelineTest(Generic[P, M]):
     @abstractmethod
     def evaluate(self, *args, **kwargs) -> dict[str, float]:
         pass
+
+    @abstractmethod
+    def drop_pipeline(self) -> None: ...
 
 
 class SingleResultMetric(Metric):
@@ -120,6 +126,7 @@ class EvaluationFramework:
 
     def run_evaluations(self):
         # Run some tests
+
         self._save_evaluations
 
     def _save_evaluations(self):

@@ -45,3 +45,6 @@ class LLMPipeline(SingleResultPipeline):
         return self._model.create_chat_completion(
             messages=[{"role": "user", "content": prompt}]
         )["choices"][0]["message"]["content"]
+
+    def drop(self):
+        del self._model
