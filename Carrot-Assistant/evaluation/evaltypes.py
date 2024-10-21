@@ -48,7 +48,7 @@ class PipelineTest(Generic[P, M]):
     Base class for Pipeline tests
     """
 
-    def __init__(self, name: str, pipeline: TestPipeline, metrics: list[M]):
+    def __init__(self, name: str, pipeline: P, metrics: list[M]):
         self.name = name
         self.pipeline = pipeline
         self.metrics = metrics
