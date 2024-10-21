@@ -104,6 +104,7 @@ class TestBasicLLM:
 
     def test_llm_pipelinetest_evaluates(self, llm_pipeline_test):
         model_eval = llm_pipeline_test.evaluate(
+            name="Testing the parrot pipeline",
             input_data={"input_sentence": "Polly wants a cracker"},
             expected_output="Polly wants a cracker",
         )
