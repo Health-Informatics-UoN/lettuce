@@ -40,9 +40,10 @@ class TestPipeline(ABC):
 
 
 M = TypeVar("M", bound=Metric)
+P = TypeVar("P", bound=TestPipeline)
 
 
-class PipelineTest(Generic[M]):
+class PipelineTest(Generic[P, M]):
     """
     Base class for Pipeline tests
     """
@@ -77,7 +78,7 @@ class SingleResultPipeline(TestPipeline):
     """
 
 
-class SingleResultPipelineTest(PipelineTest[SingleResultMetric]):
+class SingleResultPipelineTest(PipelineTest[SingleResultPipeline, SingleResultMetric]):
     def __init__(
         self,
         name: str,
