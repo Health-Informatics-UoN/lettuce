@@ -1,4 +1,4 @@
-from evaluation.eval_data_loaders import SingleInputSimpleCSV
+from evaluation.eval_data_loaders import SingleInputCSVforLLM
 from evaluation.evaltypes import EvaluationFramework
 from evaluation.metrics import ExactMatchMetric
 from evaluation.pipelines import LLMPipeline
@@ -7,7 +7,7 @@ from evaluation.eval_tests import LLMPipelineTest
 from jinja2 import Environment
 
 
-dataloader = SingleInputSimpleCSV("./evaluation/datasets/example.csv")
+dataloader = SingleInputCSVforLLM("./evaluation/datasets/example.csv")
 
 exact_match = ExactMatchMetric()
 
