@@ -15,6 +15,14 @@ class Metric(ABC):
         """
         pass
 
+    @property
+    @abstractmethod
+    def description(self) -> str:
+        """
+        Description of the metric. Implemented by each class
+        """
+        pass
+
 
 class TestPipeline(ABC):
     """
@@ -53,6 +61,10 @@ class PipelineTest(Generic[P, M]):
     @abstractmethod
     def evaluate(self, *args, **kwargs) -> dict[str, float]:
         pass
+
+    @property
+    def metric_descriptions(self) -> list[str]:
+        return [metric.description for metric in self.metrics]
 
     def drop_pipeline(self) -> None:
         pass
@@ -198,7 +210,15 @@ class EvaluationFramework:
                 pipeline_test.evaluate(i, o)
                 for i, o in zip(self.input_data, self.expected_output)
             ]
-            self.evaluation_results.append({pipeline_test.name: result})
+            metric_descriptions = pipeline_test.metric_descriptions
+            self.evaluation_results.append(
+                {
+                    pipeline_test.name: {
+                        "metric_descriptions": metric_descriptions,
+                        "results": result,
+                    }
+                }
+            )
 
         self._save_evaluations()
 
