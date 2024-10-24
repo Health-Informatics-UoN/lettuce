@@ -17,12 +17,17 @@ class LLMModel(str, Enum):
     GEMMA_7B = "gemma-7b"
     LLAMA_3_1_8B = "llama-3.1-8b"
     MISTRAL_7B = "mistral-7b"
-    PYTHIA_70M = "pythia-70m"
-    PYTHIA_410M = "pythia-410m"
-    PYTHIA_1B = "pythia-1b"
-    PYTHIA_1_4B = "pythia-1.4b"
-    PYTHIA_2_8B = "pythia-2.8b"
-    ALPACA_LORA_7B = "alpaca-lora-7b"
+    KUCHIKI_L2_7B = "kuchiki-l2-7b"
+    TINYLLAMA_1_1B_CHAT = "tinyllama-1.1b-chat"
+    BIOMISTRAL_7B = "biomistral-7b"
+    QWEN2_5_3B_INSTRUCT = "qwen2.5-3b-instruct"
+    AIROBOROS_3B = "airoboros-3b"
+    MEDICINE_CHAT = "medicine-chat"
+    MEDICINE_LLM_13B = "medicine-llm-13b"
+    MED_LLAMA_3_8B_V1 = "med-llama-3-8b-v1"
+    MED_LLAMA_3_8B_V2 = "med-llama-3-8b-v2"
+    MED_LLAMA_3_8B_V3 = "med-llama-3-8b-v3"
+    MED_LLAMA_3_8B_V4 = "med-llama-3-8b-v4"
 
 
 class PipelineOptions(BaseModel):

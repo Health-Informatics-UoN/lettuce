@@ -38,35 +38,59 @@ local_models = {
         "repo_id": "TheBloke/Mistral-7B-GGUF",
         "filename": "mistral-7b.Q4_K_M.gguf",
     },
-    # ------ pythia-70m ------- >
-    "pythia-70m": {
-        "repo_id": "EleutherAI/pythia-70m-GGUF",
-        "filename": "pythia-70m.Q4_K_M.gguf",
+    # ------ kuchiki-l2-7b ------- >
+    "kuchiki-l2-7b": {
+        "repo_id": "TheBloke/Kuchiki-L2-7B-GGUF",
+        "filename": "kuchiki-l2-7b.Q4_K_M.gguf",
     },
-    # ------ pythia-410m ------- >
-    "pythia-410m": {
-        "repo_id": "EleutherAI/pythia-410m-GGUF",
-        "filename": "pythia-410m.Q4_K_M.gguf",
+    # ------ tinyllama-1.1b-chat ------- >
+    "tinyllama-1.1b-chat": {
+        "repo_id": "TheBloke/TinyLlama-1.1B-Chat-v0.3-GGUF",
+        "filename": "tinyllama-1.1b-chat-v0.3.Q4_K_M.gguf",
     },
-    # ------ pythia-1b ------- >
-    "pythia-1b": {
-        "repo_id": "EleutherAI/pythia-1b-GGUF",
-        "filename": "pythia-1b.Q4_K_M.gguf",
+    # ------ bioMistral-7B-GGUF ------- >
+    "biomistral-7b": {
+        "repo_id": "MaziyarPanahi/BioMistral-7B-GGUF",
+        "filename": "BioMistral-7B.Q4_K_M.gguf",
     },
-    # ------ pythia-1.4b ------- >
-    "pythia-1.4b": {
-        "repo_id": "EleutherAI/pythia-1.4b-GGUF",
-        "filename": "pythia-1.4b.Q4_K_M.gguf",
+    # ------ Qwen2.5-3B-Instruct-GGUF ------- >
+    "qwen2.5-3b-instruct": {
+        "repo_id": "Qwen/Qwen2.5-3B-Instruct-GGUF",
+        "filename": "qwen2.5-3b-instruct-q5_k_m.gguf",
     },
-    # ------ pythia-2.8b ------- >
-    "pythia-2.8b": {
-        "repo_id": "EleutherAI/pythia-2.8b-GGUF",
-        "filename": "pythia-2.8b.Q4_K_M.gguf",
+    # ------ airoboros-3b-3p0-GGUF ------- >
+    "airoboros-3b": {
+        "repo_id": "afrideva/airoboros-3b-3p0-GGUF",
+        "filename": "airoboros-3b-3p0.q4_k_m.gguf",
     },
-    # ------ alpaca-lora-7b ------- >
-    "alpaca-lora-7b": {
-        "repo_id": "TheBloke/Alpaca-LoRA-7B-GGUF",
-        "filename": "alpaca-lora-7b.Q4_K_M.gguf",
+    # ------ medicine-chat ------- >
+    "medicine-chat": {
+        "repo_id": "TheBloke/medicine-chat-GGUF",
+        "filename": "medicine-chat.Q4_K_M.gguf",
+    },
+    "medicine-llm-13b": {
+        "repo_id": "TheBloke/medicine-LLM-13B-GGUF",
+        "filename": "medicine-llm-13b.Q3_K_S.gguf",
+    },
+    # ------ med llama Q5_K_S (5.59GB) ------- >
+    "med-llama-3-8b-v1": {
+        "repo_id": "bartowski/JSL-MedLlama-3-8B-v1.0-GGUF",
+        "filename": "JSL-MedLlama-3-8B-v1.0-Q5_K_S.gguf",
+    },
+    # ------ med llama Q4_K_M (4.92GB) ------- >
+    "med-llama-3-8b-v2": {
+        "repo_id": "bartowski/JSL-MedLlama-3-8B-v1.0-GGUF",
+        "filename": "JSL-MedLlama-3-8B-v1.0-Q4_K_M.gguf",
+    },
+    # ------ med llama Q3_K_M (4.01GB) ------- >
+    "med-llama-3-8b-v3": {
+        "repo_id": "bartowski/JSL-MedLlama-3-8B-v1.0-GGUF",
+        "filename": "JSL-MedLlama-3-8B-v1.0-Q3_K_M.gguf",
+    },
+    # ------ med llama IQ3_M (3.78GB) ------- >
+    "med-llama-3-8b-v4": {
+        "repo_id": "bartowski/JSL-MedLlama-3-8B-v1.0-GGUF",
+        "filename": "JSL-MedLlama-3-8B-v1.0-IQ3_M.gguf",
     },
     # ------ Add more models here ------ >
 }
@@ -310,9 +334,6 @@ def get_model(
 
                     mistral-7B often outperforms larger models like
                     GPT-3 in generative tasks and instruction-following capabilities.
-
-                    It is ideal for production
-                    scenarios where memory efficiency is critical.
             """
 
             logger.info("Loading mistral-7b model locally")
@@ -328,215 +349,337 @@ def get_model(
                 logger.error(f"Failed to load mistral-7b: {e}")
                 raise ValueError(f"Failed to load mistral-7b: {e}")
 
-        # ------ Pythia Model (70M) ------
+        # ------ Kuchiki Model (7B) ------
         # --------------------------
 
-        elif model_name == "pythia-70m":
+        elif model_name == "kuchiki-l2-7b":
             """
-            pythia-70m
-            -----------
+            kuchiki-l2-7b
+            -------------
 
-                - Model type: Transformer Based LLM by Mistral AI
-
-                - Parameters: 70 million (70M)
-
-                - Description:
-                    The Pythia model suite was deliberately designed to promote scientific
-                    research on large language models, especially interpretability research.
-
-                    It is a lightweight model designed for applications that need fast
-                    inference and low memory usage, making it ideal for
-                    resource-constrained environments or for rapid prototyping.
-            """
-
-            logger.info("Loading pythia-70m model locally")
-            try:
-                llm = LlamaCppGenerator(
-                    model=hf_hub_download(**local_models["pythia-70m"]),
-                    n_ctx=0,
-                    n_batch=512,
-                    model_kwargs={"n_gpu_layers": device, "verbose": True},
-                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
-                )
-            except Exception as e:
-                logger.error(f"Failed to load pythia-70m: {e}")
-                raise ValueError(f"Failed to load pythia-70m: {e}")
-
-        # ------ Pythia Model (410M) ------
-        # --------------------------
-
-        elif model_name == "pythia-410m":
-            """
-            Pythia-410m
-            ------------
-
-                - Model type: Transformer Based LLM by Mistral AI
-
-                - Parameters: 410 million (410M)
-
-                - Description:
-                    Pythia-410M strikes a balance between small model size and
-                    slightly more powerful language generation capabilities.
-
-                    It is useful for more complex tasks than the 160M model, such as
-                    summarization, basic conversational agents, and text generation with
-                    moderate context.
-
-                    The model is small enough to be efficient in deployment but
-                    large enough to handle moderately complex NLP tasks.
-            """
-
-            logger.info("Loading pythia-410m model locally")
-            try:
-                llm = LlamaCppGenerator(
-                    model=hf_hub_download(**local_models["pythia-410m"]),
-                    n_ctx=0,
-                    n_batch=512,
-                    model_kwargs={"n_gpu_layers": device, "verbose": True},
-                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
-                )
-            except Exception as e:
-                logger.error(f"Failed to load pythia-410m: {e}")
-                raise ValueError(f"Failed to load pythia-410m: {e}")
-
-        # ------ Pythia Model (1B) ------
-        # --------------------------
-
-        elif model_name == "pythia-1b":
-            """
-            Pythia-1.0b
-            ------------
-
-                - Model type: Transformer Based LLM by Mistral AI
-
-                - Parameters: 1 billion (1B)
-
-                - Description:
-                    Pythia-1.0B is designed for more demanding natural language processing
-                    tasks, such as document summarization, intermediate-level text
-                    generation, and conversational AI applications.
-
-                    The size of the model allows it to retain more context, making it
-                    well-suited for medium-sized tasks while still maintaining
-                    computational efficiency.
-            """
-
-            logger.info("Loading pythia-1b model locally")
-            try:
-                llm = LlamaCppGenerator(
-                    model=hf_hub_download(**local_models["pythia-1b"]),
-                    n_ctx=0,
-                    n_batch=512,
-                    model_kwargs={"n_gpu_layers": device, "verbose": True},
-                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
-                )
-            except Exception as e:
-                logger.error(f"Failed to load pythia-1b: {e}")
-                raise ValueError(f"Failed to load pythia-1b: {e}")
-
-        # ------ Pythia Model (1.4B) ------
-        # --------------------------
-
-        elif model_name == "pythia-1.4b":
-            """
-            Pythia-1.4b
-            ------------
-
-                - Model type: Transformer Based LLM by Mistral AI
-
-                - Parameters: 1.4 billion (1.4B)
-
-                - Description:
-                    Pythia-1.4B provides improved performance over the 1.0B model,
-                    handling tasks that require better understanding of language patterns,
-                    such as more accurate text generation, paraphrasing, and
-                    complex dialogue systems.
-
-                    It’s a versatile model that balances both the need for higher
-                    performance and the requirement for relatively low computational resources.
-            """
-
-            logger.info("Loading pythia-1.4b model locally")
-            try:
-                llm = LlamaCppGenerator(
-                    model=hf_hub_download(**local_models["pythia-1.4b"]),
-                    n_ctx=0,
-                    n_batch=512,
-                    model_kwargs={"n_gpu_layers": device, "verbose": True},
-                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
-                )
-            except Exception as e:
-                logger.error(f"Failed to load pythia-1.4b: {e}")
-                raise ValueError(f"Failed to load pythia-1.4b: {e}")
-
-        # ------ Pythia Model (2.8B) ------
-        # --------------------------
-
-        elif model_name == "pythia-2.8b":
-            """
-            Pythia-2.8b
-            ------------
-
-                - Model type: Transformer Based LLM by Mistral AI
-
-                - Parameters: 2.8 billion (2.8B)
-
-                - Description:
-                    Pythia-2.8B is a more powerful version capable of handling
-                    complex NLP tasks with longer text inputs and more
-                    nuanced responses.
-
-                    This model is an excellent choice when accuracy and context
-                    retention are crucial and resource constraints when compared
-                    to very large models.
-            """
-
-            logger.info("Loading pythia-2.8b model locally")
-            try:
-                llm = LlamaCppGenerator(
-                    model=hf_hub_download(**local_models["pythia-2.8b"]),
-                    n_ctx=0,
-                    n_batch=512,
-                    model_kwargs={"n_gpu_layers": device, "verbose": True},
-                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
-                )
-            except Exception as e:
-                logger.error(f"Failed to load pythia-2.8b: {e}")
-                raise ValueError(f"Failed to load pythia-2.8b: {e}")
-
-        # ------ Alpaca-LoRA Model (7B) ------
-        # --------------------------
-
-        elif model_name == "alpaca-lora-7b":
-            """
-            Alpaca-LoRA-7b
-            ---------------
-
-                - Model Type: LLaMA-based with Low-Rank Adaptation (LoRA).
+                - Model Type: LLaMA based by Kuchiki Research
 
                 - Parameters: 7 billion (7B)
 
                 - Description:
-                    Alpaca-LoRA is based on LLaMA-7B, fine-tuned using Alpaca-LoRA
-                    for instruction-following tasks.
-
-                    It offers efficiency in fine-tuning, making it a great option for
-                    lightweight applications with strong task-following performance.
-
+                    The Kuchiki-L2-7B model is a hybrid language model built on Llama-2,
+                    blending Nous Hermes, Airoboros, and LimaRP to excel in
+                    instruction-following and role-playing tasks.
             """
 
-            logger.info("Loading alpaca-lora-7b model locally")
+            logger.info("Loading kuchiki-l2-7b model locally")
             try:
                 llm = LlamaCppGenerator(
-                    model=hf_hub_download(**local_models["alpaca-lora-7b"]),
+                    model=hf_hub_download(**local_models["kuchiki-l2-7b"]),
                     n_ctx=0,
                     n_batch=512,
                     model_kwargs={"n_gpu_layers": device, "verbose": True},
                     generation_kwargs={"max_tokens": 128, "temperature": temperature},
                 )
             except Exception as e:
-                logger.error(f"Failed to load alpaca-lora-7b: {e}")
-                raise ValueError(f"Failed to load alpaca-lora-7b: {e}")
+                logger.error(f"Failed to load kuchiki-l2-7b: {e}")
+                raise ValueError(f"Failed to load kuchiki-l2-7b: {e}")
+
+        # ------ TinyLlama Model (1.1B) ------
+        # --------------------------
+
+        elif model_name == "tinyllama-1.1b-chat":
+            """
+            tinyllama-1.1b-chat
+            -------------------
+
+                - Model Type: LLaMA (Large Language Model Meta AI)
+
+                - Parameters: 1.1 billion (1.1B)
+
+                - Description:
+
+                    The TinyLlama-1.1B-Chat model is a compact version
+                    of the Llama-2-7B model, optimized for chat and
+                    general text generation tasks.
+            """
+
+            logger.info("Loading tinyllama-1.1b-chat model locally")
+            try:
+                llm = LlamaCppGenerator(
+                    model=hf_hub_download(**local_models["tinyllama-1.1b-chat"]),
+                    n_ctx=0,
+                    n_batch=512,
+                    model_kwargs={"n_gpu_layers": device, "verbose": True},
+                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
+                )
+            except Exception as e:
+                logger.error(f"Failed to load tinyllama-1.1b-chat: {e}")
+                raise ValueError(f"Failed to load tinyllama-1.1b-chat: {e}")
+
+        # ------ BioMistral Model (7B) ------
+        # --------------------------
+
+        elif model_name == "biomistral-7b":
+            """
+            bioMistral-7B
+            -------------
+
+                - Model Type: Transformer Based LLM by Mistral AI
+
+                - Parameters: 7 billion (7B)
+
+                - Description:
+                    BioMistral-7B-GGUF is a specialized version of the Mistral-7B model,
+                    optimized for bioinformatics and life sciences tasks.
+            """
+
+            logger.info("Loading bioMistral-7B-GGUF model locally")
+            try:
+                llm = LlamaCppGenerator(
+                    model=hf_hub_download(**local_models["biomistral-7b"]),
+                    n_ctx=0,
+                    n_batch=512,
+                    model_kwargs={"n_gpu_layers": device, "verbose": True},
+                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
+                )
+            except Exception as e:
+                logger.error(f"Failed to load bioMistral-7B-GGUF: {e}")
+                raise ValueError(f"Failed to load bioMistral-7B-GGUF: {e}")
+
+        # ------ Qwen2.5-3B-Instruct-GGUF ------
+        # --------------------------
+
+        elif model_name == "qwen2.5-3b-instruct":
+            """
+            Qwen2.5-3B-Instruct-GGUF
+            ------------------------
+
+                - Model Type: Transformer Based LLM by Qwen
+
+                - Parameters: 3 billion (3B)
+
+                - Description:
+                    Qwen2.5-3B-Instruct-GGUF is a specialized version of the Qwen2.5-3B model,
+                    optimized for instruction-following tasks.
+            """
+
+            logger.info("Loading Qwen2.5-3B-Instruct-GGUF model locally")
+            try:
+                llm = LlamaCppGenerator(
+                    model=hf_hub_download(**local_models["qwen2.5-3b-instruct"]),
+                    n_ctx=0,
+                    n_batch=512,
+                    model_kwargs={"n_gpu_layers": device, "verbose": True},
+                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
+                )
+            except Exception as e:
+                logger.error(f"Failed to load Qwen2.5-3B-Instruct-GGUF: {e}")
+                raise ValueError(f"Failed to load Qwen2.5-3B-Instruct-GGUF: {e}")
+
+        # ------ Airoboros-3B ------
+        # --------------------------
+
+        elif model_name == "airoboros-3b":
+            """
+            airoboros-3b
+            ------------
+
+                - Model Type: Transformer Based LLM by Afrideva
+
+                - Parameters: 3 billion (3B)
+
+                - Description:
+                    Airoboros-3B is a compact model optimized for general-purpose
+                    text generation tasks.
+            """
+
+            logger.info("Loading airoboros-3b model locally")
+            try:
+                llm = LlamaCppGenerator(
+                    model=hf_hub_download(**local_models["airoboros-3b"]),
+                    n_ctx=0,
+                    n_batch=512,
+                    model_kwargs={"n_gpu_layers": device, "verbose": True},
+                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
+                )
+            except Exception as e:
+                logger.error(f"Failed to load airoboros-3b: {e}")
+                raise ValueError(f"Failed to load airoboros-3b: {e}")
+
+        # ------ Medicine Chat ------
+        # --------------------------
+        elif model_name == "medicine-chat":
+            """
+            medicine-chat
+            -------------
+
+                - Model Type: LLaMA (Large Language Model Meta AI)
+
+                - Parameters: 7 billion (7B)
+
+                - Description:
+                    The Medicine-Chat model is a specialized version of the Llama-2-7B model,
+                    optimized for medical and healthcare-related text generation tasks.
+            """
+
+            logger.info("Loading medicine-chat model locally")
+            try:
+                llm = LlamaCppGenerator(
+                    model=hf_hub_download(**local_models["medicine-chat"]),
+                    n_ctx=0,
+                    n_batch=512,
+                    model_kwargs={"n_gpu_layers": device, "verbose": True},
+                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
+                )
+            except Exception as e:
+                logger.error(f"Failed to load medicine-chat: {e}")
+                raise ValueError(f"Failed to load medicine-chat: {e}")
+
+        # ------ Medicine LLM 13B ------
+        # --------------------------
+
+        elif model_name == "medicine-llm-13b":
+            """
+            medicine-llm-13b
+            ----------------
+
+                - Model Type: LLaMA (Large Language Model Meta AI)
+
+                - Parameters: 13 billion (13B)
+
+                - Description:
+                    The Medicine-LLM-13B model is a specialized version of the Llama-3-8B model,
+                    optimized for medical and healthcare-related text generation tasks.
+            """
+
+            logger.info("Loading medicine-llm-13b model locally")
+            try:
+                llm = LlamaCppGenerator(
+                    model=hf_hub_download(**local_models["medicine-llm-13b"]),
+                    n_ctx=0,
+                    n_batch=512,
+                    model_kwargs={"n_gpu_layers": device, "verbose": True},
+                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
+                )
+            except Exception as e:
+                logger.error(f"Failed to load medicine-llm-13b: {e}")
+                raise ValueError(f"Failed to load medicine-llm-13b: {e}")
+
+        # ------ Med-Llama Models ------
+        # --------------------------
+
+        elif model_name == "med-llama-3-8b-v1":
+            """
+            med-llama-3-8b-v1
+            -----------------
+
+                - Model Type: LLaMA (Large Language Model Meta AI)
+
+                - Parameters: 3.8 billion (3.8B)
+
+                - Description:
+                    The Med-Llama-3-8B-v1 model is a specialized version of the Llama-3-8B model,
+                    optimized for medical and healthcare-related text generation tasks.
+            """
+
+            logger.info("Loading med-llama-3-8b-v1 model locally")
+            try:
+                llm = LlamaCppGenerator(
+                    model=hf_hub_download(**local_models["med-llama-3-8b-v1"]),
+                    n_ctx=0,
+                    n_batch=512,
+                    model_kwargs={"n_gpu_layers": device, "verbose": True},
+                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
+                )
+            except Exception as e:
+                logger.error(f"Failed to load med-llama-3-8b-v1: {e}")
+                raise ValueError(f"Failed to load med-llama-3-8b-v1: {e}")
+
+        # ------ Med-Llama Models ------
+        # --------------------------
+
+        elif model_name == "med-llama-3-8b-v2":
+            """
+            med-llama-3-8b-v2
+            -----------------
+
+                - Model Type: LLaMA (Large Language Model Meta AI)
+
+                - Parameters: 3.8 billion (3.8B)
+
+                - Description:
+                    The Med-Llama-3-8B-v2 model is a specialized version of the Llama-3-8B model,
+                    optimized for medical and healthcare-related text generation tasks.
+            """
+
+            logger.info("Loading med-llama-3-8b-v2 model locally")
+            try:
+                llm = LlamaCppGenerator(
+                    model=hf_hub_download(**local_models["med-llama-3-8b-v2"]),
+                    n_ctx=0,
+                    n_batch=512,
+                    model_kwargs={"n_gpu_layers": device, "verbose": True},
+                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
+                )
+            except Exception as e:
+                logger.error(f"Failed to load med-llama-3-8b-v2: {e}")
+                raise ValueError(f"Failed to load med-llama-3-8b-v2: {e}")
+
+        # ------ Med-Llama Models ------
+        # --------------------------
+
+        elif model_name == "med-llama-3-8b-v3":
+            """
+            med-llama-3-8b-v3
+            -----------------
+
+                - Model Type: LLaMA (Large Language Model Meta AI)
+
+                - Parameters: 3.8 billion (3.8B)
+
+                - Description:
+                    The Med-Llama-3-8B-v3 model is a specialized version of the Llama-3-8B model,
+                    optimized for medical and healthcare-related text generation tasks.
+            """
+
+            logger.info("Loading med-llama-3-8b-v3 model locally")
+            try:
+                llm = LlamaCppGenerator(
+                    model=hf_hub_download(**local_models["med-llama-3-8b-v3"]),
+                    n_ctx=0,
+                    n_batch=512,
+                    model_kwargs={"n_gpu_layers": device, "verbose": True},
+                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
+                )
+            except Exception as e:
+                logger.error(f"Failed to load med-llama-3-8b-v3: {e}")
+                raise ValueError(f"Failed to load med-llama-3-8b-v3: {e}")
+
+        # ------ Med-Llama Models ------
+        # --------------------------
+
+        elif model_name == "med-llama-3-8b-v4":
+            """
+            med-llama-3-8b-v4
+            -----------------
+
+                - Model Type: LLaMA (Large Language Model Meta AI)
+
+                - Parameters: 3.8 billion (3.8B)
+
+                - Description:
+                    The Med-Llama-3-8B-v4 model is a specialized version of the Llama-3-8B model,
+                    optimized for medical and healthcare-related text generation tasks.
+            """
+
+            logger.info("Loading med-llama-3-8b-v4 model locally")
+            try:
+                llm = LlamaCppGenerator(
+                    model=hf_hub_download(**local_models["med-llama-3-8b-v4"]),
+                    n_ctx=0,
+                    n_batch=512,
+                    model_kwargs={"n_gpu_layers": device, "verbose": True},
+                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
+                )
+            except Exception as e:
+                logger.error(f"Failed to load med-llama-3-8b-v4: {e}")
+                raise ValueError(f"Failed to load med-llama-3-8b-v4: {e}")
 
         # --------- Information ------------ >
         # ADD MORE MODELS HERE ------->

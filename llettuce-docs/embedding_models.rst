@@ -28,7 +28,7 @@ BGESMALL
         BGE-small has been designed for tasks such as sentence
         embedding, semantic similarity, and information retrieval. 
         
-    - Benifits:
+    - Benefits:
         BGE-small more efficient in terms of speed and memory,
         while still being capable of generating high-quality
         sentence or document embeddings.
@@ -54,7 +54,7 @@ MINILM
         for tasks such as semantic similarity, sentence 
         embeddings, and information retrieval.
         
-    - Benifits:
+    - Benefits:
         The MiniLM variant provides a good trade-off between 
         computational efficiency and performance, making it
         suitable for use cases where speed and resource 
@@ -85,7 +85,7 @@ GTR_T5_BASE
         is based on T5 and optimized for generalization 
         across diverse tasks.
 
-    - Benifits:
+    - Benefits:
         GTR-T5 is highly generalizable across different tasks, scalable
         in size, and efficient for large-scale retrieval with precomputed 
         document embeddings. 
@@ -119,7 +119,7 @@ GTR_T5_LARGE
         enhances performance by offering more capacity for 
         complex semantic understanding.
         
-    - Benifits:
+    - Benefits:
         GTR-T5-Large excels at generalizing across various tasks and domains.
         It is scalable and ideal for handling large datasets while 
         maintaining efficient retrieval. Leveraging T5’s deep 
@@ -156,7 +156,7 @@ E5_BASE
         like semantic search, passage retrieval, document 
         ranking, and clustering.
 
-    - Benifits:
+    - Benefits:
         E5 offers high-quality semantic embeddings that generalize well across
         different domains and tasks. 
         
@@ -192,7 +192,7 @@ E5_LARGE
         but the large version offers greater capacity, 
         improving performance on more complex tasks.
         
-    - Benifits:
+    - Benefits:
         E5-Large provides deeper semantic understanding due to its 
         larger model size, offering improved performance on 
         retrieval tasks across diverse domains. 
@@ -230,7 +230,7 @@ DISTILBERT_BASE_UNCASED
         DistilBERT reduces computational overhead, enabling faster
         inference while retaining high accuracy on most tasks.
         
-    - Benifits:
+    - Benefits:
         DistilBERT is 40% smaller and 60% faster than BERT, requiring 
         fewer resources while retaining 97% of BERT’s performance, 
         making it ideal for efficient deployment and easy 
@@ -260,7 +260,7 @@ DISTILUSE_BASE_MULTILINGUAL
         enabling it to encode text from multiple languages 
         into a shared embedding space.
         
-    - Benifits:
+    - Benefits:
         DistilUSE offers high-quality multilingual embeddings that 
         generalize well across different languages and tasks. 
         
@@ -293,7 +293,7 @@ CONTRIEVER
         effective in domains where no task-specific 
         data is available. 
         
-    - Benifits:
+    - Benefits:
         Contriever excels at unsupervised dense retrieval, offering
         strong zero-shot performance across various domains 
         using contrastive learning, and is highly versatile,
