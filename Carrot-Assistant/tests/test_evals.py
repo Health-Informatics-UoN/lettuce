@@ -1,6 +1,7 @@
 import pytest
-from jinja2 import Environment, Template
+from jinja2 import Environment
 
+from evaluation.eval_tests import LLMPipelineTest
 from evaluation.evaltypes import SingleResultPipeline, SingleResultPipelineTest
 from evaluation.metrics import ExactMatchMetric
 from evaluation.pipelines import LLMPipeline
@@ -90,3 +91,21 @@ class TestBasicLLM:
     def test_returns_string(self, llm_pipeline):
         model_output = llm_pipeline.run({"input_sentence": "Polly wants a cracker"})
         assert isinstance(model_output, str)
+
+    @pytest.fixture
+    def llm_pipeline_test(self, llm_pipeline):
+        return LLMPipelineTest("Parrot Pipeline", llm_pipeline, [ExactMatchMetric()])
+
+    def test_pipeline_called_from_eval_returns_string(self, llm_pipeline_test):
+        model_output = llm_pipeline_test.run_pipeline(
+            {"input_sentence": "Polly wants a cracker"}
+        )
+        assert isinstance(model_output, str)
+
+    def test_llm_pipelinetest_evaluates(self, llm_pipeline_test):
+        model_eval = llm_pipeline_test.evaluate(
+            name="Testing the parrot pipeline",
+            input_data={"input_sentence": "Polly wants a cracker"},
+            expected_output="Polly wants a cracker",
+        )
+        assert isinstance(model_eval, dict)
