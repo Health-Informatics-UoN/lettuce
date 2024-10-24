@@ -48,9 +48,11 @@ class LLMPipeline(SingleResultPipeline):
         prompt = self.prompt_template.render(
             {(v, i) for v, i in zip(self._template_vars, input)}
         )
-        return self._model.create_chat_completion(
+        reply = self._model.create_chat_completion(
             messages=[{"role": "user", "content": prompt}]
         )["choices"][0]["message"]["content"]
+        print(f"Replied {reply} for {input}")
+        return reply
 
     def drop(self):
         del self._model
