@@ -16,3 +16,5 @@ Carrot-Assistant/omop_tmp.py
 RAG/.cache/
 *.qdrant
 /Carrot-Assistant/tests/log
+/Carrot-Assistant/evaluation/datasets/*
+!/Carrot-Assistant/evaluation/datasets/example.csv

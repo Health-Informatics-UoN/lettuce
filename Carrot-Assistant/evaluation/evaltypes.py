@@ -1,18 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Any
-
-
-class EvaluationFramework:
-    def __init__(self, results_file="results.json"):
-        self.results_file = results_file
-
-    def run_evaluations(self):
-        # Run some tests
-        self._save_evaluations
-
-    def _save_evaluations(self):
-        # Append to 'results.json'
-        pass
+import time
+from typing import TypeVar, Generic, Any, List
+import json
+import os
 
 
 class Metric(ABC):
@@ -22,6 +12,14 @@ class Metric(ABC):
     def calculate(self, *args, **kwargs) -> float:
         """
         Calculate the metric value.
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def description(self) -> str:
+        """
+        Description of the metric. Implemented by each class
         """
         pass
 
@@ -37,6 +35,9 @@ class TestPipeline(ABC):
         Run the pipeline
         """
         ...
+
+    def drop(self) -> None:
+        pass
 
 
 M = TypeVar("M", bound=Metric)
@@ -59,6 +60,13 @@ class PipelineTest(Generic[P, M]):
 
     @abstractmethod
     def evaluate(self, *args, **kwargs) -> dict[str, float]:
+        pass
+
+    @property
+    def metric_descriptions(self) -> list[str]:
+        return [metric.description for metric in self.metrics]
+
+    def drop_pipeline(self) -> None:
         pass
 
 
@@ -118,3 +126,119 @@ class SingleResultPipelineTest(PipelineTest[SingleResultPipeline, SingleResultMe
             )
             for metric in self.metrics
         }
+
+
+class EvalDataLoader(ABC):
+    """
+    Provides an abstract base class for loading data for an EvaluationFramework.
+    The methods are left abstract to be implemented as required for different pipeline evaluations.
+    """
+
+    def __init__(self, file_path: str) -> None:
+        """
+        Initialises the EvalDataLoader
+
+        Parameters
+        ----------
+        file_path: str
+            A path to the file to be loaded.
+        """
+        self.file_path = file_path
+
+    @property
+    @abstractmethod
+    def input_data(self) -> Any:
+        """
+        An EvaluationFramework requires an EvalDataLoader to provide input_data, but subclasses must implement it
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def expected_output(self) -> Any:
+        """
+        An EvaluationFramework requires an EvalDataLoader to provide expected_output, but subclasses must implement it
+        """
+        pass
+
+
+class EvaluationFramework:
+    """
+    This class provides a container for running multiple pipeline tests.
+    It loads the data from an EvalDataLoader, runs the specified pipeline tests, and saves the output to a .json file
+    """
+
+    def __init__(
+        self,
+        name: str,
+        pipeline_tests: List[PipelineTest],
+        dataset: EvalDataLoader,
+        description: str,
+        results_path: str = "results.json",
+    ):
+        """
+        Initialises the EvaluationFramework
+
+        Parameters
+        ----------
+        name: str
+            The name of the evaluation experiment, as stored in the output file
+        pipeline_tests: List[PipelineTest]
+            A list of pipeline tests to run for an evaluation
+        dataset: EvalDataLoader
+            An EvalDataLoader for the data used for the pipeline tests
+        description: str
+            A description of the experiment for the output file
+        results_path: str
+            A path pointing to the file for results storage
+        """
+        self.name = name
+        self._pipeline_tests = pipeline_tests
+        self._description = description
+        self._results_path = results_path
+        self.input_data = dataset.input_data
+        self.expected_output = dataset.expected_output
+
+    def run_evaluations(self):
+        """
+        Runs the pipeline tests, storing the results labelled by the name of the pipeline test, then saves to the results file
+        """
+        self.evaluation_results = []
+
+        for pipeline_test in self._pipeline_tests:
+            result = [
+                pipeline_test.evaluate(i, o)
+                for i, o in zip(self.input_data, self.expected_output)
+            ]
+            metric_descriptions = pipeline_test.metric_descriptions
+            self.evaluation_results.append(
+                {
+                    pipeline_test.name: {
+                        "metric_descriptions": metric_descriptions,
+                        "results": result,
+                    }
+                }
+            )
+
+        self._save_evaluations()
+
+    def _save_evaluations(self):
+        """
+        If there is a file in the results_path, loads the json and rewrites it with the current experiment appended. Otherwise, creates a new output file
+        """
+        new_data = {
+            "Experiment": self.name,
+            "Description": self._description,
+            "Time": time.time(),
+            "Results": self.evaluation_results,
+        }
+
+        if os.path.exists(self._results_path):
+            with open(self._results_path, "r") as f:
+                previous_runs = json.load(f)
+            previous_runs.append(new_data)
+        else:
+            previous_runs = [new_data]
+
+        with open(self._results_path, "w") as f:
+            json.dump(previous_runs, f)

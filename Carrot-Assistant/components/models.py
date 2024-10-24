@@ -4,27 +4,32 @@ from haystack_integrations.components.generators.llama_cpp import LlamaCppGenera
 import torch
 
 local_models = {
-        'llama-2-7b-chat': {
-            "repo_id": "TheBloke/Llama-2-7B-Chat-GGUF",
-            "filename": "llama-2-7b-chat.Q4_0.gguf",
-            },
-        'llama-3-8b': {
-            "repo_id": "QuantFactory/Meta-Llama-3-8B-GGUF-v2",
-            "filename": "Meta-Llama-3-8B.Q4_K_M.gguf",
-            },
-        'llama-3-70b': {
-            "repo_id": "QuantFactory/Meta-Llama-3-70B-Instruct-GGUF-v2",
-            "filename": "Meta-Llama-3-70B-Instruct-v2.Q4_K_M.gguf",
-            },
-        'gemma-7b': {
-            "repo_id": "MaziyarPanahi/gemma-7b-GGUF",
-            "filename": "gemma-7b.Q4_K_M.gguf",
-            },
-        "llama-3.1-8b": {
-            "repo_id": "MaziyarPanahi/Meta-Llama-3.1-8B-Instruct-GGUF",
-            "filename": "Meta-Llama-3.1-8B-Instruct.Q4_K_M.gguf",
-            },
-    }
+    "llama-2-7b-chat": {
+        "repo_id": "TheBloke/Llama-2-7B-Chat-GGUF",
+        "filename": "llama-2-7b-chat.Q4_0.gguf",
+    },
+    "llama-3-8b": {
+        "repo_id": "QuantFactory/Meta-Llama-3-8B-GGUF-v2",
+        "filename": "Meta-Llama-3-8B.Q4_K_M.gguf",
+    },
+    "llama-3-70b": {
+        "repo_id": "QuantFactory/Meta-Llama-3-70B-Instruct-GGUF-v2",
+        "filename": "Meta-Llama-3-70B-Instruct-v2.Q4_K_M.gguf",
+    },
+    "gemma-7b": {
+        "repo_id": "MaziyarPanahi/gemma-7b-GGUF",
+        "filename": "gemma-7b.Q4_K_M.gguf",
+    },
+    "llama-3.1-8b": {
+        "repo_id": "MaziyarPanahi/Meta-Llama-3.1-8B-Instruct-GGUF",
+        "filename": "Meta-Llama-3.1-8B-Instruct.Q4_K_M.gguf",
+    },
+    "llama-3.2-3b": {
+        "repo_id": "bartowski/Llama-3.2-3B-Instruct-GGUF",
+        "filename": "Llama-3.2-3B-Instruct-Q6_K_L.gguf",
+    },
+}
+
 
 def get_model(
     model_name: str, temperature: float = 0.7, logger: logging.Logger | None = None
@@ -77,11 +82,11 @@ def get_model(
         finally:
             logger.info("Loading llama-3.1-8b")
             llm = LlamaCppGenerator(
-                    model=hf_hub_download(**local_models[model_name]),
-                    n_ctx=0,
-                    n_batch=512,
-                    model_kwargs={"n_gpu_layers":device, "verbose": True},
-                    generation_kwargs={"max_tokens": 128, "temperature": temperature}
-                    )
+                model=hf_hub_download(**local_models[model_name]),
+                n_ctx=0,
+                n_batch=512,
+                model_kwargs={"n_gpu_layers": device, "verbose": True},
+                generation_kwargs={"max_tokens": 128, "temperature": temperature},
+            )
 
     return llm
