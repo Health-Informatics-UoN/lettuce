@@ -39,14 +39,46 @@ class BaseOptions:
             "--llm_model",
             type=str,
             required=False,
-            default="Llama-3-8B",
+            default="LLAMA_3_8B",
             choices=[
-                "gpt-3.5-turbo-0125",
-                "gpt-4",
-                "llama-2-7B-chat",
-                "Llama-3-8B",
-                "Llama-3-70B",
-                "gemma-7b",
+                "GPT_3_5_TURBO",
+                "GPT_4",
+                "LLAMA_2_7B",
+                "LLAMA_3_8B",
+                "LLAMA_3_70B",
+                "GEMMA_7B",
+                "LLAMA_3_1_8B",
+                "MISTRAL_7B",
+                "GPT_3_5_TURBO",
+                "KUCHIKI_L2_7B",
+                "TINYLLAMA_1_1B_CHAT",
+                "BIOMISTRAL_7B",
+                "QWEN2_5_3B_INSTRUCT",
+                "AIROBOROS_3B",
+                "MEDICINE_CHAT",
+                "MEDICINE_LLM_13B",
+                "MED_LLAMA_3_8B_V1",
+                "MED_LLAMA_3_8B_V2",
+                "MED_LLAMA_3_8B_V3",
+                "MED_LLAMA_3_8B_V4",
+            ],
+        )
+
+        self._parser.add_argument(
+            "--embedding_model",
+            type=str,
+            required=False,
+            default="BGESMALL",
+            choices=[
+                "BGESMALL",
+                "MINILM",
+                "GTR_T5_BASE",
+                "GTR_T5_LARGE",
+                "E5_BASE",
+                "E5_LARGE",
+                "DISTILBERT_BASE_UNCASED",
+                "DISTILUSE_BASE_MULTILINGUAL",
+                "CONTRIEVER",
             ],
         )
 
@@ -61,7 +93,7 @@ class BaseOptions:
         self._parser.add_argument(
             "--informal_names",
             type=str,
-            nargs="+",  
+            nargs="+",
             required=False,
             default=["Omepra", "paracetamol"],
             help="informal medication names",
@@ -69,11 +101,15 @@ class BaseOptions:
 
         self._parser.add_argument(
             "--vocabulary_id",
-            type=lambda s: s.split(','), #  If we want to have multiple vocabularies (which we might) then we can make this lamdba s: s.split(',') and have them separated by commas (I think)
-            #type=str,
+            type=lambda s: s.split(","),
+            #  If we want to have multiple vocabularies (which we might),
+            # then we can make this lamdba s: s.split(','),
+            # and have them separated by commas (I think).
+            # type=str,
             required=False,
             default="RxNorm",
-            help="Vocabulary IDs to be queried. If you want multiple vocabularies to be used, supply a comma separated list",
+            help="Vocabulary IDs to be queried. If you want multiple"
+            "vocabularies to be used, supply a comma separated list",
         )
 
         self._parser.add_argument(
@@ -147,7 +183,7 @@ class BaseOptions:
         self._opt, _ = self._parser.parse_known_args()
 
         args = vars(self._opt)
-        # self._print(args)
+        self._print(args)
 
         return self._opt
 

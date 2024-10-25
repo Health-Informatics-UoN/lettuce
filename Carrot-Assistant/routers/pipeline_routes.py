@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-import asyncio
 from collections.abc import AsyncGenerator
 import json
 from typing import List, Dict, Any
@@ -20,6 +19,7 @@ router = APIRouter()
 
 logger = Logger().make_logger()
 
+
 class PipelineRequest(BaseModel):
     """
     This class takes the format of a request to the API
@@ -29,13 +29,13 @@ class PipelineRequest(BaseModel):
     name: str
         The drug name sent to a pipeline
     pipeline_options: Optional[PipelineOptions]
-        Optionally, the default values can be overridden by instantiating a PipelineOptions object. If none is supplied, default arguments are used
+        Optionally, the default values can be overridden by instantiating
+        a PipelineOptions object. If none is supplied,
+        default arguments are used.
     """
 
     names: List[str]
     pipeline_options: PipelineOptions = Field(default_factory=PipelineOptions)
-
-
 
 
 async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
@@ -59,10 +59,10 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
     ----------
     If the OMOP database returns a match, the LLM is not queried
 
-    If the OMOP database does not return a match, 
-    the LLM is used to find the formal name and the OMOP database is 
+    If the OMOP database does not return a match,
+    the LLM is used to find the formal name and the OMOP database is
     queried for the LLM output.
-    
+
     Finally, the function yields the results for real-time streaming.
 
 
@@ -80,24 +80,23 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
     opt = opt.parse()
 
     print("Received informal names:", informal_names)
-    
+
     # Use LLM to find the formal name and query OMOP for the LLM output
 
     llm_outputs = assistant.run(opt=opt, informal_names=informal_names, logger=logger)
     for llm_output in llm_outputs:
 
-
         print("LLM output for", llm_output["informal_name"], ":", llm_output["reply"])
-        
+
         print("Querying OMOP for LLM output:", llm_output["reply"])
 
         output = {"event": "llm_output", "data": llm_output}
         yield json.dumps(output)
 
-
-    
     omop_output = OMOP_match.run(
-            opt=opt, search_term=[llm_output['reply'] for llm_output in llm_outputs], logger=logger
+        opt=opt,
+        search_term=[llm_output["reply"] for llm_output in llm_outputs],
+        logger=logger,
     )
 
     output = [{"event": "omop_output", "data": result} for result in omop_output]
@@ -112,7 +111,7 @@ async def run_pipeline(request: PipelineRequest) -> EventSourceResponse:
     Parameters
     ----------
     request: PipelineRequest
-        The request containing a list of informal names 
+        The request containing a list of informal names
     Returns
     -------
     EventSourceResponse
@@ -122,7 +121,7 @@ async def run_pipeline(request: PipelineRequest) -> EventSourceResponse:
 
 
 @router.post("/db")
-async def run_db(request: PipelineRequest) -> List[Dict[str,Any]]:
+async def run_db(request: PipelineRequest) -> List[Dict[str, Any]]:
     """
     Fetch OMOP concepts for a name
 
@@ -146,19 +145,24 @@ async def run_db(request: PipelineRequest) -> List[Dict[str,Any]]:
 
     omop_output = OMOP_match.run(opt=opt, search_term=search_terms, logger=logger)
     return [{"event": "omop_output", "content": result} for result in omop_output]
-    
+
+
 @router.post("/vector_search")
 async def run_vector_search(request: PipelineRequest):
     """
     Search a vector database for a name
 
     Default options can be overridden by pipeline_options
-    A warning: if you don't have a vector database set up under the embeddings_path, this method will build one for you. This takes a while, an hour using 2.8 GHz intel I7, 16 Gb RAM.
+    A warning: if you don't have a vector database set up under the
+    embeddings_path, this method will build one for you.
+
+    This takes a while, an hour using 2.8 GHz intel I7, 16 Gb RAM.
 
     Parameters
     ----------
     request: PipelineRequest
-        An API request containing a list of informal names and the options of a pipeline
+        An API request containing a list of informal names and the
+        options of a pipeline.
 
     Returns
     -------
@@ -167,22 +171,27 @@ async def run_vector_search(request: PipelineRequest):
     """
     search_terms = request.names
     embeddings = Embeddings(
-            embeddings_path=request.pipeline_options.embeddings_path,
-            force_rebuild=request.pipeline_options.force_rebuild,
-            embed_vocab=request.pipeline_options.embed_vocab,
-            model_name=request.pipeline_options.embedding_model,
-            search_kwargs=request.pipeline_options.embedding_search_kwargs,
-            )
-    return {'event': 'vector_search_output', 'content': embeddings.search(search_terms)}
+        embeddings_path=request.pipeline_options.embeddings_path,
+        force_rebuild=request.pipeline_options.force_rebuild,
+        embed_vocab=request.pipeline_options.embed_vocab,
+        model_name=request.pipeline_options.embedding_model,
+        search_kwargs=request.pipeline_options.embedding_search_kwargs,
+    )
+    return {"event": "vector_search_output", "content": embeddings.search(search_terms)}
+
 
 @router.post("/vector_llm")
 async def vector_llm_pipeline(request: PipelineRequest) -> List:
     """
     Run a RAG pipeline that first checks a vector database, then uses an LLM
 
-    This has a conditional router in it that checks whether there's an exact match for the term.
+    This has a conditional router in it that checks whether there's
+    an exact match for the term.
+
     If there is an exact match, the vector search results are returned.
-    If there is not, the vector search results are used for retrieval augmented generation
+
+    If there is not, the vector search results are used for retrieval
+    augmented generation.
 
     Parameters
     ----------
@@ -208,29 +217,32 @@ async def vector_llm_pipeline(request: PipelineRequest) -> List:
     start = time.time()
     pl.warm_up()
     logger.info(f"Pipeline warmup in {time.time()-start} seconds")
-    
+
     results = []
     run_start = time.time()
 
     for informal_name in informal_names:
         start = time.time()
         res = pl.run(
-                {
-                    "query_embedder": {"text": informal_name},
-                    "prompt": {"informal_name": informal_name},
-                    },
-                include_outputs_from={"retriever", "llm"},
-                )
-        inference_time = time.time()-start
+            {
+                "query_embedder": {"text": informal_name},
+                "prompt": {"informal_name": informal_name},
+            },
+            include_outputs_from={"retriever", "llm"},
+        )
+        inference_time = time.time() - start
 
         def build_output(informal_name, result, inf_time) -> dict:
             output = {
-                    "informal_name": informal_name,
-                    "inference_time": inf_time,
-                    }
-            if 'llm' in result.keys():
-                output['llm_output'] = result["llm"]["replies"][0].strip()
-            output["vector_search_output"] = [{"content": doc.content, "score": doc.score} for doc in result["retriever"]["documents"]]
+                "informal_name": informal_name,
+                "inference_time": inf_time,
+            }
+            if "llm" in result.keys():
+                output["llm_output"] = result["llm"]["replies"][0].strip()
+            output["vector_search_output"] = [
+                {"content": doc.content, "score": doc.score}
+                for doc in result["retriever"]["documents"]
+            ]
             return output
 
         results.append(build_output(informal_name, res, inference_time))
