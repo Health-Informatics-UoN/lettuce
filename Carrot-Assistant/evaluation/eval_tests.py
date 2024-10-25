@@ -64,3 +64,6 @@ class LLMPipelineTest(SingleResultPipelineTest):
             A dictionary of results from evaluating the pipeline.
         """
         return super().evaluate(input_data, expected_output)
+
+    def drop_pipeline(self) -> None:
+        self.pipeline.drop()
