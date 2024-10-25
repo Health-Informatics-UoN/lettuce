@@ -29,9 +29,9 @@ BGESMALL
         embedding, semantic similarity, and information retrieval. 
         
     - Benefits:
-        BGE-small more efficient in terms of speed and memory,
-        while still being capable of generating high-quality
-        sentence or document embeddings.
+        BGE-small more efficient when compared to larger models
+        in terms of speed and memory, while still being capable 
+        of generating high-quality sentence or document embeddings.
         
     - Research Paper:
         arXiv:2402.03216 
@@ -90,10 +90,8 @@ GTR_T5_BASE
         in size, and efficient for large-scale retrieval with precomputed 
         document embeddings. 
         
-        It leverages the T5 model for deep semantic understanding and 
-        ensures fast retrieval using Approximate Nearest Neighbor 
-        (ANN) search, making it both powerful and efficient 
-        for various retrieval tasks.
+        It is ideal for semantic search, passage retrieval, and 
+        information retrieval tasks across various domains.
         
     - Research Paper:
         ArXiv:abs/2112.07899
@@ -122,10 +120,11 @@ GTR_T5_LARGE
     - Benefits:
         GTR-T5-Large excels at generalizing across various tasks and domains.
         It is scalable and ideal for handling large datasets while 
-        maintaining efficient retrieval. Leveraging T5’s deep 
-        language understanding, it supports fast retrieval with 
-        Approximate Nearest Neighbor (ANN) search, making it 
-        highly effective for large-scale semantic search 
+        maintaining efficient retrieval. 
+        
+        Leveraging T5’s deep 
+        language understanding, it supports other advance search methodolgies,
+        making it highly effective for large-scale semantic search 
         and retrieval tasks.
         
     - Research Paper:
