@@ -9,7 +9,7 @@ from evaluation.evaltypes import (
     SingleResultPipelineTest,
     EvaluationFramework,
 )
-from evaluation.metrics import ExactMatchMetric
+from evaluation.metrics import ExactMatch, PrecisionMetric, RecallMetric, FScoreMetric
 from evaluation.pipelines import LLMPipeline
 from evaluation.eval_data_loaders import SingleInputSimpleCSV
 
@@ -183,3 +183,48 @@ input3,input3"""
         assert len(results) == 2
         assert results[0]["Experiment"] == "Test Experiment"
         assert results[1]["Experiment"] == "Test Experiment"
+
+
+class TestInformationRetrievalMetrics:
+    @pytest.fixture
+    def text_relevant_instances(self):
+        return [
+            "Mrs Doubtfire",
+            "Good Morning, Vietnam",
+            "Patch Adams",
+            "Good Will Hunting",
+            "Aladdin",
+            "Dead Poets Society",
+        ]
+
+    @pytest.fixture
+    def text_retrieved_instances(self):
+        return {
+            "text_prediction_1": [
+                "Mrs Doubtfire",
+                "Good Morning, Vietnam",
+                "Patch Adams",
+                "Good Will Hunting",
+                "Aladdin",
+                "Dead Poets Society",
+            ],
+            "text_prediction_2": [
+                "Mrs Doubtfire",
+                "Good Morning, Vietnam",
+                "Patch Adams",
+            ],
+            "text_prediction_3": [
+                "Mrs Doubtfire",
+                "Good Morning, Vietnam",
+                "Patch Adams",
+                "Good Will Hunting",
+                "Aladdin",
+                "Dead Poets Society",
+                "Walk the Line",
+                "O Brother, Where Art Thou?",
+                "Gladiator",
+                "The Village",
+                "Her",
+                "Inherent Vice",
+            ],
+        }
