@@ -1,8 +1,14 @@
-from evaluation.evaltypes import SingleResultMetric
+from evaluation.evaltypes import SingleResultMetric, InformationRetrievalMetric
 from rapidfuzz import fuzz
 
 
+# ------ Single Result Metrics ------
 class ExactMatch(SingleResultMetric):
+    """
+    A metric checking whether the predicted and desired output match.
+    This doesn't care what the inputs are.
+    """
+
     def __init__(self) -> None:
         self._description = (
             "Exact match: is the predicted response the same as the ground truth"
@@ -31,6 +37,11 @@ class ExactMatch(SingleResultMetric):
 
 
 class UncasedMatch(SingleResultMetric):
+    """
+    A metric for testing whether the predicted and desired outputs are matching strings.
+    Case-insensitive and strips whitespace.
+    """
+
     def __init__(self) -> None:
         self._description = "Uncased match: is the predicted response the same as the ground truth, ignoring character case"
 
@@ -57,12 +68,31 @@ class UncasedMatch(SingleResultMetric):
 
 
 class FuzzyMatchRatio(SingleResultMetric):
+    """
+    A metric that compares predicted strings to desired output.
+
+    Scores are normalised InDel distance
+    """
+
     def __init__(self) -> None:
         self._description = "Fuzzy Match: the normalized indel similarity between predicted and expected output"
 
     def calculate(self, predicted: str, actual: str) -> float:
+        """
+        Calculates the Fuzzy Match Ratio metric
+
+        Parameters
+        ----------
+        predicted: str
+            String output from a SingleResultPipeline
+        actual: str
+            Ground truth, the string the pipeline is trying to predict
+        """
         return fuzz.ratio(predicted.lower(), actual.lower())
 
     @property
     def description(self):
         return self._description
+
+
+# -------- Information Retrieval Metrics --------
