@@ -1,4 +1,5 @@
 from evaluation.evaltypes import SingleResultMetric
+from rapidfuzz import fuzz
 
 
 class ExactMatch(SingleResultMetric):
@@ -48,8 +49,20 @@ class UncasedMatch(SingleResultMetric):
         1 if the predicted and actual outputs match exactly, 0 otherwise
         """
         # We have to do this because the input has to be wrapped in a list for compatibility with prompt templates
-        return float(predicted.lower() == actual.lower())
+        return float(predicted.lower().strip() == actual.lower().strip())
 
     @property
     def description(self) -> str:
+        return self._description
+
+
+class FuzzyMatchRatio(SingleResultMetric):
+    def __init__(self) -> None:
+        self._description = "Fuzzy Match: the normalized indel similarity between predicted and expected output"
+
+    def calculate(self, predicted: str, actual: str) -> float:
+        return fuzz.ratio(predicted.lower(), actual.lower())
+
+    @property
+    def description(self):
         return self._description
