@@ -4,6 +4,7 @@ import json
 from typing import List, Dict, Any
 import time
 
+from options import pipeline_options
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 
@@ -207,18 +208,8 @@ async def vector_llm_pipeline(request: PipelineRequest) -> List:
     list
     """
     informal_names = request.names
-    opt = BaseOptions()
-    opt.initialize()
-    parse_pipeline_args(opt, request.pipeline_options)
-    opt = opt.parse()
-    # I think this is what they call technical debt
-    opt.embeddings_path = request.pipeline_options.embeddings_path
-    opt.force_rebuild = request.pipeline_options.force_rebuild
-    opt.embed_vocab = request.pipeline_options.embed_vocab
-    opt.embedding_model = request.pipeline_options.embedding_model
-    opt.embedding_search_kwargs = request.pipeline_options.embedding_search_kwargs
 
-    pl = llm_pipeline(opt=opt, logger=logger).get_rag_assistant()
+    pl = llm_pipeline(**request.pipeline_options, logger=logger).get_rag_assistant()
     start = time.time()
     pl.warm_up()
     logger.info(f"Pipeline warmup in {time.time()-start} seconds")
