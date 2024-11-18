@@ -4,16 +4,14 @@ import json
 from typing import List, Dict, Any
 import time
 
-from options import pipeline_options
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 
 import assistant
 from omop import OMOP_match
-from options.base_options import BaseOptions
 from components.embeddings import Embeddings
 from components.pipeline import llm_pipeline
-from options.pipeline_options import PipelineOptions, parse_pipeline_args
+from options.pipeline_options import PipelineOptions
 from utils.logging_utils import logger
 
 router = APIRouter()
