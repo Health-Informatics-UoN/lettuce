@@ -62,7 +62,7 @@ class TestExactMatch:
             test.evaluate(input_data, expected_output)
             for input_data, expected_output in dataset
         ]
-        exact_match_results = [result["ExactMatchMetric"] for result in results]
+        exact_match_results = [result["ExactMatch"] for result in results]
         return sum(exact_match_results) / len(exact_match_results)
 
     def test_all_match(self, exact_match_test, all_match_dataset):
