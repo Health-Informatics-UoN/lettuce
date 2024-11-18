@@ -9,7 +9,7 @@ from haystack_integrations.components.embedders.fastembed import (
     FastembedTextEmbedder,
 )
 import os
-from os import environ
+from os import PathLike, environ
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from typing import Any, List, Dict
@@ -141,7 +141,7 @@ class Embeddings:
 
     def __init__(
         self,
-        embeddings_path: str,
+        embeddings_path: PathLike,
         force_rebuild: bool,
         embed_vocab: List[str],
         model_name: EmbeddingModelName,

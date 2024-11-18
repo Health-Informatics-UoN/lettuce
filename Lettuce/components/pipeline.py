@@ -1,14 +1,15 @@
-import argparse
 import logging
+from os import PathLike
 import time
 from typing import List, Dict
 
 from haystack import Pipeline
 from haystack.components.routers import ConditionalRouter
 
-from components.embeddings import Embeddings
+from components.embeddings import Embeddings, EmbeddingModel
 from components.models import get_model
 from components.prompt import Prompts
+from options.pipeline_options import LLMModel
 
 
 class llm_pipeline:
@@ -17,7 +18,15 @@ class llm_pipeline:
     """
 
     def __init__(
-        self, opt: argparse.Namespace, logger: logging.Logger | None = None
+        self,
+        llm_model: LLMModel,
+        temperature: float,
+        logger: logging.Logger,
+        embeddings_path: PathLike,
+        force_rebuild: bool,
+        embed_vocab: list[str],
+        embedding_model: EmbeddingModel,
+        embedding_search_kwargs: dict,
     ) -> None:
         """
         Initializes the llm_pipeline class
@@ -29,13 +38,14 @@ class llm_pipeline:
         logger: logging.Logger|None
             Logger for the pipeline
         """
-        self._opt = opt
-        self._model_name = opt.llm_model
+        self._model = llm_model
         self._logger = logger
-        if "llama-3.1" in opt.llm_model:
-            self._eot_token = "<|eot_id|>"
-        else:
-            self._eot_token = ""
+        self._temperature = temperature
+        self._embeddings_path = embeddings_path
+        self._force_rebuild = force_rebuild
+        self._embed_vocab = embed_vocab
+        self._embedding_model = embedding_model
+        self._embedding_search_kwargs = embedding_search_kwargs
 
     def get_simple_assistant(self) -> Pipeline:
         """
@@ -53,16 +63,14 @@ class llm_pipeline:
 
         pipeline.add_component(
             "prompt",
-            Prompts(
-                model_name=self._model_name, eot_token=self._eot_token
-            ).get_prompt(),
+            Prompts(model_name=self._model).get_prompt(),
         )
         self._logger.info(f"Prompt added to pipeline in {time.time()-start} seconds")
         start = time.time()
 
         llm = get_model(
-            model_name=self._model_name,
-            temperature=self._opt.temperature,
+            model=self._model,
+            temperature=self._temperature,
             logger=self._logger,
         )
         pipeline.add_component("llm", llm)
@@ -89,11 +97,11 @@ class llm_pipeline:
         start = time.time()
 
         vec_search = Embeddings(
-            embeddings_path=self._opt.embeddings_path,
-            force_rebuild=self._opt.force_rebuild,
-            embed_vocab=self._opt.embed_vocab,
-            model_name=self._opt.embedding_model,
-            search_kwargs=self._opt.embedding_search_kwargs,
+            embeddings_path=self._embeddings_path,
+            force_rebuild=self._force_rebuild,
+            embed_vocab=self._embed_vocab,
+            model_name=self._embedding_model,
+            search_kwargs=self._embedding_search_kwargs,
         )
 
         vec_embedder = vec_search.get_embedder()
@@ -115,8 +123,8 @@ class llm_pipeline:
             ]
         )
         llm = get_model(
-            model_name=self._model_name,
-            temperature=self._opt.temperature,
+            model=self._model,
+            temperature=self._temperature,
             logger=self._logger,
         )
 
@@ -126,9 +134,8 @@ class llm_pipeline:
         pipeline.add_component(
             "prompt",
             Prompts(
-                model_name=self._model_name,
+                model_name=self._model,
                 prompt_type="top_n_RAG",
-                eot_token=self._eot_token,
             ).get_prompt(),
         )
         pipeline.add_component("llm", llm)
