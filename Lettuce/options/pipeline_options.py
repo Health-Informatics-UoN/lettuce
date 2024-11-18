@@ -30,6 +30,11 @@ class LLMModel(str, Enum):
     MED_LLAMA_3_8B_V3 = "med-llama-3-8b-v3"
     MED_LLAMA_3_8B_V4 = "med-llama-3-8b-v4"
 
+    def get_eot_token(self) -> str:
+        if self.name in ["llama-3.1-8b"]:
+            return "<|eot_id|>"
+        return ""
+
 
 class PipelineOptions(BaseModel):
     """
