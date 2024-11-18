@@ -1,12 +1,11 @@
-import logging
-from os import PathLike
+from logging import Logger
 import time
 from typing import List, Dict
 
 from haystack import Pipeline
 from haystack.components.routers import ConditionalRouter
 
-from components.embeddings import Embeddings, EmbeddingModel
+from components.embeddings import Embeddings, EmbeddingModelName
 from components.models import get_model
 from components.prompt import Prompts
 from options.pipeline_options import LLMModel
@@ -21,12 +20,12 @@ class llm_pipeline:
         self,
         llm_model: LLMModel,
         temperature: float,
-        logger: logging.Logger,
-        embeddings_path: PathLike,
-        force_rebuild: bool,
-        embed_vocab: list[str],
-        embedding_model: EmbeddingModel,
-        embedding_search_kwargs: dict,
+        logger: Logger,
+        embeddings_path: str = "",
+        force_rebuild: bool = False,
+        embed_vocab: list[str] = [],
+        embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL,
+        embedding_search_kwargs: dict = {},
     ) -> None:
         """
         Initializes the llm_pipeline class
@@ -63,7 +62,7 @@ class llm_pipeline:
 
         pipeline.add_component(
             "prompt",
-            Prompts(model_name=self._model).get_prompt(),
+            Prompts(model=self._model).get_prompt(),
         )
         self._logger.info(f"Prompt added to pipeline in {time.time()-start} seconds")
         start = time.time()
@@ -134,7 +133,7 @@ class llm_pipeline:
         pipeline.add_component(
             "prompt",
             Prompts(
-                model_name=self._model,
+                model=self._model,
                 prompt_type="top_n_RAG",
             ).get_prompt(),
         )

@@ -121,3 +121,6 @@ class Logger(object):
             logger.addHandler(c_handler)
 
         return logger
+
+
+logger = Logger().make_logger()

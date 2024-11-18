@@ -1,18 +1,18 @@
-import argparse
+from logging import Logger
 import time
 
 from dotenv import load_dotenv
 
 from components.pipeline import llm_pipeline
-from utils.logging_utils import Logger
-from utils.utils import *
+from options.pipeline_options import LLMModel
 
 
 def run(
-    opt: argparse.Namespace = None,
-    informal_names: list[str] = None,
-    logger: Logger | None = None,
-) -> list[dict] | None:
+    llm_model: LLMModel,
+    temperature: float,
+    informal_names: list[str],
+    logger: Logger,
+) -> list[dict]:
     """
     Run the LLM assistant to suggest a formal drug name for an informal medicine name
 
@@ -38,13 +38,15 @@ def run(
     """
     run_start = time.time()
     load_dotenv()
-    if logger is None:
-        logger = Logger().make_logger()
 
-    if not informal_names:
-        return
-
-    pipeline = llm_pipeline(opt=opt, logger=logger).get_simple_assistant()
+    pipeline = llm_pipeline(
+        llm_model=llm_model,
+        temperature=temperature,
+        logger=logger,
+    )
+    pipeline = llm_pipeline(
+        llm_model=llm_model, temperature=temperature, logger=logger
+    ).get_simple_assistant()
     start = time.time()
     pipeline.warm_up()
     logger.info(f"Pipeline warmup in {time.time()-start} seconds")
@@ -71,7 +73,13 @@ def run(
 
 if __name__ == "__main__":
     from options.base_options import BaseOptions
+    from utils.logging_utils import logger
 
     opt = BaseOptions().parse()
     informal_names = opt.informal_names
-    run(opt=opt, informal_names=informal_names)
+    run(
+        llm_model=opt.LLMModel,
+        temperature=opt.temperature,
+        informal_names=informal_names,
+        logger=logger,
+    )
