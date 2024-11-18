@@ -18,8 +18,10 @@ def run(
 
     Parameters
     ----------
-    opt: argparse.Namespace
-        The options for the assistant
+    llm_model: LLMModel
+        Choice of model to run
+    temperature: float
+        Temperature to use for generation
     informal_names: list[str]
         The informal names of the medications
     logger: Logger

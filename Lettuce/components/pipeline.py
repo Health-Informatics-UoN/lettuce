@@ -32,10 +32,32 @@ class llm_pipeline:
 
         Parameters
         ----------
-        opt: argparse.Namespace
-            Namespace containing the options for the pipeline
+        llm_model: LLMModel
+            The choice of LLM to run the pipeline
+
+        temperature: float
+            The temperature the LLM uses for generation
+
         logger: logging.Logger|None
             Logger for the pipeline
+
+        embeddings_path: str
+            A path for the embeddings database. If one is not found,
+            it will be built, which takes a long time. This is built
+            from concepts fetched from the OMOP database.
+
+        force_rebuild: bool
+            If true, the embeddings database will be rebuilt.
+
+        embed_vocab: List[str]
+            A list of OMOP vocabulary_ids. If the embeddings database is
+            built, these will be the vocabularies used in the OMOP query.
+
+        embedding_model: EmbeddingModel
+            The model used to create embeddings.
+
+        embedding_search_kwargs: dict
+            kwargs for vector search.
         """
         self._model = llm_model
         self._logger = logger

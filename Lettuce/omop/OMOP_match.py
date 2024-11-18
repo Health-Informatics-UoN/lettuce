@@ -1,7 +1,6 @@
 import re
 from os import environ
 from urllib.parse import quote_plus
-import argparse
 from typing import List
 
 import pandas as pd
@@ -463,8 +462,20 @@ def run(
 
     Parameters
     ----------
-    opt: argparse.Namespace
-        Base options including the arguments relevant for OMOPMatcher methods
+    vocabulary_id: list[str]
+        A list of vocabularies to use for search
+    concept_ancestor: bool
+        Whether to return ancestor concepts in the result
+    concept_relationship: bool
+        Whether to return related concepts in the result
+    concept_synonym: bool
+        Whether to explore concept synonyms in the result
+    search_threshold: int
+        The fuzzy match threshold for results
+    max_separation_descendant: int
+        The maximum separation between a base concept and its descendants
+    max_separation_ancestor: int
+        The maximum separation between a base concept and its ancestors
     search_term: str
         The name of a drug to use in queries to the OMOP database
     logger: Logger
