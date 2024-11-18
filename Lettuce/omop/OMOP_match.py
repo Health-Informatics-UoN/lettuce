@@ -445,15 +445,15 @@ class OMOPMatcher:
 
 
 def run(
-    vocabulary_id: list[str],
-    concept_ancestor: bool,
-    concept_relationship: bool,
-    concept_synonym: bool,
-    search_threshold: int,
-    max_separation_descendant: int,
-    max_separation_ancestor: int,
     search_term: List[str],
     logger: Logger,
+    vocabulary_id: list[str],
+    search_threshold: int = 80,
+    concept_ancestor: bool = False,
+    concept_relationship: bool = False,
+    concept_synonym: bool = False,
+    max_separation_descendant: int = 1,
+    max_separation_ancestor: int = 1,
 ):
     """
     Runs queries against the OMOP database

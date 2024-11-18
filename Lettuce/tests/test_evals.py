@@ -9,7 +9,7 @@ from evaluation.evaltypes import (
     SingleResultPipelineTest,
     EvaluationFramework,
 )
-from evaluation.metrics import ExactMatchMetric
+from evaluation.metrics import ExactMatch
 from evaluation.pipelines import LLMPipeline
 from evaluation.eval_data_loaders import SingleInputSimpleCSV
 
@@ -23,7 +23,7 @@ class IdentityPipeline(SingleResultPipeline):
 
 class ExactMatchTest(SingleResultPipelineTest):
     def __init__(self, name: str, pipeline: SingleResultPipeline):
-        super().__init__(name, pipeline, [ExactMatchMetric()])
+        super().__init__(name, pipeline, [ExactMatch()])
 
     def run_pipeline(self, input_data):
         return self.pipeline.run(input_data)
@@ -37,7 +37,7 @@ class TestExactMatch:
     @pytest.fixture
     def exact_match_test(self, identity_pipeline):
         return SingleResultPipelineTest(
-            "Exact Match Test", identity_pipeline, [ExactMatchMetric()]
+            "Exact Match Test", identity_pipeline, [ExactMatch()]
         )
 
     @pytest.fixture
@@ -93,7 +93,9 @@ class TestBasicLLM:
 
     @pytest.fixture
     def llm_pipeline(self, llm_prompt):
-        return LLMPipeline(LLMModel.LLAMA_3_1_8B, llm_prompt)
+        return LLMPipeline(
+            LLMModel.LLAMA_3_1_8B, llm_prompt, template_vars=["input_sentence"]
+        )
 
     def test_returns_string(self, llm_pipeline):
         model_output = llm_pipeline.run({"input_sentence": "Polly wants a cracker"})
@@ -101,7 +103,7 @@ class TestBasicLLM:
 
     @pytest.fixture
     def llm_pipeline_test(self, llm_pipeline):
-        return LLMPipelineTest("Parrot Pipeline", llm_pipeline, [ExactMatchMetric()])
+        return LLMPipelineTest("Parrot Pipeline", llm_pipeline, [ExactMatch()])
 
     def test_pipeline_called_from_eval_returns_string(self, llm_pipeline_test):
         model_output = llm_pipeline_test.run_pipeline(
@@ -127,7 +129,7 @@ class TestEvaluationFramework:
         return SingleResultPipelineTest(
             name="Exact Match Test",
             pipeline=identity_pipeline,
-            metrics=[ExactMatchMetric()],
+            metrics=[ExactMatch()],
         )
 
     @pytest.fixture(scope="session")
