@@ -84,7 +84,7 @@ class Logger(object):
         Parameters
         ----------
         None
-        
+
         Returns
         -------
         None

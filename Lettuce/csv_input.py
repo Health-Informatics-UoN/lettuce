@@ -2,20 +2,24 @@ import streamlit as st
 import json
 import sseclient
 import pandas as pd
-from ui_utilities import display_concept_info, stream_message, capitalize_words, make_api_call
+from ui_utilities import (
+    display_concept_info,
+    stream_message,
+    capitalize_words,
+    make_api_call,
+)
 
 input = st.file_uploader(
-        label="Upload a csv file with a column containing the informal names of medications",
-        type="csv",
-        )
+    label="Upload a csv file with a column containing the informal names of medications",
+    type="csv",
+)
 
 if input is not None:
     df = pd.read_csv(input)
     st.dataframe(df)
     meds_column = st.selectbox(
-            label="Choose the column containing the informal names",
-            options=df.columns
-            )
+        label="Choose the column containing the informal names", options=df.columns
+    )
     informal_names = df[meds_column]
     with st.expander("Search options"):
         skip_llm = st.checkbox("Ask the LLM first?", value=True)
@@ -23,7 +27,9 @@ if input is not None:
     if st.button("Send"):
         names_list = [capitalize_words(name.strip()) for name in informal_names]
         with st.spinner("Processing..."):
-            result_stream: sseclient.SSEClient = make_api_call(names_list, skip_llm, vocab_id)
+            result_stream: sseclient.SSEClient = make_api_call(
+                names_list, skip_llm, vocab_id
+            )
             # Stream the results
             for event in result_stream.events():
                 response = json.loads(event.data)
@@ -52,6 +58,3 @@ if input is not None:
                                     expanded=True,
                                 ):
                                     display_concept_info(concept)
-
-
-
