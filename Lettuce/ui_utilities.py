@@ -4,6 +4,7 @@ import time
 import requests
 from options.pipeline_options import PipelineOptions
 
+
 def display_concept_info(concept: dict) -> None:
     """
     Display the concept information.
@@ -45,6 +46,7 @@ def display_concept_info(concept: dict) -> None:
         for relationship in concept["CONCEPT_RELATIONSHIP"]:
             stream_message(f"<p style='color: #EA4335;'>- {relationship}</p>")
 
+
 def stream_message(message: str) -> None:
     """
     Stream a message to the user, rendering HTML with a typewriter effect
@@ -81,7 +83,9 @@ def capitalize_words(s: str) -> str:
     return " ".join(capitalized_words)
 
 
-def make_api_call(names: list[str], skip_llm: bool, vocab_id: str | None) -> sseclient.SSEClient:
+def make_api_call(
+    names: list[str], skip_llm: bool, vocab_id: str | None
+) -> sseclient.SSEClient:
     """
     Make a call to the Lettuce API to retrieve OMOP concepts.
 
@@ -103,5 +107,3 @@ def make_api_call(names: list[str], skip_llm: bool, vocab_id: str | None) -> sse
     data = {"names": names, "pipeline_options": pipe_opts.model_dump()}
     response = requests.post(url, headers=headers, json=data, stream=True)
     return sseclient.SSEClient(response)
-
-

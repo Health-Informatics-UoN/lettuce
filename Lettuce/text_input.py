@@ -1,5 +1,10 @@
 import json
-from ui_utilities import display_concept_info, stream_message, capitalize_words, make_api_call
+from ui_utilities import (
+    display_concept_info,
+    stream_message,
+    capitalize_words,
+    make_api_call,
+)
 import sseclient
 import streamlit as st
 
@@ -29,7 +34,9 @@ if st.button("Send"):
             capitalize_words(name.strip()) for name in informal_names.split(",")
         ]
         with st.spinner("Processing..."):
-            result_stream: sseclient.SSEClient = make_api_call(names_list, skip_llm, vocab_id)
+            result_stream: sseclient.SSEClient = make_api_call(
+                names_list, skip_llm, vocab_id
+            )
 
             # Stream the results
             for event in result_stream.events():

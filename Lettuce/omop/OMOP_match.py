@@ -8,8 +8,8 @@ import pandas as pd
 from dotenv import load_dotenv
 from rapidfuzz import fuzz
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker 
-from omop.omop_models import  build_query
+from sqlalchemy.orm import sessionmaker
+from omop.omop_models import build_query
 
 from utils.logging_utils import Logger
 from omop.preprocess import preprocess_search_term
@@ -66,7 +66,7 @@ class OMOPMatcher:
         search_threshold: int = 0,
         max_separation_descendant: int = 1,
         max_separation_ancestor: int = 1,
-    ) -> list :
+    ) -> list:
         # As all this does is call fetch_OMOP_concepts, maybe everything but search_terms should be put into kwargs
 
         """
@@ -157,7 +157,7 @@ class OMOPMatcher:
 
         Runs queries against the OMOP database
         If concept_synonym != 'y', then a query is run that queries the concept table alone. If concept_synonym == 'y', then this search is expanded to the concept_synonym table.
-        
+
         Any concepts returned by the query are then filtered by fuzzy string matching. Any concepts satisfying the concept threshold are returned.
 
         If the concept_ancestor and concept_relationship arguments are 'y', the relevant methods are called on these concepts and the result added to the output.
@@ -188,7 +188,9 @@ class OMOPMatcher:
         list | None
             A list of search results from the OMOP database if the query comes back with results, otherwise returns None
         """
-        query = build_query(preprocess_search_term(search_term), vocabulary_id, concept_synonym)
+        query = build_query(
+            preprocess_search_term(search_term), vocabulary_id, concept_synonym
+        )
         Session = sessionmaker(self.engine)
         session = Session()
         results = session.execute(query).fetchall()
@@ -271,26 +273,33 @@ class OMOPMatcher:
                         )
                         if syn_name is not None
                     ],
-                    "CONCEPT_ANCESTOR": self.fetch_concept_ancestor(
-                        row["concept_id"],
-                        max_separation_descendant,
-                        max_separation_ancestor,
-                    )
-                    if concept_ancestor == "y"
-                    else [],
-                    "CONCEPT_RELATIONSHIP": self.fetch_concept_relationship(
-                        row["concept_id"]
-                    )
-                    if concept_relationship == "y"
-                    else [],
+                    "CONCEPT_ANCESTOR": (
+                        self.fetch_concept_ancestor(
+                            row["concept_id"],
+                            max_separation_descendant,
+                            max_separation_ancestor,
+                        )
+                        if concept_ancestor == "y"
+                        else []
+                    ),
+                    "CONCEPT_RELATIONSHIP": (
+                        self.fetch_concept_relationship(row["concept_id"])
+                        if concept_relationship == "y"
+                        else []
+                    ),
                 }
                 for _, row in grouped_results.iterrows()
             ]
 
-    def fetch_concept_ancestor(self, concept_id: str, max_separation_descendant: int, max_separation_ancestor: int):
+    def fetch_concept_ancestor(
+        self,
+        concept_id: str,
+        max_separation_descendant: int,
+        max_separation_ancestor: int,
+    ):
         """
         Fetch concept ancestor for a given concept_id
-        
+
         Queries the OMOP database's ancestor table to find ancestors for the concept_id provided within the constraints of the degrees of separation provided.
 
         Parameters
@@ -389,12 +398,12 @@ class OMOPMatcher:
     def fetch_concept_relationship(self, concept_id):
         """
         Fetch concept relationship for a given concept_id
-        
+
         Queries the concept_relationship table of the OMOP database to find the relationship between concepts
 
         Parameters
         ----------
-        
+
         concept_id: str
             An id for a concept provided to the query for finding concept relationships
 

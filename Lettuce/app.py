@@ -21,9 +21,9 @@ app.add_middleware(
 )
 
 app.include_router(
-        router=pipeline_routes.router,
-        prefix="/pipeline",
-        )
+    router=pipeline_routes.router,
+    prefix="/pipeline",
+)
 
 
 if __name__ == "__main__":
