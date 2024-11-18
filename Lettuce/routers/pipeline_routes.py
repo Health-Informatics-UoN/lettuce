@@ -94,7 +94,13 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
         yield json.dumps(output)
 
     omop_output = OMOP_match.run(
-        opt=opt,
+        vocabulary_id=pipeline_opts.vocabulary_id,
+        concept_ancestor=pipeline_opts.concept_ancestor,
+        concept_relationship=pipeline_opts.concept_relationship,
+        concept_synonym=pipeline_opts.concept_synonym,
+        search_threshold=pipeline_opts.search_threshold,
+        max_separation_descendant=pipeline_opts.max_separation_descendants,
+        max_separation_ancestor=pipeline_opts.max_separation_ancestor,
         search_term=[llm_output["reply"] for llm_output in llm_outputs],
         logger=logger,
     )
@@ -138,12 +144,19 @@ async def run_db(request: PipelineRequest) -> List[Dict[str, Any]]:
         Details of OMOP concept(s) fetched from a database query
     """
     search_terms = request.names
-    opt = BaseOptions()
-    opt.initialize()
-    parse_pipeline_args(opt, request.pipeline_options)
-    opt = opt.parse()
+    pipeline_opts = request.pipeline_options
 
-    omop_output = OMOP_match.run(opt=opt, search_term=search_terms, logger=logger)
+    omop_output = OMOP_match.run(
+        vocabulary_id=pipeline_opts.vocabulary_id,
+        concept_ancestor=pipeline_opts.concept_ancestor,
+        concept_relationship=pipeline_opts.concept_relationship,
+        concept_synonym=pipeline_opts.concept_synonym,
+        search_threshold=pipeline_opts.search_threshold,
+        max_separation_descendant=pipeline_opts.max_separation_descendants,
+        max_separation_ancestor=pipeline_opts.max_separation_ancestor,
+        search_term=search_terms,
+        logger=logger,
+    )
     return [{"event": "omop_output", "content": result} for result in omop_output]
 
 
