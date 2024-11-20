@@ -24,8 +24,7 @@ class Prompts:
         # I hate how the triple-quoted strings look, but if you indent them they preserve the indentation. You can use textwrap.dedent to solve it, but that's not pleasing either.
         # modify this so it only adds the EOT token for llama 3.1
         self._prompt_templates = {
-            "simple": """
-You will be given the informal name of a medication. Respond only with the formal name of that medication, without any extra explanation.
+            "simple": """You will be given the informal name of a medication. Respond only with the formal name of that medication, without any extra explanation.
 
 Examples:
 
@@ -43,10 +42,8 @@ Response: Naproxen
 
 Task:
 
-Informal name: {{informal_name}}
-""",
-            "top_n_RAG": """
-You are an assistant that suggests formal RxNorm names for a medication. You will be given the name of a medication, along with some possibly related RxNorm terms. If you do not think these terms are related, ignore them when making your suggestion.
+Informal name: {{informal_name}}""",
+            "top_n_RAG": """You are an assistant that suggests formal RxNorm names for a medication. You will be given the name of a medication, along with some possibly related RxNorm terms. If you do not think these terms are related, ignore them when making your suggestion.
 
 Respond only with the formal name of the medication, without any extra explanation.
 
@@ -68,8 +65,7 @@ Possible related terms:
 {% endfor %}
 
 Task:
-Informal name: {{informal_name}}
-""",
+Informal name: {{informal_name}}""",
         }
 
     def get_prompt(self) -> PromptBuilder:

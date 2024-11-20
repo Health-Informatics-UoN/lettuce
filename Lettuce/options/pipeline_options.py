@@ -1,7 +1,6 @@
 from enum import Enum
 from pydantic import BaseModel
 from components.embeddings import EmbeddingModelName
-from options.base_options import BaseOptions
 
 
 class LLMModel(str, Enum):
@@ -31,7 +30,7 @@ class LLMModel(str, Enum):
     MED_LLAMA_3_8B_V4 = "med-llama-3-8b-v4"
 
     def get_eot_token(self) -> str:
-        if self.value in ["llama-3.1-8b"]:
+        if self.value in ["llama-3.1-8b", "llama-3-8b"]:
             return "<|eot_id|>"
         return ""
 
@@ -92,31 +91,3 @@ class PipelineOptions(BaseModel):
     embed_vocab: list[str] = ["RxNorm", "RxNorm Extension"]
     embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL
     embedding_search_kwargs: dict = {}
-
-
-def parse_pipeline_args(base_options: BaseOptions, options: PipelineOptions) -> None:
-    """
-    Use the values of a PipelineOptions object to override defaults
-
-    Parameters
-    ----------
-    base_options: BaseOptions
-        The base options from the command-line application
-    options: PipelineOptions
-        Overrides from an API request
-
-    Returns
-    -------
-    None
-    """
-    base_options._parser.set_defaults(
-        llm_model=options.llm_model.value,
-        temperature=options.temperature,
-        vocabulary_id=options.vocabulary_id,
-        concept_ancestor="y" if options.concept_ancestor else "n",
-        concept_relationship="y" if options.concept_relationship else "n",
-        concept_synonym="y" if options.concept_synonym else "n",
-        search_threshold=options.search_threshold,
-        max_separation_descendants=options.max_separation_descendants,
-        max_separation_ancestor=options.max_separation_ancestor,
-    )

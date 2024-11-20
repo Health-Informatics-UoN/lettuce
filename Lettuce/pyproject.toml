@@ -5,10 +5,16 @@ description = "An LLM assistant for mapping OMOP concepts"
 authors = ["BRC, University of Nottingham"]
 license = "MIT"
 readme = "README.md"
+package-mode = true
+packages = [
+  { include = "components" },
+  { include = "options" },
+  { include = "utils" }
+]
 
 [tool.poetry.dependencies]
 python = ">=3.12, <3.13"
-haystack-ai = "^2.4.0"
+haystack-ai = "^2.7.0"
 huggingface-hub = "^0.24.6"
 numpy = "1.26.4"
 python-dotenv = "^1.0.1"
@@ -23,7 +29,7 @@ rapidfuzz = "^3.9.6"
 SQLAlchemy = "^2.0.32"
 sseclient-py = "^1.8.0"
 fastembed-haystack = "^1.2.0"
-qdrant-haystack = "^4.1.2"
+qdrant-haystack = "^7.0.0"
 torch = "2.2"
 pytest = "^8.3.3"
 
@@ -31,3 +37,6 @@ pytest = "^8.3.3"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+lettuce-cli = "cli:main"

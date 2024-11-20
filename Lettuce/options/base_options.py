@@ -1,5 +1,7 @@
 import argparse
 from typing import Dict
+from components.embeddings import EmbeddingModelName
+from options.pipeline_options import LLMModel
 
 
 class BaseOptions:
@@ -39,47 +41,16 @@ class BaseOptions:
             "--llm_model",
             type=str,
             required=False,
-            default="LLAMA_3_8B",
-            choices=[
-                "GPT_3_5_TURBO",
-                "GPT_4",
-                "LLAMA_2_7B",
-                "LLAMA_3_8B",
-                "LLAMA_3_70B",
-                "GEMMA_7B",
-                "LLAMA_3_1_8B",
-                "MISTRAL_7B",
-                "GPT_3_5_TURBO",
-                "KUCHIKI_L2_7B",
-                "TINYLLAMA_1_1B_CHAT",
-                "BIOMISTRAL_7B",
-                "QWEN2_5_3B_INSTRUCT",
-                "AIROBOROS_3B",
-                "MEDICINE_CHAT",
-                "MEDICINE_LLM_13B",
-                "MED_LLAMA_3_8B_V1",
-                "MED_LLAMA_3_8B_V2",
-                "MED_LLAMA_3_8B_V3",
-                "MED_LLAMA_3_8B_V4",
-            ],
+            default="LLAMA_3_1_8B",
+            choices=[llm.name for llm in LLMModel],
         )
 
         self._parser.add_argument(
             "--embedding_model",
-            type=str,
+            type=lambda s: EmbeddingModelName[s],
             required=False,
             default="BGESMALL",
-            choices=[
-                "BGESMALL",
-                "MINILM",
-                "GTR_T5_BASE",
-                "GTR_T5_LARGE",
-                "E5_BASE",
-                "E5_LARGE",
-                "DISTILBERT_BASE_UNCASED",
-                "DISTILUSE_BASE_MULTILINGUAL",
-                "CONTRIEVER",
-            ],
+            choices=[model.name for model in EmbeddingModelName],
         )
 
         self._parser.add_argument(
@@ -94,8 +65,7 @@ class BaseOptions:
             "--informal_names",
             type=str,
             nargs="+",
-            required=False,
-            default=["Omepra", "paracetamol"],
+            required=True,
             help="informal medication names",
         )
 

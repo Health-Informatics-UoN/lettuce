@@ -11,18 +11,26 @@ class LettuceResult:
     def add_llm_answer(self, llm_answer: str):
         self.llm_answer = llm_answer
 
-    def query_db(self, omop_matches: list, threshold: float):
+    def get_query(self):
+        if hasattr(self, "llm_answer"):
+            return self.llm_answer
+        elif hasattr(self, "vector_search_results"):
+            return self.vector_search_results[0]["content"]
+        else:
+            return self.search_term
+
+    def add_matches(self, omop_matches: list, threshold: float):
         self.omop_fuzzy_threshold = threshold
         self.omop_matches = omop_matches
 
     def to_dict(self):
         out = dict()
         out["query"] = self.search_term
-        if self.vector_search_results:
+        if hasattr(self, "vector_search_results"):
             out["Vector Search Results"] = self.vector_search_results
-        if self.llm_answer:
+        if hasattr(self, "llm_answer"):
             out["llm_answer"] = self.llm_answer
-        if self.omop_matches:
+        if hasattr(self, "omop_matches"):
             out["OMOP fuzzy threshold"] = self.omop_fuzzy_threshold
             out["OMOP matches"] = self.omop_matches
         return out

@@ -8,3 +8,4 @@
 /Lettuce/tests/log
 /Lettuce/evaluation/datasets/*
 !/Lettuce/evaluation/datasets/example.csv
+/Lettuce/log
