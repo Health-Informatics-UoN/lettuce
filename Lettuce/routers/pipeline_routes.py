@@ -226,6 +226,7 @@ async def vector_llm_pipeline(request: PipelineRequest) -> List:
         )
         inference_time = time.time() - start
 
+        # This should not be here, sorry
         def build_output(informal_name, result, inf_time) -> dict:
             output = {
                 "informal_name": informal_name,

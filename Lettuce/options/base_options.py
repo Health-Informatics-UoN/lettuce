@@ -102,10 +102,6 @@ class BaseOptions:
         self._parser.add_argument(
             "--vocabulary_id",
             type=lambda s: s.split(","),
-            #  If we want to have multiple vocabularies (which we might),
-            # then we can make this lamdba s: s.split(','),
-            # and have them separated by commas (I think).
-            # type=str,
             required=False,
             default="RxNorm",
             help="Vocabulary IDs to be queried. If you want multiple"
@@ -114,28 +110,22 @@ class BaseOptions:
 
         self._parser.add_argument(
             "--concept_ancestor",
-            type=str,
+            action=argparse.BooleanOptionalAction,
             required=False,
-            default="n",
-            choices=["y", "n"],
             help="concept ancestor",
         )
 
         self._parser.add_argument(
             "--concept_relationship",
-            type=str,
+            action=argparse.BooleanOptionalAction,
             required=False,
-            default="n",
-            choices=["y", "n"],
             help="concept relationship",
         )
 
         self._parser.add_argument(
             "--concept_synonym",
-            type=str,
+            action=argparse.BooleanOptionalAction,
             required=False,
-            default="n",
-            choices=["y", "n"],
             help="concept synonym",
         )
 
@@ -161,6 +151,22 @@ class BaseOptions:
             required=False,
             default=1,
             help="max separation ancestor",
+        )
+
+        self._parser.add_argument(
+            "--vector_search",
+            action=argparse.BooleanOptionalAction,
+            required=False,
+            default=True,
+            help="Try vector search before LLM?",
+        )
+
+        self._parser.add_argument(
+            "--use_llm",
+            action=argparse.BooleanOptionalAction,
+            required=False,
+            default=True,
+            help="Use LLM?",
         )
 
         self._initialized = True

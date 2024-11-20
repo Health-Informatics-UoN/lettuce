@@ -42,11 +42,6 @@ def run(
     load_dotenv()
 
     pipeline = llm_pipeline(
-        llm_model=llm_model,
-        temperature=temperature,
-        logger=logger,
-    )
-    pipeline = llm_pipeline(
         llm_model=llm_model, temperature=temperature, logger=logger
     ).get_simple_assistant()
     start = time.time()
