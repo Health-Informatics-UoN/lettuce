@@ -28,7 +28,13 @@ class LLMPipeline(SingleResultPipeline):
         """
         self.llm = llm
         self.prompt_template = prompt_template
-        self._model = Llama(hf_hub_download(**local_models[self.llm.value]))
+        self._model = Llama(
+            hf_hub_download(**local_models[self.llm.value]),
+            n_ctx=0,
+            n_batch=512,
+            model_kwargs={"n_gpu_layers": -1, "verbose": True},
+            generation_kwargs={"max_tokens": 128, "temperature": 0},
+        )
         self._template_vars = template_vars
 
     def run(self, input: list[str]) -> str:
@@ -48,10 +54,8 @@ class LLMPipeline(SingleResultPipeline):
         prompt = self.prompt_template.render(
             {(v, i) for v, i in zip(self._template_vars, input)}
         )
-        reply = self._model.create_chat_completion(
-            messages=[{"role": "user", "content": prompt}]
-        )["choices"][0]["message"]["content"]
-        print(f"Replied {reply} for {input}")
+        reply = self._model.create_completion(prompt=prompt)["choices"][0]["text"]
+        print(f"{self.llm.value} replied {reply} for {input}")
         return reply
 
     def drop(self):

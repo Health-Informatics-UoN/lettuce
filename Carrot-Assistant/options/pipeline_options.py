@@ -11,7 +11,7 @@ class LLMModel(str, Enum):
 
     GPT_3_5_TURBO = "gpt-3.5-turbo-0125"
     GPT_4 = "gpt-4"
-    LLAMA_2_7B = "llama-2-7B-chat"
+    LLAMA_2_7B = "llama-2-7b-chat"
     LLAMA_3_8B = "llama-3-8b"
     LLAMA_3_70B = "llama-3-70b"
     GEMMA_7B = "gemma-7b"
