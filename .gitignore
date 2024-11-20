@@ -4,17 +4,8 @@
 .env
 .DS_Store
 .vscode/settings.json
-AI Assistant/tmp.ipynb
-AI Assistant/.vscode/settings.json
-AI Assistant/data/
-AI Assistant/results/
-Carrot-Assistant/data/
-Carrot-Assistant/log/
-Carrot-Assistant/tmp.ipynb
-RAG/tmp.py
-Carrot-Assistant/omop_tmp.py
-RAG/.cache/
 *.qdrant
-/Carrot-Assistant/tests/log
-/Carrot-Assistant/evaluation/datasets/*
-!/Carrot-Assistant/evaluation/datasets/example.csv
+/Lettuce/tests/log
+/Lettuce/evaluation/datasets/*
+!/Lettuce/evaluation/datasets/example.csv
+/Lettuce/log
