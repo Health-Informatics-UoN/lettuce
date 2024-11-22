@@ -1,0 +1,39 @@
+import { Callout } from 'nextra/components'
+
+# Llettuce: LLM for Efficient Translation and Transformation into Uniform Clinical Encoding 
+**Llettuce** is an application for medical researchers that matches the informal medicine names supplied by the user to concepts in the [Observational Health Data Sciences and Informatics](https://www.ohdsi.org) (OMOP) [standardised vocabularies](https://github.com/OHDSI/Vocabulary-v5.0/wiki).
+
+The application can be used as an API, or run with a graphical user interface (GUI).
+
+<Callout type="warning" emoji="⚠️">
+   This project is under active development
+</Callout>
+
+## Overview
+The project uses a Large Language Model to suggest formal drug names to match the informal name supplied by the user. Suggested formal drug names are then fed into parameterised SQL queries against the OMOP database to fetch the relevant concepts. Any returned concepts are then ranked by how well they match the supplied query and provided to the user.
+
+This is the rough process that the Llettuce API follows. Subject to change
+
+```mermaid
+
+   flowchart TD
+    usr[User]
+    api_in(API)
+    api_out(API)
+    llm(Large Language Model)
+    strpr[[String pre-processing]]
+    omop[(OMOP database)]
+    fuzz[[Fuzzy matching]]
+    l_query[LLM queries database]
+    posmatch{Threshold}
+    usr -- User sends an informal name to the API --> api_in
+    api_out -- API responds with concept\ninformation as JSON --> usr
+    api_in -- API queries database--> strpr
+    llm -- LLM responds with possible formal name --> l_query
+    strpr --> omop
+    omop --> fuzz
+    fuzz --> posmatch
+    posmatch -- Matches meeting threshold --> api_out
+    posmatch -- No matches meeting threshold --> llm
+    l_query -- API responds with concepts as JSON --> usr
+```

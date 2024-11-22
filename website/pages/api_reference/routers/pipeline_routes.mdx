@@ -1,0 +1,16 @@
+## routers.pipeline_routes
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/routers/pipeline_routes.py)
+### `PipelineRequest`
+```
+class PipelineRequest(
+)
+```
+
+This class takes the format of a request to the API
+
+Attributes
+----------
+name: str
+    The drug name sent to a pipeline
+pipeline_options: Optional[PipelineOptions]
+    Optionally, the default values can be overridden by instantiating a PipelineOptions object. If none is supplied, default arguments are used

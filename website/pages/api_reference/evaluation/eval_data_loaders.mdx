@@ -1,0 +1,163 @@
+## evaluation.eval_data_loaders
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/evaluation/eval_data_loaders.py)
+### `SingleInputSimpleCSV`
+```
+class SingleInputSimpleCSV(
+	self: 
+
+	file_path: str
+
+)
+```
+
+Implements the EvalDataLoader class to load single results from a csv file.
+The file must have a column named 'input_data', each entry defining an input to a pipeline, and another column 'expected_output', defining the desired output for the matching input.
+### Methods
+
+#### `__init__`
+```
+method __init__(
+	self: 
+
+	file_path: str
+
+)
+```
+
+Initialises a SingleInputSimpleCSV
+
+Parameters
+----------
+file_path: str
+    A path pointing to the input file
+
+#### `input_data`
+```
+method input_data(
+	self: 
+
+)
+```
+
+The input_data for an EvaluationFramework
+
+#### `expected_output`
+```
+method expected_output(
+	self: 
+
+)
+```
+
+The expected_output for an EvaluationFramework
+
+#### `load_input_data`
+```
+method load_input_data(
+	self: 
+
+)
+```
+
+Loads the input data column from the specified file
+
+Returns
+-------
+list
+    A list of the input_data column
+
+#### `load_expected_output`
+```
+method load_expected_output(
+	self: 
+
+)
+```
+
+Loads the expected output column from the specified column
+
+Returns
+-------
+list
+    A list of the expected_output column
+### `SingleInputCSVforLLM`
+```
+class SingleInputCSVforLLM(
+	self: 
+
+	file_path: str
+
+)
+```
+
+Implements the EvalDataLoader class to load single results from a csv file.
+The file must have a column named 'input_data', each entry defining an input to a pipeline, and another column 'expected_output', defining the desired output for the matching input.
+The data loader splits the input_data into a list of lists for compatibility with LLM pipelines
+### Methods
+
+#### `__init__`
+```
+method __init__(
+	self: 
+
+	file_path: str
+
+)
+```
+
+Initialises a SingleInputCSVforLLM
+
+Parameters
+----------
+file_path: str
+    A path pointing to the input file
+
+#### `input_data`
+```
+method input_data(
+	self: 
+
+)
+```
+
+The input_data for an EvaluationFramework
+
+#### `expected_output`
+```
+method expected_output(
+	self: 
+
+)
+```
+
+The expected_output for an EvaluationFramework
+
+#### `load_input_data`
+```
+method load_input_data(
+	self: 
+
+)
+```
+
+Loads the input data column from the specified file
+
+Returns
+-------
+list
+    A list of the input_data column, where each item is a length 1 list for compatibility with LLMPipelines
+
+#### `load_expected_output`
+```
+method load_expected_output(
+	self: 
+
+)
+```
+
+Loads the expected output column from the specified column
+
+Returns
+-------
+list
+    A list of the expected_output column
