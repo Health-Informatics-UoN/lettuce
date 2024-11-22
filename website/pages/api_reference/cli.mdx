@@ -1,4 +1,105 @@
+import { Steps, Callout } from 'nextra/components'
+
 ## cli
 [source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/cli/__init__.py)
 
+The command line interface for Lettuce can run any of the Lettuce components, as specified in command-line arguments.
 
+### Usage
+<Steps>
+
+#### Navigate to the /Lettuce directory
+
+#### Run the cli app with poetry
+
+```sh
+poetry run lettuce-cli -informal_names "betnovate scalp application"
+```
+</Steps>
+
+### Arguments
+The arguments used by the CLI are defined by [`BaseOptions`](/api_reference/options/base_options)
+#### `--informal_names`
+Provide a string for Lettuce to infer a concept for.
+You can supply multiple names by using the flag more than once
+
+#### `--vector_search, --no-vector_search`
+Choose whether to perform vector search on supplied informal names
+<Callout type="warning" emoji=" ">
+  Enabling vector search will require a vector database to be [built](/api_reference/components/embeddings)
+</Callout>
+
+#### `--use_llm, --no-use_llm`
+Choose whether to have an LLM infer an OMOP concept for supplied informal names
+<Callout type="warning" emoji=" ">
+  Enabling LLM usage will download the model weights for an LLM, which requires ~5 Gb disk space
+</Callout>
+
+#### `--temperature`
+Controls LLM generation randomness
+
+#### `--vocabulary_id`
+The OMOP vocabularies to query in the OMOP-CDM database. Supply a comma separated list, e.g.
+
+```sh
+RxNorm, RxNorm extension
+```
+
+#### `--concept_ancestor, --no-concept_ancestor`
+Controls whether to query the concept_ancestor table
+
+#### `--max_separation_ancestor`
+The maximum levels of separation to return ancestors from the concept_ancestor query
+
+#### `--max_separation_descendants`
+The maximum levels of separation to return descendants from the concept_ancestor query
+
+#### `--concept_synonym, --no-concept_synonym`
+Controls whether to return concept synonyms from the OMOP-CDM query
+
+#### `--search_threshold`
+The fuzzy match threshold to use when filtering OMOP concept names
+
+#### `--llm_model`
+The LLM used to infer concepts from an informal name.
+One of:
+- LLAMA_2_7B
+- LLAMA_3_8B
+- LLAMA_3_70B
+- GEMMA_7BL
+- LLAMA_3_1_8B
+- LLAMA_3_2_3B
+- MISTRAL_7B
+- KUCHIKI_L2_7B
+- TINYLLAMA_1_1B_CHAT
+- BIOMISTRAL_7B
+- QWEN2_5_3B_INSTRUCT
+- AIROBOROS_3B
+- MEDICINE_CHAT
+- MEDICINE_LLM_13B
+- MED_LLAMA_3_8B_V1
+- MED_LLAMA_3_8B_V2
+- MED_LLAMA_3_8B_V3
+- MED_LLAMA_3_8B_V4
+
+Defaults to LLAMA_3_1_8B
+
+#### `--embedding_model`
+The model used to generate embeddings
+
+<Callout type="warning" emoji="⚠️">
+  The model used to generate query embeddings and used to build the vector database must be the same or the vector search will be nonsense
+</Callout>
+
+One of:
+- BGESMALL
+- MINILM
+- GTR_T5_BASE
+- GTR_T5_LARGE
+- E5_BASE
+- E5_LARGE
+- DISTILBERT_BASE_UNCASED
+- DISTILUSE_BASE_MULTILINGUAL
+- CONTRIEVER
+
+Defaults to BGESMALL
