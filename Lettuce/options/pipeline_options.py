@@ -30,7 +30,9 @@ class LLMModel(str, Enum):
     MED_LLAMA_3_8B_V4 = "med-llama-3-8b-v4"
 
     def get_eot_token(self) -> str:
-        if self.value in ["llama-3.1-8b", "llama-3-8b"]:
+        if self.value in [
+            "llama-3.1-8b",
+        ]:
             return "<|eot_id|>"
         return ""
 
@@ -79,7 +81,7 @@ class PipelineOptions(BaseModel):
 
     llm_model: LLMModel = LLMModel.LLAMA_3_1_8B
     temperature: float = 0
-    vocabulary_id: str = "RxNorm"  # TODO: make multiples possible
+    vocabulary_id: list[str] = ["RxNorm"]
     concept_ancestor: bool = False
     concept_relationship: bool = False
     concept_synonym: bool = False

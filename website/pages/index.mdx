@@ -1,7 +1,13 @@
 import { Callout } from 'nextra/components'
 
-# Llettuce: LLM for Efficient Translation and Transformation into Uniform Clinical Encoding 
-**Llettuce** is an application for medical researchers that matches the informal medicine names supplied by the user to concepts in the [Observational Health Data Sciences and Informatics](https://www.ohdsi.org) (OMOP) [standardised vocabularies](https://github.com/OHDSI/Vocabulary-v5.0/wiki).
+<div style={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+  ![](/lettuce-logo.svg)
+</div>
+**Lettuce** is an application for medical researchers that matches the informal medicine names supplied by the user to concepts in the [Observational Health Data Sciences and Informatics](https://www.ohdsi.org) (OMOP) [standardised vocabularies](https://github.com/OHDSI/Vocabulary-v5.0/wiki).
 
 The application can be used as an API, or run with a graphical user interface (GUI).
 
@@ -15,24 +21,31 @@ The project uses a Large Language Model to suggest formal drug names to match th
 This is the rough process that the Llettuce API follows. Subject to change
 
 ```mermaid
-   flowchart TD
-    usr[User]
-    api_in(API)
-    api_out(API)
-    llm(Large Language Model)
-    strpr[[String pre-processing]]
-    omop[(OMOP database)]
+  graph TD
+    usr[User provides informal name]
+    json[JSON output]
     fuzz[[Fuzzy matching]]
-    l_query[LLM queries database]
-    posmatch{Threshold}
-    usr -- User sends an informal name to the API --> api_in
-    api_out -- API responds with concept\ninformation as JSON --> usr
-    api_in -- API queries database--> strpr
-    llm -- LLM responds with possible formal name --> l_query
-    strpr --> omop
+    subgraph vector_search[Vector Search]
+      vs[Vector query]
+      v_db[(Vector database)]
+    end
+    subgraph assistant[LLM assistant]
+      prompt[Prompt builder]
+      llm[LLM assistant]
+    end
+    subgraph db[OMOP-CDM]
+      db_query[Database query]
+      omop[(OMOP-CDM)]
+    end
+    usr -. Query turned into vector .-> vs
+    usr -.-> prompt
+    usr -.-> db_query
+    vs --> v_db[(Vector database)]
+    v_db -- Nearest neighbours --> prompt
+    v_db -- Contains an exact match --> db_query
+    prompt --> llm
+    llm --> db_query
+    db_query --> omop[(OMOP-CDM)]
     omop --> fuzz
-    fuzz --> posmatch
-    posmatch -- Matches meeting threshold --> api_out
-    posmatch -- No matches meeting threshold --> llm
-    l_query -- API responds with concepts as JSON --> usr
+    fuzz -- Matches meeting threshold --> json
 ```

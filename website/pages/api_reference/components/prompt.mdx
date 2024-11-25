@@ -3,12 +3,8 @@
 ### `Prompts`
 ```
 class Prompts(
-	self: 
-
 	model: LLMModel
-
 	prompt_type: str
-
 )
 ```
 
@@ -17,13 +13,9 @@ This class is used to generate prompts for the models.
 
 #### `__init__`
 ```
-method __init__(
-	self: 
-
+def __init__(
 	model: LLMModel
-
 	prompt_type: str
-
 )
 ```
 
@@ -31,23 +23,19 @@ Initializes the Prompts class
 
 Parameters
 ----------
-model_name: LLMModel
+`model_name: LLMModel`
     The name of the model
-prompt_type: str|None
+`prompt_type: str|None`
     The type of prompt to generate
 
 #### `get_prompt`
 ```
-method get_prompt(
-	self: 
-
-)
+def get_prompt()
 ```
 
 Get the prompt based on the prompt_type supplied to the object.
 
-Returns
--------
+##### Returns
 PromptBuilder
     The prompt for the model
 

@@ -1,0 +1,54 @@
+import { Steps, Callout, Tabs } from 'nextra/components'
+
+# Deploying Lettuce
+
+Lettuce provides a server for HTTP endpoints.
+If you have successfully run the [quickstart](/quickstart) then you have the correct setup for running a Lettuce server.
+
+<Callout>
+  Making Lettuce easier to deploy is the next milestone for development, so watch this space!
+</Callout>
+
+The code for the server runs from [app.py](/api_reference/app)
+
+```sh copy
+poetry run python app.py
+```
+
+After running this command, you should see messages like these in your terminal:
+
+```sh
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [73042] using StatReload
+INFO:     Started server process [73353]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+```
+
+This means that the server is running, and is able to accept HTTP requests.
+A request can be made using e.g. curl
+
+```sh copy
+curl -X POST "http://127.0.0.1:8000/pipeline/" -H "Content-Type: application/json" -d '{"names": ["Betnovate Scalp Application", "Panadol"]}'
+```
+
+## Endpoints
+
+<Callout type="warning" emoji=" ">
+  The endpoints will soon be re-arranged once the experimental pipelines have been stabilised. Consult the [routes documentation](/api_reference/routers).
+</Callout>
+
+The following endpoints will take HTTP `POST` requests:
+
+- `/pipeline/`: generates a suggested formal name for a source term(s) and searches the OMOP-CDM for that suggestion
+- `/pipeline/db`: searches the OMOP-CDM for a provided source term(s)
+- `/pipeline/vector_search`: searches a vector database for concepts semantically similar to the provided source term(s)
+- `/pipeline/vector_llm`: searches a vector database for concepts semantically similar to the source term(s) and uses these for retrieval-augmented generation with the LLM
+
+## Request options
+
+Requests to the API endpoints must have a body containing a list of informal names (`"names"`), and can optionally define options for the pipeline, ([`pipeline_options`](/api_reference/options/pipeline_options#pipelineoptions)).
+
+
+
+Once you have the API accepting requests, you can use the [GUI](/api_reference/ui) to more easily make requests.
