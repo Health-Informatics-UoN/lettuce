@@ -3,7 +3,7 @@ name: Deploy Documentation Site to GitHub Pages
 on:
   push:
     branches:
-      - deliverable/86/remake-docs
+      - main
 
     paths:
       - "website/**"
