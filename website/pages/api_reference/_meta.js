@@ -12,5 +12,5 @@ export default{
   text_input: "Text input",
   ui: "UI",
   ui_utilities: "UI utilities",
-  utils: "Utils"
+  utils: "utils"
 }
