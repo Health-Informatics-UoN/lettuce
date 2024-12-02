@@ -1,2 +1,21 @@
+import { Steps } from 'nextra/components'
+
 ## evaluate_file
 [source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/evaluate_file.py)
+
+Lettuce's [evaluation framework](/evaluation) can run end-to-end, and this provides an example. The JSON output from running this script can be found in the repo.
+
+## Process
+<Steps>
+  ### Load the example dataset
+  The file found in `evaluation/datasets/example.csv` is loaded using a [`SingleInputCSVforLLM`](/api_reference/evaluation/eval_data_loaders#singleinputcsvforllm)
+  ### Define a prompt
+  In this example, every LLM pipeline uses the same prompt, but you can test alternative prompts
+  ### Define pipelines
+  A list of different [test pipelines](/api_reference/evaluation/pipelines#llmpipeline) using LLMs is created
+  ### Define tests
+  A list of [`PipelinTests`](/api_reference/evaluation/eval_tests#llmpipelinetest) is created from the list of pipelines
+  ### Main function evaluates the pipelines
+  The main function creates an [`EvaluationFramework`](/api_reference/evaluation/evaltypes#evaluationframework).
+  Its `run_evaluations()` method then runs the data through the pipelines, calculates the metrics and saves the result as a JSON file
+</Steps>

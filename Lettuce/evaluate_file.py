@@ -33,29 +33,6 @@ Informal name: {{informal_name}}<|eot_id|>
 Response:"""
 )
 
-llama_3_1_pipeline = LLMPipeline(
-    llm=LLMModel.LLAMA_3_1_8B,
-    prompt_template=prompt_template,
-    template_vars=["informal_name"],
-)
-
-llama_3_2_pipeline = LLMPipeline(
-    llm=LLMModel.LLAMA_3_2_3B,
-    prompt_template=prompt_template,
-    template_vars=["informal_name"],
-)
-
-llama_3_1_test = LLMPipelineTest(
-    name="Llama 3.1 8B",
-    pipeline=llama_3_1_pipeline,
-    metrics=[UncasedMatch()],
-)
-llama_3_test = LLMPipelineTest(
-    name="Llama 3.2 3B",
-    pipeline=llama_3_2_pipeline,
-    metrics=[UncasedMatch()],
-)
-
 template_vars = ["informal_name"]
 
 pipelines = [

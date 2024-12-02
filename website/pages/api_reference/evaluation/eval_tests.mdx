@@ -1,106 +1,80 @@
 ## evaluation.eval_tests
 [source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/evaluation/eval_tests.py)
 ### `LLMPipelineTest`
-```
+```python
 class LLMPipelineTest(
-	self: 
-
 	name: str
-
 	pipeline: LLMPipeline
-
 	metrics: SingleResultMetric[list]
-
 )
 ```
 
 This class provides a pipeline test for LLM pipelines that return a single result
-### Methods
+#### Methods
 
-#### `__init__`
-```
-method __init__(
-	self: 
-
+##### `__init__`
+```python
+def __init__(
 	name: str
-
 	pipeline: LLMPipeline
-
 	metrics: SingleResultMetric[list]
-
 )
 ```
 
 Initialises the LLMPipelineTest class
 
-Parameters
-----------
-name: str
+###### Parameters
+`name: str`
     Name given to the test
-pipeline: LLMPipeline
+`pipeline: LLMPipeline`
     The pipeline used to generate output
-metrics: list[SingleResultMetric]
+`metrics: list[SingleResultMetric]`
     A list of metrics used to compare the pipeline output with the expected output
 
-#### `run_pipeline`
-```
-method run_pipeline(
-	self: 
-
-	input_data: 
-
+##### `run_pipeline`
+```python
+def run_pipeline(
+	input_data
 )
 ```
 
 Runs the provided pipeline on the input_data
 
-##### Parameters
-input_data
-
+###### Parameters
+`input_data`
 The data used for input to the pipeline
 
-##### Returns
-str
-
+###### Returns
+`str`
 The reply from the pipeline
 
 
-
-#### `evaluate`
-```
-method evaluate(
-	self: 
-
-	input_data: 
-
-	expected_output: 
-
+##### `evaluate`
+```python
+def evaluate(
+	input_data
+	expected_output
 )
 ```
 
 Evaluates the attached pipeline's output against the expected output using the metrics
 
-##### Parameters
-input_data
-
+###### Parameters
+`input_data`
 The data used for input to the pipeline
 
-expected_output
-
+`expected_output`
 The expected result of running the input data through the pipeline
 
-##### Returns
-Dict
+###### Returns
+`Dict`
 
 A dictionary of results from evaluating the pipeline.
 
 
 
-#### `drop_pipeline`
-```
-method drop_pipeline(
-	self: 
-
-)
+##### `drop_pipeline`
+```python
+def drop_pipeline()
 ```
 

@@ -6,66 +6,91 @@ class LettuceResult(
 	search_term: str
 )
 ```
+A class to hold the results of different stages of Lettuce pipelines
 
+#### Methods
 
-### Methods
-
-#### `__init__`
+##### `__init__`
 ```
 def __init__(
 	search_term: str
 )
 ```
 
+Insert the results of a vector search
+
+###### Parameters
+`vector_search_results: List[Dict[str, Any]]`
+    The results from running a vector database search from an embeddings object
 
 
-#### `add_vector_search_results`
+##### `add_vector_search_results`
 ```
 def add_vector_search_results(
 	vector_search_results: 
 )
 ```
 
+Insert the results of an LLM assistant's inference
+
+###### Parameters
+`llm_answer: str`
+    The reply of an LLM
 
 
-#### `add_llm_answer`
+##### `add_llm_answer`
 ```
 def add_llm_answer(
 	llm_answer: str
 )
 ```
 
+Insert the results of an LLM assistant's inference
+
+###### Parameters
+`llm_answer: str`
+    The reply of an LLM
 
 
-#### `get_query`
+##### `get_query`
 ```
-def get_query(
-	self: 
-
-)
+def get_query()
 ```
 
+Retrieve the appropriate part of the result object for querying an OMOP-CDM database.
+If no previous stages have been executed, uses the search_term.
+If there's only a vector search result, uses the top result.
+If there is a response from an LLM, uses that.
 
+###### Returns
+`str`
+   Term for a database query
 
-#### `add_matches`
+##### `add_matches`
 ```
 def add_matches(
-	self: 
-
-	omop_matches: list
-
+	omop_matches: list,
 	threshold: float
-
 )
 ```
 
+Inserts the matches retrieved from a database search, after fuzzy string filtering.
+
+###### Parameters
+`omop_matches: list`
+    A list of the matches retrieved from the database
+`threshold: float`
+    The threshold used for filtering
 
 
-#### `to_dict`
+##### `to_dict`
 ```
-def to_dict(
-	self: 
-
-)
+def to_dict()
 ```
+
+Serialises the result as a dictionary
+
+###### Returns
+`dict`
+    Pipeline results serialised
 
