@@ -15,6 +15,12 @@ class LettuceResult:
         self.search_term = search_term
 
     def add_vector_search_results(self, vector_search_results: List[Dict[str, Any]]):
+        self.vector_search_results = vector_search_results
+
+    def add_llm_answer(self, llm_answer: str):
+        self.llm_answer = llm_answer
+
+    def get_query(self):
         """
         Insert the results of a vector search
 
@@ -56,6 +62,10 @@ class LettuceResult:
             return self.search_term
 
     def add_matches(self, omop_matches: list, threshold: float):
+        self.omop_fuzzy_threshold = threshold
+        self.omop_matches = omop_matches
+
+    def to_dict(self):
         """
         Inserts the matches retrieved from a database search, after fuzzy string filtering.
 
