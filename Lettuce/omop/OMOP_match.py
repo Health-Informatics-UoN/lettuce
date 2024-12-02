@@ -1,8 +1,7 @@
 import re
 from os import environ
 from urllib.parse import quote_plus
-import argparse
-from typing import Optional, List
+from typing import List
 
 import pandas as pd
 from dotenv import load_dotenv
@@ -11,7 +10,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from omop.omop_models import build_query
 
-from utils.logging_utils import Logger
+from logging import Logger
 from omop.preprocess import preprocess_search_term
 
 
@@ -20,10 +19,8 @@ class OMOPMatcher:
     This class retrieves matches from an OMOP database and returns the best
     """
 
-    def __init__(self, logger: Optional[Logger] = None):
+    def __init__(self, logger: Logger):
         # Connect to database
-        if logger is None:
-            logger = Logger().make_logger()
         self.logger = logger
         load_dotenv()
 
@@ -60,9 +57,9 @@ class OMOPMatcher:
         self,
         search_terms: List[str],
         vocabulary_id: list | None = None,
-        concept_ancestor: str = "y",
-        concept_relationship: str = "y",
-        concept_synonym: str = "y",
+        concept_ancestor: bool = True,
+        concept_relationship: bool = True,
+        concept_synonym: bool = True,
         search_threshold: int = 0,
         max_separation_descendant: int = 1,
         max_separation_ancestor: int = 1,
@@ -82,13 +79,13 @@ class OMOPMatcher:
         vocabulary_id: str
             An OMOP vocabulary_id to pass to the OMOP query to restrict the concepts received to a specific vocabulary
 
-        concept_ancestor: str
+        concept_ancestor: bool
             If 'y', then calls fetch_concept_ancestor()
 
-        concept_relationship: str
+        concept_relationship: bool
             If 'y', then calls fetch_concept_relationship()
 
-        concept_synonym: str
+        concept_synonym: bool
             If 'y', then queries the synonym table of the OMOP database for matches to the search terms
 
         search_threshold: int
@@ -112,10 +109,6 @@ class OMOPMatcher:
 
             self.logger.info(f"Calculating best OMOP matches for {search_terms}")
             overall_results = []
-
-            # search_threshold should be a float or integer, so check if it's a number
-            if not isinstance(search_threshold, (float, int)):
-                search_threshold = 0
 
             for search_term in search_terms:
                 OMOP_concepts = self.fetch_OMOP_concepts(
@@ -145,9 +138,9 @@ class OMOPMatcher:
         self,
         search_term: str,
         vocabulary_id: list | None,
-        concept_ancestor: str,
-        concept_relationship: str,
-        concept_synonym: str,
+        concept_ancestor: bool,
+        concept_relationship: bool,
+        concept_synonym: bool,
         search_threshold: int,
         max_separation_descendant: int,
         max_separation_ancestor: int,
@@ -279,12 +272,12 @@ class OMOPMatcher:
                             max_separation_descendant,
                             max_separation_ancestor,
                         )
-                        if concept_ancestor == "y"
+                        if concept_ancestor
                         else []
                     ),
                     "CONCEPT_RELATIONSHIP": (
                         self.fetch_concept_relationship(row["concept_id"])
-                        if concept_relationship == "y"
+                        if concept_relationship
                         else []
                     ),
                 }
@@ -451,7 +444,17 @@ class OMOPMatcher:
         ]
 
 
-def run(opt: argparse.Namespace, search_term: List[str], logger: Logger):
+def run(
+    search_term: List[str],
+    logger: Logger,
+    vocabulary_id: list[str],
+    search_threshold: int = 80,
+    concept_ancestor: bool = False,
+    concept_relationship: bool = False,
+    concept_synonym: bool = False,
+    max_separation_descendant: int = 1,
+    max_separation_ancestor: int = 1,
+):
     """
     Runs queries against the OMOP database
 
@@ -459,8 +462,20 @@ def run(opt: argparse.Namespace, search_term: List[str], logger: Logger):
 
     Parameters
     ----------
-    opt: argparse.Namespace
-        Base options including the arguments relevant for OMOPMatcher methods
+    vocabulary_id: list[str]
+        A list of vocabularies to use for search
+    concept_ancestor: bool
+        Whether to return ancestor concepts in the result
+    concept_relationship: bool
+        Whether to return related concepts in the result
+    concept_synonym: bool
+        Whether to explore concept synonyms in the result
+    search_threshold: int
+        The fuzzy match threshold for results
+    max_separation_descendant: int
+        The maximum separation between a base concept and its descendants
+    max_separation_ancestor: int
+        The maximum separation between a base concept and its ancestors
     search_term: str
         The name of a drug to use in queries to the OMOP database
     logger: Logger
@@ -471,14 +486,6 @@ def run(opt: argparse.Namespace, search_term: List[str], logger: Logger):
     list
         A list of OMOP concepts relating to the search term and relevant information
     """
-    vocabulary_id = opt.vocabulary_id
-    concept_ancestor = opt.concept_ancestor
-    concept_relationship = opt.concept_relationship
-    concept_synonym = opt.concept_synonym
-    search_threshold = opt.search_threshold
-    max_separation_descendant = opt.max_separation_descendants
-    max_separation_ancestor = opt.max_separation_ancestor
-
     omop_matcher = OMOPMatcher(logger)
     res = omop_matcher.calculate_best_matches(
         search_term,

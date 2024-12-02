@@ -53,14 +53,6 @@ class EmbeddingModel(BaseModel):
     """
     A class to match the name of an embeddings model with the
     details required to download and use it.
-
-    Explanation
-    ------------
-    For detailed information on the models's version, parameters,
-    description and benitifs, refer to the documentation at the
-    following path below:
-
-    -> docs/models/embedding_models.rst.txt.
     """
 
     name: EmbeddingModelName

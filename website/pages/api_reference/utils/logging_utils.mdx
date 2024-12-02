@@ -1,0 +1,85 @@
+## utils.logging_utils
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/utils/logging_utils.py)
+### `Logger`
+```python
+class Logger(
+	logging_level: str
+	console_logger: bool
+	multi_module: str
+)
+```
+
+logger preparation
+
+
+#### Parameters
+`log_dir: string`
+path to the log directory
+
+`logging_level: string`
+required Level of logging. INFO, WARNING or ERROR can be selected. Default to 'INFO'
+
+`console_logger: bool`
+flag if console_logger is required. Default to False
+
+#### Returns
+`logger: logging.Logger`
+logger object
+
+
+#### Methods
+
+##### `__init__`
+```python
+def __init__(
+	logging_level: str
+	console_logger: bool
+	multi_module: bool
+)
+```
+
+Initialises the logger
+
+###### Parameters
+`logging_level: str`
+required Level of logging. INFO, WARNING or ERROR can be selected. Default to 'INFO'
+
+`console_logger: bool`
+flag if console_logger is required. Default to False
+
+`multi_module: bool`
+Not yet implemented
+
+###### Returns
+None
+
+##### `_make_level`
+```python
+def _make_level()
+```
+
+Sets the level of logging
+
+Uses the logging_level to set own _level property.
+
+###### Parameters
+None
+
+###### Returns
+None
+
+
+
+##### `make_logger`
+```
+def make_logger()
+```
+
+Constructs a Logger instance.
+
+###### Parameters
+None
+
+###### Returns
+None
+

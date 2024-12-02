@@ -1,0 +1,15 @@
+## Graphical User Interface
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/ui.py)
+
+Lettuce uses [streamlit](https://streamlit.io/) to provide a graphical user interface (GUI).
+Once you have [a Lettuce API accepting requests](/deployment), you can start the GUI by running
+
+```sh
+poetry run streamlit run ui.py
+```
+
+In the /Lettuce directory.
+
+This will open a new browser window.
+The landing page provides a facility for entering informal names into a text box.
+A second page, accessible from the sidebar, allows you to run Lettuce on informal names taken from a csv file.

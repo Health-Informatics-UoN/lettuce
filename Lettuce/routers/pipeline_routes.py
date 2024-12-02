@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-import asyncio
 from collections.abc import AsyncGenerator
 import json
 from typing import List, Dict, Any
@@ -10,15 +9,12 @@ from sse_starlette.sse import EventSourceResponse
 
 import assistant
 from omop import OMOP_match
-from options.base_options import BaseOptions
 from components.embeddings import Embeddings
 from components.pipeline import llm_pipeline
-from options.pipeline_options import PipelineOptions, parse_pipeline_args
-from utils.logging_utils import Logger
+from options.pipeline_options import PipelineOptions
+from utils.logging_utils import logger
 
 router = APIRouter()
-
-logger = Logger().make_logger()
 
 
 class PipelineRequest(BaseModel):
@@ -73,27 +69,37 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
         2. "omop_output": The result from the OMOP database matching.
     """
     informal_names = request.names
-    opt = BaseOptions()
-    opt.initialize()
-    parse_pipeline_args(opt, request.pipeline_options)
-    opt = opt.parse()
 
     print("Received informal names:", informal_names)
 
     # Use LLM to find the formal name and query OMOP for the LLM output
+    pipeline_opts = request.pipeline_options
 
-    llm_outputs = assistant.run(opt=opt, informal_names=informal_names, logger=logger)
+    llm_outputs = assistant.run(
+        llm_model=pipeline_opts.llm_model,
+        temperature=pipeline_opts.temperature,
+        informal_names=informal_names,
+        logger=logger,
+    )
     for llm_output in llm_outputs:
 
-        print("LLM output for", llm_output["informal_name"], ":", llm_output["reply"])
+        logger.info(
+            "LLM output for", llm_output["informal_name"], ":", llm_output["reply"]
+        )
 
-        print("Querying OMOP for LLM output:", llm_output["reply"])
+        logger.info("Querying OMOP for LLM output:", llm_output["reply"])
 
         output = {"event": "llm_output", "data": llm_output}
         yield json.dumps(output)
 
     omop_output = OMOP_match.run(
-        opt=opt,
+        vocabulary_id=pipeline_opts.vocabulary_id,
+        concept_ancestor=pipeline_opts.concept_ancestor,
+        concept_relationship=pipeline_opts.concept_relationship,
+        concept_synonym=pipeline_opts.concept_synonym,
+        search_threshold=pipeline_opts.search_threshold,
+        max_separation_descendant=pipeline_opts.max_separation_descendants,
+        max_separation_ancestor=pipeline_opts.max_separation_ancestor,
         search_term=[llm_output["reply"] for llm_output in llm_outputs],
         logger=logger,
     )
@@ -137,12 +143,19 @@ async def run_db(request: PipelineRequest) -> List[Dict[str, Any]]:
         Details of OMOP concept(s) fetched from a database query
     """
     search_terms = request.names
-    opt = BaseOptions()
-    opt.initialize()
-    parse_pipeline_args(opt, request.pipeline_options)
-    opt = opt.parse()
+    pipeline_opts = request.pipeline_options
 
-    omop_output = OMOP_match.run(opt=opt, search_term=search_terms, logger=logger)
+    omop_output = OMOP_match.run(
+        vocabulary_id=pipeline_opts.vocabulary_id,
+        concept_ancestor=pipeline_opts.concept_ancestor,
+        concept_relationship=pipeline_opts.concept_relationship,
+        concept_synonym=pipeline_opts.concept_synonym,
+        search_threshold=pipeline_opts.search_threshold,
+        max_separation_descendant=pipeline_opts.max_separation_descendants,
+        max_separation_ancestor=pipeline_opts.max_separation_ancestor,
+        search_term=search_terms,
+        logger=logger,
+    )
     return [{"event": "omop_output", "content": result} for result in omop_output]
 
 
@@ -193,18 +206,8 @@ async def vector_llm_pipeline(request: PipelineRequest) -> List:
     list
     """
     informal_names = request.names
-    opt = BaseOptions()
-    opt.initialize()
-    parse_pipeline_args(opt, request.pipeline_options)
-    opt = opt.parse()
-    # I think this is what they call technical debt
-    opt.embeddings_path = request.pipeline_options.embeddings_path
-    opt.force_rebuild = request.pipeline_options.force_rebuild
-    opt.embed_vocab = request.pipeline_options.embed_vocab
-    opt.embedding_model = request.pipeline_options.embedding_model
-    opt.embedding_search_kwargs = request.pipeline_options.embedding_search_kwargs
 
-    pl = llm_pipeline(opt=opt, logger=logger).get_rag_assistant()
+    pl = llm_pipeline(**request.pipeline_options, logger=logger).get_rag_assistant()
     start = time.time()
     pl.warm_up()
     logger.info(f"Pipeline warmup in {time.time()-start} seconds")
@@ -223,6 +226,7 @@ async def vector_llm_pipeline(request: PipelineRequest) -> List:
         )
         inference_time = time.time() - start
 
+        # This should not be here, sorry
         def build_output(informal_name, result, inf_time) -> dict:
             output = {
                 "informal_name": informal_name,

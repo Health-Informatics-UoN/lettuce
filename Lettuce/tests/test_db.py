@@ -1,26 +1,21 @@
 import pytest
 from omop import OMOP_match
-from options.base_options import BaseOptions
-from utils.logging_utils import Logger
+from utils.logging_utils import logger
 
 
 @pytest.fixture
 def single_query_result():
-    logger = Logger().make_logger()
-    opt = BaseOptions()
-    opt.initialize()
-    opt = opt.parse()
-    return OMOP_match.run(opt=opt, search_term=["Acetaminophen"], logger=logger)
+    return OMOP_match.run(
+        search_term=["Acetaminophen"], logger=logger, vocabulary_id=["RxNorm"]
+    )
 
 
 @pytest.fixture
 def three_query_result():
-    logger = Logger().make_logger()
-    opt = BaseOptions()
-    opt.initialize()
-    opt = opt.parse()
     return OMOP_match.run(
-        opt=opt, search_term=["Acetaminophen", "Codeine", "Omeprazole"], logger=logger
+        search_term=["Acetaminophen", "Codeine", "Omeprazole"],
+        logger=logger,
+        vocabulary_id=["RxNorm"],
     )
 
 

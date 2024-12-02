@@ -1,0 +1,83 @@
+## components.pipeline
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/components/pipeline.py)
+### `llm_pipeline`
+```python
+class llm_pipeline(
+	llm_model: LLMModel
+	temperature: float
+	logger: Logger
+	embeddings_path: str
+	force_rebuild: bool
+	embed_vocab: str[list]
+	embedding_model: EmbeddingModelName
+	embedding_search_kwargs: dict
+)
+```
+
+This class is used to generate a pipeline for the model
+### Methods
+
+#### `__init__`
+```python
+def __init__(
+	llm_model: LLMModel
+	temperature: float
+	logger: Logger
+	embeddings_path: str
+	force_rebuild: bool
+	embed_vocab: str[list]
+	embedding_model: EmbeddingModelName
+	embedding_search_kwargs: dict
+)
+```
+
+Initializes the llm_pipeline class
+
+##### Parameters
+`llm_model: LLMModel` The choice of LLM to run the pipeline
+
+`temperature: float`
+    The temperature the LLM uses for generation
+
+`logger: logging.Logger|None`
+    Logger for the pipeline
+
+`embeddings_path: str`
+    A path for the embeddings database. If one is not found,
+    it will be built, which takes a long time. This is built
+    from concepts fetched from the OMOP database.
+
+`force_rebuild: bool`
+    If true, the embeddings database will be rebuilt.
+
+`embed_vocab: List[str]`
+    A list of OMOP vocabulary_ids. If the embeddings database is
+    built, these will be the vocabularies used in the OMOP query.
+
+`embedding_model: EmbeddingModel`
+    The model used to create embeddings.
+
+`embedding_search_kwargs: dict`
+    kwargs for vector search.
+
+#### `get_simple_assistant`
+```
+def get_simple_assistant()
+```
+
+Get a simple assistant pipeline that connects a prompt with an LLM
+
+##### Returns
+Pipeline
+    The pipeline for the assistant
+
+#### `get_rag_assistant`
+```
+def get_rag_assistant()
+```
+
+Get an assistant that uses vector search to populate a prompt for an LLM
+
+##### Returns
+Pipeline
+    The pipeline for the assistant

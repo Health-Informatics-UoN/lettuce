@@ -48,7 +48,7 @@ class ConceptSynonym(Base):
 
 
 def build_query(
-    search_term: str, vocabulary_id: list[str] | None, concept_synonym: str
+    search_term: str, vocabulary_id: list[str] | None, concept_synonym: bool
 ) -> Select:
     """
     Builds an OMOP query to search for concepts
@@ -87,7 +87,7 @@ def build_query(
     if vocabulary_id:
         query = query.where(Concept.vocabulary_id.in_(vocabulary_id))
 
-    if concept_synonym == "y":
+    if concept_synonym:
         # Define the synonym matches CTE
         synonym_matches = (
             select(

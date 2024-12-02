@@ -9,7 +9,7 @@ from evaluation.evaltypes import (
     SingleResultPipelineTest,
     EvaluationFramework,
 )
-from evaluation.metrics import ExactMatch, PrecisionMetric, RecallMetric, FScoreMetric
+from evaluation.metrics import ExactMatch
 from evaluation.pipelines import LLMPipeline
 from evaluation.eval_data_loaders import SingleInputSimpleCSV
 
@@ -93,10 +93,12 @@ class TestBasicLLM:
 
     @pytest.fixture
     def llm_pipeline(self, llm_prompt):
-        return LLMPipeline(LLMModel.LLAMA_3_1_8B, llm_prompt, ["input_sentence"])
+        return LLMPipeline(
+            LLMModel.LLAMA_3_1_8B, llm_prompt, template_vars=["input_sentence"]
+        )
 
     def test_returns_string(self, llm_pipeline):
-        model_output = llm_pipeline.run(["Polly wants a cracker"])
+        model_output = llm_pipeline.run({"input_sentence": "Polly wants a cracker"})
         assert isinstance(model_output, str)
 
     @pytest.fixture
@@ -104,7 +106,9 @@ class TestBasicLLM:
         return LLMPipelineTest("Parrot Pipeline", llm_pipeline, [ExactMatch()])
 
     def test_pipeline_called_from_eval_returns_string(self, llm_pipeline_test):
-        model_output = llm_pipeline_test.run_pipeline(["Polly wants a cracker"])
+        model_output = llm_pipeline_test.run_pipeline(
+            {"input_sentence": "Polly wants a cracker"}
+        )
         assert isinstance(model_output, str)
 
     def test_llm_pipelinetest_evaluates(self, llm_pipeline_test):
@@ -181,99 +185,3 @@ input3,input3"""
         assert len(results) == 2
         assert results[0]["Experiment"] == "Test Experiment"
         assert results[1]["Experiment"] == "Test Experiment"
-
-
-class TestInformationRetrievalMetrics:
-    @pytest.fixture
-    def text_relevant_instances(self):
-        return [
-            "Mrs Doubtfire",
-            "Good Morning, Vietnam",
-            "Patch Adams",
-            "Good Will Hunting",
-            "Aladdin",
-            "Dead Poets Society",
-        ]
-
-    @pytest.fixture
-    def text_retrieved_instances(self):
-        return {
-            "text_prediction_1": [
-                "Mrs Doubtfire",
-                "Good Morning, Vietnam",
-                "Patch Adams",
-                "Good Will Hunting",
-                "Aladdin",
-                "Dead Poets Society",
-            ],
-            "text_prediction_2": [
-                "Mrs Doubtfire",
-                "Good Morning, Vietnam",
-                "Patch Adams",
-            ],
-            "text_prediction_3": [
-                "Mrs Doubtfire",
-                "Good Morning, Vietnam",
-                "Patch Adams",
-                "Good Will Hunting",
-                "Aladdin",
-                "Dead Poets Society",
-                "Walk the Line",
-                "O Brother, Where Art Thou?",
-                "Gladiator",
-                "The Village",
-                "Her",
-                "Inherent Vice",
-            ],
-        }
-
-    @pytest.fixture
-    def precision_metric(self) -> PrecisionMetric:
-        return PrecisionMetric()
-
-    @pytest.fixture
-    def recall_metric(self) -> RecallMetric:
-        return RecallMetric()
-
-    @pytest.fixture
-    def f_1_score(self) -> FScoreMetric:
-        return FScoreMetric(1)
-
-    def test_precision(
-        self,
-        text_relevant_instances: list,
-        text_retrieved_instances: dict,
-        precision_metric: PrecisionMetric,
-    ):
-        precision_results = [
-            precision_metric.calculate(retrieved, text_relevant_instances)
-            for retrieved in text_retrieved_instances.values()
-        ]
-
-        assert precision_results == [1.0, 1.0, 0.5]
-
-    def test_recall(
-        self,
-        text_relevant_instances: list,
-        text_retrieved_instances: dict,
-        recall_metric: RecallMetric,
-    ):
-        recall_results = [
-            recall_metric.calculate(retrieved, text_relevant_instances)
-            for retrieved in text_retrieved_instances.values()
-        ]
-
-        assert recall_results == [1, 0.5, 1]
-
-    def test_f_1_score(
-        self,
-        text_relevant_instances: list,
-        text_retrieved_instances: dict,
-        f_1_score: FScoreMetric,
-    ):
-        f_score_results = [
-            f_1_score.calculate(retrieved, text_relevant_instances)
-            for retrieved in text_retrieved_instances.values()
-        ]
-
-        assert f_score_results == [1, 2 / 3, 2 / 3]

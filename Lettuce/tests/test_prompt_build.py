@@ -1,11 +1,12 @@
 import pytest
 from components.prompt import Prompts
+from options.pipeline_options import LLMModel
 
 
 @pytest.fixture
 def llama_3_simple_prompt_builder():
     return Prompts(
-        model_name="llama-3-8b",
+        model=LLMModel.LLAMA_3_8B,
         prompt_type="simple",
     ).get_prompt()
 
@@ -13,22 +14,21 @@ def llama_3_simple_prompt_builder():
 @pytest.fixture
 def llama_3_rag_prompt_builder():
     return Prompts(
-        model_name="llama-3-8b",
+        model=LLMModel.LLAMA_3_8B,
         prompt_type="top_n_RAG",
     ).get_prompt()
 
 
 @pytest.fixture
 def llama_3_1_simple_prompt_builder():
-    return Prompts(
-        model_name="llama-3.1-8b", prompt_type="simple", eot_token="<|eot_id|>"
-    ).get_prompt()
+    return Prompts(model=LLMModel.LLAMA_3_1_8B, prompt_type="simple").get_prompt()
 
 
 @pytest.fixture
 def llama_3_1_rag_prompt_builder():
     return Prompts(
-        model_name="llama-3.1-8b", prompt_type="top_n_RAG", eot_token="<|eot_id|>"
+        model=LLMModel.LLAMA_3_1_8B,
+        prompt_type="top_n_RAG",
     ).get_prompt()
 
 

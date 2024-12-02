@@ -1,0 +1,362 @@
+input_data,expected_output
+Memantine HCL,memantine hydrochloride
+Ppaliperidone (3-month),paliperidone
+Trazidine,trazodone
+Trazodone HCL,trazodone hydrochloride
+Amitriptyline HCl,amitriptyline hydrochloride
+Amitriptyline,amitriptyline
+Ropiniroy,ropinirole
+LePax,escitalopram
+Mirtazapine Orodispersible,mirtazapine oral product
+Mirtazapine Soltab,mirtazapine oral tablet
+Mirtazapine,mirtazapine
+Lyrica (Pregabalin),pregabalin
+Panbesy,phentermine
+Risperidex,risperidone
+Carbamazepine CR,carbamazepine
+Carbamazepine,carbamazepine
+Dilatin,phenytoin
+Xenical Orlistat,orlistat
+Atomoxetine,atomoxetine
+Fluvoxamine (Faverin),fluvoxamine
+Faverin 50,fluvoxamine
+Arip,aripiprazole
+Selegin,selegilene
+Quetiapine,quetiapine
+Queriapine,quetiapine
+Hydroxyzine Antihistamines,hydroxyzine
+Imipramine,imipramine
+Xanax Alprazolam,alprazolam
+Neurontin Gabapentin,gabapentin Oral Tablet [Neurontin]
+Clonotril,clonazepam
+Clonazepam,clonazepam
+Clonotril 0.5,clonazepam
+Timoptol-XE,Timoptol
+Timoptol (L Eye),Timoptol
+Nexpro,esomeprazole
+Esomeprazole Gastro-resistant,esomeprazole
+Esoz,esomeprazole
+Meteochloramide,esomeprazole
+Daivonex Cream,calcipotriol
+Brimonidine 0.15%,brimonidine
+Allergan Alphagan P,Alphagan P
+Elidel Cream,pimecrolimus Topical Cream [Elidel]
+Apo-Nitrofurantoin,nitrofurantoin
+Dermasone,betamethasone
+Betamethasone,betamethasone
+Betamethasone 0.05%,betamethasone
+Betamethazone,betamethasone
+Betamethasone Val (1/4S) 0.025% Ointment,betamethasone
+Betamethasone Val. 0.1%,betamethasone
+Betnovate Scalp Application,betnovate topical product
+Zenpro Omeprazole,omeprazole
+Omeprazole,omeprazole
+PO Omeprazole,omeprazole
+Omepra,omeprazole
+Urimax 0.4,urimax
+Harnal Tamsulosin Hydrochloride,tamsulosin hydrochloride
+Tamuslosin Prolonged Release,tamsulosin
+Harnal Ocas,tamsulosin
+Tamsulosin,tamsulosin
+Tamsulosin HCI,tamsulosin hydrochloride
+Dulcolax Bisacodyl Delpharm Reims,bisacodyl
+Alfuzosin HCL MR,alfuzosin hydrochloride
+Alfoo,alfuzosin
+Brinzolamide 1% Eye Drop,brinzolamide
+Econazine Cream,econazole Topical Cream
+Famotin,famotidine
+Latanoprost 0.005% Eye Drop,latanoprost
+Zalatan (for Glaucoma),latanoprost
+Zalatan Eye Drop,latanoprost
+Zalatan,latanoprost
+Latanoprost 0.005% (Both Eye),latanoprost
+Latanoprost 0.005%,latanoprost
+Flybogel,fybogel
+Super Selenium Complex,selenium|vitamin e oral product
+Now Selenium,selenium
+Loteprednol Lotemax Eye Drop,loteprednol etabonate Ophthalmic Gel [Lotemax]
+Salofalk 500,mesalamine
+Spironolectone,spironolactone
+Hydrochlorothiazide,hydrochlorothiazide
+Dorzolamide 2% (R Eye),dorzolamide Ophthalmic Product
+Tasulose,tamsulosin
+Dutasteride (Dutasvitae),dutasteride
+Loteprednol Etabonate 5mg,loteprednol etabonate
+Finpecia,finasteride
+FINASTERIDE (PROPECIA),finasteride
+Clotrimazole 1% Topical Soln,clotrimazole Topical Solution
+Zeos Loratadine,loratadine
+Lorat,loratadine
+Cardiprin,aspirin
+Voltaren VR4,voltaren
+Voltaren DR4,voltaren
+XYZAL (UCB),xyzal
+Levovetrizine,levocetirizine
+Zyrtec-R,zyrtec
+Cetirizine HCL,cetirizine hydrochloride
+Fexofenadine HCL,fexofenadine hydrochloride
+Montelukast,montelukast
+Ventolin Inhaler,Ventolin Inhalant Product
+Guaifenesin 100mg/5ml Syrup,Guaifenesin 20 MG/ML Syrup
+Allopurin,allopurinol
+Allupurinol,Allopurinol
+Chlorpheniramine,chlorpheniramine
+Life Extension Melatonin,melatonin
+Micera,Methoxy polyethylene glycol-epoetin beta
+Medobeta 0.1%,betamethasone
+Metoprolol Taltrate,metoprolol tartrate
+Lisinopril-10 (Lisoril-10),Lisinopril
+Lisoril-20,Lisinopril
+Midorine Hydrochloride,Midodrine
+Growell Scalp Lotion Minoxidil,minoxidil Topical Lotion
+Warfarin,warfarin
+Wafarin,warfarin
+Puritan's Pride Lutigold Lutein,Lutein
+Atenololo,Atenolol
+Nebilit,Nebivolol
+NEBIBOLOL,Nebivolol
+Nebilet,Nebivolol
+Nature's Garden Bilberry Fruit,Bilberry Extract
+Letero,Letrozole
+Telstan 40,Telmisartan
+Nifetex-TR,atenolol/nifedipine
+Nifedipine USP,nifedipine
+Beta-Nicardia,atenolol/nifedipine
+Clopidogrel Bisulphate,clopidogrel bisulfate
+Plavic,Clopidogrel
+Clopidogrel,Clopidogrel
+Simlo 10,simvastatin 10 MG
+Ranolazine,Ranolazine
+Concor 2.5,Bisoprolol
+Dexacap Captopril Tablet,Captopril
+Captopril Tablet,captopril Oral Tablet
+Terazosin HCl,terazosin hydrochloride
+Invoril 10,Enalapril
+Enapril 5,Enalapril
+Invoril 5,Enalapril
+Enapril-5,Enalapril
+Invoril-10,Enalapril
+Irbesartan Tensiber,Irbesartan
+Approvel,Irbesartan
+Apo Prazo,Prazosin
+Candesart,Candesartan
+Propranolol HCL,propranolol hydrochloride
+Felodipin,Felodipine
+Flecainide,flecainide
+Now Double Strength Iron,Iron
+Ironyl,Iron
+Nutrilite Glucosamine-7,Glucosamine
+Habatus Glucosamine,Glucosamine
+Glucosamine HCl,Glucosamine
+Kordel's Glucosamine,Glucosamine
+Q & N Plant-Glucosamine,Glucosamine
+Spirulina,spirulina
+Ayomy 100% Pure Spirulina,Spirulina
+Doxazosin,doxazosin
+Losartan,Losartan
+Sartocad 50,Losartan
+Losar-H,Losartan
+Losarsin,Losartan
+Losartan Cozaar,Losartan
+Acrelsar,Hydrochlorothiazide / telmisartan Oral Tablet [Actelsar HCT]
+Hydroxyurea,Hydroxyurea
+MSM,Methylsulfonylmethane
+Red Yeast,Red Yeast Rice
+Nuskin Ginkgo,Ginkgo Biloba Extract
+Ginko Extract,Ginkgo Biloba Extract
+Grape Seed Extract,grape seed extract
+Euthyroxine,Levothyroxine
+Levothyroxine (5 times/week),Levothyroxine
+Thyronorm,Levothyroxine
+Thyroxine (Sunday),Levothyroxine
+HYPOTHYROXINE,Levothyroxine
+Thyroxine LT4,Levothyroxine
+Euthyrox,Euthyrox
+Thyroxine (6 days a week),Levothyroxine
+"Thyroxine (50 mcg Mon-Fri, 75 mcg Sat-Sun)",Levothyroxine
+Euthyrox (Sun),Euthyrox
+Insulin Glargine 300IU/3mL Solostar (F),Insulin Glargine
+Insulin Glargine 10 (40 units),Insulin Glargine
+Metformin HCI,Metformin
+Metformin,Metformin
+Diabetmin Metformin,Metformin
+Metformin HCL (Galvus Met),Metformin
+Diabetmin XR,Metformin
+Glyciphage,Metformin
+Apo Rosuvastatin,Rosuvastatin
+Rosucard,Rosuvastatin
+Crestor Rosuvastatin,Rosuvastatin
+Rosuvastatin,Rosuvastatin
+API-Rosuvastatin,Rosuvastatin
+Rosuvas 10,Rosuvastatin
+Slo Niacin Vitamin B3,Niacin
+Ezetimibe,ezetimibe
+Simvastatin,Simvastatin
+Simvor,Simvastatin
+Simvor 20,Simvastatin
+Priacin (Simvastatin),Simvastatin
+Simlo-10 Simvastatin USP,Simvastatin
+Simlo-10,Simvastatin
+Ifistatin Simvastin,Simvastatin
+Simvor 10,Simvastatin
+Beatorva 20,Atorvastatin
+Atoris (Statin),Atorvastatin
+Atswift Atorvastatin,Atorvastatin
+Atorvastatin,Atorvastatin
+Atorvastin,Atorvastatin
+Atavor,Atorvastatin
+Estraval,estradiol
+Prednisolone Acelate,Prednisolone
+Prednisolone Eye Drop,Prednisolone
+Lipanthyl Penta 145,Lipanthyl
+Lipanthyl Supra,Lipanthyl
+Trolip 300,Fenofibrate
+Po Fenofibrate,Fenofibrate
+Renofibrate,Fenofibrate
+Lipanthyl Penta (Fenofibrate),Lipanthyl
+Lipanthyl Penta,Lipanthyl
+Sun Glucon (Glipizide),Glipizide
+Unitrac (Itraconazole),Itraconazole
+Acyclovir Stada,Acyclovir
+Cravit 1.5%,Levofloxacin
+Forcan-150,Fluconazole
+Po Cellcept,Cellcept
+Trimeprazine HCI MR,Trimeprazine
+Trimetazidine HCl,Trimetazidine
+TRIMETAZIDINE MR,Trimetazidine
+Trimetazidine Dihcl,trimetazidine dihydrochloride
+Trimetazidine HCL,Trimetazidine
+Borage Seed Oil,Borage Oil
+Neuromethyn Mecobalamin,Mecobalamin
+Isotonix Vitamin D,Vitamin D
+Nicoxia 90 Etoricoxib,Etoricoxib
+Ascorbic,Ascorbic Acid
+21st Century Slow Release Vitamin C-500,Ascorbic Acid
+Azathioprine,azathioprine
+Azathioprin,azathioprine
+Korandil 5,Nicorandil
+Liquid Calcium,Calcium
+Osteocare Calcium,Calcium
+Atom Chewable Calcium,Calcium
+Betaserc 24,Betahistine
+SR Biotin,Biotin
+Kordel's Evening Primrose Oil,Evening Primrose Oil
+Pirnoxine,pirenoxine
+Potassium Chloride,Potassium Chloride
+Potassium Iodine,Potassium Iodide
+Dienogest (Visanne),Dienogest
+Now Calcium Citrate,Calcium Citrate
+Solaray Calcium Citrate,Calcium Citrate
+Diamicron XR 60,Gliclazide
+PO DIAMICRON,Gliclazide
+Gliclazide PR,Gliclazide
+Gliclazide,Gliclazide
+Solaray Quercetin,Quercetin
+Silymarin Complex,Silymarin
+Now Silymarin,Silymarin
+Suriku Collagen,Collagen
+Itoh Hanako Skinlift Collagen,Collagen
+Proflex Collagen,Collagen
+Now Curcumin,Curcumin
+California Gold Nutrition Curcumin Up,Curcumin
+Curcumin Turmeric Root,Curcumin
+Helming's Curcumin Tablet,Curcumin
+Cinnarizine Dihcl,Cinnarizine
+Scotts Emulsion Cod Liver Oil,Cod Liver Oil
+Mason Nature Folic Acid,Folic Acid
+Lacto GG Probiotics,Lactobacillus rhamnosus GG
+Magnesium C-Threonate,magnesium l-threonate
+Vesseclear Nattokinase,Nattokinase
+SAXENDA LIRAGLUTIDE,Liraglutide
+Prolia (Once every 6 months),Denosumab
+Reserves,Resveratrol
+Tranjenta (Linagliptin),Linagliptin
+Linagliptin,Linagliptin
+Ticagretor,Ticagrelor
+TICAGRALOR,Ticagrelor
+Rivaroxaban,Rivaroxaban
+Rivaroxaban Xarelto,Rivaroxaban
+Trimetazidine MR,Trimetazidine
+NOW Vitamin D-3,Vitamin D3
+Dr. Mercola Liposomal Vitamin D3,Vitamin D3
+"Bluebonnet Nutrition, Liquid Vitamin D3 Drops",Vitamin D3
+Taflotan-2,Tafluprost
+Bioperine,Piperine
+PRIGLIP TENELIGLIPTIN,Teneligliptin
+Forxiga,Dapagliflozin
+Dapagliflozin,Dapagliflozin
+Empagliflozin,Empagliflozin
+Triamcinolone Acetonide 55mcg,Triamcinolone Acetonide
+Beclometasome Dipr,Beclomethasone Dipropionate
+Candesartan Cilexetil,Candesartan Cilexetil
+Hepsera Adefovir Dipivoxil,Adefovir Dipivoxil
+Tetracycline Hydrochloride 3% w/w,Tetracycline Hydrochloride
+Hydroxyzine HCL,Hydroxyzine Hydrochloride
+Nortriptyline HCL,Nortriptyline Hydrochloride
+Selegiline HCl,Selegiline Hydrochloride
+Lozarsin,Losartan Potassium
+Diltazem HCI,Diltiazem Hydrochloride
+Dermovate Ointment,Clobetasol Propionate
+Betamethasone Valerate 0.025%,Betamethasone Valerate
+Betamethasone Val (F/S) 0.1% Cream,Betamethasone Valerate
+Betamethasone Val (1/2S) 0.05% Cream,Betamethasone Valerate
+Betamethasone Val (F/S) 0.1%,Betamethasone Valerate
+HYTRIN TERAZOSIN HYDROCHLORIDE,Terazosin Hydrochloride
+Terazosin HCL,Terazosin Hydrochloride
+Metformin HCL,Metformin Hydrochloride
+Lendomax Alendronic Acid,Alendronic Acid
+Tamsulosin HCL,Tamsulosin Hydrochloride
+Gamma Linolenic Acid,Gamma-Linolenic Acid
+Metoclopramide HCL,Metoclopramide Hydrochloride
+Isosorbide Mononitrate CR,Isosorbide Mononitrate
+Isosorbide 5-Mononitrate SR,Isosorbide mononitrate
+Isosorbide Mononitrate,Isosorbide Mononitrate
+Elomet,Mometasone Furoate
+Nasonex Mometasone Furoate,Mometasone Furoate
+Nasonex for Each Nostril,Mometasone Furoate
+Nasonex for Both Nostrils,Mometasone Furoate
+MSN Nasonex,Mometasone Furoate
+Nasonex (for each nostril),Mometasone Furoate
+Allergan Brimonidine Tartrate,Brimonidine Tartrate
+Brimonidine Tartrate 0.15% Eye Drop,Brimonidine Tartrate
+Levothyroxine Sodium (Mon-Thur),Levothyroxine Sodium
+Timotel Maleate,Timolol Maleate
+Fucithalmic Fusidic Acid,Fusidic Acid
+Mefenamic Acid,Mefenamic Acid
+Sotalol HCL,Sotalol Hydrochloride
+Avamys Fluticasone Furoate,Fluticasone Furoate
+Fluticasone Furoate,Fluticasone Furoate
+Fluticasone Furoate (2 Spray...,Fluticasone Furoate
+Phenytoin Sod,Phenytoin Sodium
+Hydralazine HCL,Hydralazine Hydrochloride
+Arvostatin Calcium,Atorvastatin Calcium
+Pyridostigmine BR,Pyridostigmine Bromide
+Sod Valproate,Sodium Valproate
+Orion Pharma Calcium,calcium carbonate
+SINOBION IRON,iron
+Beta-Nicardia (Atenolol & Nifedipine),atenolol/nifedipine
+Atenolol Nifedipine,atenolol/nifedipine
+Apidra Insulin Glulisine,Insulin Glulisine
+Heptral 200,Ademetionine
+Thiamazole (ThyroZol),Thiamazole
+Ginkgo Biloba,Ginkgo Biloba
+Ginkgo Biloba on Weekdays,Ginkgo Biloba
+Beclo-Asma,Beclomethasone Dipropionate
+Anarex 20N,paracetamol|orphenadrine citrate
+Salofalk Suppositories 500,Mesalazine
+Rifampicine,Rifampicin
+Coated Odorless Triple Garlic,Garlic
+Phoschol,Phosphatidylcholine
+Insulin Injection,Insulin
+Doctor's Best CoQ10,Coenzyme Q10
+CoQ10 Enzyme,Coenzyme Q10
+Usana Coquinone 30,Coenzyme Q10/lipoic acid
+CoQ10,Coenzyme Q10
+CoQ-10,Coenzyme Q10
+Co-Q-10,Coenzyme Q10
+Life Extension CoQ10,Coenzyme Q10
+Viepax XR,venlafaxine hydrochloride
+Galvus Met (Diabetes),Metformin/vildagliptin
+Time Block,vitamin b6|vitamin b12|Zinc|biotin|pantothenic acid|selenium|tocopherol|tocotrienols|riboflavin
+Reserve Fruit Blend,resveratrol
+Joint Collagen,collagen
