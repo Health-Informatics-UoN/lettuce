@@ -1,90 +1,67 @@
 ## options.base_options
 [source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/options/base_options.py)
 ### `BaseOptions`
-```
-class BaseOptions(
-	self: 
-
-)
+```python
+class BaseOptions()
 ```
 
 This class defines options used during all types of experiments.
 It also implements several helper functions such as parsing, printing, and saving the options.
-### Methods
+#### Methods
 
-#### `__init__`
-```
-method __init__(
-	self: 
-
-)
+##### `__init__`
+```python
+def __init__()
 ```
 
 Initializes the BaseOptions class
 
-##### Parameters
+###### Parameters
 None
 
-##### Returns
+###### Returns
 None
 
-
-
-#### `initialize`
-```
-method initialize(
-	self: 
-
-)
+##### `initialize`
+```python
+def initialize()
 ```
 
 Initializes the BaseOptions class
 
-##### Parameters
+###### Parameters
 None
 
-##### Returns
+###### Returns
 None
 
-
-
-#### `parse`
-```
-method parse(
-	self: 
-
-)
+##### `parse`
+```python
+def parse()
 ```
 
 Parses the arguments passed to the script
 
-##### Parameters
+###### Parameters
 None
 
-##### Returns
-opt: argparse.Namespace
-
+###### Returns
+`opt: argparse.Namespace`
 The parsed arguments
 
-
-
-#### `_print`
-```
-method _print(
-	self: 
-
+##### `_print`
+```python
+def _print(
 	args: Dict
-
 )
 ```
 
 Prints the arguments passed to the script
 
-##### Parameters
-args: dict
-
+###### Parameters
+`args: dict`
 The arguments to print
 
-##### Returns
+###### Returns
 None
 

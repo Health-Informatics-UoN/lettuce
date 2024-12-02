@@ -1,10 +1,9 @@
 ## omop.preprocess
 [source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/omop/preprocess.py)
 ### `preprocess_search_term`
-```
+```python
 def preprocess_search_term(
-	term: 
-
+	term: str
 )
 ```
 
@@ -17,12 +16,9 @@ This function performs the following operations:
 3. Removes common stop words.
 4. Joins the remaining words with ' | ' for use in PostgreSQL's to_tsquery function.
 
-Args:
-    term (str): The original search term.
+#### Parameters
+`term: str` The original search term.
 
-Returns:
-    str: A preprocessed string ready for use in a full-text search query.
+#### Returns
+`str` A preprocessed string ready for use in a full-text search query.
 
-Example:
-    >>> preprocess_search_term("The quick brown fox")
-    "quick | brown | fox"
