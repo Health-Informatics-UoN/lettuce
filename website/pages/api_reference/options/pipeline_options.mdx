@@ -1,0 +1,77 @@
+## options.pipeline_options
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/options/pipeline_options.py)
+### `LLMModel`
+```python
+class LLMModel()
+```
+
+This enum holds the names of the different models the assistant can use.
+Details of the models implemented can be found [here](/api_reference/components/models)
+
+#### Methods
+
+##### `get_eot_token`
+
+```python
+def get_eot_token()
+```
+
+Some models need a special token to be appended to a prompt. If so, this returns the right end-of-turn token.
+
+### `PipelineOptions`
+```python
+class PipelineOptions(
+  llm_model: LLMModel = LLMModel.LLAMA_3_1_8B
+  temperature: float = 0
+  vocabulary_id: list[str] = ["RxNorm"]
+  concept_ancestor: bool = False
+  concept_relationship: bool = False
+  concept_synonym: bool = False
+  search_threshold: int = 80
+  max_separation_descendants: int = 1
+  max_separation_ancestor: int = 1
+  embeddings_path: str = "concept_embeddings.qdrant"
+  force_rebuild: bool = False
+  embed_vocab: list[str] = ["RxNorm", "RxNorm Extension"]
+  embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL
+  embedding_search_kwargs: dict = {}
+)
+```
+
+This class holds the options available to the
+Llettuce pipeline.
+
+These are all the options in the BaseOptions parser.
+The defaults provided here match the default options in
+BaseOptions. Using a pydantic model means FastAPI
+can take these as input in the API request.
+
+#### Attributes
+`llm_model: LLMModel`
+    The name of the LLM used in the pipeline. The permitted
+    values are the possibilities in the LLMModel enum.
+
+`temperature: float`
+    Temperature supplied to the LLM that tunes the
+    variability of responses.
+
+`concept_ancestor: bool (Defaults to false)`
+    If true, the concept_ancestor table of the OMOP vocabularies
+    is queried for the results of an OMOP search.
+
+`concept_relationship: bool (Defaults to false)`
+    If true, the concept_relationship table of the OMOP vocabularies
+    is queried for the results of an OMOP search.
+
+`concept_synonym: bool (Defaults to false)`
+    If true, the concept_synonym table of the OMOP vocabularies
+    is queried when OMOP concepts are fetched.
+
+`search_threshold: int`
+    The threshold on fuzzy string matching for returned results.
+
+`max_separation_descendant: int`
+    The maximum separation to search for concept descendants.
+
+`max_separation_ancestor: int`
+    The maximum separation to search for concept ancestors

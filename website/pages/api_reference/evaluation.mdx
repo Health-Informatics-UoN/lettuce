@@ -1,0 +1,12 @@
+## Evaluation
+
+Lettuce comes with benchmarking tools for mapping tasks.
+All the code for running the benchmarks is found in here.
+
+| component | description |
+|:----------|------------:|
+|[`evaltypes`](/api_reference/evaluation/evaltypes)|The framework uses abstract base classes and some generics to ensure the right metrics are calculated for the right pipelines. The classes used for the framework are defined here|
+|[`eval_data_loaders`](/api_reference/evaluation/eval_data_loaders)|Data are loaded into pipelines through data loaders that provide the right interface for [metrics](/api_reference/evaluation/metrics) and [pipelines](/api_reference/evaluation/pipelines)|
+|[`metrics`](/api_reference/evaluation/metrics)| Metrics for pipeline results are defined here |
+|[`pipelines`](/api_reference/evaluation/pipelines)| When running an evaluation, a pipeline generates some prediction from an input source term |
+|[`eval_tests`](/api_reference/evaluation/eval_tests)| A pipeline test is a pipeline and the metrics used to score that pipeline |

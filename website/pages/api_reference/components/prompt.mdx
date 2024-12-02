@@ -1,0 +1,42 @@
+## components.prompt
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/components/prompt.py)
+### `Prompts`
+```
+class Prompts(
+	model: LLMModel
+	prompt_type: str
+)
+```
+
+This class is used to generate prompts for the models.
+### Methods
+
+#### `__init__`
+```
+def __init__(
+	model: LLMModel
+	prompt_type: str
+)
+```
+
+Initializes the Prompts class
+
+Parameters
+----------
+`model_name: LLMModel`
+    The name of the model
+`prompt_type: str|None`
+    The type of prompt to generate
+
+#### `get_prompt`
+```
+def get_prompt()
+```
+
+Get the prompt based on the prompt_type supplied to the object.
+
+##### Returns
+PromptBuilder
+    The prompt for the model
+
+    - If the _prompt_type of the object is "simple", returns a simple prompt for few-shot learning of formal drug names.

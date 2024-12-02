@@ -1,0 +1,51 @@
+## omop.omop_models
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/omop/omop_models.py)
+### `Concept`
+```python
+class Concept(
+  concept_id = Column(Integer, primary_key=True)
+  concept_name = Column(String)
+  vocabulary_id = Column(String)
+  concept_code = Column(String)
+  standard_concept = Column(String)
+)
+```
+
+This class represents an ORM mapping to the OMOP concept table
+### `ConceptSynonym`
+```python
+class ConceptSynonym(
+  concept_id = Column(Integer, primary_key=True)
+  concept_synonym_name = Column(String)
+  language_concept_id = Column(Integer)
+)
+```
+
+This class represents an ORM mapping to the OMOP concept_synonym table
+### `build_query`
+```python
+def build_query(
+	search_term: str
+	vocabulary_id: 
+	concept_synonym: bool
+)
+```
+
+Builds an OMOP query to search for concepts
+
+Uses the ORM models for the concept and concept_synonym tables to build a query
+
+#### Parameters
+`search_term: str`
+The term to use when searching the relevant tables for concepts
+
+`vocabulary_id: list[str]`
+A list of vocabulary_ids in the concepts table. The returned concepts will have one of these vocabulary_ids
+
+`concept_synonym: str`
+If true, then the query is expanded to find matches using the concept_synonym table
+
+#### Returns
+`Select`
+An SQLAlchemy Select for the desired query
+

@@ -1,0 +1,57 @@
+## evaluation.pipelines
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/evaluation/pipelines.py)
+### `LLMPipeline`
+```python
+class LLMPipeline(
+	llm: LLMModel
+	prompt_template: Template
+	template_vars: list[str]
+)
+```
+
+This class runs a simple LLM-only pipeline on provided input
+#### Methods
+
+##### `__init__`
+```python
+def __init__(
+	llm: LLMModel
+	prompt_template: Template
+	template_vars: list[str]
+)
+```
+
+Initialises the LLMPipeline class
+
+###### Parameters
+`llm: LLMModel`
+    One of the model options in the LLMModel enum
+
+`prompt_template: Template`
+    A jinja2 template for a prompt
+
+`template_vars: list[str]`
+    The variables inserted into the prompt template when rendered
+
+##### `run`
+```python
+def run(
+	input: str[list]
+)
+```
+
+Runs the LLMPipeline on a given input
+
+###### Parameters
+`input: list[str]`
+The input strings passed to the prompt template, in the order the template_vars were provided to the class
+
+###### Returns
+`str`
+The output of running the prompt through the given model
+
+##### `drop`
+```python
+def drop()
+```
+

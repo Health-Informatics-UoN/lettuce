@@ -1,0 +1,267 @@
+## evaluation.evaltypes
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/evaluation/evaltypes.py)
+### `Metric`
+```python
+class Metric()
+
+M = TypeVar("M", bound=Metric)
+```
+
+Base class for all metrics.
+
+The Metric abstract base class also serves as the bound for the M type
+#### Methods
+
+##### `calculate`
+```python
+def calculate()
+```
+
+Calculate the metric value.
+
+##### `description`
+```python
+def description()
+```
+
+Description of the metric. Implemented by each class
+### `TestPipeline`
+```python
+class TestPipeline()
+
+P = TypeVar("P", bound=TestPipeline)
+```
+
+Base class for Pipeline runs
+
+The Pipeline abstract base class also serves as the bound for the P type
+#### Methods
+
+##### `run`
+```python
+def run()
+```
+
+Run the pipeline
+
+##### `drop`
+```python
+def drop()
+```
+
+
+### `PipelineTest`
+```python
+class PipelineTest(
+	name: str
+	pipeline: P
+	metrics: list[M]
+)
+```
+
+Base class for Pipeline tests
+#### Methods
+
+##### `__init__`
+```python
+def __init__(
+	name: str
+	pipeline: P
+	metrics: list[M]
+)
+```
+
+
+
+##### `run_pipeline`
+```python
+def run_pipeline()
+```
+
+
+
+##### `evaluate`
+```python
+def evaluate()
+```
+
+
+
+##### `metric_descriptions`
+```python
+def metric_descriptions()
+```
+
+
+
+##### `drop_pipeline`
+```python
+def drop_pipeline()
+```
+
+
+### `SingleResultMetric`
+```python
+class SingleResultMetric()
+```
+
+Metric for evaluating pipelines that return a single result.
+### `InformationRetrievalMetric`
+```python
+class InformationRetrievalMetric(
+)
+```
+
+Metric for evaluating information retrieval pipelines.
+### `SingleResultPipeline`
+```python
+class SingleResultPipeline(
+)
+```
+
+Base class for pipelines returning a single result
+### `SingleResultPipelineTest`
+```python
+class SingleResultPipelineTest(
+	name: str
+	pipeline: SingleResultPipeline
+	metrics: list[SingleResultMetric]
+)
+```
+
+
+#### Methods
+
+##### `__init__`
+```python
+def __init__(
+	name: str
+	pipeline: SingleResultPipeline
+	metrics: SingleResultMetric[list]
+)
+```
+
+
+
+##### `run_pipeline`
+```python
+def run_pipeline(
+	input_data: 
+)
+```
+
+Run the pipeline with the given input data.
+
+###### Parameters
+`input_data` The input data for the pipeline.
+
+###### Returns
+The result of running the pipeline on the input data.
+
+##### `evaluate`
+```python
+def evaluate(
+	input_data: 
+	expected_output: 
+)
+```
+
+Evaluate the pipeline by running it on the input data and comparing the result
+to the expected output using all metrics.
+
+###### Parameters
+`input_data` The input data for the pipeline.
+`expected_output` The expected output to compare against.
+
+####### Returns
+A dictionary mapping metric names to their calculated values.
+### `EvalDataLoader`
+```python
+class EvalDataLoader(
+	file_path: str
+)
+```
+
+Provides an abstract base class for loading data for an EvaluationFramework.
+The methods are left abstract to be implemented as required for different pipeline evaluations.
+#### Methods
+
+###### `__init__`
+```python
+def __init__(
+	file_path: str
+)
+```
+
+Initialises the EvalDataLoader
+
+###### Parameters
+`file_path: str`
+    A path to the file to be loaded.
+
+##### `input_data`
+```python
+def input_data()
+```
+
+An EvaluationFramework requires an EvalDataLoader to provide input_data, but subclasses must implement it
+
+###### `expected_output`
+```python
+def expected_output()
+```
+
+An EvaluationFramework requires an EvalDataLoader to provide expected_output, but subclasses must implement it
+### `EvaluationFramework`
+```python
+class EvaluationFramework(
+	name: str
+	pipeline_tests: List[PipelineTest]
+	dataset: EvalDataLoader
+	description: str
+	results_path: str
+)
+```
+
+This class provides a container for running multiple pipeline tests.
+It loads the data from an EvalDataLoader, runs the specified pipeline tests, and saves the output to a .json file
+#### Methods
+
+###### `__init__`
+```python
+def __init__(
+	name: str
+	pipeline_tests: list[PipelineTest]
+	dataset: EvalDataLoader
+	description: str
+	results_path: str
+)
+```
+
+Initialises the EvaluationFramework
+
+###### Parameters
+`name: str`
+    The name of the evaluation experiment, as stored in the output file
+`pipeline_tests: List[PipelineTest]`
+    A list of pipeline tests to run for an evaluation
+`dataset: EvalDataLoader`
+    An EvalDataLoader for the data used for the pipeline tests
+`description: str`
+    A description of the experiment for the output file
+`results_path: str`
+    A path pointing to the file for results storage
+
+##### `run_evaluations`
+```python
+def run_evaluations()
+```
+
+Runs the pipeline tests, storing the results labelled by the name of the pipeline test, then saves to the results file
+
+##### `_save_evaluations`
+```python
+def _save_evaluations()
+```
+
+If there is a file in the results_path, loads the json and rewrites it with the current experiment appended. Otherwise, creates a new output file
