@@ -65,3 +65,19 @@ class ConceptRelationship(Base):
 
     def __repr__(self) -> str:
         return super().__repr__()
+
+
+class ConceptAncestor(Base):
+    """
+    This class represents an ORM mapping to the OMOP concept_ancestor table
+    """
+
+    __tablename__ = "concept_ancestor"
+    __table_args__ = {"schema": DB_SCHEMA}
+
+    ancestor_concept_id = Column(Integer)
+    descendant_concept_id = Column(Integer)
+    min_levels_of_separation = Column(Integer)
+    max_levels_of_separation = Column(Integer)
+
+    dummy_primary = Column(Integer, primary_key=True)

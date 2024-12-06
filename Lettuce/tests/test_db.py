@@ -7,7 +7,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from omop import OMOP_match
-from omop.omop_queries import query_ids_matching_name, query_related_by_name
+from omop.omop_queries import (
+    query_ancestors_by_name,
+    query_descendants_by_name,
+    query_ids_matching_name,
+    query_related_by_name,
+)
 from utils.logging_utils import logger
 
 
@@ -96,5 +101,39 @@ def test_fetch_related_concepts_by_name(db_connection):
 
     assert len(results) > 1
 
-    names = [result[0] for result in results]
+    names = [result[0].concept_name for result in results]
     assert "Sinutab" in names
+
+
+def test_fetch_ancestor_concepts_by_name(db_connection):
+    Session = sessionmaker(db_connection)
+    session = Session()
+
+    query = query_ancestors_by_name("acetaminophen", vocabulary_ids=["RxNorm"])
+    results = session.execute(query).fetchall()
+    session.close()
+
+    assert len(results) > 1
+
+    names = [result[0].concept_name for result in results]
+    assert (
+        "LITTLE REMEDIES NEW BABY ESSENTIALS - acetaminophen, simethicone, zinc oxide kit"
+        in names
+    )
+
+
+def test_fetch_descendant_concepts_by_name(db_connection):
+    Session = sessionmaker(db_connection)
+    session = Session()
+
+    query = query_descendants_by_name("acetaminophen", vocabulary_ids=["RxNorm"])
+    results = session.execute(query).fetchall()
+    session.close()
+
+    assert len(results) > 1
+
+    names = [result[0].concept_name for result in results]
+    assert (
+        "Acetaminophen 0.0934 MG/MG / Ascorbic Acid 0.0333 MG/MG / Pheniramine 0.00333 MG/MG Oral Granules [FERVEX RHUME PARACETAMOL/VITAMINE C] Box of 8"
+        in names
+    )
