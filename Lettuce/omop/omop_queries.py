@@ -103,10 +103,12 @@ def query_ids_matching_name(query_concept, vocabulary_ids: list[str]) -> Select:
 def query_ancestors_by_name(
     query_concept: str,
     vocabulary_ids: list[str],
+    min_separation_bound: int = 0,
+    max_separation_bound: int | None = None,
 ) -> Select:
 
     matching_names = query_ids_matching_name(query_concept, vocabulary_ids).cte()
-    return (
+    ancestors = (
         select(Concept)
         .join(
             ConceptAncestor, ConceptAncestor.ancestor_concept_id == Concept.concept_id
@@ -115,16 +117,25 @@ def query_ancestors_by_name(
             matching_names,
             ConceptAncestor.descendant_concept_id == matching_names.c.concept_id,
         )
+        .where(ConceptAncestor.min_levels_of_separation >= min_separation_bound)
     )
+    if min_separation_bound:
+        return ancestors.where(
+            ConceptAncestor.max_levels_of_separation <= max_separation_bound
+        )
+    else:
+        return ancestors
 
 
 def query_descendants_by_name(
     query_concept: str,
     vocabulary_ids: list[str],
+    min_separation_bound: int = 0,
+    max_separation_bound: int | None = None,
 ) -> Select:
 
     matching_names = query_ids_matching_name(query_concept, vocabulary_ids).cte()
-    return (
+    descendants = (
         select(Concept)
         .join(
             ConceptAncestor, ConceptAncestor.descendant_concept_id == Concept.concept_id
@@ -133,7 +144,14 @@ def query_descendants_by_name(
             matching_names,
             ConceptAncestor.ancestor_concept_id == matching_names.c.concept_id,
         )
+        .where(ConceptAncestor.min_levels_of_separation >= min_separation_bound)
     )
+    if max_separation_bound:
+        return descendants.where(
+            ConceptAncestor.max_levels_of_separation <= max_separation_bound
+        )
+    else:
+        return descendants
 
 
 def query_ancestors_by_id() -> Select: ...

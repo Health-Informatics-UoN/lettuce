@@ -122,6 +122,25 @@ def test_fetch_ancestor_concepts_by_name(db_connection):
     )
 
 
+def test_fetch_ancestor_concepts_by_name_with_separation_bounds(db_connection):
+    Session = sessionmaker(db_connection)
+    session = Session()
+
+    query = query_ancestors_by_name(
+        "acetaminophen",
+        vocabulary_ids=["RxNorm"],
+        min_separation_bound=1,
+        max_separation_bound=1,
+    )
+    results = session.execute(query).fetchall()
+    session.close()
+
+    assert len(results) > 1
+
+    names = [result[0].concept_name for result in results]
+    assert "homatropine methylbromide; systemic" in names
+
+
 def test_fetch_descendant_concepts_by_name(db_connection):
     Session = sessionmaker(db_connection)
     session = Session()
@@ -137,3 +156,17 @@ def test_fetch_descendant_concepts_by_name(db_connection):
         "Acetaminophen 0.0934 MG/MG / Ascorbic Acid 0.0333 MG/MG / Pheniramine 0.00333 MG/MG Oral Granules [FERVEX RHUME PARACETAMOL/VITAMINE C] Box of 8"
         in names
     )
+
+
+def test_fetch_descendant_concepts_by_name_with_separation_bounds(db_connection):
+    Session = sessionmaker(db_connection)
+    session = Session()
+
+    query = query_descendants_by_name("acetaminophen", vocabulary_ids=["RxNorm"])
+    results = session.execute(query).fetchall()
+    session.close()
+
+    assert len(results) > 1
+
+    names = [result[0].concept_name for result in results]
+    assert "Painaid BRF Oral Product" in names

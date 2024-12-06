@@ -1,6 +1,10 @@
 from typing import Any, List
+
+from sqlalchemy.orm import Session, session
 from evaluation.evaltypes import SingleResultMetric, InformationRetrievalMetric
 from rapidfuzz import fuzz
+
+from omop.omop_queries import query_ancestors_by_name, query_related_by_name
 
 
 # ------ Single Result Metrics ------
@@ -222,3 +226,83 @@ class FScoreMetric(InformationRetrievalMetric):
     @property
     def description(self) -> str:
         return self._description
+
+
+class AncestorNamePrecision(InformationRetrievalMetric):
+    def __init__(
+        self,
+        connection: Session,
+        vocabulary_ids: list[str],
+        min_separation_bound: int = 0,
+        max_separation_bound: int | None = None,
+    ) -> None:
+        """
+        Initialises the Ancestor Precision metric
+
+        Parameters
+        ----------
+        connection: Session
+            A connection to an OMOP-CDM database
+        vocabulary_ids: list[str]
+            A list of vocabularies to use for finding an initial concept
+        min_separation_bound: int
+            A lower bound for minimum level of separation
+        max_separation_bound: int|None
+            An upper bound for maximum level of separation
+        """
+        self._description = "Ancestor concept name precision: Calculates precision, where the set of relevant instances is the concept's ancestors"
+        self._min_separation_bound = min_separation_bound
+        self._max_separation_bound = max_separation_bound
+        self._connection = connection
+        self._vocabulary_ids = vocabulary_ids
+
+    def calculate(self, predicted: list[str], actual: str) -> float:
+        query = query_ancestors_by_name(
+            actual,
+            self._vocabulary_ids,
+            min_separation_bound=self._min_separation_bound,
+            max_separation_bound=self._max_separation_bound,
+        )
+        ancestor_concepts = self._connection.execute(query).fetchall()
+        ancestor_names = set(result[0].concept_name for result in ancestor_concepts)
+
+        return calc_precision(list(ancestor_names), predicted)
+
+
+class RelatedNamePrecision(InformationRetrievalMetric):
+    def __init__(
+        self,
+        connection: Session,
+        vocabulary_ids: list[str],
+        min_separation_bound: int = 0,
+        max_separation_bound: int | None = None,
+    ) -> None:
+        """
+        Initialises the Related concept name precision metric
+
+        Parameters
+        ----------
+        connection: Session
+            A connection to an OMOP-CDM database
+        vocabulary_ids: list[str]
+            A list of vocabularies to use for finding an initial concept
+        min_separation_bound: int
+            A lower bound for minimum level of separation
+        max_separation_bound: int|None
+            An upper bound for maximum level of separation
+        """
+        self._description = "Related concept name precision: Calculates precision, where the set of relevant instances is the concept's ancestors"
+        self._min_separation_bound = min_separation_bound
+        self._max_separation_bound = max_separation_bound
+        self._connection = connection
+        self._vocabulary_ids = vocabulary_ids
+
+    def calculate(self, predicted: list[str], actual: str) -> float:
+        query = query_related_by_name(
+            actual,
+            self._vocabulary_ids,
+        )
+        related_concepts = self._connection.execute(query).fetchall()
+        related_names = set(result[0].concept_name for result in related_concepts)
+
+        return calc_precision(list(related_names), predicted)
