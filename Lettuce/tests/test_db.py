@@ -1,8 +1,17 @@
+from dotenv import load_dotenv
+from os import environ
 import pytest
+from urllib.parse import quote_plus
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 from omop import OMOP_match
+from omop.omop_queries import query_ids_matching_name, query_related_by_name
 from utils.logging_utils import logger
 
 
+# --- Testing main OMOP_match --->
 @pytest.fixture
 def single_query_result():
     return OMOP_match.run(
@@ -43,3 +52,49 @@ def test_single_query_concept_keys(single_query_result):
 
 def test_three_query_returns_three_results(three_query_result):
     assert len(three_query_result) == 3
+
+
+# --- Testing utility queries -->
+load_dotenv()
+
+
+@pytest.fixture
+def db_connection():
+    DB_HOST = environ["DB_HOST"]
+    DB_USER = environ["DB_USER"]
+    DB_PASSWORD = quote_plus(environ["DB_PASSWORD"])
+    DB_NAME = environ["DB_NAME"]
+    DB_PORT = environ["DB_PORT"]
+
+    connection_string = (
+        f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    )
+    return create_engine(connection_string)
+
+
+def test_matching_by_name(db_connection):
+    Session = sessionmaker(db_connection)
+    session = Session()
+
+    query = query_ids_matching_name("acetaminophen", vocabulary_ids=["RxNorm"])
+    results = session.execute(query).fetchall()
+    session.close()
+
+    assert len(results) == 1
+    # This is the concept_id for RxNorm's acetaminophen entry - change if the underlying vocabulary changes
+    assert results[0][0] == 1125315
+
+
+def test_fetch_related_concepts_by_name(db_connection):
+    # I'm sure there's a neater pytest-y way to keep the session active, but honestly it's not worth the bother
+    Session = sessionmaker(db_connection)
+    session = Session()
+
+    query = query_related_by_name("acetaminophen", vocabulary_ids=["RxNorm"])
+    results = session.execute(query).fetchall()
+    session.close()
+
+    assert len(results) > 1
+
+    names = [result[0] for result in results]
+    assert "Sinutab" in names

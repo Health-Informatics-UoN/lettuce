@@ -1,6 +1,6 @@
-from omop.omop_models import Concept, ConceptSynonym
+from omop.omop_models import Concept, ConceptRelationship, ConceptSynonym
 
-from sqlalchemy import select, or_
+from sqlalchemy import select, or_, func
 from sqlalchemy.sql import Select, text, null
 
 
@@ -81,13 +81,41 @@ def text_search_query(
     return query
 
 
-def query_ancestors_by_name() -> Select: ...
+def get_all_vocabs() -> Select:
+    return select(Concept.vocabulary_id.distinct())
+
+
+def query_ids_matching_name(query_concept, vocabulary_ids: list[str]) -> Select:
+    return (
+        select(
+            Concept.concept_id,
+        )
+        .where(func.lower(Concept.concept_name) == query_concept.lower())
+        .where(Concept.vocabulary_id.in_(vocabulary_ids))
+    )
+
+
+def query_ancestors_by_name(query_concept: str, vocabulary_ids: list[str]) -> Select:
+
+    matching_names = query_ids_matching_name(query_concept, vocabulary_ids).cte()
+    pass
 
 
 def query_ancestors_by_id() -> Select: ...
 
 
-def query_related_by_name() -> Select: ...
+def query_related_by_name(query_concept: str, vocabulary_ids: list[str]) -> Select:
+    matching_names = query_ids_matching_name(query_concept, vocabulary_ids).cte()
+    return (
+        select(Concept.concept_name)
+        .join(
+            ConceptRelationship, ConceptRelationship.concept_id_2 == Concept.concept_id
+        )
+        .join(
+            matching_names,
+            ConceptRelationship.concept_id_1 == matching_names.c.concept_id,
+        )
+    )
 
 
 def query_related_by_id() -> Select: ...
