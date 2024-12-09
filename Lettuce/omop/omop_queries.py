@@ -90,19 +90,19 @@ def get_all_vocabs() -> Select:
     return select(Concept.vocabulary_id.distinct())
 
 
-def query_ids_matching_name(query_concept, vocabulary_ids: list[str]) -> Select:
-    return (
-        select(
-            Concept.concept_id,
-        )
-        .where(func.lower(Concept.concept_name) == query_concept.lower())
-        .where(Concept.vocabulary_id.in_(vocabulary_ids))
-    )
+def query_ids_matching_name(query_concept, vocabulary_ids: list[str] | None) -> Select:
+    base_query = select(
+        Concept.concept_id,
+    ).where(func.lower(Concept.concept_name) == query_concept.lower())
+    if vocabulary_ids:
+        return base_query.where(Concept.vocabulary_id.in_(vocabulary_ids))
+    else:
+        return base_query
 
 
 def query_ancestors_by_name(
     query_concept: str,
-    vocabulary_ids: list[str],
+    vocabulary_ids: list[str] | None,
     min_separation_bound: int = 0,
     max_separation_bound: int | None = None,
 ) -> Select:
@@ -129,7 +129,7 @@ def query_ancestors_by_name(
 
 def query_descendants_by_name(
     query_concept: str,
-    vocabulary_ids: list[str],
+    vocabulary_ids: list[str] | None,
     min_separation_bound: int = 0,
     max_separation_bound: int | None = None,
 ) -> Select:
