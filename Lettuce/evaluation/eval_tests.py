@@ -1,5 +1,6 @@
 from typing import Dict
 from evaluation.evaltypes import (
+    PipelineTest,
     SingleResultPipelineTest,
     SingleResultMetric,
 )
@@ -67,3 +68,15 @@ class LLMPipelineTest(SingleResultPipelineTest):
 
     def drop_pipeline(self) -> None:
         self.pipeline.drop()
+
+
+class EmbeddingComparisonTest(SingleResultPipelineTest):
+
+    def __init__(self, name: str, pipeline, metrics):
+        super().__init__(name, pipeline, metrics)
+
+    def run_pipeline(self, input_data):
+        return super().run_pipeline(input_data)
+
+    def evaluate(self, input_data, expected_output):
+        return super().evaluate(input_data, expected_output)

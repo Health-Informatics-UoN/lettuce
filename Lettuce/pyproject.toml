@@ -32,6 +32,7 @@ fastembed-haystack = "^1.2.0"
 qdrant-haystack = "^7.0.0"
 torch = "2.2"
 pytest = "^8.3.3"
+sentence-transformers = "^3.3.1"
 
 
 [build-system]

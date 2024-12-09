@@ -47,7 +47,7 @@ class SingleInputSimpleCSV(EvalDataLoader):
             A list of the input_data column
         """
         try:
-            return [[i] for i in self.data["input_data"]]
+            return self.data["input_data"].to_list()
         except KeyError:
             print(f"No column named 'input_data' in {self.file_path}")
 

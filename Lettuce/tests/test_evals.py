@@ -26,7 +26,7 @@ from omop.db_manager import db_session
 from options.pipeline_options import LLMModel
 
 
-# --- Single resutl metrics ---
+# --- Single result metrics ---
 class IdentityPipeline(SingleResultPipeline):
     def run(self, input_data):
         return input_data
