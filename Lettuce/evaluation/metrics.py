@@ -268,14 +268,16 @@ class AncestorNamePrecision(InformationRetrievalMetric):
 
         return calc_precision(list(ancestor_names), predicted)
 
+    @property
+    def description(self) -> str:
+        return self._description
+
 
 class RelatedNamePrecision(InformationRetrievalMetric):
     def __init__(
         self,
         connection: Session,
         vocabulary_ids: list[str],
-        min_separation_bound: int = 0,
-        max_separation_bound: int | None = None,
     ) -> None:
         """
         Initialises the Related concept name precision metric
@@ -292,8 +294,6 @@ class RelatedNamePrecision(InformationRetrievalMetric):
             An upper bound for maximum level of separation
         """
         self._description = "Related concept name precision: Calculates precision, where the set of relevant instances is the concept's ancestors"
-        self._min_separation_bound = min_separation_bound
-        self._max_separation_bound = max_separation_bound
         self._connection = connection
         self._vocabulary_ids = vocabulary_ids
 
@@ -306,3 +306,7 @@ class RelatedNamePrecision(InformationRetrievalMetric):
         related_names = set(result[0].concept_name for result in related_concepts)
 
         return calc_precision(list(related_names), predicted)
+
+    @property
+    def description(self) -> str:
+        return self._description

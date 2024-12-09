@@ -2,6 +2,7 @@ import pytest
 from jinja2 import Environment
 import os
 import json
+from sqlalchemy.orm import Session
 
 from evaluation.eval_tests import LLMPipelineTest
 from evaluation.evaltypes import (
@@ -9,13 +10,23 @@ from evaluation.evaltypes import (
     SingleResultPipelineTest,
     EvaluationFramework,
 )
-from evaluation.metrics import ExactMatch
+from evaluation.metrics import (
+    ExactMatch,
+    FuzzyMatchRatio,
+    PrecisionMetric,
+    RecallMetric,
+    FScoreMetric,
+    AncestorNamePrecision,
+    RelatedNamePrecision,
+)
 from evaluation.pipelines import LLMPipeline
 from evaluation.eval_data_loaders import SingleInputSimpleCSV
+from omop.db_manager import db_session
 
 from options.pipeline_options import LLMModel
 
 
+# --- Single resutl metrics ---
 class IdentityPipeline(SingleResultPipeline):
     def run(self, input_data):
         return input_data
@@ -73,6 +84,96 @@ class TestExactMatch:
 
     def test_half_match(self, exact_match_test, half_match_dataset):
         assert self.run_test(exact_match_test, half_match_dataset) == 0.5
+
+
+# --- Information Retrieval Metrics ---
+class TestDatabaseMetrics:
+    @pytest.fixture
+    def db_connection(self) -> Session:
+        return db_session()
+
+    @pytest.fixture
+    def pretend_relationship_matches(self) -> dict[str, list[str]]:
+        return {
+            "full match": [
+                "Retired SNOMED UK Drug extension concept, do not use, use concept indicated by the CONCEPT_RELATIONSHIP table, if any",
+                "Retired SNOMED UK Drug extension concept, do not use, use concept indicated by the CONCEPT_RELATIONSHIP table, if any",
+                "acetaminophen / dextromethorphan Oral Powder Product",
+                "acetaminophen, dextromethorphan hbr, phenylephrine hcl, doxylamine succinate KIT [daytime/nighttime cold and flu multi-symptom relief]",
+                "acetaminophen / dextromethorphan / phenylephrine / triprolidine Pill",
+                "Acetaminophen- and orphenadrine-containing product",
+            ],
+            "half match": [
+                "Retired SNOMED UK Drug extension concept, do not use, use concept indicated by the CONCEPT_RELATIONSHIP table, if any",
+                "Retired SNOMED UK Drug extension concept, do not use, use concept indicated by the CONCEPT_RELATIONSHIP table, if any",
+                "acetaminophen / dextromethorphan Oral Powder Product",
+                "grunge",
+                "nato",
+                "chumbawumba",
+            ],
+            "no match": ["banana", "spoon", "eagle", "grunge", "nato", "chumbawumba"],
+        }
+
+    def test_related_name_precision(self, db_connection, pretend_relationship_matches):
+        metric = RelatedNamePrecision(db_connection, ["RxNorm"])
+        full_match = metric.calculate(
+            pretend_relationship_matches["full match"], "Acetaminophen"
+        )
+        half_match = metric.calculate(
+            pretend_relationship_matches["half match"], "Acetaminophen"
+        )
+        no_match = metric.calculate(
+            pretend_relationship_matches["no match"], "Acetaminophen"
+        )
+
+        assert full_match == 1.0
+        assert half_match == 0.5
+        assert no_match == 0
+
+    @pytest.fixture
+    def pretend_ancestor_matches(self) -> dict[str, list[str]]:
+        return {
+            "full match": [
+                "homatropine methylbromide; systemic",
+                "codeine and other non-opioid analgesics; systemic",
+                "dihydrocodeine and other non-opioid analgesics; systemic",
+                "tramadol and other non-opioid analgesics; systemic",
+                "tropenzilone and analgesics",
+                "pitofenone and analgesics; systemic",
+            ],
+            "half match": [
+                "homatropine methylbromide; systemic",
+                "codeine and other non-opioid analgesics; systemic",
+                "dihydrocodeine and other non-opioid analgesics; systemic",
+                "ice cream",
+                "laserdisc",
+                "spoon again",
+            ],
+            "no match": [
+                "ice cream",
+                "laserdisc",
+                "spoon again",
+                "unbelievably, another spoon",
+                "ladle",
+                "potato",
+            ],
+        }
+
+    def test_ancestor_name_precision(self, db_connection, pretend_ancestor_matches):
+        metric = AncestorNamePrecision(db_connection, ["RxNorm"])
+        full_match = metric.calculate(
+            pretend_ancestor_matches["full match"], "Acetaminophen"
+        )
+        half_match = metric.calculate(
+            pretend_ancestor_matches["half match"], "Acetaminophen"
+        )
+        no_match = metric.calculate(
+            pretend_ancestor_matches["no match"], "Acetaminophen"
+        )
+
+        assert full_match == 1.0
+        assert half_match == 0.5
+        assert no_match == 0
 
 
 # LLM pipeline tests
