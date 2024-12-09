@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from rapidfuzz import fuzz
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from omop.omop_models import build_query
+from omop.omop_queries import text_search_query
 
 from logging import Logger
 from omop.preprocess import preprocess_search_term
@@ -181,7 +181,7 @@ class OMOPMatcher:
         list | None
             A list of search results from the OMOP database if the query comes back with results, otherwise returns None
         """
-        query = build_query(
+        query = text_search_query(
             preprocess_search_term(search_term), vocabulary_id, concept_synonym
         )
         Session = sessionmaker(self.engine)
