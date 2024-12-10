@@ -1,8 +1,11 @@
+from enum import Enum
 from typing import Any, List
 
-from sqlalchemy.orm import Session, session
+from sentence_transformers import SentenceTransformer
+from sqlalchemy.orm import Session
 from evaluation.evaltypes import SingleResultMetric, InformationRetrievalMetric
 from rapidfuzz import fuzz
+import numpy as np
 
 from omop.omop_queries import query_ancestors_by_name, query_related_by_name
 
@@ -97,6 +100,57 @@ class FuzzyMatchRatio(SingleResultMetric):
 
     @property
     def description(self):
+        return self._description
+
+
+class DotVectorSimilarityMetric(SingleResultMetric):
+    """
+    A metric that calculates a vector similarity metric between input and a desired output
+    """
+
+    def __init__(
+        self,
+        embedding_model: SentenceTransformer,
+    ):
+        self.model = embedding_model
+        self._description = (
+            "Dot product: the dot product of the vector for input and desired output"
+        )
+
+    def calculate(self, embedded_input: np.ndarray, actual: str) -> float:
+        embedded_input = embedded_input
+        embedded_actual = self.model.encode(actual)
+
+        return float(np.inner(embedded_input, embedded_actual))
+
+    @property
+    def description(self) -> str:
+        return self._description
+
+
+class CosineVectorSimilarityMetric(SingleResultMetric):
+    """
+    A metric that calculates a vector similarity metric between input and a desired output
+    """
+
+    def __init__(
+        self,
+        embedding_model: SentenceTransformer,
+    ):
+        self.model = embedding_model
+        self._description = "Cosine similarity: the cosine similarity between input and output embeddings"
+
+    def calculate(self, embedded_input: np.ndarray, actual: str) -> float:
+        embedded_input = embedded_input
+        embedded_actual = self.model.encode(actual)
+
+        return float(
+            np.inner(embedded_input, embedded_actual)
+            / (np.linalg.norm(embedded_input) * np.linalg.norm(embedded_actual))
+        )
+
+    @property
+    def description(self) -> str:
         return self._description
 
 

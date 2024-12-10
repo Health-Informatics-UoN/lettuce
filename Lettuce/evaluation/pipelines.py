@@ -1,9 +1,12 @@
+from sentence_transformers import SentenceTransformer
+from torch.functional import Tensor
 from evaluation.evaltypes import SingleResultPipeline
 from options.pipeline_options import LLMModel
 from components.models import local_models
 from jinja2 import Template
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
+import numpy as np
 
 
 class LLMPipeline(SingleResultPipeline):
@@ -60,3 +63,12 @@ class LLMPipeline(SingleResultPipeline):
 
     def drop(self):
         del self._model
+
+
+class EmbeddingsPipeline(SingleResultPipeline):
+
+    def __init__(self, embedding_model: SentenceTransformer) -> None:
+        self.model = embedding_model
+
+    def run(self, input: str) -> Tensor:
+        return self.model.encode(input)

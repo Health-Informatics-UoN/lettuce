@@ -47,6 +47,8 @@ Informal name: {{informal_name}}""",
 
 Respond only with the formal name of the medication, without any extra explanation.
 
+Examples:
+
 Informal name: Tylenol
 Response: Acetaminophen
 
@@ -65,6 +67,7 @@ Possible related terms:
 {% endfor %}
 
 Task:
+
 Informal name: {{informal_name}}""",
         }
 
