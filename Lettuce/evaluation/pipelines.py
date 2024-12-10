@@ -6,7 +6,7 @@ from components.models import local_models
 from jinja2 import Template
 from llama_cpp import Llama
 from huggingface_hub import hf_hub_download
-import numpy as np
+from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
 
 
 class LLMPipeline(SingleResultPipeline):
@@ -72,3 +72,37 @@ class EmbeddingsPipeline(SingleResultPipeline):
 
     def run(self, input: str) -> Tensor:
         return self.model.encode(input)
+
+
+class RAGPipeline(SingleResultPipeline):
+    def __init__(
+        self,
+        llm: LLMModel,
+        prompt_template: Template,
+        template_vars: list[str],
+        embedding_model: SentenceTransformer,
+        retriever: QdrantEmbeddingRetriever,
+        top_k: int = 5,
+    ) -> None:
+        self.llm = llm
+        self.prompt_template = prompt_template
+        self._llmodel = Llama(
+            hf_hub_download(**local_models[self.llm.value]),
+            n_ctx=0,
+            n_batch=512,
+            model_kwargs={"n_gpu_layers": -1, "verbose": True},
+            generation_kwargs={"max_tokens": 128, "temperature": 0},
+        )
+        self._embedding_model = embedding_model
+        self._template_vars = template_vars
+        self._retriever = retriever
+        self._top_k = top_k
+
+    def run(self, input: list[str]) -> str:
+        embedding = self._embedding_model.encode(input[0])
+        search_results = self._retriever.run(embedding, top_k=self._top_k)
+        prompt = self.prompt_template.render(
+            dict(zip(self._template_vars, [*input, search_results["documents"]]))
+        )
+        reply = self._llmodel.create_completion(prompt=prompt)["choices"][0]["text"]
+        return reply
