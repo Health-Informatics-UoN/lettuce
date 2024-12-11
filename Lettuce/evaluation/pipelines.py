@@ -1,11 +1,8 @@
 from sentence_transformers import SentenceTransformer
 from torch.functional import Tensor
 from evaluation.evaltypes import SingleResultPipeline
-from options.pipeline_options import LLMModel
-from components.models import local_models
 from jinja2 import Template
 from llama_cpp import Llama
-from huggingface_hub import hf_hub_download
 from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
 
 
@@ -15,7 +12,7 @@ class LLMPipeline(SingleResultPipeline):
     """
 
     def __init__(
-        self, llm: LLMModel, prompt_template: Template, template_vars: list[str]
+        self, llm: Llama, prompt_template: Template, template_vars: list[str]
     ) -> None:
         """
         Initialises the LLMPipeline class
@@ -31,13 +28,7 @@ class LLMPipeline(SingleResultPipeline):
         """
         self.llm = llm
         self.prompt_template = prompt_template
-        self._model = Llama(
-            hf_hub_download(**local_models[self.llm.value]),
-            n_ctx=0,
-            n_batch=512,
-            model_kwargs={"n_gpu_layers": -1, "verbose": True},
-            generation_kwargs={"max_tokens": 128, "temperature": 0},
-        )
+        self._model = llm
         self._template_vars = template_vars
 
     def run(self, input: list[str]) -> str:
@@ -77,7 +68,7 @@ class EmbeddingsPipeline(SingleResultPipeline):
 class RAGPipeline(SingleResultPipeline):
     def __init__(
         self,
-        llm: LLMModel,
+        llm: Llama,
         prompt_template: Template,
         template_vars: list[str],
         embedding_model: SentenceTransformer,
@@ -86,13 +77,7 @@ class RAGPipeline(SingleResultPipeline):
     ) -> None:
         self.llm = llm
         self.prompt_template = prompt_template
-        self._llmodel = Llama(
-            hf_hub_download(**local_models[self.llm.value]),
-            n_ctx=0,
-            n_batch=512,
-            model_kwargs={"n_gpu_layers": -1, "verbose": True},
-            generation_kwargs={"max_tokens": 128, "temperature": 0},
-        )
+        self._llmodel = llm
         self._embedding_model = embedding_model
         self._template_vars = template_vars
         self._retriever = retriever
