@@ -154,6 +154,90 @@ class CosineVectorSimilarityMetric(SingleResultMetric):
         return self._description
 
 
+class RelatedNameUncasedMatch(SingleResultMetric):
+    """
+    A metric that checks whether the output of a pipeline is a related concept to the target concept
+    """
+
+    def __init__(
+        self,
+        connection: Session,
+        vocabulary_ids: list[str],
+    ) -> None:
+        self._description = "Related name: Is the output of a pipeline a related concept to the target concept?"
+        self._connection = connection
+        self._vocabulary_ids = vocabulary_ids
+
+    def calculate(self, predicted, actual) -> float:
+        # If the correct concept is returned, I think a concept should relate to itself
+        if predicted.lower() == actual.lower():
+            return 1.0
+        query = query_related_by_name(
+            actual,
+            self._vocabulary_ids,
+        )
+        related_concepts = self._connection.execute(query).fetchall()
+        related_names = set(
+            result[0].concept_name.lower() for result in related_concepts
+        )
+
+        return float(predicted.lower() in related_names)
+
+    @property
+    def description(self) -> str:
+        return super().description
+
+
+class AncestorNameUncasedMatch(SingleResultMetric):
+    def __init__(
+        self,
+        connection: Session,
+        vocabulary_ids: list[str],
+        min_separation_bound: int = 0,
+        max_separation_bound: int | None = None,
+    ) -> None:
+        """
+        Initialises the Ancestor Name uncased match metric
+
+        Parameters
+        ----------
+        connection: Session
+            A connection to an OMOP-CDM database
+        vocabulary_ids: list[str]
+            A list of vocabularies to use for finding an initial concept
+        min_separation_bound: int
+            A lower bound for minimum level of separation
+        max_separation_bound: int|None
+            An upper bound for maximum level of separation
+        """
+        self._description = "Ancestor concept name precision: Calculates precision, where the set of relevant instances is the concept's ancestors"
+        self._min_separation_bound = min_separation_bound
+        self._max_separation_bound = max_separation_bound
+        self._connection = connection
+        self._vocabulary_ids = vocabulary_ids
+
+    def calculate(self, predicted: str, actual: str) -> float:
+        # If the correct concept is returned, I think a concept should relate to itself
+        if predicted.lower() == actual.lower():
+            return 1.0
+        query = query_ancestors_by_name(
+            actual,
+            self._vocabulary_ids,
+            min_separation_bound=self._min_separation_bound,
+            max_separation_bound=self._max_separation_bound,
+        )
+        ancestor_concepts = self._connection.execute(query).fetchall()
+        ancestor_names = set(
+            result[0].concept_name.lower() for result in ancestor_concepts
+        )
+
+        return float(predicted in ancestor_names)
+
+    @property
+    def description(self) -> str:
+        return self._description
+
+
 # -------- Information Retrieval Metrics --------
 def calc_precision(relevant_instances: List[Any], prediction: List[Any]) -> float:
     """
