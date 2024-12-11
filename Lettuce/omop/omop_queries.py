@@ -157,7 +157,9 @@ def query_descendants_by_name(
 def query_ancestors_by_id() -> Select: ...
 
 
-def query_related_by_name(query_concept: str, vocabulary_ids: list[str]) -> Select:
+def query_related_by_name(
+    query_concept: str, vocabulary_ids: list[str] | None
+) -> Select:
     matching_names = query_ids_matching_name(query_concept, vocabulary_ids).cte()
     return (
         select(Concept)

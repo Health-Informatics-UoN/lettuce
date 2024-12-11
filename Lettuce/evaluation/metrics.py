@@ -162,7 +162,7 @@ class RelatedNameUncasedMatch(SingleResultMetric):
     def __init__(
         self,
         connection: Session,
-        vocabulary_ids: list[str],
+        vocabulary_ids: list[str] | None = None,
     ) -> None:
         self._description = "Related name: Is the output of a pipeline a related concept to the target concept?"
         self._connection = connection
@@ -192,7 +192,7 @@ class AncestorNameUncasedMatch(SingleResultMetric):
     def __init__(
         self,
         connection: Session,
-        vocabulary_ids: list[str],
+        vocabulary_ids: list[str] | None = None,
         min_separation_bound: int = 0,
         max_separation_bound: int | None = None,
     ) -> None:
