@@ -169,8 +169,9 @@ class RelatedNameUncasedMatch(SingleResultMetric):
         self._vocabulary_ids = vocabulary_ids
 
     def calculate(self, predicted, actual) -> float:
+        predicted = predicted.lower().strip()
         # If the correct concept is returned, I think a concept should relate to itself
-        if predicted.lower() == actual.lower():
+        if predicted == actual.lower().strip():
             return 1.0
         query = query_related_by_name(
             actual,
@@ -180,8 +181,11 @@ class RelatedNameUncasedMatch(SingleResultMetric):
         related_names = set(
             result[0].concept_name.lower() for result in related_concepts
         )
+        print(related_names)
+        print(predicted)
+        print(float(predicted in related_names))
 
-        return float(predicted.lower() in related_names)
+        return float(predicted in related_names)
 
     @property
     def description(self) -> str:

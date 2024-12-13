@@ -26,7 +26,6 @@ class LLMPipeline(SingleResultPipeline):
         template_vars: list[str]
             The variables inserted into the prompt template when rendered
         """
-        self.llm = llm
         self.prompt_template = prompt_template
         self._model = llm
         self._template_vars = template_vars
@@ -49,7 +48,7 @@ class LLMPipeline(SingleResultPipeline):
             {(v, i) for v, i in zip(self._template_vars, input)}
         )
         reply = self._model.create_completion(prompt=prompt)["choices"][0]["text"]
-        print(f"{self.llm.value} replied {reply} for {input}")
+        print(f"Replied {reply} for {input}")
         return reply
 
     def drop(self):
@@ -90,4 +89,5 @@ class RAGPipeline(SingleResultPipeline):
             dict(zip(self._template_vars, [*input, search_results["documents"]]))
         )
         reply = self._llmodel.create_completion(prompt=prompt)["choices"][0]["text"]
+        print(f"Replied {reply} for {input}")
         return reply
