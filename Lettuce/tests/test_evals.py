@@ -11,6 +11,7 @@ from evaluation.evaltypes import (
     EvaluationFramework,
 )
 from evaluation.metrics import (
+    AncestorNameUncasedMatch,
     ExactMatch,
     FuzzyMatchRatio,
     PrecisionMetric,
@@ -18,6 +19,7 @@ from evaluation.metrics import (
     FScoreMetric,
     AncestorNamePrecision,
     RelatedNamePrecision,
+    RelatedNameUncasedMatch,
 )
 from evaluation.pipelines import LLMPipeline
 from evaluation.eval_data_loaders import SingleInputSimpleCSV
@@ -174,6 +176,32 @@ class TestDatabaseMetrics:
         assert full_match == 1.0
         assert half_match == 0.5
         assert no_match == 0
+
+    def test_related_name_uncased_match(self, db_connection):
+        metric = RelatedNameUncasedMatch(db_connection, ["RxNorm"])
+
+        concept_match = metric.calculate("acetaminophen", "Acetaminophen")
+        concept_related = metric.calculate(
+            "acetaminophen / dextromethorphan Oral Powder Product", "Acetaminophen"
+        )
+        concept_not_related = metric.calculate("Oxford Circus", "Acetaminophen")
+
+        assert concept_match == 1.0
+        assert concept_related == 1.0
+        assert concept_not_related == 0
+
+    def test_ancestor_name_uncased_match(self, db_connection):
+        metric = AncestorNameUncasedMatch(db_connection, ["RxNorm"])
+
+        concept_match = metric.calculate("acetaminophen", "Acetaminophen")
+        concept_related = metric.calculate(
+            "codeine and other non-opioid analgesics; systemic", "Acetaminophen"
+        )
+        concept_not_related = metric.calculate("Oxford Circus", "Acetaminophen")
+
+        assert concept_match == 1.0
+        assert concept_related == 1.0
+        assert concept_not_related == 0
 
 
 # LLM pipeline tests
