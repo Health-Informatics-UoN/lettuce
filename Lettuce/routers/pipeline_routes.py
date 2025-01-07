@@ -207,7 +207,16 @@ async def vector_llm_pipeline(request: PipelineRequest) -> List:
     """
     informal_names = request.names
 
-    pl = llm_pipeline(**request.pipeline_options, logger=logger).get_rag_assistant()
+    pl = llm_pipeline(
+        llm_model=request.pipeline_options.llm_model,
+        temperature=request.pipeline_options.temperature,
+        embeddings_path=request.pipeline_options.embeddings_path,
+        force_rebuild=request.pipeline_options.force_rebuild,
+        embed_vocab=request.pipeline_options.embed_vocab,
+        embedding_model=request.pipeline_options.embedding_model,
+        embedding_search_kwargs=request.pipeline_options.embedding_search_kwargs,
+        logger=logger,
+    ).get_rag_assistant()
     start = time.time()
     pl.warm_up()
     logger.info(f"Pipeline warmup in {time.time()-start} seconds")
