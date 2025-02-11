@@ -11,3 +11,5 @@
 /Lettuce/log
 /website/.next
 /website/node_modules
+/qdrant_data
+*parquet

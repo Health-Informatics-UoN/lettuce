@@ -1,0 +1,28 @@
+name: build-vector-db
+
+services:
+   vector-db:
+     image: qdrant/qdrant
+     ports:
+       - 6333:6333
+       - 6334:6334
+     expose:
+       - 6333
+       - 6334
+       - 6335
+     volumes:
+       - ./qdrant_data:/qdrant/storage
+     
+   embeddings:
+     build:
+       context: ./vector-db
+       dockerfile: Dockerfile
+     environment:
+       - VDB_HOST=vector-db
+       - VDB_PORT=6333
+       - COLLECTION_NAME=omop
+       - DISTANCE_METRIC=cosine
+     volumes:
+       - ./vector-db:/embeddings:ro
+     depends_on:
+       - vector-db
