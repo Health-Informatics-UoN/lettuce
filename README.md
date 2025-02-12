@@ -1,6 +1,6 @@
-# Llettuce: LLM for Efficient Translation and Transformation into Uniform Clinical Encoding 
+# Lettuce: LLM for Efficient Translation and Transformation into Uniform Clinical Encoding 
 
-**Llettuce** is an application for medical researchers that matches the informal medicine names supplied by the user to concepts in the [Observational Health Data Sciences and Informatics](https://www.ohdsi.org) (OMOP) [standardised vocabularies](https://github.com/OHDSI/Vocabulary-v5.0/wiki)
+**Lettuce** is an application for medical researchers that matches the informal medicine names supplied by the user to concepts in the [Observational Health Data Sciences and Informatics](https://www.ohdsi.org) (OMOP) [standardised vocabularies](https://github.com/OHDSI/Vocabulary-v5.0/wiki)
 
 The application can be used as an API, or run with a graphical user interface (GUI).
 
@@ -10,7 +10,7 @@ The application can be used as an API, or run with a graphical user interface (G
 
 The project uses a Large Language Model to suggest formal drug names to match the informal name supplied by the user. Suggested formal drug names are then fed into parameterised SQL queries against the OMOP database to fetch the relevant concepts. Any returned concepts are then ranked by how well they match the supplied query and provided to the user.
 
-This is the rough process that the Llettuce API follows. Subject to change
+This is the rough process that the Lettuce API follows. Subject to change
 
 ```mermaid
 flowchart TD
@@ -33,63 +33,30 @@ flowchart TD
 
 ## Installation
 
-To use Llettuce, you must first clone the repository
-
-```
-$ git clone <url>
-$ cd Carrot-Assistant
-```
-
-Then install the dependencies, either using pip
-
-```
-$ pip install -r requirements.txt
-```
-
-or conda
-
-```
-$ conda create -f environment.yml
-```
-
-There are two ways of interacting with Llettuce: either by using the graphical user interface, or through the command line. Both of these rely on starting a Llettuce server locally, then making requests to this server.
-The GUI is useful for people who want to interactively run a few examples and be presented with a visual representation of the relevant OMOP concepts.
-The command line can be used if a user is more interested in running Llettuce programmatically and retrieving a large number of concepts.
+To use Lettuce, follow [the quickstart](https://health-informatics-uon.github.io/lettuce/quickstart)
 
 ### Connecting to a database
 
-Llettuce works by querying a database with the OMOP schema, so you should have access to one. Your database access credentials should be kept in `.env`. An example of the format can be found in `/Carrot-Assistant/.env.example`
+Lettuce works by querying a database with the OMOP schema, so you should have access to one. Your database access credentials should be kept in `.env`. An example of the format can be found in `/Lettuce/.env.example`
 
 ### Running the API
 
-The simplest way to get a formal name from an informal name is to use the API and the GUI. To start a Llettuce server:
+The simplest way to get a formal name from an informal name is to use the API and the GUI. To start a Lettuce server:
 
 ```
-$ python app.py
-```
-
-Or run the application using Docker
-
-```
-$ docker run -p 8000:8000 Lettuce
-```
-
-Then start another terminal, and start the GUI
-
-```
-$ streamlit run ui.py
+$ poetry run python app.py
 ```
 The GUI makes calls to the API equivalent to the curl request below.
 
 ### Run pipeline
 
-To get a response without the GUI, a request can be made using curl, e.g. for Betnovate scalp application
+To get a response without the GUI, a request can be made using curl, e.g. for Betnovate scalp application and Panadol
 
 ```
-$ curl -X POST "http://127.0.0.1:8000/run" -H "Content-Type: application/json" -d '{"name": "Betnovate Scalp Application"}'
+$ curl -X POST "http://127.0.0.1:8000/pipeline/" -H "Content-Type: application/json" -d '{"names": ["Betnovate Scalp Application", "Panadol"]}'
 ```
 
-The API endpoint is `/run`, and uses a `POST` method
+The API endpoint is `/pipeline/`, and uses a `POST` method
 
 The request body should have the format
 
@@ -102,7 +69,7 @@ The request body should have the format
    }
 ```
 
-Refer to `app.py` in the API reference for the available pipeline options.
+Refer to the [API reference](https://health-informatics-uon.github.io/lettuce/api_reference/options/pipeline_options) for the available pipeline options.
 
 The response will be provided in the format
 
