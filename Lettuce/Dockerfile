@@ -1,50 +1,31 @@
-# Use the official Python 3.10 Alpine base image
-FROM ubuntu:22.04
+# Use Python 3.12 bookworm as base image
+FROM python:3.12-bookworm
+
+# Set working directory
+WORKDIR /app
 
 # Install system dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    python3.11 \
-    python3-pip \
-    python3-venv \
-    build-essential \
-    cmake \
+RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Create a symlink for python to point to python3.11
-RUN ln -s /usr/bin/python3.11 /usr/bin/python
+ENV POETRY_NO_INTERACTION=1 \
+  POETRY_VIRTUALENVS_CREATE=false \
+  POETRY_HOME='/usr/local'
+# Install poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
 
-# Upgrade pip and set python3.11 as the default python3
-RUN python3.11 -m pip install --upgrade pip && \
-    update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
+# Copy poetry files
+COPY pyproject.toml poetry.lock ./
 
-# Set up non-root user
-RUN useradd -m appuser
+# Install dependencies
+RUN poetry install --no-interaction --no-ansi
 
-# Set the working directory in the container
-WORKDIR /app
-
-# Copy the requirements file to the container
-COPY requirements.txt .
-
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the application code to the container
+# Copy application code
 COPY . .
 
-# Expose the port on which the application will run
+# Expose port 8000
 EXPOSE 8000
 
-# Set permissions for the app directory
-RUN chown -R appuser:appuser /app
-
-# Specify the user to run the application
-USER appuser
-
-# Set the entrypoint
-ENTRYPOINT ["uvicorn"]
-
 # Run the application
-CMD ["app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["poetry", "run", "python", "app.py"]
