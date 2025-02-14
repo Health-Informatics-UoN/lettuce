@@ -4,7 +4,6 @@ version = "0.1.0"
 description = "An LLM assistant for mapping OMOP concepts"
 authors = ["BRC, University of Nottingham"]
 license = "MIT"
-readme = "README.md"
 package-mode = true
 packages = [
   { include = "components" },
