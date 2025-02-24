@@ -44,7 +44,7 @@ Lettuce works by querying a database with the OMOP schema, so you should have ac
 The simplest way to get a formal name from an informal name is to use the API and the GUI. To start a Lettuce server:
 
 ```
-$ poetry run python app.py
+$ uv run python app.py
 ```
 The GUI makes calls to the API equivalent to the curl request below.
 
