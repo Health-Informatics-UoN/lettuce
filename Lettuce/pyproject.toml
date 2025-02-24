@@ -1,17 +1,11 @@
-[tool.poetry]
-name = "llettuce"
+[tool]
+name = "lettuce"
 version = "0.1.0"
 description = "An LLM assistant for mapping OMOP concepts"
 authors = ["BRC, University of Nottingham"]
 license = "MIT"
-package-mode = true
-packages = [
-  { include = "components" },
-  { include = "options" },
-  { include = "utils" }
-]
 
-[tool.poetry.dependencies]
+[tool.dependencies]
 python = ">=3.12, <3.13"
 haystack-ai = "^2.7.0"
 huggingface-hub = "^0.24.6"
@@ -31,21 +25,13 @@ qdrant-haystack = "^7.0.0"
 torch = "2.2"
 sentence-transformers = "^3.3.1"
 
-[tool.poetry.group.test]
-optional=true
-
-[tool.poetry.group.test.dependencies]
-pytest = "^8.3.3"
-
-[tool.poetry.group.streamlit]
-optional=true
-
-[tool.poetry.group.streamlit.dependencies]
-streamlit = "^1.37.1"
+[tool.optional_dependencies]
+test = ["pytest^8.3.3"]
+streamlit = ["streamlit^1.37.1"]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv"]
+build-backend = "uv.api"
 
-[tool.poetry.scripts]
+[tool.scripts]
 lettuce-cli = "cli:main"
