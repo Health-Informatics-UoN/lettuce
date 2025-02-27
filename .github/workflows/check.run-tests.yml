@@ -1,0 +1,45 @@
+name: Run Tests
+
+on:
+  pull_request:
+
+jobs:
+  run-tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    env:
+      SKIP_DATABASE_TESTS: true  # Skip database tests globally for this job
+      SKIP_LLM_TESTS: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.5.16"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: uv sync
+        run: uv sync --frozen --dev
+
+      - name: Run tests
+        run: |
+          set -e
+          uv run pytest tests --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=lettuce tests | tee pytest-coverage.txt
+          test ${PIPESTATUS[0]} -eq 0
+
+      - name: Pytest coverage comment
+        uses: MishaKav/pytest-coverage-comment@81882822c5b22af01f91bd3eacb1cefb6ad73dc2
+        with:
+          pytest-coverage-path: pytest-coverage.txt
+          junitxml-path: pytest.xml
+
+
