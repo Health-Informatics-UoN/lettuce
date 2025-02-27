@@ -1,6 +1,12 @@
+import os
 from dotenv import load_dotenv
 from os import environ
 import pytest
+
+
+pytestmark = pytest.mark.skipif(os.getenv('SKIP_DATABASE_TESTS') == 'true', reason="Skipping database tests")
+
+
 from urllib.parse import quote_plus
 
 from sqlalchemy import create_engine
