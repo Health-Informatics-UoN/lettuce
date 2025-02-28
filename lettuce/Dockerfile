@@ -2,16 +2,13 @@ FROM python:3.12-bookworm AS builder
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes pipx
 
-RUN pipx install poetry
-ENV POETRY_NO_INTERACTION=1 \
-    POETRY_VIRTUALENVS_IN_PROJECT=1 \
-    POETRY_VIRTUALENVS_CREATE=1 \
-    POETRY_CACHE_DIR=/tmp/poetry_cache \
+RUN pipx install uv 
+ENV UV_CACHE_DIR=/tmp/uv_cache \
     PATH="/root/.local/bin:${PATH}"
 
 WORKDIR /src
-COPY pyproject.toml poetry.lock ./
-RUN poetry install --only main --no-root
+COPY pyproject.toml ./
+RUN uv sync 
 
 FROM python:3.12-slim-bookworm
 ENV PATH="/src/.venv/bin:$PATH"
