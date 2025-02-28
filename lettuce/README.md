@@ -8,12 +8,11 @@ Lettuce now uses `uv` for dependency management. To install `uv` (MacOS / Linux)
 ```bash 
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
-Then set up the virtual environment in the root of the package (the same folder as `pyproject.toml`) and generate the locked requirements file and install the dependencies.  
+Then run the following command: 
 ```bash
-uv venv --python 3.12 
-uv pip compile -r pyproject.toml -o requirements.txt
-uv pip install -r requirements.txt
+uv sync  --all-extras
 ```
+This command will create a `.venv` folder (if it doesn't already exist) at the root of the project and install the main and developer dependencies. Omit the `--all-extras` flag to install the main package only. It will also re-lock the project by generating a `uv.lock` file. See the [`uv` documentation](https://docs.astral.sh/uv/reference/cli/#uv-sync) for further details.
 ## Running the CLI
 Lettuce has a command-line interface, run it with `uv run lettuce-cli`
 

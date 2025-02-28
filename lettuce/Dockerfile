@@ -7,10 +7,8 @@ ENV UV_CACHE_DIR=/tmp/uv_cache \
     PATH="/root/.local/bin:${PATH}"
 
 WORKDIR /src
-COPY pyproject.toml uv.lock ./
-RUN uv venv --python 3.12 
-RUN uv pip compile pyproject.toml -o requirements.txt
-RUN uv pip install -r requirements.txt 
+COPY pyproject.toml ./
+RUN uv sync 
 
 FROM python:3.12-slim-bookworm
 ENV PATH="/src/.venv/bin:$PATH"
