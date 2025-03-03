@@ -84,7 +84,7 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
     for llm_output in llm_outputs:
 
         logger.info(
-            "LLM output for %s: %s", llm_output["informal_name"], llm_output["reply"]
+            f"LLM output for {llm_output['informal_name']}: {llm_output['reply']}"
         )
 
         logger.info("Querying OMOP for LLM output: %s", llm_output["reply"])
