@@ -1,5 +1,6 @@
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import Column, Date, Integer, String
+from pgvector.sqlalchemy import Vector
 
 from os import environ
 

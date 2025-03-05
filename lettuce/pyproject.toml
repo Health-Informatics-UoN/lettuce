@@ -20,9 +20,9 @@ dependencies = [
     "SQLAlchemy>=2.0.32",
     "sseclient-py>=1.8.0",
     "fastembed-haystack>=1.2.0",
-    "qdrant-haystack>=7.0.0",
     "torch==2.2",
-    "sentence-transformers>=3.3.1"
+    "sentence-transformers>=3.3.1",
+    "pgvector==0.3.6"
 ]
 
 [project.optional-dependencies]
