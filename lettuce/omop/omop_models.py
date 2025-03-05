@@ -1,4 +1,4 @@
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, mapped_column
 from sqlalchemy import Column, Date, Integer, String
 from pgvector.sqlalchemy import Vector
 
@@ -6,7 +6,7 @@ from os import environ
 
 DB_SCHEMA = environ["DB_SCHEMA"]
 DB_VECTABLE = environ["DB_VECTABLE"]
-DB_VECSIZE = environ["DB_VECSIZE"]
+DB_VECSIZE = int(environ["DB_VECSIZE"])
 
 Base = declarative_base()
 

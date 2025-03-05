@@ -1,22 +1,15 @@
 from enum import Enum
-from urllib.parse import quote_plus
-from dotenv import load_dotenv
-from haystack.dataclasses import Document
-from haystack_integrations.document_stores.qdrant import QdrantDocumentStore
-from haystack_integrations.components.retrievers.qdrant import QdrantEmbeddingRetriever
 from haystack_integrations.components.embedders.fastembed import (
-    FastembedDocumentEmbedder,
     FastembedTextEmbedder,
 )
-import os
-from os import environ
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine
+from haystack import component
+from haystack.dataclasses import Document
 from typing import Any, List, Dict
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
 
-from omop.omop_models import Concept
-
+from omop.omop_queries import query_vector
+from omop.db_manager import db_session
 
 # -------- Embedding Models -------- >
 
@@ -99,6 +92,30 @@ EMBEDDING_MODELS = {
     ),
 }
 
+# I know there's a pgvector integration with haystack, but it seems to be able to only query a single table at a time
+# https://github.com/deepset-ai/haystack-core-integrations/tree/main/integrations/pgvector/examples
+@component
+class PGVectorQuery:
+    """
+    A haystack component for retrieving concept information using embeddings in a postgres database with pgvector
+    """
+    def __init__(self, connection: Session) -> None:
+        self._connection = connection
+
+    @component.output_types(documents=List[Document])
+    def run(self, query_embedding: List[float], top_k: int = 5,):
+        # only have cosine_similarity at the moment
+        #TODO add selection of distance metric to query_vector
+       query = query_vector(query_vector = query_embedding, n = top_k) 
+       query_results = self._connection.execute(query).mappings().all()
+       return {"documents": [
+               Document(
+                   id=res.get("id"),
+                   content=res.get("content"),
+                   score=res.get("score"),
+                   ) for res in query_results]
+               }
+
 
 def get_embedding_model(name: EmbeddingModelName) -> EmbeddingModel:
     """
@@ -134,7 +151,6 @@ class Embeddings:
     def __init__(
         self,
         embeddings_path: str,
-        force_rebuild: bool,
         embed_vocab: List[str],
         model_name: EmbeddingModelName,
         search_kwargs: dict,
@@ -167,69 +183,6 @@ class Embeddings:
         self.embed_vocab = embed_vocab
         self.search_kwargs = search_kwargs
 
-        if force_rebuild or not os.path.exists(embeddings_path):
-            self._build_embeddings()
-        else:
-            self._load_embeddings()
-
-    def _build_embeddings(self):
-        """
-        Build a vector database of embeddings
-        """
-        # Create the directory if it doesn't exist
-        if os.path.dirname(self.embeddings_path):
-            os.makedirs(os.path.dirname(self.embeddings_path), exist_ok=True)
-
-        self.embeddings_store = QdrantDocumentStore(
-            path=self.embeddings_path,
-            embedding_dim=self.model.info.dimensions,
-            recreate_index=True,  # We're building from scratch, so recreate the index
-        )
-
-        load_dotenv()
-
-        DB_HOST = os.environ["DB_HOST"]
-        DB_USER = environ["DB_USER"]
-        DB_PASSWORD = quote_plus(environ["DB_PASSWORD"])
-        DB_NAME = environ["DB_NAME"]
-        DB_PORT = environ["DB_PORT"]
-
-        connection_string = (
-            f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-        )
-
-        # Fetch concept names from the database
-        engine = create_engine(connection_string)
-        with Session(engine) as session:
-            concepts = (
-                session.query(Concept.concept_name, Concept.concept_id)
-                .filter(Concept.vocabulary_id.in_(self.embed_vocab))
-                .all()
-            )
-
-        # Create documents from concept names
-        concept_docs = [
-            Document(
-                content=concept.concept_name, meta={"concept_id": concept.concept_id}
-            )
-            for concept in concepts
-        ]
-        concept_embedder = FastembedDocumentEmbedder(
-            model=self.model.info.path, parallel=0
-        )
-        concept_embedder.warm_up()
-        concept_embeddings = concept_embedder.run(concept_docs)
-        self.embeddings_store.write_documents(concept_embeddings.get("documents"))
-
-    def _load_embeddings(self):
-        """
-        If available, load a vector database of concept embeddings
-        """
-        self.embeddings_store = QdrantDocumentStore(
-            path=self.embeddings_path,
-            embedding_dim=self.model.info.dimensions,
-            recreate_index=False,  # We're loading existing embeddings, don't recreate
-        )
 
     def get_embedder(self) -> FastembedTextEmbedder:
         """
@@ -243,18 +196,16 @@ class Embeddings:
         query_embedder.warm_up()
         return query_embedder
 
-    def get_retriever(self) -> QdrantEmbeddingRetriever:
+    def get_retriever(self) -> PGVectorQuery:
         """
         Get a retriever for LLM pipelines
 
         Returns
         -------
-        QdrantEmbeddingRetriever
+        PGVectorQuery
         """
         print(self.search_kwargs)
-        return QdrantEmbeddingRetriever(
-            document_store=self.embeddings_store, **self.search_kwargs
-        )
+        return PGVectorQuery(db_session()) 
 
     def search(self, query: List[str]) -> List[List[Dict[str, Any]]]:
         """
@@ -270,7 +221,7 @@ class Embeddings:
         List[List[Dict[str, Any]]]
             For each medication in the query, the result of searching the vector database
         """
-        retriever = QdrantEmbeddingRetriever(document_store=self.embeddings_store)
+        retriever = self.get_retriever()
         query_embedder = FastembedTextEmbedder(
             model=self.model.info.path, parallel=0, prefix="query:"
         )
