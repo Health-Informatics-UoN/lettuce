@@ -1,3 +1,4 @@
+import os 
 import logging
 from haystack.components.generators import OpenAIGenerator
 from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
@@ -80,9 +81,56 @@ local_models = {
     },
 }
 
+def get_local_weights(
+    path_to_weights: str, 
+    temperature: float, 
+    logger: logging.Logger
+):
+    """
+    Load a local GGUF model weights file and return a LlamaCppGenerator object.
+
+    Parameters
+    ----------
+    path_to_weights : str
+        The full path to the local GGUF model weights file (e.g., "/path/to/llama-2-7b-chat.Q4_0.gguf").
+    temperature : float, optional
+        The temperature for model generation (default is 0.7).
+    logger : logging.Logger
+        Logger instance for tracking progress and errors.
+
+    Returns
+    -------
+    LlamaCppGenerator
+        A loaded LlamaCppGenerator object ready for inference.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the specified file_path does not exist or is not a file.
+    """
+    if not os.path.isfile(path_to_weights):
+        logger.error(f"Model weights not found at {path_to_weights}")
+        raise FileNotFoundError(f"Model weights file not found at {path_to_weights}")
+   
+    logger.info(f"Loading local model weights from {path_to_weights}")
+    device = -1 if torch.cuda.is_available() else 0 
+
+    # Load the model using llama 
+    llm = LlamaCppGenerator(
+        model=path_to_weights, 
+        n_ctx=0, 
+        n_batch=512, 
+        model_kwargs={"n_gpu_layers": device, "verbose": True}, 
+        generation_kwargs={"max_tokens": 128, "temperature": temperature}
+    )
+    logger.info(f"Succesfully loaded LlamaCppGenerator from {path_to_weights}")
+    return llm 
+
 
 def get_model(
-    model: LLMModel, logger: logging.Logger, temperature: float = 0.7
+    model: LLMModel, 
+    logger: logging.Logger, 
+    temperature: float = 0.7
 ) -> OpenAIGenerator | LlamaCppGenerator:
     """
     Get an interface for interacting with an LLM
