@@ -82,10 +82,9 @@ local_models = {
     },
 }
 
-FALLBACK_MODEL = "llama-3.1-8b"
 
 def get_local_weights(
-    path_to_weights: str, 
+    path_to_weights: os.PathLike, 
     temperature: float, 
     logger: logging.Logger
 ):
@@ -133,7 +132,11 @@ def get_local_weights(
 def download_model_from_huggingface(
     model_name: str, 
     temperature: float, 
-    logger: logging.Logger 
+    logger: logging.Logger, 
+    fallback_model: str = "llama-3.1-8b",
+    n_ctx: int = 0,
+    n_batch: int = 512,
+    max_tokens: int = 128 
 ): 
     logger.info(f"Loading local model: {model_name}")
     device = -1 if torch.cuda.is_available() else 0
@@ -142,25 +145,37 @@ def download_model_from_huggingface(
         model_config = local_models[model_name]
         model_path = hf_hub_download(**model_config) 
     except KeyError: 
-        logger.warning(f"Model {model_name} not found in local_models. Falling back to {FALLBACK_MODEL}")
-        model_config = local_models[FALLBACK_MODEL]
+        logger.warning(f"Model {model_name} not found in local_models. Falling back to {fallback_model}")
+        model_config = local_models[fallback_model]
         model_path = hf_hub_download(**model_config)
     except Exception as e: 
         logger.error(f"Failed to download model {model_name}: {str(e)}")
-        raise ValueError(f"Failed to load local model {model_name}: {str(e)}")
+        raise ValueError(f"Failed to load model {model_name}: {str(e)}")
     
     try: 
         llm = LlamaCppGenerator(
             model=model_path, 
-            n_ctx=0, 
-            n_batch=512, 
+            n_ctx=n_ctx, 
+            n_batch=n_batch, 
             model_kwargs={"n_gpu_layers": device, "verbose": True}, 
-            generation_kwargs={"max_tokens": 128, "temperature": temperature}
+            generation_kwargs={"max_tokens": max_tokens, "temperature": temperature}
         )
     except Exception as e: 
         logger.error(f"Failed to initialize LlamaCppGenerator for {model_name}: {str(e)}")
         raise ValueError(f"Failed to initialize local model {model_name}: {str(e)}")
 
+    return llm 
+
+
+def download_model_from_openai(
+    model_name: str, 
+    temperature: float, 
+    logger: logging.Logger,
+): 
+    logger.info(f"Loading {model_name} model")
+    llm = OpenAIGenerator(
+        model=model_name, generation_kwargs={"temperature": temperature}
+    )
     return llm 
 
 
@@ -195,37 +210,8 @@ def get_model(
         llm = get_local_weights(path_to_local_weights, temperature, logger)
     else: 
         if "gpt" in model_name.lower():
-            logger.info(f"Loading {model_name} model")
-
-            llm = OpenAIGenerator(
-                model=model_name, generation_kwargs={"temperature": temperature}
-            )
-
+            llm = download_model_from_openai(model_name, temperature, logger)
         else:
-            logger.info(f"Loading {model_name} model")
-            from huggingface_hub import hf_hub_download
-
-            device = -1 if torch.cuda.is_available() else 0
-
-            try:
-                llm = LlamaCppGenerator(
-                    model=hf_hub_download(**local_models[model_name]),
-                    n_ctx=0,  # Text context, 0 = from model
-                    n_batch=512,
-                    model_kwargs={"n_gpu_layers": device, "verbose": True},
-                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
-                )
-            except KeyError:
-                print(f"{model_name} is not a recognised model name")
-                print(f"Error loading {model_name}")
-            finally:
-                logger.info("Loading llama-3.1-8b")
-                llm = LlamaCppGenerator(
-                    model=hf_hub_download(**local_models[model_name]),
-                    n_ctx=0,
-                    n_batch=512,
-                    model_kwargs={"n_gpu_layers": device, "verbose": True},
-                    generation_kwargs={"max_tokens": 128, "temperature": temperature},
-                )
+            llm = download_model_from_huggingface(model_name, temperature, logger)
 
     return llm
