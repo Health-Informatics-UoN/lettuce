@@ -4,11 +4,9 @@
 .env
 .DS_Store
 .vscode/settings.json
-*.qdrant
 /Lettuce/tests/log
 /Lettuce/evaluation/datasets/*
 !/Lettuce/evaluation/datasets/example.csv
 /Lettuce/log
 /website/.next
 /website/node_modules
-/vector_db
