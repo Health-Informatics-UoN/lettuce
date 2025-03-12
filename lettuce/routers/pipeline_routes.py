@@ -10,7 +10,7 @@ from sse_starlette.sse import EventSourceResponse
 import assistant
 from omop import OMOP_match
 from components.embeddings import Embeddings
-from components.pipeline import llm_pipeline
+from components.pipeline import LLMPipeline
 from options.pipeline_options import PipelineOptions
 from utils.logging_utils import logger
 
@@ -207,7 +207,7 @@ async def vector_llm_pipeline(request: PipelineRequest) -> List:
     """
     informal_names = request.names
 
-    pl = llm_pipeline(
+    pl = LLMPipeline(
         llm_model=request.pipeline_options.llm_model,
         temperature=request.pipeline_options.temperature,
         embeddings_path=request.pipeline_options.embeddings_path,

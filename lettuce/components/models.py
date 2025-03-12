@@ -1,5 +1,6 @@
 import os 
 import logging
+from typing import Any 
 from haystack.components.generators import OpenAIGenerator
 from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
 from huggingface_hub import hf_hub_download
@@ -84,7 +85,7 @@ local_models = {
 
 
 def get_local_weights(
-    path_to_weights: os.PathLike, 
+    path_to_weights: os.PathLike | str | None, 
     temperature: float, 
     logger: logging.Logger
 ):
@@ -93,7 +94,7 @@ def get_local_weights(
 
     Parameters
     ----------
-    path_to_weights : str
+    path_to_weights : os.PathLike
         The full path to the local GGUF model weights file (e.g., "/path/to/llama-2-7b-chat.Q4_0.gguf").
     temperature : float, optional
         The temperature for model generation (default is 0.7).
@@ -182,7 +183,8 @@ def download_model_from_openai(
 def get_model(
     model: LLMModel, 
     logger: logging.Logger, 
-    temperature: float = 0.7
+    temperature: float = 0.7, 
+    path_to_local_weights: os.PathLike[Any] | str | None = None 
 ) -> OpenAIGenerator | LlamaCppGenerator:
     """
     Get an interface for interacting with an LLM
@@ -198,13 +200,14 @@ def get_model(
         The temperature for the model
     logger: logging.Logger|None
         The logger for the model
+    path_to_local_weights: os.PathLike 
+        Filepath to load weights locally. If not provided will default to downloading model weights. 
 
     Returns
     -------
     object
         An interface to generate text using an LLM
     """
-    path_to_local_weights = os.getenv("LOCAL_LLM")
     model_name = model.value
     if path_to_local_weights: 
         llm = get_local_weights(path_to_local_weights, temperature, logger)
