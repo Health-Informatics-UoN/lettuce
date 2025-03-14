@@ -139,6 +139,7 @@ class Embeddings:
         model_name: EmbeddingModelName,
         search_kwargs: dict,
     ) -> None:
+        print("Real Embeddings.__init__ called")
         """
         Initialises the connection to an embeddings database
 
@@ -239,6 +240,7 @@ class Embeddings:
         _______
         FastembedTextEmbedder
         """
+        print("Real Embeddings.get_embedder called")
         query_embedder = FastembedTextEmbedder(model=self.model.info.path, parallel=0)
         query_embedder.warm_up()
         return query_embedder

@@ -28,6 +28,7 @@ class LLMPipeline:
         embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL,
         embedding_search_kwargs: dict = {},
     ) -> None:
+        print("Real LLMPipeline.__init__ called")
         """
         Initializes the LLMPipeline class
 
@@ -69,6 +70,14 @@ class LLMPipeline:
         self._embedding_model = embedding_model
         self._embedding_search_kwargs = embedding_search_kwargs
 
+    @property
+    def llm_model(self): 
+        return self._model 
+
+    @llm_model.setter
+    def llm_model(self, value): 
+        self._model = value 
+
     def get_simple_assistant(self) -> Pipeline:
         """
         Get a simple assistant pipeline that connects a prompt with an LLM
@@ -107,6 +116,7 @@ class LLMPipeline:
         return pipeline
 
     def get_rag_assistant(self) -> Pipeline:
+        print("Real get_rag_assistant called")
         """
         Get an assistant that uses vector search to populate a prompt for an LLM
 
