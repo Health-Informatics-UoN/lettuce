@@ -19,7 +19,7 @@ jobs:
       - name: Build Docker image
         uses: docker/build-push-action@v5.3.0
         with:
-          context: .
-          file: Dockerfile
+          context: ./lettuce 
+          file: ./lettuce/Dockerfile
           push: false
           platforms: linux/amd64,linux/arm64
