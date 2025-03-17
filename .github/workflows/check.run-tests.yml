@@ -10,7 +10,13 @@ jobs:
 
     env:
       SKIP_DATABASE_TESTS: true  # Skip database tests globally for this job
-      SKIP_LLM_TESTS: true
+      SKIP_LLM_TESTS: true 
+      DB_HOST: "db"  # Dummy variables that mock the .env file required in the environmental configuration 
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
+      DB_NAME: "lettuce-omop"
+      DB_PORT: "5432"
+      DB_SCHEMA: "public"
 
     steps:
       - uses: actions/checkout@v4
