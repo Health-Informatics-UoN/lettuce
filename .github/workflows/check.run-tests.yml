@@ -20,26 +20,29 @@ jobs:
         with:
           version: "0.5.16"
           enable-cache: true
-          cache-dependency-glob: "uv.lock"
+          cache-dependency-glob: "lettuce/uv.lock"
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version-file: "lettuce/.python-version" 
 
       - name: uv sync
         run: uv sync --frozen --dev
+        working-directory: lettuce
 
       - name: Run tests
         run: |
           set -e
           uv run pytest tests --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=lettuce tests | tee pytest-coverage.txt
           test ${PIPESTATUS[0]} -eq 0
+        working-directory: lettuce 
 
       - name: Pytest coverage comment
         uses: MishaKav/pytest-coverage-comment@81882822c5b22af01f91bd3eacb1cefb6ad73dc2
         with:
           pytest-coverage-path: pytest-coverage.txt
           junitxml-path: pytest.xml
+        
 
 
