@@ -28,7 +28,7 @@ jobs:
           python-version-file: "lettuce/.python-version" 
 
       - name: uv sync
-        run: uv sync --frozen --dev --all-extras 
+        run: uv sync --all-extras 
         working-directory: lettuce
 
       - name: Run tests
