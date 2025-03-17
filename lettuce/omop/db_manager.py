@@ -15,6 +15,5 @@ connection_uri = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_
 engine = create_engine(
     connection_uri,
 )
-print(f"Real engine created: {engine.url}")
 
 db_session = sessionmaker(engine)

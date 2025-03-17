@@ -1,3 +1,4 @@
+from itertools import cycle
 import pytest
 from unittest.mock import patch, MagicMock
 from sqlalchemy import create_engine
@@ -5,7 +6,6 @@ from sqlalchemy.orm import Session as SQLAlchemySession
 import os
 import sys
 
-print("Test file imported")
 
 @pytest.fixture(scope="session", autouse=True)
 def mock_sqlalchemy_engine():
@@ -51,8 +51,45 @@ def mock_base_options(mock_args):
         mock_instance.parse.return_value = type('Args', (), mock_args)()
         yield mock_options_class
 
-def test_main_with_vector_search_and_llm(mock_base_options):
-    from itertools import cycle
+@pytest.fixture
+def mock_llm_pipeline():
+    print("Applying mock_llm_pipeline fixture")
+    # Create the mock class and instance
+    mock_pipeline_class = MagicMock()
+    mock_pipeline_instance = MagicMock()
+    
+    # Set up the RAG assistant mock
+    mock_rag_assistant = MagicMock()
+    mock_rag_assistant.run.return_value = {
+        'retriever': {
+            'documents': [
+                MagicMock(content='Aspirin info', score=0.95),
+                MagicMock(content='Tylenol info', score=0.90)
+            ]
+        },
+        'llm': {
+            'replies': ['Aspirin is a pain reliever']
+        }
+    }
+    mock_rag_assistant.warm_up.return_value = None
+    
+    # Configure the instance methods
+    mock_pipeline_instance.get_rag_assistant.return_value = mock_rag_assistant
+    mock_pipeline_instance.get_simple_assistant.return_value = MagicMock()
+    
+    # Define the side_effect for instantiation
+    def create_mock_instance(*args, **kwargs):
+        print("Mock LLMPipeline instantiated with args:", args, "kwargs:", kwargs)
+        return mock_pipeline_instance
+    
+    mock_pipeline_class.side_effect = create_mock_instance
+    
+    # Return a tuple of the class mock and instance for flexibility
+    return mock_pipeline_class, mock_pipeline_instance
+
+def test_main_with_vector_search_and_llm(mock_base_options, mock_llm_pipeline):
+    mock_llm_class, mock_pipeline_instance = mock_llm_pipeline  # Unpack the fixture
+    
     with patch('time.time') as mock_time, \
          patch('builtins.print') as mock_print, \
          patch('huggingface_hub.snapshot_download', side_effect=lambda *args, **kwargs: AssertionError("Hugging Face snapshot download detected")), \
@@ -60,29 +97,8 @@ def test_main_with_vector_search_and_llm(mock_base_options):
          patch('lettuce.cli.main.LLMPipeline', autospec=True) as mock_llm_patch, \
          patch('lettuce.cli.main.run') as mock_omop_run:
         
-        # Mock LLMPipeline setup
-        mock_pipeline_instance = MagicMock()
-        mock_rag_assistant = MagicMock()
-        mock_rag_assistant.run.return_value = {
-            'retriever': {
-                'documents': [
-                    MagicMock(content='Aspirin info', score=0.95),
-                    MagicMock(content='Tylenol info', score=0.90)
-                ]
-            },
-            'llm': {
-                'replies': ['Aspirin is a pain reliever']
-            }
-        }
-        mock_rag_assistant.warm_up.return_value = None
-        mock_pipeline_instance.get_rag_assistant.return_value = mock_rag_assistant
-        mock_pipeline_instance.get_simple_assistant.return_value = MagicMock()
-        
-        def create_mock_instance(*args, **kwargs):
-            print("Mock LLMPipeline instantiated with args:", args, "kwargs:", kwargs)
-            return mock_pipeline_instance
-        
-        mock_llm_patch.side_effect = create_mock_instance
+        # Configure the patch to use the fixture's mock behavior
+        mock_llm_patch.side_effect = mock_llm_class.side_effect
         
         # Mock run() return value
         mock_omop_run.return_value = [
@@ -105,3 +121,56 @@ def test_main_with_vector_search_and_llm(mock_base_options):
         assert mock_print.called
         assert mock_llm_patch.called, "LLMPipeline was not instantiated"
         assert mock_pipeline_instance.get_rag_assistant.called, "get_rag_assistant was not called"
+
+
+def test_main_with_vector_search_only(mock_base_options, mock_args):
+    mock_args_copy = mock_args.copy()
+    mock_args_copy['vector_search'] = True
+    mock_args_copy['use_llm'] = False 
+    mock_base_options.return_value.parse.return_value = type('Args', (), mock_args_copy)()
+    
+    with patch('time.time'), \
+         patch('builtins.print') as mock_print, \
+         patch('lettuce.cli.main.Embeddings') as mock_embeddings, \
+         patch('lettuce.cli.main.run') as mock_omop_run:
+        mock_embeddings_instance = mock_embeddings.return_value
+        mock_embeddings_instance.search.return_value = [[{'content': 'Aspirin info'}], [{'content': 'Tylenol info'}]]
+        mock_omop_run.return_value = [{'search_term': 'aspirin'}, {'search_term': 'tylenol'}]
+        
+        from lettuce.cli.main import main
+        main()
+        
+        assert mock_embeddings.called
+        assert mock_embeddings_instance.search.called
+        assert mock_omop_run.called
+        assert mock_print.called
+
+
+def test_main_with_use_llm_only(mock_base_options, mock_args):
+    mock_args_copy = mock_args.copy()
+    mock_args_copy['vector_search'] = False
+    mock_args_copy['use_llm'] = True
+    mock_base_options.return_value.parse.return_value = type('Args', (), mock_args_copy)()
+    
+    with patch('time.time') as mock_time, \
+         patch('builtins.print') as mock_print, \
+         patch('lettuce.cli.main.LLMPipeline', autospec=True) as mock_llm_patch, \
+         patch('lettuce.cli.main.run') as mock_omop_run:
+        mock_pipeline_instance = MagicMock()
+        mock_simple_assistant = MagicMock()
+        mock_simple_assistant.run.return_value = {'llm': {'replies': ['Answer']}}
+        mock_pipeline_instance.get_simple_assistant.return_value = mock_simple_assistant
+        
+        mock_llm_patch.side_effect = lambda *args, **kwargs: mock_pipeline_instance
+        
+        mock_omop_run.return_value = [{'search_term': 'aspirin'}, {'search_term': 'tylenol'}]
+        mock_time.side_effect = cycle([1, 2, 3, 4])
+        
+        from lettuce.cli.main import main
+        main()
+        
+        assert mock_llm_patch.called
+        assert mock_pipeline_instance.get_simple_assistant.called
+        assert mock_simple_assistant.warm_up.called
+        assert mock_omop_run.called
+        assert mock_print.called

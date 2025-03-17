@@ -28,7 +28,6 @@ class LLMPipeline:
         embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL,
         embedding_search_kwargs: dict = {},
     ) -> None:
-        print("Real LLMPipeline.__init__ called")
         """
         Initializes the LLMPipeline class
 

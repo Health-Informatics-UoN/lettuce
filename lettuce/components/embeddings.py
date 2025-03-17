@@ -139,7 +139,6 @@ class Embeddings:
         model_name: EmbeddingModelName,
         search_kwargs: dict,
     ) -> None:
-        print("Real Embeddings.__init__ called")
         """
         Initialises the connection to an embeddings database
 
