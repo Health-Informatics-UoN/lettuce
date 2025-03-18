@@ -176,8 +176,13 @@ def query_related_by_name(
 
 def query_related_by_id() -> Select: ...
 
-def query_vector(query_vector, n: int = 5) -> Select:
-    return (
+def query_vector(
+        query_vector,
+        embed_vocab: list[str] | None,
+        standard_concept: bool = False,
+        n: int = 5,
+        ) -> Select:
+    query = (
         select(
             Concept.concept_id.label("id"),
             Concept.concept_name.label("content"),
@@ -187,3 +192,9 @@ def query_vector(query_vector, n: int = 5) -> Select:
         .order_by(Embedding.embedding.cosine_distance(query_vector))
         .limit(n)
     )
+    if embed_vocab is not None:
+        query = query.where(Concept.vocabulary_id.in_(embed_vocab))
+    if standard_concept:
+        query = query.where(Concept.standard_concept == "S")
+
+    return query
