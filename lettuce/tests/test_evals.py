@@ -4,6 +4,8 @@ import os
 import json
 from sqlalchemy.orm import Session
 
+pytestmark = pytest.mark.skipif(os.getenv('SKIP_EVAL_TESTS') == 'true', reason="Skipping evaluation tests")
+
 from evaluation.eval_tests import LLMPipelineTest
 from evaluation.evaltypes import (
     SingleResultPipeline,
