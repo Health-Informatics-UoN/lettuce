@@ -21,11 +21,10 @@ class llm_pipeline:
         llm_model: LLMModel,
         temperature: float,
         logger: Logger,
-        embeddings_path: str = "",
-        force_rebuild: bool = False,
-        embed_vocab: list[str] = [],
+        embed_vocab: list[str] | None = None,
+        standard_concept: bool = False,
         embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL,
-        embedding_search_kwargs: dict = {},
+        top_k: int=5,
     ) -> None:
         """
         Initializes the llm_pipeline class
@@ -41,32 +40,25 @@ class llm_pipeline:
         logger: logging.Logger|None
             Logger for the pipeline
 
-        embeddings_path: str
-            A path for the embeddings database. If one is not found,
-            it will be built, which takes a long time. This is built
-            from concepts fetched from the OMOP database.
+        embed_vocab: List[str] | None
+            If a list of OMOP vocabulary_ids is provided, filters RAG results by those vocabularies.
 
-        force_rebuild: bool
-            If true, the embeddings database will be rebuilt.
-
-        embed_vocab: List[str]
-            A list of OMOP vocabulary_ids. If the embeddings database is
-            built, these will be the vocabularies used in the OMOP query.
+        standard_concept: bool
+            If true, restricts RAG results to standard concepts
 
         embedding_model: EmbeddingModel
             The model used to create embeddings.
 
-        embedding_search_kwargs: dict
-            kwargs for vector search.
+        top_k: int
+            The number of RAG results to return
         """
         self._model = llm_model
         self._logger = logger
         self._temperature = temperature
-        self._embeddings_path = embeddings_path
-        self._force_rebuild = force_rebuild
         self._embed_vocab = embed_vocab
+        self._standard_concept = standard_concept
         self._embedding_model = embedding_model
-        self._embedding_search_kwargs = embedding_search_kwargs
+        self._top_k=top_k
 
     def get_simple_assistant(self) -> Pipeline:
         """
@@ -118,10 +110,10 @@ class llm_pipeline:
         start = time.time()
 
         vec_search = Embeddings(
-            embeddings_path=self._embeddings_path,
             embed_vocab=self._embed_vocab,
+            standard_concept=self._standard_concept,
             model_name=self._embedding_model,
-            search_kwargs=self._embedding_search_kwargs,
+            top_k=self._top_k,
         )
 
         vec_embedder = vec_search.get_embedder()

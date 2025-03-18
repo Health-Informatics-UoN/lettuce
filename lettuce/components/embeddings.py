@@ -99,24 +99,30 @@ class PGVectorQuery:
     """
     A haystack component for retrieving concept information using embeddings in a postgres database with pgvector
     """
-    def __init__(self, connection: Session) -> None:
+    def __init__(
+            self,
+            connection: Session,
+            embed_vocab: List[str] | None = None,
+            standard_concept:bool= False,
+            top_k: int = 5,
+            ) -> None:
         self._connection = connection
+        self._embed_vocab = embed_vocab
+        self._standard_concept= standard_concept
+        self._top_k = top_k
 
     @component.output_types(documents=List[Document])
     def run(
             self,
             query_embedding: List[float],
-            embed_vocab: List[str] | None = None,
-            standard_concept: bool = False,
-            top_k: int = 5,
             ):
         # only have cosine_similarity at the moment
         #TODO add selection of distance metric to query_vector
        query = query_vector(
                 query_vector=query_embedding,
-                embed_vocab=embed_vocab,
-                standard_concept=standard_concept,
-                n = top_k,
+                embed_vocab=self._embed_vocab,
+                standard_concept=self._standard_concept,
+                n = self._top_k,
                 ) 
        query_results = self._connection.execute(query).mappings().all()
        return {"documents": [
@@ -161,10 +167,10 @@ class Embeddings:
 
     def __init__(
         self,
-        embeddings_path: str,
-        embed_vocab: List[str],
         model_name: EmbeddingModelName,
-        search_kwargs: dict,
+        embed_vocab: List[str] | None=None,
+        standard_concept: bool=False,
+        top_k: int=5,
     ) -> None:
         """
         Initialises the connection to an embeddings database
@@ -189,10 +195,10 @@ class Embeddings:
         search_kwargs: dict
             kwargs for vector search.
         """
-        self.embeddings_path = embeddings_path
         self.model = get_embedding_model(model_name)
-        self.embed_vocab = embed_vocab
-        self.search_kwargs = search_kwargs
+        self._embed_vocab = embed_vocab
+        self._standard_concept = standard_concept
+        self._top_k = top_k
 
 
     def get_embedder(self) -> FastembedTextEmbedder:
@@ -215,8 +221,12 @@ class Embeddings:
         -------
         PGVectorQuery
         """
-        print(self.search_kwargs)
-        return PGVectorQuery(db_session()) 
+        return PGVectorQuery(
+                db_session(),
+                embed_vocab=self._embed_vocab,
+                standard_concept=self._standard_concept,
+                top_k=self._top_k,
+                ) 
 
     def search(self, query: List[str]) -> List[List[Dict[str, Any]]]:
         """
@@ -239,7 +249,7 @@ class Embeddings:
         query_embedder.warm_up()
         query_embeddings = [query_embedder.run(name) for name in query]
         result = [
-            retriever.run(query_embedding["embedding"], **self.search_kwargs)
+            retriever.run(query_embedding["embedding"])
             for query_embedding in query_embeddings
         ]
         return [
