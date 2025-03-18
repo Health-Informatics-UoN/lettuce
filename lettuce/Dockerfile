@@ -8,9 +8,8 @@ ENV UV_CACHE_DIR=/tmp/uv_cache \
 
 WORKDIR /src
 COPY pyproject.toml ./
-RUN uv sync --verbose \
-    --extra-index-url https://pypi.org/simple \
-    --build-option "llama-cpp-python:CMAKE_ARGS=-DGGML_NO_ACCELERATE=ON -DGGML_NO_OPENMP=ON -DGGML_NO_LLAMAFILE=ON"
+ENV CMAKE_ARGS="-DGGML_NO_ACCELERATE=ON -DGGML_NO_OPENMP=ON -DGGML_NO_LLAMAFILE=ON"
+RUN uv sync --verbose --extra-index-url https://pypi.org/simple 
 
 FROM python:3.12-slim-bookworm
 ENV PATH="/src/.venv/bin:$PATH"
