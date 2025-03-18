@@ -103,10 +103,21 @@ class PGVectorQuery:
         self._connection = connection
 
     @component.output_types(documents=List[Document])
-    def run(self, query_embedding: List[float], top_k: int = 5,):
+    def run(
+            self,
+            query_embedding: List[float],
+            embed_vocab: List[str] | None = None,
+            standard_concept: bool = False,
+            top_k: int = 5,
+            ):
         # only have cosine_similarity at the moment
         #TODO add selection of distance metric to query_vector
-       query = query_vector(query_vector = query_embedding, n = top_k) 
+       query = query_vector(
+                query_vector=query_embedding,
+                embed_vocab=embed_vocab,
+                standard_concept=standard_concept,
+                n = top_k,
+                ) 
        query_results = self._connection.execute(query).mappings().all()
        return {"documents": [
                Document(
