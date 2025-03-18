@@ -1,4 +1,4 @@
-FROM python:3.12-bookworm AS builder
+FROM ubuntu:22.04 AS builder
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes pipx
 
@@ -10,7 +10,7 @@ WORKDIR /src
 COPY pyproject.toml ./
 RUN uv sync 
 
-FROM python:3.12-slim-bookworm
+FROM ubuntu:22.04
 ENV PATH="/src/.venv/bin:$PATH"
 WORKDIR src
 COPY --from=builder /src/.venv /src/.venv
