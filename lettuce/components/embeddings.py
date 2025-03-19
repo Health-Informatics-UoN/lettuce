@@ -6,7 +6,9 @@ from haystack import component
 from haystack.dataclasses import Document
 from typing import Any, List, Dict
 from pydantic import BaseModel
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
+import os
 
 from omop.omop_queries import query_vector
 from omop.db_manager import db_session
@@ -103,18 +105,24 @@ class PGVectorQuery:
         self._connection = connection
 
     @component.output_types(documents=List[Document])
-    def run(self, query_embedding: List[float], top_k: int = 5,):
+    def run(self, query_embedding: List[float], top_k: int=5,):
         # only have cosine_similarity at the moment
         #TODO add selection of distance metric to query_vector
-       query = query_vector(query_vector = query_embedding, n = top_k) 
-       query_results = self._connection.execute(query).mappings().all()
-       return {"documents": [
-               Document(
-                   id=res.get("id"),
-                   content=res.get("content"),
-                   score=res.get("score"),
-                   ) for res in query_results]
-               }
+        query = query_vector(query_embedding=query_embedding, n=top_k) 
+        try:
+            query_results = self._connection.execute(query).mappings().all()
+        except SQLAlchemyError as e:
+            raise SQLAlchemyError(f"Vector query execution failed: {str(e)}")
+        try:
+            return {"documents": [
+                Document(
+                    id=res.get("id"),
+                    content=res.get("content"),
+                    score=res.get("score"),
+                    ) for res in query_results]
+                }
+        except KeyError as e:
+            raise KeyError(f"Missing required key in query results: {str(e)}")
 
 
 def get_embedding_model(name: EmbeddingModelName) -> EmbeddingModel:
@@ -179,7 +187,7 @@ class Embeddings:
             kwargs for vector search.
         """
         self.embeddings_path = embeddings_path
-        self.model = get_embedding_model(model_name)
+        self._model = get_embedding_model(model_name)
         self.embed_vocab = embed_vocab
         self.search_kwargs = search_kwargs
 
@@ -192,7 +200,7 @@ class Embeddings:
         _______
         FastembedTextEmbedder
         """
-        query_embedder = FastembedTextEmbedder(model=self.model.info.path, parallel=0)
+        query_embedder = FastembedTextEmbedder(model=self._model.info.path, parallel=0)
         query_embedder.warm_up()
         return query_embedder
 
@@ -204,8 +212,11 @@ class Embeddings:
         -------
         PGVectorQuery
         """
-        print(self.search_kwargs)
-        return PGVectorQuery(db_session()) 
+        try:
+            assert(self._model.info.dimensions == int(os.environ["DB_VECSIZE"]))
+            return PGVectorQuery(db_session())
+        except AssertionError:
+            raise AssertionError(f"Embedder dimensions {str(self._model.info.dimensions)} not equal to vector store dimensions {str()}")
 
     def search(self, query: List[str]) -> List[List[Dict[str, Any]]]:
         """
@@ -223,7 +234,7 @@ class Embeddings:
         """
         retriever = self.get_retriever()
         query_embedder = FastembedTextEmbedder(
-            model=self.model.info.path, parallel=0, prefix="query:"
+            model=self._model.info.path, parallel=0, prefix="query:"
         )
         query_embedder.warm_up()
         query_embeddings = [query_embedder.run(name) for name in query]

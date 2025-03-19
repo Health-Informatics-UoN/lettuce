@@ -1,3 +1,4 @@
+from typing import List
 from omop.omop_models import (
     Concept,
     ConceptRelationship,
@@ -176,14 +177,14 @@ def query_related_by_name(
 
 def query_related_by_id() -> Select: ...
 
-def query_vector(query_vector, n: int = 5) -> Select:
+def query_vector(query_embedding: List[float], n: int = 5) -> Select:
     return (
         select(
             Concept.concept_id.label("id"),
             Concept.concept_name.label("content"),
-            Embedding.embedding.cosine_distance(query_vector).label("score"),
+            Embedding.embedding.cosine_distance(query_embedding).label("score"),
         )
         .join(Embedding, Concept.concept_id == Embedding.concept_id)
-        .order_by(Embedding.embedding.cosine_distance(query_vector))
+        .order_by(Embedding.embedding.cosine_distance(query_embedding))
         .limit(n)
     )
