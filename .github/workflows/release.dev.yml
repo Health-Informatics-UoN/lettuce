@@ -73,8 +73,8 @@ jobs:
       - name: Build and push Docker images
         uses: docker/build-push-action@v5.3.0
         with:
-          context: .
-          file: "lettuce/Dockerfile"
+          context: "./lettuce"
+          file: Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
