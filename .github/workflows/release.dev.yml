@@ -38,7 +38,7 @@ jobs:
       - uses: SebRollen/toml-action@v1.2.0
         id: read_version
         with:
-          file: pyproject.toml
+          file: "lettuce/pyproject.toml"
           field: project.version
 
       - name: Docker Metadata action
