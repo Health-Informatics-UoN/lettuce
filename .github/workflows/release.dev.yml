@@ -74,7 +74,7 @@ jobs:
         uses: docker/build-push-action@v5.3.0
         with:
           context: "./lettuce"
-          file: Dockerfile
+          file: "lettuce/Dockerfile"
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
