@@ -115,7 +115,6 @@ class LLMPipeline:
         return pipeline
 
     def get_rag_assistant(self) -> Pipeline:
-        print("Real get_rag_assistant called")
         """
         Get an assistant that uses vector search to populate a prompt for an LLM
 
