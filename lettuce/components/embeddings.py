@@ -6,7 +6,9 @@ from haystack import component
 from haystack.dataclasses import Document
 from typing import Any, List, Dict
 from pydantic import BaseModel
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
+import os
 
 from omop.omop_queries import query_vector
 from omop.db_manager import db_session
@@ -195,7 +197,7 @@ class Embeddings:
         search_kwargs: dict
             kwargs for vector search.
         """
-        self.model = get_embedding_model(model_name)
+        self._model = get_embedding_model(model_name)
         self._embed_vocab = embed_vocab
         self._standard_concept = standard_concept
         self._top_k = top_k
@@ -209,7 +211,7 @@ class Embeddings:
         _______
         FastembedTextEmbedder
         """
-        query_embedder = FastembedTextEmbedder(model=self.model.info.path, parallel=0)
+        query_embedder = FastembedTextEmbedder(model=self._model.info.path, parallel=0)
         query_embedder.warm_up()
         return query_embedder
 
@@ -244,7 +246,7 @@ class Embeddings:
         """
         retriever = self.get_retriever()
         query_embedder = FastembedTextEmbedder(
-            model=self.model.info.path, parallel=0, prefix="query:"
+            model=self._model.info.path, parallel=0, prefix="query:"
         )
         query_embedder.warm_up()
         query_embeddings = [query_embedder.run(name) for name in query]

@@ -69,6 +69,14 @@ class LLMPipeline:
     def llm_model(self, value): 
         self._model = value 
 
+    @property
+    def llm_model(self): 
+        return self._model 
+
+    @llm_model.setter
+    def llm_model(self, value): 
+        self._model = value 
+
     def get_simple_assistant(self) -> Pipeline:
         """
         Get a simple assistant pipeline that connects a prompt with an LLM

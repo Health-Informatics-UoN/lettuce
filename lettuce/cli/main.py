@@ -55,7 +55,7 @@ def main():
             embed_vocab=args.embed_vocab,
             standard_concept=args.standard_concept,
             top_k=args.embedding_top_k,
-        )
+       )
         embed_results = embeddings.search(args.informal_names)
         for query, result in zip(results, embed_results):
             query.add_vector_search_results(result)
