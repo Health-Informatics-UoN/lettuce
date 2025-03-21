@@ -1,3 +1,4 @@
+import os 
 from logging import Logger
 import time
 from typing import List, Dict
@@ -11,7 +12,7 @@ from components.prompt import Prompts
 from options.pipeline_options import LLMModel
 
 
-class llm_pipeline:
+class LLMPipeline:
     """
     This class is used to generate a pipeline for the model
     """
@@ -28,7 +29,7 @@ class llm_pipeline:
         embedding_search_kwargs: dict = {},
     ) -> None:
         """
-        Initializes the llm_pipeline class
+        Initializes the LLMPipeline class
 
         Parameters
         ----------
@@ -68,6 +69,14 @@ class llm_pipeline:
         self._embedding_model = embedding_model
         self._embedding_search_kwargs = embedding_search_kwargs
 
+    @property
+    def llm_model(self): 
+        return self._model 
+
+    @llm_model.setter
+    def llm_model(self, value): 
+        self._model = value 
+
     def get_simple_assistant(self) -> Pipeline:
         """
         Get a simple assistant pipeline that connects a prompt with an LLM
@@ -89,10 +98,12 @@ class llm_pipeline:
         self._logger.info(f"Prompt added to pipeline in {time.time()-start} seconds")
         start = time.time()
 
+        path_to_local_model_weights = os.getenv("LOCAL_LLM")
         llm = get_model(
             model=self._model,
             temperature=self._temperature,
             logger=self._logger,
+            path_to_local_weights=path_to_local_model_weights
         )
         pipeline.add_component("llm", llm)
         self._logger.info(f"LLM added to pipeline in {time.time()-start} seconds")
@@ -143,10 +154,13 @@ class llm_pipeline:
                 },
             ]
         )
+
+        path_to_local_model_weights = os.getenv("LOCAL_LLM")
         llm = get_model(
             model=self._model,
             temperature=self._temperature,
             logger=self._logger,
+            path_to_local_weights=path_to_local_model_weights
         )
 
         pipeline.add_component("query_embedder", vec_embedder)
