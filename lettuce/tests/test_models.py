@@ -5,7 +5,7 @@ import os
 from components.models import (
     get_local_weights, 
     download_model_from_huggingface, 
-    download_model_from_openai, 
+    connect_to_openai, 
     get_model, 
     local_models
 )
@@ -120,7 +120,7 @@ def test_download_model_from_openai_success(mock_openai):
     model_name = "gpt-3.5-turbo"
     temperature = 0.7 
 
-    result = download_model_from_openai(model_name, temperature, logger)
+    result = connect_to_openai(model_name, temperature, logger)
 
     assert result == mock_llm_instance
     mock_openai.assert_called_once_with(
