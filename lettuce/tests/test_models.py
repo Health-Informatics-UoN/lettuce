@@ -114,7 +114,7 @@ def test_download_model_from_huggingface_download_error(mock_download):
 
 
 @patch("components.models.OpenAIGenerator")
-def test_download_model_from_openai_success(mock_openai): 
+def test_connect_to_openai_success(mock_openai): 
     mock_llm_instance = Mock()
     mock_openai.return_value = mock_llm_instance 
     model_name = "gpt-3.5-turbo"
@@ -141,7 +141,7 @@ def test_get_model_local_weights(mock_get_local, mock_llm_model):
     mock_get_local.assert_called_once_with(fake_path_to_local_weights, 0.7, logger)
 
 
-@patch("components.models.download_model_from_openai")
+@patch("components.models.connect_to_openai")
 def test_get_model_openai(mock_openai_download, mock_llm_model): 
     mock_llm_instance = Mock()
     mock_openai_download.return_value = mock_llm_instance
