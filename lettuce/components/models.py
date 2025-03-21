@@ -1,6 +1,9 @@
+import os 
 import logging
+from typing import Any 
 from haystack.components.generators import OpenAIGenerator
 from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
+from huggingface_hub import hf_hub_download
 from options.pipeline_options import LLMModel
 import torch
 
@@ -81,8 +84,107 @@ local_models = {
 }
 
 
+def get_local_weights(
+    path_to_weights: os.PathLike | str | None, 
+    temperature: float, 
+    logger: logging.Logger
+):
+    """
+    Load a local GGUF model weights file and return a LlamaCppGenerator object.
+
+    Parameters
+    ----------
+    path_to_weights : os.PathLike
+        The full path to the local GGUF model weights file (e.g., "/path/to/llama-2-7b-chat.Q4_0.gguf").
+    temperature : float, optional
+        The temperature for model generation (default is 0.7).
+    logger : logging.Logger
+        Logger instance for tracking progress and errors.
+
+    Returns
+    -------
+    LlamaCppGenerator
+        A loaded LlamaCppGenerator object ready for inference.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the specified file_path does not exist or is not a file.
+    """
+    if not os.path.isfile(path_to_weights):
+        logger.error(f"Model weights not found at {path_to_weights}")
+        raise FileNotFoundError(f"Model weights file not found at {path_to_weights}")
+   
+    logger.info(f"Loading local model weights from {path_to_weights}")
+    device = -1 if torch.cuda.is_available() else 0 
+
+    # Load the model using llama 
+    llm = LlamaCppGenerator(
+        model=path_to_weights, 
+        n_ctx=0, 
+        n_batch=512, 
+        model_kwargs={"n_gpu_layers": device, "verbose": True}, 
+        generation_kwargs={"max_tokens": 128, "temperature": temperature}
+    )
+    logger.info(f"Succesfully loaded LlamaCppGenerator from {path_to_weights}")
+    return llm 
+
+
+def download_model_from_huggingface(
+    model_name: str, 
+    temperature: float, 
+    logger: logging.Logger, 
+    fallback_model: str = "llama-3.1-8b",
+    n_ctx: int = 0,
+    n_batch: int = 512,
+    max_tokens: int = 128 
+): 
+    logger.info(f"Loading local model: {model_name}")
+    device = -1 if torch.cuda.is_available() else 0
+
+    try: 
+        model_config = local_models[model_name]
+        model_path = hf_hub_download(**model_config) 
+    except KeyError: 
+        logger.warning(f"Model {model_name} not found in local_models. Falling back to {fallback_model}")
+        model_config = local_models[fallback_model]
+        model_path = hf_hub_download(**model_config)
+    except Exception as e: 
+        logger.error(f"Failed to download model {model_name}: {str(e)}")
+        raise ValueError(f"Failed to load model {model_name}: {str(e)}")
+    
+    try: 
+        llm = LlamaCppGenerator(
+            model=model_path, 
+            n_ctx=n_ctx, 
+            n_batch=n_batch, 
+            model_kwargs={"n_gpu_layers": device, "verbose": True}, 
+            generation_kwargs={"max_tokens": max_tokens, "temperature": temperature}
+        )
+    except Exception as e: 
+        logger.error(f"Failed to initialize LlamaCppGenerator for {model_name}: {str(e)}")
+        raise ValueError(f"Failed to initialize local model {model_name}: {str(e)}")
+
+    return llm 
+
+
+def connect_to_openai(
+    model_name: str, 
+    temperature: float, 
+    logger: logging.Logger,
+): 
+    logger.info(f"Loading {model_name} model")
+    llm = OpenAIGenerator(
+        model=model_name, generation_kwargs={"temperature": temperature}
+    )
+    return llm 
+
+
 def get_model(
-    model: LLMModel, logger: logging.Logger, temperature: float = 0.7
+    model: LLMModel, 
+    logger: logging.Logger, 
+    temperature: float = 0.7, 
+    path_to_local_weights: os.PathLike[Any] | str | None = None 
 ) -> OpenAIGenerator | LlamaCppGenerator:
     """
     Get an interface for interacting with an LLM
@@ -98,6 +200,8 @@ def get_model(
         The temperature for the model
     logger: logging.Logger|None
         The logger for the model
+    path_to_local_weights: os.PathLike 
+        Filepath to load weights locally. If not provided will default to downloading model weights. 
 
     Returns
     -------
@@ -105,38 +209,12 @@ def get_model(
         An interface to generate text using an LLM
     """
     model_name = model.value
-    if "gpt" in model_name.lower():
-        logger.info(f"Loading {model_name} model")
-
-        llm = OpenAIGenerator(
-            model=model_name, generation_kwargs={"temperature": temperature}
-        )
-
-    else:
-        logger.info(f"Loading {model_name} model")
-        from huggingface_hub import hf_hub_download
-
-        device = -1 if torch.cuda.is_available() else 0
-
-        try:
-            llm = LlamaCppGenerator(
-                model=hf_hub_download(**local_models[model_name]),
-                n_ctx=0,  # Text context, 0 = from model
-                n_batch=512,
-                model_kwargs={"n_gpu_layers": device, "verbose": True},
-                generation_kwargs={"max_tokens": 128, "temperature": temperature},
-            )
-        except KeyError:
-            print(f"{model_name} is not a recognised model name")
-            print(f"Error loading {model_name}")
-        finally:
-            logger.info("Loading llama-3.1-8b")
-            llm = LlamaCppGenerator(
-                model=hf_hub_download(**local_models[model_name]),
-                n_ctx=0,
-                n_batch=512,
-                model_kwargs={"n_gpu_layers": device, "verbose": True},
-                generation_kwargs={"max_tokens": 128, "temperature": temperature},
-            )
+    if path_to_local_weights: 
+        llm = get_local_weights(path_to_local_weights, temperature, logger)
+    else: 
+        if "gpt" in model_name.lower():
+            llm = connect_to_openai(model_name, temperature, logger)
+        else:
+            llm = download_model_from_huggingface(model_name, temperature, logger)
 
     return llm
