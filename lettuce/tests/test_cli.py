@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session as SQLAlchemySession
 import os
 import sys
 
+from components.embeddings import EmbeddingModelName
 
 @pytest.fixture(scope="session", autouse=True)
 def mock_sqlalchemy_engine():
@@ -15,7 +16,9 @@ def mock_sqlalchemy_engine():
         "DB_PASSWORD": "mock_pass",
         "DB_PORT": "5432",
         "DB_NAME": "mock_db_name",
-        "DB_SCHEMA": "mock_schema"
+        "DB_SCHEMA": "mock_schema",
+        "DB_VECTABLE": "mock_table",
+        "DB_VECSIZE": "384",
     }
     with patch.dict(os.environ, env_vars):
         mock_engine = create_engine("sqlite:///:memory:")
@@ -34,6 +37,7 @@ def mock_args():
         'vector_search': True,
         'use_llm': True,
         'llm_model': 'LLAMA_3_1_8B',
+        'embedding_model': EmbeddingModelName.BGESMALL,
         'temperature': 0.7,
         'vocabulary_id': 'RxNorm',
         'search_threshold': 0.8,
@@ -41,7 +45,10 @@ def mock_args():
         'concept_relationship': False,
         'concept_synonym': False,
         'max_separation_descendants': None,
-        'max_separation_ancestor': None
+        'max_separation_ancestor': None,
+        'embed_vocab': None,
+        'standard_concept': False,
+        'embedding_top_k': 5,
     }
 
 @pytest.fixture
@@ -63,8 +70,8 @@ def mock_llm_pipeline():
     mock_rag_assistant.run.return_value = {
         'retriever': {
             'documents': [
-                MagicMock(content='Aspirin info', score=0.95),
-                MagicMock(content='Tylenol info', score=0.90)
+                MagicMock(concept='Aspirin info', score=0.95),
+                MagicMock(concept='Tylenol info', score=0.90)
             ]
         },
         'llm': {
@@ -134,7 +141,7 @@ def test_main_with_vector_search_only(mock_base_options, mock_args):
          patch('lettuce.cli.main.Embeddings') as mock_embeddings, \
          patch('lettuce.cli.main.run') as mock_omop_run:
         mock_embeddings_instance = mock_embeddings.return_value
-        mock_embeddings_instance.search.return_value = [[{'content': 'Aspirin info'}], [{'content': 'Tylenol info'}]]
+        mock_embeddings_instance.search.return_value = [[{'concept': 'Aspirin info'}], [{'concept': 'Tylenol info'}]]
         mock_omop_run.return_value = [{'search_term': 'aspirin'}, {'search_term': 'tylenol'}]
         
         from lettuce.cli.main import main
