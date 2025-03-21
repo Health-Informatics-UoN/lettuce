@@ -5,7 +5,7 @@ name: Publish a Dev Release
 
 on:
   push:
-    branches: [fix-pipeline-for-dev-image]
+    branches: [main]
 
 env:
   image-name: lettuce
