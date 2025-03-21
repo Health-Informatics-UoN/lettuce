@@ -3,7 +3,7 @@ import time
 
 from dotenv import load_dotenv
 
-from components.pipeline import llm_pipeline
+from components.pipeline import LLMPipeline
 from options.pipeline_options import LLMModel
 
 
@@ -41,7 +41,7 @@ def run(
     run_start = time.time()
     load_dotenv()
 
-    pipeline = llm_pipeline(
+    pipeline = LLMPipeline(
         llm_model=llm_model, temperature=temperature, logger=logger
     ).get_simple_assistant()
     start = time.time()

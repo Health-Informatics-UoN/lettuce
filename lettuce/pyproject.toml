@@ -26,15 +26,15 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest>=8.3.3"]
+test = ["pytest>=8.3.3", "coverage>=7.6.12", "pytest-cov>=6.0.0"]
 streamlit = ["streamlit>=1.37.1"]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.scripts]
-lettuce-cli = "cli:main"
+[project.scripts]
+lettuce-cli = "cli.main:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["lettuce"]
+packages = ["."]
