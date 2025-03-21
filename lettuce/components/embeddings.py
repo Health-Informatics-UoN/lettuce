@@ -228,12 +228,16 @@ class Embeddings:
         -------
         PGVectorQuery
         """
-        return PGVectorQuery(
-                db_session(),
-                embed_vocab=self._embed_vocab,
-                standard_concept=self._standard_concept,
-                top_k=self._top_k,
-                ) 
+        try:
+            assert(self._model.info.dimensions == int(os.environ["DB_VECSIZE"]))
+            return PGVectorQuery(
+                    db_session(),
+                    embed_vocab=self._embed_vocab,
+                    standard_concept=self._standard_concept,
+                    top_k=self._top_k,
+                    )
+        except AssertionError:
+            raise AssertionError(f"Embedder dimensions {str(self._model.info.dimensions)} not equal to vector store dimensions {str()}")
 
     def search(self, query: List[str]) -> List[List[Dict[str, Any]]]:
         """
