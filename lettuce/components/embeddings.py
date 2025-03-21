@@ -255,7 +255,7 @@ class Embeddings:
         return [
             [
                 {
-                    "concept_id": doc.meta["concept_id"],
+                    "concept_id": doc.id,
                     "concept": doc.content,
                     "score": doc.score,
                 }
