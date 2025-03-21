@@ -168,7 +168,7 @@ def download_model_from_huggingface(
     return llm 
 
 
-def download_model_from_openai(
+def connect_to_openai(
     model_name: str, 
     temperature: float, 
     logger: logging.Logger,
@@ -213,7 +213,7 @@ def get_model(
         llm = get_local_weights(path_to_local_weights, temperature, logger)
     else: 
         if "gpt" in model_name.lower():
-            llm = download_model_from_openai(model_name, temperature, logger)
+            llm = connect_to_openai(model_name, temperature, logger)
         else:
             llm = download_model_from_huggingface(model_name, temperature, logger)
 
