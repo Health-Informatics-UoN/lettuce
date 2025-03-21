@@ -120,21 +120,26 @@ class PGVectorQuery:
             ):
         # only have cosine_similarity at the moment
         #TODO add selection of distance metric to query_vector
-       query = query_vector(
-                query_vector=query_embedding,
+        query = query_vector(
+                query_embedding=query_embedding,
                 embed_vocab=self._embed_vocab,
                 standard_concept=self._standard_concept,
                 n = self._top_k,
                 ) 
-       query_results = self._connection.execute(query).mappings().all()
-       return {"documents": [
-               Document(
-                   id=res.get("id"),
-                   content=res.get("content"),
-                   score=res.get("score"),
-                   ) for res in query_results]
-               }
-
+        try:
+            query_results = self._connection.execute(query).mappings().all()
+        except SQLAlchemyError as e:
+            raise SQLAlchemyError(f"Vector query execution failed: {str(e)}")
+        try:
+            return {"documents": [
+                Document(
+                    id=res["id"],
+                    content=res["content"],
+                    score=res["score"],
+                    ) for res in query_results]
+                }
+        except KeyError as e:
+            raise KeyError(f"Missing required key in query results: {str(e)}")
 
 def get_embedding_model(name: EmbeddingModelName) -> EmbeddingModel:
     """
