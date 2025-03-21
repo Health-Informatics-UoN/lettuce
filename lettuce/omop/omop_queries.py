@@ -11,7 +11,7 @@ from sqlalchemy.sql import Select, text, null
 
 
 def text_search_query(
-    search_term: str, vocabulary_id: list[str] | None, concept_synonym: bool
+        search_term: str, vocabulary_id: list[str] | None, standard_concept:bool, concept_synonym: bool
 ) -> Select:
     """
     Builds an OMOP query to search for concepts
@@ -45,7 +45,10 @@ def text_search_query(
         Concept.concept_name,
         Concept.vocabulary_id,
         Concept.concept_code,
-    ).where(Concept.standard_concept == "S")
+    )
+    
+    if standard_concept:
+        query = query.where(Concept.standard_concept == "S")
 
     if vocabulary_id:
         query = query.where(Concept.vocabulary_id.in_(vocabulary_id))

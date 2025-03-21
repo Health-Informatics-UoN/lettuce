@@ -57,6 +57,7 @@ class OMOPMatcher:
         self,
         search_terms: List[str],
         vocabulary_id: list | None = None,
+        standard_concept: bool = True,
         concept_ancestor: bool = True,
         concept_relationship: bool = True,
         concept_synonym: bool = True,
@@ -112,14 +113,15 @@ class OMOPMatcher:
 
             for search_term in search_terms:
                 OMOP_concepts = self.fetch_OMOP_concepts(
-                    search_term,
-                    vocabulary_id,
-                    concept_ancestor,
-                    concept_relationship,
-                    concept_synonym,
-                    search_threshold,
-                    max_separation_descendant,
-                    max_separation_ancestor,
+                    search_term=search_term,
+                    vocabulary_id=vocabulary_id,
+                    standard_concept=standard_concept,
+                    concept_ancestor=concept_ancestor,
+                    concept_relationship=concept_relationship,
+                    concept_synonym=concept_synonym,
+                    search_threshold=search_threshold,
+                    max_separation_descendant=max_separation_descendant,
+                    max_separation_ancestor=max_separation_ancestor,
                 )
 
                 overall_results.append(
@@ -138,6 +140,7 @@ class OMOPMatcher:
         self,
         search_term: str,
         vocabulary_id: list | None,
+        standard_concept: bool,
         concept_ancestor: bool,
         concept_relationship: bool,
         concept_synonym: bool,
@@ -182,7 +185,10 @@ class OMOPMatcher:
             A list of search results from the OMOP database if the query comes back with results, otherwise returns None
         """
         query = text_search_query(
-            preprocess_search_term(search_term), vocabulary_id, concept_synonym
+            search_term=preprocess_search_term(search_term),
+            vocabulary_id=vocabulary_id,
+            standard_concept=standard_concept,
+            concept_synonym=concept_synonym,
         )
         Session = sessionmaker(self.engine)
         session = Session()
@@ -448,6 +454,7 @@ def run(
     search_term: List[str],
     logger: Logger,
     vocabulary_id: list[str],
+    standard_concept: bool = True,
     search_threshold: int = 80,
     concept_ancestor: bool = False,
     concept_relationship: bool = False,
@@ -488,14 +495,15 @@ def run(
     """
     omop_matcher = OMOPMatcher(logger)
     res = omop_matcher.calculate_best_matches(
-        search_term,
-        vocabulary_id,
-        concept_ancestor,
-        concept_relationship,
-        concept_synonym,
-        search_threshold,
-        max_separation_descendant,
-        max_separation_ancestor,
+        search_terms=search_term,
+        vocabulary_id=vocabulary_id,
+        standard_concept=standard_concept,
+        concept_ancestor=concept_ancestor,
+        concept_relationship=concept_relationship,
+        concept_synonym=concept_synonym,
+        search_threshold=search_threshold,
+        max_separation_descendant=max_separation_descendant,
+        max_separation_ancestor=max_separation_ancestor,
     )
     omop_matcher.close()
     return res
