@@ -116,9 +116,9 @@ class PGVectorQuery:
         try:
             return {"documents": [
                 Document(
-                    id=res.get("id"),
-                    content=res.get("content"),
-                    score=res.get("score"),
+                    id=res["id"],
+                    content=res["content"],
+                    score=res["score"],
                     ) for res in query_results]
                 }
         except KeyError as e:
