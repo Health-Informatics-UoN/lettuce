@@ -18,6 +18,8 @@ jobs:
       DB_NAME: "lettuce-omop"
       DB_PORT: "5432"
       DB_SCHEMA: "public"
+      DB_VECTABLE: "test"
+      DB_VECSIZE: "384"
 
     steps:
       - uses: actions/checkout@v4

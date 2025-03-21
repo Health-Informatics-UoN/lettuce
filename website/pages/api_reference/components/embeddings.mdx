@@ -36,6 +36,21 @@ class EmbeddingModel()
 A class to match the name of an embeddings model with the
 details required to download and use it.
 
+### `PGVectorQuery`
+```python
+class PGVectorQuery(connection: connection)
+```
+
+A haystack component for retrieving concept information using embeddings in a postgres database with pgvector
+
+
+#### Methods
+
+##### `run`
+```python
+def run()
+```
+
 ### `get_embedding_model`
 ```python
 def get_embedding_model(

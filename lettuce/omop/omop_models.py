@@ -1,13 +1,12 @@
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, mapped_column
 from sqlalchemy import Column, Date, Integer, String
+from pgvector.sqlalchemy import Vector
 
-
-from dotenv import load_dotenv
 from os import environ
 
-
-load_dotenv()
 DB_SCHEMA = environ["DB_SCHEMA"]
+DB_VECTABLE = environ["DB_VECTABLE"]
+DB_VECSIZE = int(environ["DB_VECSIZE"])
 
 Base = declarative_base()
 
@@ -80,4 +79,16 @@ class ConceptAncestor(Base):
     min_levels_of_separation = Column(Integer)
     max_levels_of_separation = Column(Integer)
 
+    dummy_primary = Column(Integer, primary_key=True)
+
+class Embedding(Base):
+    """
+    This class represents an ORM mapping to an embeddings table
+    """
+
+    __tablename__ = DB_VECTABLE
+    __table_args__ = {"schema": DB_SCHEMA}
+
+    concept_id = Column(Integer)
+    embedding = mapped_column(Vector(DB_VECSIZE))
     dummy_primary = Column(Integer, primary_key=True)

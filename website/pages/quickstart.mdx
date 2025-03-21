@@ -5,8 +5,8 @@ The fastest way to get started with Lettuce is to use the [command-line interfac
 
 ## Prerequisites
 - Python 3.12
-- [Poetry](https://python-poetry.org/)
-- Access to an OMOP-CDM database
+- uv[https://docs.astral.sh/uv/guides/install-python/]
+- Access to an OMOP-CDM database with a pgvector table for concept embeddings
 
 <Steps>
 #### Clone the [Lettuce repo](https://github.com/Health-Informatics-UoN/lettuce/)
@@ -29,6 +29,8 @@ DB_PASSWORD="Your Password"
 DB_NAME="Your Database Name"
 DB_PORT="Your Port, default is 5432"
 DB_SCHEMA="Your Schema"
+DB_VECTABLE="The name of your table containing vectors"
+DB_VECSIZE="The length of vectors in your vector table"
 ```
 
 Copy this template and insert your credentials.
@@ -36,16 +38,16 @@ Copy this template and insert your credentials.
 #### Run the CLI
 
 ##### Install dependencies
-Dependencies are handled with poetry, and first have to be installed
+Dependencies are handled with uv, and first have to be installed
 
 ```sh
-poetry install
+uv sync
 ```
 
 Once this is complete, you can run `lettuce-cli`
 
 ```sh
-poetry run lettuce-cli --informal_names "acetaminophen" --no-use_llm --no-vector_search
+uv run --env-file .env lettuce-cli --informal_names "acetaminophen" --no-use_llm --no-vector_search
 ```
 
 The flags in this command disable the vector search and LLM, just querying the database for "acetaminophen".

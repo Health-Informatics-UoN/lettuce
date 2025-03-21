@@ -130,7 +130,6 @@ class LLMPipeline:
 
         vec_search = Embeddings(
             embeddings_path=self._embeddings_path,
-            force_rebuild=self._force_rebuild,
             embed_vocab=self._embed_vocab,
             model_name=self._embedding_model,
             search_kwargs=self._embedding_search_kwargs,

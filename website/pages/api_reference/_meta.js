@@ -1,5 +1,5 @@
-export default{
-  app: "App",
+export default {
+  api: "Api",
   assistant: "Assistant",
   cli: "CLI",
   components: "Components",
