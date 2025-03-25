@@ -16,12 +16,12 @@ WORKDIR src
 COPY --from=builder /src/.venv /src/.venv
 
 RUN mkdir -p models  
-RUN pipx install "huggingface_hub[hf_transfer]"
+RUN pip install --no-cache-dir "huggingface_hub[hf_transfer]"
 RUN HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download \ 
     "MaziyarPanahi/Meta-Llama-3.1-8B-Instruct-GGUF" \
     "Meta-Llama-3.1-8B-Instruct.Q4_K_M.gguf" \ 
     --local-dir models
-ENV LOCAL_LLM="model_weights/Llama-3.1-8B"
+ENV LOCAL_LLM="models/Meta-Llama-3.1-8B-Instruct.Q4_K_M.gguf"
 
 COPY . .
 EXPOSE 8000

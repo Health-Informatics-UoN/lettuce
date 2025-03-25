@@ -1,0 +1,82 @@
+# Automates the process of building and publishing a Docker container image whenever changes are pushed to the main branch.
+# The resulting image is tagged as a development release and published to GitHub Container Registry (ghcr.io).
+
+name: Publish a Dev Release
+
+on:
+  push:
+    branches: [main]
+
+env:
+  image-name: lettuce
+  repo-owner: ${{ github.repository_owner }}
+  registry: ghcr.io
+
+jobs:
+  publish-lettuce-base:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      #- name: Set up QEMU
+      #  uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
+
+      - name: Docker Login
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
+        with:
+          registry: ${{ env.registry }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: SebRollen/toml-action@v1.2.0
+        id: read_version
+        with:
+          file: "lettuce/pyproject.toml"
+          field: project.version
+
+      - name: Docker Metadata action
+        id: meta
+        uses: docker/metadata-action@v5.5.1
+        env:
+          DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
+        with:
+          images: ${{ env.registry }}/${{ env.repo-owner }}/${{ env.image-name }}
+          # Tag notes:
+          # - RFC3339 (standardised format for timestamps) is not suitable for docker tags, so we squash the date
+          # - We tag both the short (7-char prefixed) and full sha commit hashes; both are useful
+          # - `edge` represents latest main branch commit (potentially unstable)
+          tags: |
+            type=sha
+            ${{ github.sha }}
+            type=raw,value={{date 'YYYYMMDDHHmmss[Z]'}}
+            edge
+          # Label notes:
+          # - Static labels are applied in the Dockerfile
+          # - Date format in `org.opencontainers.image.created` must be RFC3339
+          # - version should be considered a semver candidate only, unless revision aligns with a git tag
+          labels: |
+            org.opencontainers.image.revision={{sha}}
+            org.opencontainers.image.version=${{ steps.read_version.outputs.value }}
+            org.opencontainers.image.created={{date 'YYYY-MM-DD HH:mm:ss[Z]'}}
+          # TODO: More Annotations may be desirable instead of labels for some metadata,
+          # since we produce multiarch images
+          annotations: |
+            org.opencontainers.image.description=lettuce
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v5.3.0
+        with:
+          context: "./lettuce"
+          file: "lettuce/Dockerfile"
+          push: true
+          platforms: linux/amd64 # ,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
