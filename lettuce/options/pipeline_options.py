@@ -82,6 +82,7 @@ class PipelineOptions(BaseModel):
     llm_model: LLMModel = LLMModel.LLAMA_3_1_8B
     temperature: float = 0
     vocabulary_id: list[str] = ["RxNorm"]
+    standard_concept: bool = True
     concept_ancestor: bool = False
     concept_relationship: bool = False
     concept_synonym: bool = False
@@ -92,4 +93,4 @@ class PipelineOptions(BaseModel):
     force_rebuild: bool = False
     embed_vocab: list[str] = ["RxNorm", "RxNorm Extension"]
     embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL
-    embedding_search_kwargs: dict = {}
+    embeddings_top_k: int = 5

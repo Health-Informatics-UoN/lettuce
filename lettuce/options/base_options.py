@@ -54,6 +54,22 @@ class BaseOptions:
         )
 
         self._parser.add_argument(
+            "--embed-vocab",
+            type=lambda s: s.split(",") if s else None,
+            default=None,
+            required=False,
+            help="Vocabulary IDs for embedding filtering. If multiple vocabularies, supply a comma-separated list"
+        )
+
+        self._parser.add_argument(
+                "--standard-concept",
+                type=bool,
+                default=False,
+                required=False,
+                help="Whether to filter output by the standard_concept field of the concept table"
+        )
+
+        self._parser.add_argument(
             "--temperature",
             type=float,
             required=False,
@@ -71,9 +87,9 @@ class BaseOptions:
 
         self._parser.add_argument(
             "--vocabulary_id",
-            type=lambda s: s.split(","),
+            type=lambda s: s.split(",") if s else None,
             required=False,
-            default="RxNorm",
+            default=None,
             help="Vocabulary IDs to be queried. If you want multiple"
             "vocabularies to be used, supply a comma separated list",
         )
@@ -138,6 +154,14 @@ class BaseOptions:
             default=True,
             help="Use LLM?",
         )
+
+        self._parser.add_argument(
+                "--embedding-top-k",
+                type=int,
+                required=False,
+                default=5,
+                help="Number of suggestions to return from vector search for RAG."
+         )
 
         self._initialized = True
 
