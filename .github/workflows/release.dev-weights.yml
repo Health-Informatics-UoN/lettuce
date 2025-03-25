@@ -1,3 +1,7 @@
+# Builds and publishes a Docker container image with pre-loaded LLaMA-3.1-8B weights for the Lettuce project.
+# This workflow is manually triggered, tags the image as a development release with the 'dev-weights-llama-3.1-8B' prefix,
+# and pushes it to GitHub Container Registry (ghcr.io).
+
 name: Build and publish pre-loaded weights image
 
 on:
@@ -53,7 +57,7 @@ jobs:
           images: ${{ env.registry }}/${{ env.repo-owner }}/${{ env.image-name }}
           # Tag notes:
           # - RFC3339 (standardised format for timestamps) is not suitable for docker tags, so we squash the date
-          # - We tag both the short (7-char prefixed) and full sha commit hashes; both are useful
+          # - We only tag the short (7-char prefixed) commit hashes as this is a dev image 
           # - `edge` represents latest main branch commit (potentially unstable)
           tags: |
             type=sha,prefix=dev-weights-${{ env.model-name }}-
