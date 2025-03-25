@@ -15,6 +15,14 @@ ENV PATH="/src/.venv/bin:$PATH"
 WORKDIR src
 COPY --from=builder /src/.venv /src/.venv
 
+LABEL org.opencontainers.image.title=Lettuce
+LABEL org.opencontainers.image.description=lettuce-dev-base 
+LABEL org.opencontainers.image.vendor=University\ of\ Nottingham
+LABEL org.opencontainers.image.url=https://github.com/Health-Informatics-UoN/lettuce/pkgs/container/lettuce
+LABEL org.opencontainers.image.documentation=https://health-informatics-uon.github.io/lettuce/
+LABEL org.opencontainers.image.source=https://github.com/Health-Informatics-UoN/lettuce
+LABEL org.opencontainers.image.licenses=MIT
+
 COPY . .
 EXPOSE 8000
 

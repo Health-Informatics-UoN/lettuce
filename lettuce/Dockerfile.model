@@ -23,6 +23,14 @@ RUN HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download \
     --local-dir models
 ENV LOCAL_LLM="models/Meta-Llama-3.1-8B-Instruct.Q4_K_M.gguf"
 
+LABEL org.opencontainers.image.title=Lettuce
+LABEL org.opencontainers.image.description=lettuce-dev-weights
+LABEL org.opencontainers.image.vendor=University\ of\ Nottingham
+LABEL org.opencontainers.image.url=https://github.com/Health-Informatics-UoN/lettuce/pkgs/container/lettuce
+LABEL org.opencontainers.image.documentation=https://health-informatics-uon.github.io/lettuce/
+LABEL org.opencontainers.image.source=https://github.com/Health-Informatics-UoN/lettuce
+LABEL org.opencontainers.image.licenses=MIT
+
 COPY . .
 EXPOSE 8000
 

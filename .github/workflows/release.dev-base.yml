@@ -53,10 +53,10 @@ jobs:
           # - We tag both the short (7-char prefixed) and full sha commit hashes; both are useful
           # - `edge` represents latest main branch commit (potentially unstable)
           tags: |
-            type=sha
-            ${{ github.sha }}
-            type=raw,value={{date 'YYYYMMDDHHmmss[Z]'}}
-            edge
+            type=sha,prefix=dev-base- 
+            dev-base-${{ github.sha }}
+            type=raw,value=dev-base-{{date 'YYYYMMDDHHmmss[Z]'}}
+            dev-base-edge
           # Label notes:
           # - Static labels are applied in the Dockerfile
           # - Date format in `org.opencontainers.image.created` must be RFC3339
