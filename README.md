@@ -95,6 +95,27 @@ The response will be provided in the format
 
 The response will be streamed asynchronously so the llm_output will arrive before any omop_output
 
+## Published Images
+Development Docker images for the Lettuce project are available on GitHub Container Registry (GHCR):
+
+- **Registry**: `ghcr.io/health-informatics-uon/lettuce`
+- **Images**:
+  - **Weights Image**: Includes pre-loaded LLaMA-3.1-8B weights.
+    - **Tags**:
+      - `dev-weights-llama-3.1-8B-sha-<hash>` (e.g., `dev-weights-llama-3.1-8B-sha-a1b2c3d`): Build from a specific commit.
+      - `dev-weights-llama-3.1-8B-edge`: Latest development image with weights.
+    - **Pull Command**: 
+      ```bash
+      docker pull ghcr.io/health-informatics-uon/lettuce:dev-weights-llama-3.1-8B-edge
+  - **Base Image**: Lightweight image without weights, for custom setups.
+    - **Tags**: 
+      - `dev-base-sha-<hash>` (e.g., `dev-base-sha-a1b2c3d`): Build from a specific commit.
+      - `dev-base-edge`: Latest development image with weights.
+    - **Pull Command**: 
+      ```bash
+      docker pull ghcr.io/health-informatics-uon/lettuce:dev-base-edge
+      ```
+
 ## Contact
 
 If there are any bugs, please [email us](mailto:james.mitchell-white1@nottingham.ac.uk)

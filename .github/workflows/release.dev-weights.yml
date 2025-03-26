@@ -1,19 +1,26 @@
-# Automates the process of building and publishing a Docker container image whenever changes are pushed to the main branch.
-# The resulting image is tagged as a development release and published to GitHub Container Registry (ghcr.io).
+# Builds and publishes a Docker container image with pre-loaded LLaMA-3.1-8B weights for the Lettuce project.
+# This workflow is manually triggered, tags the image as a development release with the 'dev-weights-llama-3.1-8B' prefix,
+# and pushes it to GitHub Container Registry (ghcr.io).
 
-name: Publish a Dev Release
+name: Build and publish pre-loaded weights image
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch: 
+    inputs: 
+      branch: 
+        description: "Branch to build from"
+        required: true 
+        default: "main"
 
 env:
   image-name: lettuce
   repo-owner: ${{ github.repository_owner }}
   registry: ghcr.io
+  model-name: llama-3.1-8B
+
 
 jobs:
-  publish-lettuce:
+  publish-lettuce-weights:
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -50,13 +57,12 @@ jobs:
           images: ${{ env.registry }}/${{ env.repo-owner }}/${{ env.image-name }}
           # Tag notes:
           # - RFC3339 (standardised format for timestamps) is not suitable for docker tags, so we squash the date
-          # - We tag both the short (7-char prefixed) and full sha commit hashes; both are useful
+          # - We only tag the short (7-char prefixed) commit hashes as this is a dev image 
           # - `edge` represents latest main branch commit (potentially unstable)
           tags: |
-            type=sha
-            ${{ github.sha }}
-            type=raw,value={{date 'YYYYMMDDHHmmss[Z]'}}
-            edge
+            type=sha,prefix=dev-weights-${{ env.model-name }}-
+            type=raw,value=dev-weights-${{ env.model-name }}-{{date 'YYYYMMDDHHmmss[Z]'}}
+            dev-weights-${{ env.model-name }}-edge
           # Label notes:
           # - Static labels are applied in the Dockerfile
           # - Date format in `org.opencontainers.image.created` must be RFC3339
@@ -74,7 +80,7 @@ jobs:
         uses: docker/build-push-action@v5.3.0
         with:
           context: "./lettuce"
-          file: "lettuce/Dockerfile"
+          file: "lettuce/Dockerfile.model"
           push: true
           platforms: linux/amd64 # ,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}

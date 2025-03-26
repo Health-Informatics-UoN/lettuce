@@ -10,7 +10,6 @@ DB_VECSIZE = int(environ["DB_VECSIZE"])
 
 Base = declarative_base()
 
-
 class Concept(Base):
     """
     This class represents an ORM mapping to the OMOP concept table
