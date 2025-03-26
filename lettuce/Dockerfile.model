@@ -8,19 +8,20 @@ ENV UV_CACHE_DIR=/tmp/uv_cache \
 
 WORKDIR /src
 COPY pyproject.toml ./
-RUN uv sync 
+RUN uv sync
+
+RUN pip install "huggingface_hub[hf_transfer]" "hf_transfer"
+RUN mkdir -p models
+RUN HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download \
+    "MaziyarPanahi/Meta-Llama-3.1-8B-Instruct-GGUF" \
+    "Meta-Llama-3.1-8B-Instruct.Q4_K_M.gguf" \
+    --local-dir models
 
 FROM python:3.12-slim-bookworm
-ENV PATH="/src/.venv/bin:$PATH"
-WORKDIR src
+WORKDIR /src
 COPY --from=builder /src/.venv /src/.venv
-
-RUN mkdir -p models  
-RUN pip install --no-cache-dir "huggingface_hub[hf_transfer]"
-RUN HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download \ 
-    "MaziyarPanahi/Meta-Llama-3.1-8B-Instruct-GGUF" \
-    "Meta-Llama-3.1-8B-Instruct.Q4_K_M.gguf" \ 
-    --local-dir models
+COPY --from=builder /src/models /src/models
+ENV PATH="/src/.venv/bin:$PATH"
 ENV LOCAL_LLM="models/Meta-Llama-3.1-8B-Instruct.Q4_K_M.gguf"
 
 LABEL org.opencontainers.image.title=Lettuce

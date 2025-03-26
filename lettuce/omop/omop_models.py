@@ -1,11 +1,9 @@
 from sqlalchemy.orm import declarative_base, mapped_column
 from sqlalchemy import Column, Date, Integer, String
 from pgvector.sqlalchemy import Vector
-from dotenv import load_dotenv
 
 from os import environ
 
-load_dotenv()
 DB_SCHEMA = environ["DB_SCHEMA"]
 DB_VECTABLE = environ["DB_VECTABLE"]
 DB_VECSIZE = int(environ["DB_VECSIZE"])
