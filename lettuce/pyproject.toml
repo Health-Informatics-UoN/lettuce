@@ -9,6 +9,7 @@ dependencies = [
     "haystack-ai>=2.7.0",
     "huggingface-hub>=0.24.6",
     "numpy==1.26.4",
+    "pandas>=2.1.0",
     "python-dotenv>=1.0.1",
     "llama-cpp-haystack>=0.4.1",
     "llama-cpp-python>=0.2.89",
@@ -20,8 +21,9 @@ dependencies = [
     "SQLAlchemy>=2.0.32",
     "sseclient-py>=1.8.0",
     "fastembed-haystack>=1.2.0",
+    "qdrant-haystack>=7.0.0",
     "torch==2.2",
-    "sentence-transformers>=3.3.1",
+    "sentence-transformers>=3.3.1", 
     "pgvector==0.3.6"
 ]
 
@@ -38,8 +40,8 @@ streamlit = ["streamlit>=1.37.1"]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[project.scripts]
-lettuce-cli = "cli.main:main"
+[tool.scripts]
+lettuce-cli = "cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["."]
+packages = ["lettuce"]
