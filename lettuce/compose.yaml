@@ -1,17 +1,28 @@
-version: '3.8'                                    # Docker Compose file version
+version: '3.8'
+
+name: lettuce-dev 
 
 services:
-  app:                                            # Service name
-    build:  
-      context: .                                  # Path to the Dockerfile (current directory)
-      dockerfile: Dockerfile                      # Dockerfile name
-    container_name: Lettuce                       # Container name
-    image: Lettuce:latest                         # Image name
-    ports:  
-      - "8000:8000"                               # Map host port 8000 to container port 8000
-    environment:  
-      - PYTHONDONTWRITEBYTECODE=1                 # Disable writing Python bytecode
-      - PYTHONUNBUFFERED=1                        # Ensure Python output is unbuffered
-      - PIP_NO_CACHE_DIR=off                      # Disable pip caching
-      - PIP_DISABLE_PIP_VERSION_CHECK=on          # Disable pip version check
-    user: "1000:1000"                             # Specify UID:GID for running the container process
+  lettuce: 
+    build: 
+      context: . 
+      dockerfile: Dockerfile 
+    environment: 
+      - DATABASE_URL=postgresql://postgres:password@omop-ts-omop-ts-1:5432/omop 
+      - DB_HOST=omop-ts-omop-ts-1
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - DB_NAME=omop
+      - DB_PORT=5432
+      - DB_SCHEMA=cdm
+      - DB_VECTABLE=embeddings
+      - DB_VECSIZE=384
+    ports: 
+      - "8000:8000"
+    networks: 
+      - omop-ts-network  # Connect the existing network
+
+networks: 
+  omop-ts-network: 
+    external: true 
+    name: omop-ts_default 
