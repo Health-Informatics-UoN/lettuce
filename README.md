@@ -99,22 +99,16 @@ The response will be streamed asynchronously so the llm_output will arrive befor
 Development Docker images for the Lettuce project are available on GitHub Container Registry (GHCR):
 
 - **Registry**: `ghcr.io/health-informatics-uon/lettuce`
-- **Images**:
-  - **Weights Image**: Includes pre-loaded LLaMA-3.1-8B weights.
-    - **Tags**:
-      - `dev-weights-llama-3.1-8B-sha-<hash>` (e.g., `dev-weights-llama-3.1-8B-sha-a1b2c3d`): Build from a specific commit.
-      - `dev-weights-llama-3.1-8B-edge`: Latest development image with weights.
-    - **Pull Command**: 
-      ```bash
-      docker pull ghcr.io/health-informatics-uon/lettuce:dev-weights-llama-3.1-8B-edge
-  - **Base Image**: Lightweight image without weights, for custom setups.
-    - **Tags**: 
-      - `dev-base-sha-<hash>` (e.g., `dev-base-sha-a1b2c3d`): Build from a specific commit.
-      - `dev-base-edge`: Latest development image with weights.
-    - **Pull Command**: 
-      ```bash
-      docker pull ghcr.io/health-informatics-uon/lettuce:dev-base-edge
-      ```
+- **Weights Image** (pre-loaded LLaMA-3.1-8B weights):
+  - `dev-weights-llama-3.1-8B-sha-<hash>` (e.g., `-sha-a1b2c3d`)
+  - `dev-weights-llama-3.1-8B-edge` (latest)
+  - Pull: `docker pull ghcr.io/health-informatics-uon/lettuce:dev-weights-llama-3.1-8B-edge`
+- **Base Image** (lightweight, no weights):
+  - `dev-base-sha-<hash>` (e.g., `-sha-a1b2c3d`)
+  - `dev-base-edge` (latest)
+  - Pull: `docker pull ghcr.io/health-informatics-uon/lettuce:dev-base-edge`
+
+See [GitHub Packages](https://github.com/Health-Informatics-UoN/lettuce/pkgs/container/lettuce) for all tags.
 
 ## Contact
 

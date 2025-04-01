@@ -5,6 +5,7 @@ __pycache__/
 *.pyd
 
 # Ignore development and build files
+.venv 
 venv/
 build/
 dist/
