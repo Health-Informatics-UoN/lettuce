@@ -12,7 +12,7 @@ from sqlalchemy.sql import Select, text, null
 
 
 def text_search_query(
-    search_term: str, vocabulary_id: list[str] | None, concept_synonym: bool
+        search_term: str, vocabulary_id: list[str] | None, standard_concept:bool, concept_synonym: bool
 ) -> Select:
     """
     Builds an OMOP query to search for concepts
@@ -46,7 +46,10 @@ def text_search_query(
         Concept.concept_name,
         Concept.vocabulary_id,
         Concept.concept_code,
-    ).where(Concept.standard_concept == "S")
+    )
+    
+    if standard_concept:
+        query = query.where(Concept.standard_concept == "S")
 
     if vocabulary_id:
         query = query.where(Concept.vocabulary_id.in_(vocabulary_id))
@@ -177,8 +180,13 @@ def query_related_by_name(
 
 def query_related_by_id() -> Select: ...
 
-def query_vector(query_embedding: List[float], n: int = 5) -> Select:
-    return (
+def query_vector(
+        query_embedding,
+        embed_vocab: list[str] | None,
+        standard_concept: bool = False,
+        n: int = 5,
+        ) -> Select:
+    query = (
         select(
             Concept.concept_id.label("id"),
             Concept.concept_name.label("content"),
@@ -188,3 +196,9 @@ def query_vector(query_embedding: List[float], n: int = 5) -> Select:
         .order_by(Embedding.embedding.cosine_distance(query_embedding))
         .limit(n)
     )
+    if embed_vocab is not None:
+        query = query.where(Concept.vocabulary_id.in_(embed_vocab))
+    if standard_concept:
+        query = query.where(Concept.standard_concept == "S")
+
+    return query
