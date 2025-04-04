@@ -21,6 +21,14 @@ services:
       - "8000:8000"
     networks: 
       - omop-ts-network  # Connect the existing network
+    deploy:
+      resources:
+        limits:
+          memory: 24g 
+        reservations:
+          memory: 12g 
+    mem_limit: 24g  
+    memswap_limit: 48g 
 
 networks: 
   omop-ts-network: 
