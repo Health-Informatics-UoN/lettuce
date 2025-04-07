@@ -261,6 +261,15 @@ class TestPGVectorQuery:
         mock_execute.mappings.return_value.all.return_value = mock_results
         mock_session.execute.return_value = mock_execute
         
+        # Verifies that LIMIT is set correctly 
+        def execute_side_effect(query):
+            assert query._limit_clause.value == k  
+            mock_execute = Mock()
+            mock_execute.mappings.return_value.all.return_value = mock_results[:query._limit_clause.value]
+            return mock_execute
+    
+        mock_session.execute.side_effect = execute_side_effect
+
         query_component = PGVectorQuery(connection=mock_session)
         query_embedding = [0.1, 0.2, 0.3]
         
