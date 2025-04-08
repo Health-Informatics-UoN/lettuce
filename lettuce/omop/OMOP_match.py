@@ -134,6 +134,12 @@ class OMOPMatcher:
             self.logger.error(f"Error in calculate_best_matches: {e}")
             raise ValueError(f"Error in calculate_best_OMOP_matches: {e}")
 
+    def _get_concept_ids_above_threshold(): 
+        pass 
+
+    def calculate_similarity_score(): 
+        pass 
+
     def fetch_OMOP_concepts(
         self,
         search_term: str,
@@ -188,7 +194,7 @@ class OMOPMatcher:
         session = Session()
         results = session.execute(query).fetchall()
         results = pd.DataFrame(results)
-        session.close()
+        session.close() 
         if not results.empty:
             # Define a function to calculate similarity score using the provided logic
             def calculate_similarity(row):
