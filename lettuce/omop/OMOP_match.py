@@ -112,7 +112,34 @@ class OMOPMatcher:
             self.logger.error(f"Error in calculate_best_matches: {e}")
             raise ValueError(f"Error in calculate_best_OMOP_matches: {e}")
 
+    @staticmethod 
+    def calculate_similarity_score(concept_name, search_term):
+        """
+        Calculates a fuzzy similarity score between a concept name and a search term.
 
+        This method is designed to compare drug concept names, such as those found in OMOP 
+        vocabularies, with user-entered search terms. The concept name is cleaned by 
+        removing all content inside parentheses () before comparison and both strings 
+        are lowercased before comparison to ensure case-insensitive matching.
+
+        Parameters
+        ----------
+        concept_name (str): 
+            The full OMOP drug concept name to be compared. 
+
+        search_term (str): 
+            The user-entered term to compare against, such as "paracetamol" or "acetaminophen".
+        
+        Returns
+        -------
+            float: A similarity score between 0 and 100, where higher values indicate a stronger match.
+        """
+        if concept_name is None:
+            return 0  # Return a default score (e.g., 0) for null values
+        cleaned_concept_name = re.sub(r"\(.*?\)", "", concept_name).strip()
+        score = fuzz.ratio(search_term.lower(), cleaned_concept_name.lower())
+        return score
+            
     def fetch_OMOP_concepts(
         self,
         search_term: str,
@@ -168,22 +195,18 @@ class OMOPMatcher:
            results = session.execute(query).fetchall()
            results = pd.DataFrame(results) 
         
+        if results.empty:  
+            return 
+        
         if not results.empty:
-            # Define a function to calculate similarity score using the provided logic
-            def calculate_similarity(row):
-                if row is None:
-                    return 0  # Return a default score (e.g., 0) for null values
-                cleaned_concept_name = re.sub(r"\(.*?\)", "", row).strip()
-                score = fuzz.ratio(search_term.lower(), cleaned_concept_name.lower())
-                return score
-
             # Apply the score function to 'concept_name' and 'concept_synonym_name' columns
             results["concept_name_similarity_score"] = results["concept_name"].apply(
-                calculate_similarity
+                lambda row: OMOPMatcher.calculate_similarity_score(row, search_term)
             )
+
             results["concept_synonym_name_similarity_score"] = results[
                 "concept_synonym_name"
-            ].apply(calculate_similarity)
+            ].apply(lambda row: OMOPMatcher.calculate_similarity_score(row, search_term))
 
             concept_ids_above_threshold = set(
                 results.loc[

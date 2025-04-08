@@ -1,4 +1,5 @@
 import os
+import re 
 from collections import namedtuple
 from unittest.mock import Mock, MagicMock
 import pytest
@@ -24,6 +25,41 @@ def mock_session(mocker):
     mock_session_factory = MagicMock(return_value=mock_session)
     mocker.patch("omop.OMOP_match.sessionmaker", return_value=mock_session_factory)
     return mock_session
+
+
+class TestCalculateSimilarityScore: 
+    def test_exact_match(self):
+        term = "acetaminophen"
+        concept_name = "acetaminophen"
+        score = OMOPMatcher.calculate_similarity_score(concept_name, term)
+        assert score == 100
+
+    def test_partial_match(self):
+        term = "acetaminophen"
+        concept_name = "acetaminophen 10mg"
+        score = OMOPMatcher.calculate_similarity_score(concept_name, term)
+        assert score > 50  
+    
+    def test_irrelevant_match(self): 
+        term = "paracetamol"
+        concept_name = "skidiving"
+        score = OMOPMatcher.calculate_similarity_score(concept_name, term)
+        assert score < 50 
+
+    def test_verbose_concept_name(self): 
+        raw_concept = "{1 (acetaminophen 325 MG / dextromethorphan hydrobromide 10 MG / doxylamine succinate 6.25 MG Oral Capsule) / 1 (acetaminophen 325 MG / dextromethorphan hydrobromide 10 MG / phenylephrine hydrochloride 5 MG Oral Capsule) } Pack"
+        term = "acetaminophen"
+        cleaned_concept = re.sub(r"\(.*?\)", "", raw_concept).strip()
+        raw_score = OMOPMatcher.calculate_similarity_score(raw_concept, term)
+        cleaned_score = OMOPMatcher.calculate_similarity_score(cleaned_concept, term) 
+    
+    def test_empty_strings(self):
+        score = OMOPMatcher.calculate_similarity_score("", "")
+        assert score == 100
+
+    def test_one_empty_string(self):
+        score = OMOPMatcher.calculate_similarity_score("acetaminophen", "")
+        assert score == 0
 
 
 def test_fetch_omop_concepts_basic_case(mock_omop_matcher, mock_session):
