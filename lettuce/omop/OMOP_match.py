@@ -9,6 +9,7 @@ from rapidfuzz import fuzz
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from omop.omop_queries import text_search_query
+from omop.db_manager import get_session, DB_SCHEMA, engine 
 
 from logging import Logger
 from omop.preprocess import preprocess_search_term
@@ -22,29 +23,6 @@ class OMOPMatcher:
     def __init__(self, logger: Logger):
         # Connect to database
         self.logger = logger
-        load_dotenv()
-
-        try:
-            self.logger.info(
-                "Initialize the PostgreSQL connection based on the environment variables"
-            )
-            DB_HOST = environ["DB_HOST"]
-            DB_USER = environ["DB_USER"]
-            DB_PASSWORD = quote_plus(environ["DB_PASSWORD"])
-            DB_NAME = environ["DB_NAME"]
-            DB_PORT = environ["DB_PORT"]
-            DB_SCHEMA = environ["DB_SCHEMA"]
-
-            connection_string = (
-                f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-            )
-            engine = create_engine(connection_string)
-            logger.info(f"Connected to PostgreSQL database {DB_NAME} on {DB_HOST}")
-
-        except Exception as e:
-            logger.error(f"Failed to connect to PostgreSQL: {e}")
-            raise ValueError(f"Failed to connect to PostgreSQL: {e}")
-
         self.engine = engine
         self.schema = DB_SCHEMA
 
@@ -134,11 +112,6 @@ class OMOPMatcher:
             self.logger.error(f"Error in calculate_best_matches: {e}")
             raise ValueError(f"Error in calculate_best_OMOP_matches: {e}")
 
-    def _get_concept_ids_above_threshold(): 
-        pass 
-
-    def calculate_similarity_score(): 
-        pass 
 
     def fetch_OMOP_concepts(
         self,
@@ -190,11 +163,11 @@ class OMOPMatcher:
         query = text_search_query(
             preprocess_search_term(search_term), vocabulary_id, concept_synonym
         )
-        Session = sessionmaker(self.engine)
-        session = Session()
-        results = session.execute(query).fetchall()
-        results = pd.DataFrame(results)
-        session.close() 
+        
+        with get_session() as session:
+           results = session.execute(query).fetchall()
+           results = pd.DataFrame(results) 
+        
         if not results.empty:
             # Define a function to calculate similarity score using the provided logic
             def calculate_similarity(row):
