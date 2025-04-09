@@ -206,27 +206,12 @@ class OMOPMatcher:
                 target_cols=["concept_name_similarity_score", "concept_synonym_name_similarity_score"]
             )
 
-            concept_ids_above_threshold = set(
-                results.loc[
-                    (results["concept_name_similarity_score"] > search_threshold)
-                    | (
-                        results["concept_synonym_name_similarity_score"]
-                        > search_threshold
-                    ),
-                    "concept_id",
-                ]
-            )
-
-            # Step 2: Filter the original DataFrame to include all rows with these concept_ids
-            results = results[results["concept_id"].isin(concept_ids_above_threshold)]
-
+            # Filter the original DataFrame to include all rows with these concept_ids
             # Sort the filtered results by the highest score (descending order)
-            results = results.sort_values(
-                by=[
-                    "concept_name_similarity_score",
-                    "concept_synonym_name_similarity_score",
-                ],
-                ascending=False,
+            results = self._filter_and_sort_by_concept_ids_above_similarity_score_threshold(
+                results, 
+                search_threshold, 
+                score_cols = ["concept_name_similarity_score", "concept_synonym_name_similarity_score"]  
             )
 
             # Group by 'concept_id' and aggregate the relevant columns
@@ -297,18 +282,23 @@ class OMOPMatcher:
             ) 
         return results 
     
-    def _get_concept_ids_over_similarity_score_threshold(
+    def _filter_and_sort_by_concept_ids_above_similarity_score_threshold(
+        self, 
         results: pd.DataFrame,
         threshold: float,
         score_cols: List[str],
         id_col: str = "concept_id" 
     ):
-        return set(results.loc[(results[score_cols] > threshold).any(axis=1), id_col])
+        concept_ids_above_threshold = set(results.loc[(results[score_cols] > threshold).any(axis=1), id_col])
+        results = results[results[id_col].isin(concept_ids_above_threshold)]
+        results = results.sort_values(
+            by=score_cols,
+            ascending=False,
+        )
+        return results 
 
-    def _filter_and_sort_results_by_score(self): 
-        pass 
 
-    def _format_output(self): 
+    def _format_concept_results(self): 
         pass 
 
     def fetch_concept_ancestor(
