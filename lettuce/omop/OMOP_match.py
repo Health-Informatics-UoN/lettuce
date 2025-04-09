@@ -214,60 +214,13 @@ class OMOPMatcher:
                 score_cols = ["concept_name_similarity_score", "concept_synonym_name_similarity_score"]  
             )
 
-            # Group by 'concept_id' and aggregate the relevant columns
-            grouped_results = (
-                results.groupby("concept_id")
-                .agg(
-                    {
-                        "concept_name": "first",
-                        "vocabulary_id": "first",
-                        "concept_code": "first",
-                        "concept_name_similarity_score": "first",
-                        "concept_synonym_name": list,
-                        "concept_synonym_name_similarity_score": list,
-                    }
-                )
-                .reset_index()
+            return self._format_concept_results(
+                results, 
+                max_separation_descendant, 
+                max_separation_ancestor, 
+                concept_ancestor, 
+                concept_relationship
             )
-
-            # Define the final output format
-            return [
-                {
-                    "concept_name": row["concept_name"],
-                    "concept_id": row["concept_id"],
-                    "vocabulary_id": row["vocabulary_id"],
-                    "concept_code": row["concept_code"],
-                    "concept_name_similarity_score": row[
-                        "concept_name_similarity_score"
-                    ],
-                    "CONCEPT_SYNONYM": [
-                        {
-                            "concept_synonym_name": syn_name,
-                            "concept_synonym_name_similarity_score": syn_score,
-                        }
-                        for syn_name, syn_score in zip(
-                            row["concept_synonym_name"],
-                            row["concept_synonym_name_similarity_score"],
-                        )
-                        if syn_name is not None
-                    ],
-                    "CONCEPT_ANCESTOR": (
-                        self.fetch_concept_ancestor(
-                            row["concept_id"],
-                            max_separation_descendant,
-                            max_separation_ancestor,
-                        )
-                        if concept_ancestor
-                        else []
-                    ),
-                    "CONCEPT_RELATIONSHIP": (
-                        self.fetch_concept_relationship(row["concept_id"])
-                        if concept_relationship
-                        else []
-                    ),
-                }
-                for _, row in grouped_results.iterrows()
-            ]
     
     def _apply_concept_similarity_score_to_columns(
             self, 
@@ -298,8 +251,68 @@ class OMOPMatcher:
         return results 
 
 
-    def _format_concept_results(self): 
-        pass 
+    def _format_concept_results(
+        self, 
+        results: pd.DataFrame, 
+        max_separation_descendant: int,
+        max_separation_ancestor: int,
+        concept_ancestor: bool = False,
+        concept_relationship: bool = False
+    ): 
+        grouped_results = (
+            results.groupby("concept_id")
+            .agg(
+                {
+                    "concept_name": "first",
+                    "vocabulary_id": "first",
+                    "concept_code": "first",
+                    "concept_name_similarity_score": "first",
+                    "concept_synonym_name": list,
+                    "concept_synonym_name_similarity_score": list,
+                }
+            )
+            .reset_index()
+        )
+
+        formatted_output = [
+            {
+                "concept_name": row["concept_name"],
+                "concept_id": row["concept_id"],
+                "vocabulary_id": row["vocabulary_id"],
+                "concept_code": row["concept_code"],
+                "concept_name_similarity_score": row[
+                    "concept_name_similarity_score"
+                ],
+                "CONCEPT_SYNONYM": [
+                    {
+                        "concept_synonym_name": syn_name,
+                        "concept_synonym_name_similarity_score": syn_score,
+                    }
+                    for syn_name, syn_score in zip(
+                        row["concept_synonym_name"],
+                        row["concept_synonym_name_similarity_score"],
+                    )
+                    if syn_name is not None
+                ],
+                "CONCEPT_ANCESTOR": (
+                    self.fetch_concept_ancestor(
+                        row["concept_id"],
+                        max_separation_descendant,
+                        max_separation_ancestor,
+                    )
+                    if concept_ancestor
+                    else []
+                ),
+                "CONCEPT_RELATIONSHIP": (
+                    self.fetch_concept_relationship(row["concept_id"])
+                    if concept_relationship
+                    else []
+                ),
+            }
+            for _, row in grouped_results.iterrows()
+        ]
+        return formatted_output 
+
 
     def fetch_concept_ancestor(
         self,
