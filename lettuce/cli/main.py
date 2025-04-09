@@ -74,11 +74,11 @@ def main():
 
     db_queries = [query.get_query() for query in results]
 
-    db_results = OMOPMatcher(logger).run(
-        search_terms=db_queries,
+    db_results = OMOPMatcher(
+        logger, 
         vocabulary_id=args.vocabulary_id,
         search_threshold=args.search_threshold
-    )
+    ).run(search_terms=db_queries)
 
     for query, result in zip(results, db_results):
         query.add_matches(result, args.search_threshold)

@@ -1,13 +1,8 @@
 import re
-from os import environ
-from urllib.parse import quote_plus
 from typing import List
 
 import pandas as pd
-from dotenv import load_dotenv
 from rapidfuzz import fuzz
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from omop.omop_queries import text_search_query
 from omop.db_manager import get_session, DB_SCHEMA, engine 
 
@@ -18,12 +13,55 @@ from omop.preprocess import preprocess_search_term
 class OMOPMatcher:
     """
     This class retrieves matches from an OMOP database and returns the best
+
+    Parameters
+    ----------
+    logger: Logger
+        Logging object. 
+
+    vocabulary_id: list[str]
+        A list of vocabularies to use for search
+
+    concept_ancestor: bool
+        Whether to return ancestor concepts in the result
+
+    concept_relationship: bool
+        Whether to return related concepts in the result
+        
+    concept_synonym: bool
+        Whether to explore concept synonyms in the result
+
+    search_threshold: int
+        The fuzzy match threshold for results
+
+    max_separation_descendant: int
+        The maximum separation between a base concept and its descendants
+        
+    max_separation_ancestor: int
+        The maximum separation between a base concept and its ancestors
     """
 
-    def __init__(self, logger: Logger):
+    def __init__(
+        self, 
+        logger: Logger, 
+        vocabulary_id: list[str],
+        search_threshold: int = 80,
+        concept_ancestor: bool = False,
+        concept_relationship: bool = False,
+        concept_synonym: bool = False,
+        max_separation_descendant: int = 1,
+        max_separation_ancestor: int = 1
+    ):
         self.logger = logger
         self.engine = engine
         self.schema = DB_SCHEMA
+        self.vocabulary_id = vocabulary_id 
+        self.search_threshold = search_threshold 
+        self.concept_ancestor = concept_ancestor 
+        self.concept_relationship = concept_relationship 
+        self.concept_synonym = concept_synonym
+        self.max_separation_descendant = max_separation_descendant
+        self.max_separation_ancestor = max_separation_ancestor 
 
     @staticmethod 
     def calculate_similarity_score(concept_name, search_term):
@@ -53,17 +91,7 @@ class OMOPMatcher:
         score = fuzz.ratio(search_term.lower(), cleaned_concept_name.lower())
         return score
             
-    def fetch_OMOP_concepts(
-        self,
-        search_term: str,
-        vocabulary_id: list | None,
-        concept_ancestor: bool,
-        concept_relationship: bool,
-        concept_synonym: bool,
-        search_threshold: int,
-        max_separation_descendant: int,
-        max_separation_ancestor: int,
-    ) -> list | None:
+    def fetch_omop_concepts(self, search_term: str) -> list | None:
         """
         Fetch OMOP concepts for a given search term
 
@@ -77,31 +105,15 @@ class OMOPMatcher:
         Parameters
         ----------
         search_term: str
-            A search term for a concept inserted into a query to the OMOP database
-        vocabulary_id: list[str]
-            A list of OMOP vocabularies to filter the findings by
-        concept_ancestor: str
-            If 'y' then appends the results of a call to fetch_concept_ancestor to the output
-        concept_relationship: str
-            If 'y' then appends the result of a call to fetch_concept_relationship to the output
-        concept_synonym: str
-            If 'y', checks the concept_synonym table for the search term
-        search_threshold: int
-            The threshold on fuzzy string matching for returned results
-        max_separation_descendant: int
-            The maximum separation to search for concept descendants
-
-        max_separation_ancestor: int
-            The maximum separation to search for concept ancestors
-
+            A search term for a concept inserted into a query to the OMOP database.
 
         Returns
         -------
         list | None
-            A list of search results from the OMOP database if the query comes back with results, otherwise returns None
+            A list of search results from the OMOP database if the query comes back with results, otherwise returns None. 
         """
         query = text_search_query(
-            preprocess_search_term(search_term), vocabulary_id, concept_synonym
+            preprocess_search_term(search_term), self.vocabulary_id, self.concept_synonym
         )
         
         with get_session() as session:
@@ -123,17 +135,10 @@ class OMOPMatcher:
         # Sort the filtered results by the highest score (descending order)
         results = self._filter_and_sort_by_concept_ids_above_similarity_score_threshold(
             results, 
-            search_threshold, 
             score_cols = ["concept_name_similarity_score", "concept_synonym_name_similarity_score"]  
         )
 
-        return self._format_concept_results(
-            results, 
-            max_separation_descendant, 
-            max_separation_ancestor, 
-            concept_ancestor, 
-            concept_relationship
-        )
+        return self._format_concept_results(results)
     
     def _apply_concept_similarity_score_to_columns(
             self, 
@@ -151,11 +156,12 @@ class OMOPMatcher:
     def _filter_and_sort_by_concept_ids_above_similarity_score_threshold(
         self, 
         results: pd.DataFrame,
-        threshold: float,
         score_cols: List[str],
         id_col: str = "concept_id" 
     ):
-        concept_ids_above_threshold = set(results.loc[(results[score_cols] > threshold).any(axis=1), id_col])
+        concept_ids_above_threshold = set(
+            results.loc[(results[score_cols] > self.search_threshold).any(axis=1), id_col]
+        )
         results = results[results[id_col].isin(concept_ids_above_threshold)]
         results = results.sort_values(
             by=score_cols,
@@ -163,14 +169,7 @@ class OMOPMatcher:
         )
         return results 
 
-    def _format_concept_results(
-        self, 
-        results: pd.DataFrame, 
-        max_separation_descendant: int,
-        max_separation_ancestor: int,
-        concept_ancestor: bool = False,
-        concept_relationship: bool = False
-    ): 
+    def _format_concept_results(self, results: pd.DataFrame): 
         grouped_results = (
             results.groupby("concept_id")
             .agg(
@@ -194,19 +193,13 @@ class OMOPMatcher:
             result["CONCEPT_RELATIONSHIP"] = []  
             formatted_results.append(result)
 
-        if concept_ancestor:
+        if self.concept_ancestor:
             for i, (_, row) in enumerate(grouped_results.iterrows()):
-                formatted_results[i]["CONCEPT_ANCESTOR"] = self.fetch_concept_ancestor(
-                    row["concept_id"],
-                    max_separation_descendant,
-                    max_separation_ancestor
-                )
+                formatted_results[i]["CONCEPT_ANCESTOR"] = self.fetch_concept_ancestor(row["concept_id"])
         
-        if concept_relationship:
+        if self.concept_relationship:
             for i, (_, row) in enumerate(grouped_results.iterrows()):
-                formatted_results[i]["CONCEPT_RELATIONSHIP"] = self.fetch_concept_relationship(
-                    row["concept_id"]
-            )
+                formatted_results[i]["CONCEPT_RELATIONSHIP"] = self.fetch_concept_relationship(row["concept_id"])
                 
         return formatted_results
     
@@ -234,12 +227,7 @@ class OMOPMatcher:
             if syn_name is not None
         ]
 
-    def fetch_concept_ancestor(
-        self,
-        concept_id: str,
-        max_separation_descendant: int,
-        max_separation_ancestor: int,
-    ):
+    def fetch_concept_ancestor(self, concept_id: str):
         """
         Fetch concept ancestor for a given concept_id
 
@@ -248,11 +236,7 @@ class OMOPMatcher:
         Parameters
         ----------
         concept_id: str
-            The concept_id used to find ancestors
-        max_separation_descendant: int
-            The maximum level of separation allowed between descendant concepts and the provided concept
-        max_separation_ancestor: int
-            The maximum level of separation allowed between ancestor concepts and the provided concept
+            The concept_id used to find ancestors.
 
         Returns
         -------
@@ -309,10 +293,10 @@ class OMOPMatcher:
         params = (
             concept_id,
             min_separation_ancestor,
-            max_separation_ancestor,
+            self.max_separation_ancestor,
             concept_id,
             min_separation_descendant,
-            max_separation_descendant,
+            self.max_separation_descendant,
         )
 
         results = (
@@ -393,40 +377,17 @@ class OMOPMatcher:
             for _, row in results.iterrows()
         ]
 
-    def run(
-        self, 
-        search_terms: List[str],
-        vocabulary_id: list[str],
-        search_threshold: int = 80,
-        concept_ancestor: bool = False,
-        concept_relationship: bool = False,
-        concept_synonym: bool = False,
-        max_separation_descendant: int = 1,
-        max_separation_ancestor: int = 1,
-    ):
+    def run(self, search_terms: List[str]):
         """
-        Main method for the OMOPMatcherRunner class. Runs queries against the OMOP database for the user defined
+        Main method for the OMOPMatcherRunner class. 
+        
+        Runs queries against the OMOP database for the user defined
         search terms and then performs fuzzy pattern matching on each one before selecting the best 
         OMOP concept mathces for each search term. Calls fetch_OMOP_concepts on every item in search_terms.
 
-
         Parameters
         ----------
-        vocabulary_id: list[str]
-            A list of vocabularies to use for search
-        concept_ancestor: bool
-            Whether to return ancestor concepts in the result
-        concept_relationship: bool
-            Whether to return related concepts in the result
-        concept_synonym: bool
-            Whether to explore concept synonyms in the result
-        search_threshold: int
-            The fuzzy match threshold for results
-        max_separation_descendant: int
-            The maximum separation between a base concept and its descendants
-        max_separation_ancestor: int
-            The maximum separation between a base concept and its ancestors
-        search_term: str
+        search_terms: str
             The name of a drug to use in queries to the OMOP database
 
         Returns
@@ -443,16 +404,7 @@ class OMOPMatcher:
             overall_results = []
 
             for search_term in search_terms:
-                OMOP_concepts = self.fetch_OMOP_concepts(
-                    search_term,
-                    vocabulary_id,
-                    concept_ancestor,
-                    concept_relationship,
-                    concept_synonym,
-                    search_threshold,
-                    max_separation_descendant,
-                    max_separation_ancestor
-                )
+                OMOP_concepts = self.fetch_omop_concepts(search_term)
 
                 overall_results.append(
                     {"search_term": search_term, "CONCEPT": OMOP_concepts}

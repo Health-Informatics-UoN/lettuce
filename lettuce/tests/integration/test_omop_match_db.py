@@ -16,16 +16,13 @@ from utils.logging_utils import logger
 
 @pytest.fixture
 def single_query_result():
-    return OMOPMatcher(logger).run(
-        search_terms=["Acetaminophen"], vocabulary_id=["RxNorm"]
-    )
+    return OMOPMatcher(logger, vocabulary_id=["RxNorm"]).run(search_terms=["Acetaminophen"])
 
 
 @pytest.fixture
 def three_query_result():
-    return OMOPMatcher(logger).run(
-        search_terms=["Acetaminophen", "Codeine", "Omeprazole"],
-        vocabulary_id=["RxNorm"],
+    return OMOPMatcher(logger, vocabulary_id=["RxNorm"]).run(
+        search_terms=["Acetaminophen", "Codeine", "Omeprazole"]
     )
 
 
