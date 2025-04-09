@@ -21,96 +21,9 @@ class OMOPMatcher:
     """
 
     def __init__(self, logger: Logger):
-        # Connect to database
         self.logger = logger
         self.engine = engine
         self.schema = DB_SCHEMA
-
-    def close(self):
-        """Close the engine connection."""
-        self.engine.dispose()
-        self.logger.info("PostgreSQL connection closed.")
-
-    def calculate_best_matches(
-        self,
-        search_terms: List[str],
-        vocabulary_id: list | None = None,
-        concept_ancestor: bool = True,
-        concept_relationship: bool = True,
-        concept_synonym: bool = True,
-        search_threshold: int = 0,
-        max_separation_descendant: int = 1,
-        max_separation_ancestor: int = 1,
-    ) -> list:
-        # As all this does is call fetch_OMOP_concepts, maybe everything but search_terms should be put into kwargs
-
-        """
-        Calculate best OMOP matches for given search terms
-
-        Calls fetch_OMOP_concepts on every item in search_terms.
-
-        Parameters
-        ----------
-        search_terms: List[str]
-            A list of queries to send to the OMOP database
-
-        vocabulary_id: str
-            An OMOP vocabulary_id to pass to the OMOP query to restrict the concepts received to a specific vocabulary
-
-        concept_ancestor: bool
-            If 'y', then calls fetch_concept_ancestor()
-
-        concept_relationship: bool
-            If 'y', then calls fetch_concept_relationship()
-
-        concept_synonym: bool
-            If 'y', then queries the synonym table of the OMOP database for matches to the search terms
-
-        search_threshold: int
-            The threshold on fuzzy string matching for returned results
-
-        max_separation_descendant: int
-            The maximum separation to search for concept descendants
-
-        max_separation_ancestor: int
-            The maximum separation to search for concept ancestors
-
-        Returns
-        -------
-        list
-            A list of results for the search terms run with the other parameters provided.
-        """
-        try:
-            if not search_terms:
-                self.logger.error("No valid search_term values provided")
-                raise ValueError("No valid search_term values provided")
-
-            self.logger.info(f"Calculating best OMOP matches for {search_terms}")
-            overall_results = []
-
-            for search_term in search_terms:
-                OMOP_concepts = self.fetch_OMOP_concepts(
-                    search_term,
-                    vocabulary_id,
-                    concept_ancestor,
-                    concept_relationship,
-                    concept_synonym,
-                    search_threshold,
-                    max_separation_descendant,
-                    max_separation_ancestor,
-                )
-
-                overall_results.append(
-                    {"search_term": search_term, "CONCEPT": OMOP_concepts}
-                )
-
-            self.logger.info(f"Best OMOP matches for {search_terms} calculated")
-            self.logger.info(f"OMOP Output: {overall_results}")
-            return overall_results
-
-        except Exception as e:
-            self.logger.error(f"Error in calculate_best_matches: {e}")
-            raise ValueError(f"Error in calculate_best_OMOP_matches: {e}")
 
     @staticmethod 
     def calculate_similarity_score(concept_name, search_term):
@@ -482,7 +395,7 @@ class OMOPMatcher:
 
     def run(
         self, 
-        search_term: List[str],
+        search_terms: List[str],
         vocabulary_id: list[str],
         search_threshold: int = 80,
         concept_ancestor: bool = False,
@@ -492,9 +405,10 @@ class OMOPMatcher:
         max_separation_ancestor: int = 1,
     ):
         """
-        Runs queries against the OMOP database
+        Main method for the OMOPMatcherRunner class. Runs queries against the OMOP database for the user defined
+        search terms and then performs fuzzy pattern matching on each one before selecting the best 
+        OMOP concept mathces for each search term. Calls fetch_OMOP_concepts on every item in search_terms.
 
-        Loads the query options from BaseOptions, then uses these to select which queries to run.
 
         Parameters
         ----------
@@ -514,22 +428,40 @@ class OMOPMatcher:
             The maximum separation between a base concept and its ancestors
         search_term: str
             The name of a drug to use in queries to the OMOP database
-        logger: Logger
-            A logger for logging runs of the tool
 
         Returns
         -------
         list
             A list of OMOP concepts relating to the search term and relevant information
         """
-        res = self.calculate_best_matches(
-            search_term,
-            vocabulary_id,
-            concept_ancestor,
-            concept_relationship,
-            concept_synonym,
-            search_threshold,
-            max_separation_descendant,
-            max_separation_ancestor,
-        )
-        return res
+        try:
+            if not search_terms:
+                self.logger.error("No valid search_term values provided")
+                raise ValueError("No valid search_term values provided")
+
+            self.logger.info(f"Calculating best OMOP matches for {search_terms}")
+            overall_results = []
+
+            for search_term in search_terms:
+                OMOP_concepts = self.fetch_OMOP_concepts(
+                    search_term,
+                    vocabulary_id,
+                    concept_ancestor,
+                    concept_relationship,
+                    concept_synonym,
+                    search_threshold,
+                    max_separation_descendant,
+                    max_separation_ancestor
+                )
+
+                overall_results.append(
+                    {"search_term": search_term, "CONCEPT": OMOP_concepts}
+                )
+
+            self.logger.info(f"Best OMOP matches for {search_terms} calculated")
+            self.logger.info(f"OMOP Output: {overall_results}")
+            return overall_results
+
+        except Exception as e:
+            self.logger.error(f"Error in calculate_best_matches: {e}")
+            raise ValueError(f"Error in calculate_best_OMOP_matches: {e}")

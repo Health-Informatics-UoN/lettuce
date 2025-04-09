@@ -152,7 +152,7 @@ async def run_db(request: PipelineRequest) -> List[Dict[str, Any]]:
         search_threshold=pipeline_opts.search_threshold,
         max_separation_descendant=pipeline_opts.max_separation_descendants,
         max_separation_ancestor=pipeline_opts.max_separation_ancestor,
-        search_term=search_terms
+        search_terms=search_terms
     )
     return [{"event": "omop_output", "content": result} for result in omop_output]
 

@@ -75,7 +75,7 @@ def main():
     db_queries = [query.get_query() for query in results]
 
     db_results = OMOPMatcher(logger).run(
-        search_term=db_queries,
+        search_terms=db_queries,
         vocabulary_id=args.vocabulary_id,
         search_threshold=args.search_threshold
     )
