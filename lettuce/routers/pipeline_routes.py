@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 
 import assistant
-from omop import OMOP_match
+from omop.OMOP_match import OMOPMatcher
 from components.embeddings import Embeddings
 from components.pipeline import LLMPipeline
 from options.pipeline_options import PipelineOptions
@@ -92,7 +92,7 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
         output = {"event": "llm_output", "data": llm_output}
         yield json.dumps(output)
 
-    omop_output = OMOP_match.run(
+    omop_output = OMOPMatcher(logger).run(
         vocabulary_id=pipeline_opts.vocabulary_id,
         concept_ancestor=pipeline_opts.concept_ancestor,
         concept_relationship=pipeline_opts.concept_relationship,
@@ -100,8 +100,7 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
         search_threshold=pipeline_opts.search_threshold,
         max_separation_descendant=pipeline_opts.max_separation_descendants,
         max_separation_ancestor=pipeline_opts.max_separation_ancestor,
-        search_term=[llm_output["reply"] for llm_output in llm_outputs],
-        logger=logger,
+        search_term=[llm_output["reply"] for llm_output in llm_outputs]
     )
 
     output = [{"event": "omop_output", "data": result} for result in omop_output]
@@ -145,7 +144,7 @@ async def run_db(request: PipelineRequest) -> List[Dict[str, Any]]:
     search_terms = request.names
     pipeline_opts = request.pipeline_options
 
-    omop_output = OMOP_match.run(
+    omop_output = OMOPMatcher(logger).run(
         vocabulary_id=pipeline_opts.vocabulary_id,
         concept_ancestor=pipeline_opts.concept_ancestor,
         concept_relationship=pipeline_opts.concept_relationship,
@@ -153,8 +152,7 @@ async def run_db(request: PipelineRequest) -> List[Dict[str, Any]]:
         search_threshold=pipeline_opts.search_threshold,
         max_separation_descendant=pipeline_opts.max_separation_descendants,
         max_separation_ancestor=pipeline_opts.max_separation_ancestor,
-        search_term=search_terms,
-        logger=logger,
+        search_term=search_terms
     )
     return [{"event": "omop_output", "content": result} for result in omop_output]
 

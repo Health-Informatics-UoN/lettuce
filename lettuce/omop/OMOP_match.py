@@ -196,31 +196,31 @@ class OMOPMatcher:
            results = pd.DataFrame(results) 
         
         if results.empty:  
-            return
-        else:  
-            # Apply the score function to 'concept_name' and 'concept_synonym_name' columns
-            self._apply_concept_similarity_score_to_columns(
-                results, 
-                search_term, 
-                source_cols=["concept_name", "concept_synonym_name"],
-                target_cols=["concept_name_similarity_score", "concept_synonym_name_similarity_score"]
-            )
+            return None 
+ 
+        # Apply the score function to 'concept_name' and 'concept_synonym_name' columns
+        results = self._apply_concept_similarity_score_to_columns(
+            results, 
+            search_term, 
+            source_cols=["concept_name", "concept_synonym_name"],
+            target_cols=["concept_name_similarity_score", "concept_synonym_name_similarity_score"]
+        )
 
-            # Filter the original DataFrame to include all rows with these concept_ids
-            # Sort the filtered results by the highest score (descending order)
-            results = self._filter_and_sort_by_concept_ids_above_similarity_score_threshold(
-                results, 
-                search_threshold, 
-                score_cols = ["concept_name_similarity_score", "concept_synonym_name_similarity_score"]  
-            )
+        # Filter the original DataFrame to include all rows with these concept_ids
+        # Sort the filtered results by the highest score (descending order)
+        results = self._filter_and_sort_by_concept_ids_above_similarity_score_threshold(
+            results, 
+            search_threshold, 
+            score_cols = ["concept_name_similarity_score", "concept_synonym_name_similarity_score"]  
+        )
 
-            return self._format_concept_results(
-                results, 
-                max_separation_descendant, 
-                max_separation_ancestor, 
-                concept_ancestor, 
-                concept_relationship
-            )
+        return self._format_concept_results(
+            results, 
+            max_separation_descendant, 
+            max_separation_ancestor, 
+            concept_ancestor, 
+            concept_relationship
+        )
     
     def _apply_concept_similarity_score_to_columns(
             self, 
@@ -250,7 +250,6 @@ class OMOPMatcher:
         )
         return results 
 
-
     def _format_concept_results(
         self, 
         results: pd.DataFrame, 
@@ -274,45 +273,53 @@ class OMOPMatcher:
             .reset_index()
         )
 
-        formatted_output = [
-            {
-                "concept_name": row["concept_name"],
-                "concept_id": row["concept_id"],
-                "vocabulary_id": row["vocabulary_id"],
-                "concept_code": row["concept_code"],
-                "concept_name_similarity_score": row[
-                    "concept_name_similarity_score"
-                ],
-                "CONCEPT_SYNONYM": [
-                    {
-                        "concept_synonym_name": syn_name,
-                        "concept_synonym_name_similarity_score": syn_score,
-                    }
-                    for syn_name, syn_score in zip(
-                        row["concept_synonym_name"],
-                        row["concept_synonym_name_similarity_score"],
-                    )
-                    if syn_name is not None
-                ],
-                "CONCEPT_ANCESTOR": (
-                    self.fetch_concept_ancestor(
-                        row["concept_id"],
-                        max_separation_descendant,
-                        max_separation_ancestor,
-                    )
-                    if concept_ancestor
-                    else []
-                ),
-                "CONCEPT_RELATIONSHIP": (
-                    self.fetch_concept_relationship(row["concept_id"])
-                    if concept_relationship
-                    else []
-                ),
-            }
-            for _, row in grouped_results.iterrows()
-        ]
-        return formatted_output 
+        formatted_results = []
+        for _, row in grouped_results.iterrows():
+            result = self._format_base_concept(row)
+            result["CONCEPT_SYNONYM"] = self._format_concept_synonyms(row)
+            result["CONCEPT_ANCESTOR"] = []  
+            result["CONCEPT_RELATIONSHIP"] = []  
+            formatted_results.append(result)
 
+        if concept_ancestor:
+            for i, (_, row) in enumerate(grouped_results.iterrows()):
+                formatted_results[i]["CONCEPT_ANCESTOR"] = self.fetch_concept_ancestor(
+                    row["concept_id"],
+                    max_separation_descendant,
+                    max_separation_ancestor
+                )
+        
+        if concept_relationship:
+            for i, (_, row) in enumerate(grouped_results.iterrows()):
+                formatted_results[i]["CONCEPT_RELATIONSHIP"] = self.fetch_concept_relationship(
+                    row["concept_id"]
+            )
+                
+        return formatted_results
+    
+    def _format_base_concept(self, row):
+        """Format the base concept information from a row."""
+        return {
+            "concept_name": row["concept_name"],
+            "concept_id": row["concept_id"],
+            "vocabulary_id": row["vocabulary_id"],
+            "concept_code": row["concept_code"],
+            "concept_name_similarity_score": row["concept_name_similarity_score"]
+        }
+
+    def _format_concept_synonyms(self, row):
+        """Format the concept synonyms from a row."""
+        return [
+            {
+                "concept_synonym_name": syn_name,
+                "concept_synonym_name_similarity_score": syn_score,
+            }
+            for syn_name, syn_score in zip(
+                row["concept_synonym_name"],
+                row["concept_synonym_name_similarity_score"],
+            )
+            if syn_name is not None
+        ]
 
     def fetch_concept_ancestor(
         self,
@@ -473,59 +480,56 @@ class OMOPMatcher:
             for _, row in results.iterrows()
         ]
 
+    def run(
+        self, 
+        search_term: List[str],
+        vocabulary_id: list[str],
+        search_threshold: int = 80,
+        concept_ancestor: bool = False,
+        concept_relationship: bool = False,
+        concept_synonym: bool = False,
+        max_separation_descendant: int = 1,
+        max_separation_ancestor: int = 1,
+    ):
+        """
+        Runs queries against the OMOP database
 
-def run(
-    search_term: List[str],
-    logger: Logger,
-    vocabulary_id: list[str],
-    search_threshold: int = 80,
-    concept_ancestor: bool = False,
-    concept_relationship: bool = False,
-    concept_synonym: bool = False,
-    max_separation_descendant: int = 1,
-    max_separation_ancestor: int = 1,
-):
-    """
-    Runs queries against the OMOP database
+        Loads the query options from BaseOptions, then uses these to select which queries to run.
 
-    Loads the query options from BaseOptions, then uses these to select which queries to run.
+        Parameters
+        ----------
+        vocabulary_id: list[str]
+            A list of vocabularies to use for search
+        concept_ancestor: bool
+            Whether to return ancestor concepts in the result
+        concept_relationship: bool
+            Whether to return related concepts in the result
+        concept_synonym: bool
+            Whether to explore concept synonyms in the result
+        search_threshold: int
+            The fuzzy match threshold for results
+        max_separation_descendant: int
+            The maximum separation between a base concept and its descendants
+        max_separation_ancestor: int
+            The maximum separation between a base concept and its ancestors
+        search_term: str
+            The name of a drug to use in queries to the OMOP database
+        logger: Logger
+            A logger for logging runs of the tool
 
-    Parameters
-    ----------
-    vocabulary_id: list[str]
-        A list of vocabularies to use for search
-    concept_ancestor: bool
-        Whether to return ancestor concepts in the result
-    concept_relationship: bool
-        Whether to return related concepts in the result
-    concept_synonym: bool
-        Whether to explore concept synonyms in the result
-    search_threshold: int
-        The fuzzy match threshold for results
-    max_separation_descendant: int
-        The maximum separation between a base concept and its descendants
-    max_separation_ancestor: int
-        The maximum separation between a base concept and its ancestors
-    search_term: str
-        The name of a drug to use in queries to the OMOP database
-    logger: Logger
-        A logger for logging runs of the tool
-
-    Returns
-    -------
-    list
-        A list of OMOP concepts relating to the search term and relevant information
-    """
-    omop_matcher = OMOPMatcher(logger)
-    res = omop_matcher.calculate_best_matches(
-        search_term,
-        vocabulary_id,
-        concept_ancestor,
-        concept_relationship,
-        concept_synonym,
-        search_threshold,
-        max_separation_descendant,
-        max_separation_ancestor,
-    )
-    omop_matcher.close()
-    return res
+        Returns
+        -------
+        list
+            A list of OMOP concepts relating to the search term and relevant information
+        """
+        res = self.calculate_best_matches(
+            search_term,
+            vocabulary_id,
+            concept_ancestor,
+            concept_relationship,
+            concept_synonym,
+            search_threshold,
+            max_separation_descendant,
+            max_separation_ancestor,
+        )
+        return res

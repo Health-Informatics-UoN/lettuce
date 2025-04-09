@@ -10,22 +10,21 @@ from haystack.dataclasses import Document
 
 pytestmark = pytest.mark.skipif(os.getenv('SKIP_DATABASE_TESTS') == 'true', reason="Skipping database tests")
 
-from omop import OMOP_match
+from omop.OMOP_match import OMOPMatcher 
 from utils.logging_utils import logger
 
 
 @pytest.fixture
 def single_query_result():
-    return OMOP_match.run(
-        search_term=["Acetaminophen"], logger=logger, vocabulary_id=["RxNorm"]
+    return OMOPMatcher(logger).run(
+        search_term=["Acetaminophen"], vocabulary_id=["RxNorm"]
     )
 
 
 @pytest.fixture
 def three_query_result():
-    return OMOP_match.run(
+    return OMOPMatcher(logger).run(
         search_term=["Acetaminophen", "Codeine", "Omeprazole"],
-        logger=logger,
         vocabulary_id=["RxNorm"],
     )
 

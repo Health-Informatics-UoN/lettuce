@@ -5,7 +5,7 @@ from components.pipeline import LLMPipeline
 from components.result import LettuceResult
 from options.base_options import BaseOptions
 from options.pipeline_options import LLMModel
-from omop.OMOP_match import run 
+from omop.OMOP_match import OMOPMatcher
 from utils.logging_utils import logger
 
 
@@ -74,11 +74,10 @@ def main():
 
     db_queries = [query.get_query() for query in results]
 
-    db_results = run(
+    db_results = OMOPMatcher(logger).run(
         search_term=db_queries,
-        logger=logger,
         vocabulary_id=args.vocabulary_id,
-        search_threshold=args.search_threshold,
+        search_threshold=args.search_threshold
     )
 
     for query, result in zip(results, db_results):
