@@ -196,17 +196,15 @@ class OMOPMatcher:
            results = pd.DataFrame(results) 
         
         if results.empty:  
-            return 
-        
-        if not results.empty:
+            return
+        else:  
             # Apply the score function to 'concept_name' and 'concept_synonym_name' columns
-            results["concept_name_similarity_score"] = results["concept_name"].apply(
-                lambda row: OMOPMatcher.calculate_similarity_score(row, search_term)
+            self._apply_concept_similarity_score_to_columns(
+                results, 
+                search_term, 
+                source_cols=["concept_name", "concept_synonym_name"],
+                target_cols=["concept_name_similarity_score", "concept_synonym_name_similarity_score"]
             )
-
-            results["concept_synonym_name_similarity_score"] = results[
-                "concept_synonym_name"
-            ].apply(lambda row: OMOPMatcher.calculate_similarity_score(row, search_term))
 
             concept_ids_above_threshold = set(
                 results.loc[
@@ -285,6 +283,33 @@ class OMOPMatcher:
                 }
                 for _, row in grouped_results.iterrows()
             ]
+    
+    def _apply_concept_similarity_score_to_columns(
+            self, 
+            results:  pd.DataFrame, 
+            search_term: str, 
+            source_cols: List[str], 
+            target_cols: List[str]
+    ): 
+        for col_src, col_target in zip(source_cols, target_cols): 
+            results[col_target] = results[col_src].apply(
+                lambda row: OMOPMatcher.calculate_similarity_score(row, search_term)
+            ) 
+        return results 
+    
+    def _get_concept_ids_over_similarity_score_threshold(
+        results: pd.DataFrame,
+        threshold: float,
+        score_cols: List[str],
+        id_col: str = "concept_id" 
+    ):
+        return set(results.loc[(results[score_cols] > threshold).any(axis=1), id_col])
+
+    def _filter_and_sort_results_by_score(self): 
+        pass 
+
+    def _format_output(self): 
+        pass 
 
     def fetch_concept_ancestor(
         self,
