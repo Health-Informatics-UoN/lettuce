@@ -3,7 +3,7 @@ from typing import List
 
 import pandas as pd
 from rapidfuzz import fuzz
-from omop.omop_queries import text_search_query, query_ancestors_and_descendants_by_id
+from omop.omop_queries import text_search_query, query_ancestors_and_descendants_by_id, query_related_by_id
 from omop.db_manager import get_session, DB_SCHEMA, engine 
 
 from logging import Logger
@@ -199,7 +199,7 @@ class OMOPMatcher:
         
         if self.concept_relationship:
             for i, (_, row) in enumerate(grouped_results.iterrows()):
-                formatted_results[i]["CONCEPT_RELATIONSHIP"] = self.fetch_concept_relationship(row["concept_id"])
+                formatted_results[i]["CONCEPT_RELATIONSHIP"] = self.fetch_concept_relationships(row["concept_id"])
                 
         return formatted_results
     
@@ -229,14 +229,15 @@ class OMOPMatcher:
 
     def fetch_concept_ancestors_and_descendants(self, concept_id: str):
         """
-        Fetch concept ancestor for a given concept_id
+        Fetch concept ancestors and descendants for a given concept_id
 
-        Queries the OMOP database's ancestor table to find ancestors for the concept_id provided within the constraints of the degrees of separation provided.
+        Queries the OMOP database's ancestor table to find ancestors and descendants for the concept_id provided within the constraints 
+        of the degrees of separation provided.
 
         Parameters
         ----------
         concept_id: str
-            The concept_id used to find ancestors.
+            The concept_id used to find ancestors and descendants.
 
         Returns
         -------
@@ -278,7 +279,7 @@ class OMOPMatcher:
             for _, row in results.iterrows()
         ]
 
-    def fetch_concept_relationship(self, concept_id):
+    def fetch_concept_relationships(self, concept_id):
         """
         Fetch concept relationship for a given concept_id
 
@@ -295,28 +296,14 @@ class OMOPMatcher:
         list
             A list of related concepts from the OMOP database
         """
-        query = f"""
-            SELECT
-                cr.concept_id_2 AS concept_id,
-                cr.concept_id_1,
-                cr.relationship_id,
-                cr.concept_id_2,
-                c.concept_name,
-                c.vocabulary_id,
-                c.concept_code
-            FROM
-                {self.schema}.concept_relationship cr
-            JOIN
-                {self.schema}.concept c ON cr.concept_id_2 = c.concept_id
-            WHERE
-                cr.concept_id_1 = %s AND
-                cr.valid_end_date > NOW()
-        """
-        results = (
-            pd.read_sql(query, con=self.engine, params=(concept_id,))
-            .drop_duplicates()
-            .query("concept_id != @concept_id")
-        )
+        with get_session() as session: 
+            query = query_related_by_id(concept_id)
+            results = session.execute(query).fetchall()
+            columns = [
+                'concept_id', 'concept_id_1', 'relationship_id', 'concept_id_2',
+                'concept_name', 'vocabulary_id', 'concept_code'
+            ]
+            results = pd.DataFrame(results, columns=columns)
 
         return [
             {
