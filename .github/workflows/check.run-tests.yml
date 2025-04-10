@@ -89,15 +89,21 @@ jobs:
           test ${PIPESTATUS[0]} -eq 0
         working-directory: lettuce/lettuce 
         env:
-          DATABASE_URL: "postgresql://postgres:password@omop-ts-omop-ts-1:5432/omop" 
+          DB_HOST: "omop-ts-omop-ts-1"
+          DB_USER: "postgres"
+          DB_PASSWORD: "password"
+          DB_NAME: "omop"
+          DB_PORT: "5432"
+          DB_SCHEMA: "cdm" 
+          DB_VECTABLE: "embeddings"
+          DB_VECSIZE: "384"
 
-      
       - name: Cleanup Docker services
         if: always()
         run: |
           # Cleanup all services to prevent resource issues
-          docker compose -f lettuce/lettuce/docker-compose.yml down
-          docker compose -f omop-ts/docker-compose.yml down
+          docker compose -f lettuce/lettuce/compose.yaml down
+          docker compose -f omop-ts/compose-omop-ts.yml down
           docker network rm omop-ts_default || true
 
       - name: Pytest coverage comment
