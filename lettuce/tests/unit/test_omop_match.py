@@ -7,23 +7,33 @@ import pandas as pd
 from haystack.dataclasses import Document
 from sqlalchemy.orm import Session
 
-from omop.OMOP_match import OMOPMatcher 
+from omop.omop_match import OMOPMatcher 
 
 
 @pytest.fixture 
 def mock_omop_matcher(mocker): 
-    matcher = OMOPMatcher(logger=Mock())
+    matcher = OMOPMatcher(
+        logger=Mock(),
+        vocabulary_id=["SNOMED"],
+        concept_ancestor=True,
+        concept_relationship=True,
+        concept_synonym=True,
+        search_threshold=50,
+        max_separation_descendant=2,
+        max_separation_ancestor=2
+    )
     # Patch internal methods
-    mocker.patch.object(matcher, "fetch_concept_ancestor", return_value=[{"mock": "ancestor"}])
-    mocker.patch.object(matcher, "fetch_concept_relationship", return_value=[{"mock": "relationship"}])
+    mocker.patch.object(matcher, "fetch_concept_ancestors_and_descendants", return_value=[{"mock": "ancestor"}])
+    mocker.patch.object(matcher, "fetch_concept_relationships", return_value=[{"mock": "relationship"}])
     return matcher
 
 
 @pytest.fixture
 def mock_session(mocker):
-    mock_session = MagicMock(spec=Session)
-    mock_session_factory = MagicMock(return_value=mock_session)
-    mocker.patch("omop.OMOP_match.sessionmaker", return_value=mock_session_factory)
+    mock_session = MagicMock()
+    mock_session.__enter__.return_value = mock_session  
+    mock_session.__exit__.return_value = None
+    mocker.patch("omop.omop_match.get_session", return_value=mock_session)
     return mock_session
 
 
@@ -79,17 +89,8 @@ def test_fetch_omop_concepts_basic_case(mock_omop_matcher, mock_session):
     mock_result = MagicMock()
     mock_result.fetchall.return_value = mock_data
     mock_session.execute.return_value = mock_result
- 
-    result = mock_omop_matcher.fetch_OMOP_concepts(
-        search_term="Hypertension",
-        vocabulary_id=["SNOMED"],
-        concept_ancestor=True,
-        concept_relationship=True,
-        concept_synonym=True,
-        search_threshold=50,
-        max_separation_descendant=2,
-        max_separation_ancestor=2,
-    )
+
+    result = mock_omop_matcher.fetch_omop_concepts(search_term="Hypertension")
 
     assert isinstance(result, list)
     assert len(result) > 0

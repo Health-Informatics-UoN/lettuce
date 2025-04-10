@@ -53,8 +53,6 @@ class OMOPMatcher:
         max_separation_ancestor: int = 1
     ):
         self.logger = logger
-        self.engine = engine
-        self.schema = DB_SCHEMA
         self.vocabulary_id = vocabulary_id 
         self.search_threshold = search_threshold 
         self.concept_ancestor = concept_ancestor 
@@ -117,9 +115,9 @@ class OMOPMatcher:
         )
         
         with get_session() as session:
-           results = session.execute(query).fetchall()
-           results = pd.DataFrame(results) 
-        
+           results = session.execute(query).fetchall() 
+           results = pd.DataFrame(results)
+    
         if results.empty:  
             return None 
  
@@ -326,7 +324,7 @@ class OMOPMatcher:
         
         Runs queries against the OMOP database for the user defined
         search terms and then performs fuzzy pattern matching on each one before selecting the best 
-        OMOP concept mathces for each search term. Calls fetch_OMOP_concepts on every item in search_terms.
+        OMOP concept matches for each search term. Calls fetch_OMOP_concepts on every item in search_terms.
 
         Parameters
         ----------

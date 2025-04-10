@@ -10,7 +10,7 @@ from haystack.dataclasses import Document
 
 pytestmark = pytest.mark.skipif(os.getenv('SKIP_DATABASE_TESTS') == 'true', reason="Skipping database tests")
 
-from omop.OMOP_match import OMOPMatcher 
+from omop.omop_match import OMOPMatcher 
 from utils.logging_utils import logger
 
 

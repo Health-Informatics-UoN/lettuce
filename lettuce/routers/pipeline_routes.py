@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 
 import assistant
-from omop.OMOP_match import OMOPMatcher
+from omop.omop_match import OMOPMatcher
 from components.embeddings import Embeddings
 from components.pipeline import LLMPipeline
 from options.pipeline_options import PipelineOptions

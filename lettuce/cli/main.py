@@ -5,7 +5,7 @@ from components.pipeline import LLMPipeline
 from components.result import LettuceResult
 from options.base_options import BaseOptions
 from options.pipeline_options import LLMModel
-from omop.OMOP_match import OMOPMatcher
+from omop.omop_match import OMOPMatcher
 from utils.logging_utils import logger
 
 
