@@ -14,7 +14,8 @@ from omop.omop_queries import (
     query_descendants_by_name,
     query_ids_matching_name,
     query_related_by_name,
-    query_ancestors_and_descendants_by_id
+    query_ancestors_and_descendants_by_id, 
+    query_related_by_id
 )
 from utils.logging_utils import logger
 
@@ -160,6 +161,26 @@ def test_query_descendants_and_ancestors_by_id(db_connection):
     assert any("analgesic" in name or "pain" in name for name in names)
 
 
+def test_query_related_by_id(db_connection):
+    concept_id = 1125315  # Acetaminophen
+
+    Session = sessionmaker(db_connection)
+    session = Session()
+
+    query = query_related_by_id(concept_id)
+    results_refactor = session.execute(query).fetchall()
+    columns = [
+        'concept_id', 'concept_id_1', 'relationship_id', 'concept_id_2',
+        'concept_name', 'vocabulary_id', 'concept_code'
+    ]
+    results = pd.DataFrame(results_refactor, columns=columns)
+
+    assert len(results) > 1
+
+    names = results["concept_name"].to_list()
+    assert "Sinutab" in names
+
+
 def test_regression_query_descendants_and_ancestors(db_connection): 
     query = f"""
             (
@@ -246,4 +267,53 @@ def test_regression_query_descendants_and_ancestors(db_connection):
     ]
     results_refactor = pd.DataFrame(results, columns=columns)
     
-    assert results_refactor.equals(results_original)
+    results_original_sorted = results_original.sort_values(by=columns).reset_index(drop=True)
+    results_refactor_sorted = results_refactor.sort_values(by=columns).reset_index(drop=True)
+
+    assert results_original_sorted.equals(results_refactor_sorted)
+
+
+def test_regression_query_related_by_id(db_connection): 
+    concept_id = 1125315
+    query = f"""
+        SELECT
+            cr.concept_id_2 AS concept_id,
+            cr.concept_id_1,
+            cr.relationship_id,
+            cr.concept_id_2,
+            c.concept_name,
+            c.vocabulary_id,
+            c.concept_code
+        FROM
+            {DB_SCHEMA}.concept_relationship cr
+        JOIN
+            {DB_SCHEMA}.concept c ON cr.concept_id_2 = c.concept_id
+        WHERE
+            cr.concept_id_1 = %s AND
+            cr.valid_end_date > NOW()
+    """
+    # Old query 
+    results_original = (
+        pd.read_sql(query, con=db_connection, params=(concept_id,))
+        .drop_duplicates()
+        .query("concept_id != @concept_id")
+    )
+
+    # New query using SQLAlchemy
+    Session = sessionmaker(db_connection)
+    session = Session()
+
+    query = query_related_by_id(concept_id)
+    results_refactor = session.execute(query).fetchall()
+    session.close()
+
+    columns = [
+        'concept_id', 'concept_id_1', 'relationship_id', 'concept_id_2',
+        'concept_name', 'vocabulary_id', 'concept_code'
+    ]
+    results_refactor = pd.DataFrame(results_refactor, columns=columns)
+
+    results_original_sorted = results_original.sort_values(by=columns).reset_index(drop=True)
+    results_refactor_sorted = results_refactor.sort_values(by=columns).reset_index(drop=True)
+
+    assert results_original_sorted.equals(results_refactor_sorted)

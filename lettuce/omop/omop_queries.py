@@ -256,7 +256,47 @@ def query_related_by_name(
     )
 
 
-def query_related_by_id() -> Select: ...
+def query_related_by_id(concept_id: int) -> Select:
+    """
+    Build a query to find all concepts related to a given concept ID.
+    
+    This function creates a SQLAlchemy query that retrieves related concepts
+    from the concept_relationship table of the OMOP database. It finds all
+    active relationships where the given concept_id is the source concept.
+    
+    Parameters
+    ----------
+    concept_id : int
+        The source concept ID for which to find related concepts
+        
+    Returns
+    -------
+    Select 
+        SQLAlchemy Select object representing the query
+    """
+    related = (
+        select(
+            ConceptRelationship.concept_id_2.label("concept_id"), 
+            ConceptRelationship.concept_id_1, 
+            ConceptRelationship.relationship_id, 
+            ConceptRelationship.concept_id_2, 
+            Concept.concept_name,
+            Concept.vocabulary_id,
+            Concept.concept_code
+        )
+        .select_from(ConceptRelationship)
+        .join(
+            Concept, 
+            ConceptRelationship.concept_id_2 == Concept.concept_id 
+        )
+        .where(
+            (ConceptRelationship.concept_id_1 == concept_id) &
+            (ConceptRelationship.valid_end_date > func.now()) & 
+            (ConceptRelationship.concept_id_2 != ConceptRelationship.concept_id_1) 
+        )
+    )
+    return related 
+
 
 def query_vector(query_embedding: List[float], n: int = 5) -> Select:
     return (
