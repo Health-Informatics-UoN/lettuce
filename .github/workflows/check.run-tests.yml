@@ -16,6 +16,14 @@ jobs:
       SKIP_DATABASE_TESTS: false 
       SKIP_LLM_TESTS: true 
       SKIP_EVAL_TESTS: true 
+      DB_HOST: "omop-ts-omop-ts-1"
+      DB_USER: "postgres"
+      DB_PASSWORD: "password"
+      DB_NAME: "omop"
+      DB_PORT: "5432"
+      DB_SCHEMA: "cdm" 
+      DB_VECTABLE: "embeddings"
+      DB_VECSIZE: "384"
 
 
     steps:
@@ -39,11 +47,9 @@ jobs:
 
       - name: Start omop-ts Docker services
         run: |         
-          # Start the database service
           docker compose -f omop-lite/compose-omop-ts.yml up -d
           
-          # Give some time for database to initialize
-          echo "Waiting for database to initialize..."
+          echo "Waiting for database to initialise..."
           sleep 15
 
       - name: Debug step 
@@ -52,10 +58,9 @@ jobs:
       
       - name: Start lettuce Docker services
         run: |
-          # Start the lettuce service with our compose file
           docker compose -f lettuce/lettuce/compose.yaml up -d
           
-          # Give some time for services to initialize
+          echo "Waiting for service to initialise..."
           sleep 15
           
           # Verify all services are running
@@ -83,16 +88,12 @@ jobs:
           uv run pytest tests --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=lettuce tests | tee pytest-coverage.txt
           test ${PIPESTATUS[0]} -eq 0
         working-directory: lettuce/lettuce 
-        env:
-          SKIP_DATABASE_TESTS: false
-          SKIP_LLM_TESTS: true 
-          SKIP_EVAL_TESTS: true 
       
       - name: Cleanup Docker services
         if: always()
         run: |
           # Cleanup all services to prevent resource issues
-          docker compose -f lettuce/docker-compose.yml down
+          docker compose -f lettuce/lettuce/docker-compose.yml down
           docker compose -f omop-ts/docker-compose.yml down
           docker network rm omop-ts_default || true
 
