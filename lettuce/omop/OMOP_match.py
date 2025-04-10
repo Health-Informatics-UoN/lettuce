@@ -305,6 +305,8 @@ class OMOPMatcher:
             .query("concept_id != @concept_id")
         )
 
+        breakpoint()
+
         return [
             {
                 "concept_name": row["concept_name"],

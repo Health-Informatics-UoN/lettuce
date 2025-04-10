@@ -16,7 +16,7 @@ from utils.logging_utils import logger
 
 @pytest.fixture
 def single_query_result():
-    return OMOPMatcher(logger, vocabulary_id=["RxNorm"]).run(search_terms=["Acetaminophen"])
+    return OMOPMatcher(logger, vocabulary_id=["RxNorm"], concept_ancestor=True).run(search_terms=["Acetaminophen"])
 
 
 @pytest.fixture
