@@ -3,7 +3,7 @@ from typing import List
 
 import pandas as pd
 from rapidfuzz import fuzz
-from omop.omop_queries import text_search_query
+from omop.omop_queries import text_search_query, query_ancestors_and_descendants_by_id
 from omop.db_manager import get_session, DB_SCHEMA, engine 
 
 from logging import Logger
@@ -195,7 +195,7 @@ class OMOPMatcher:
 
         if self.concept_ancestor:
             for i, (_, row) in enumerate(grouped_results.iterrows()):
-                formatted_results[i]["CONCEPT_ANCESTOR"] = self.fetch_concept_ancestor(row["concept_id"])
+                formatted_results[i]["CONCEPT_ANCESTOR"] = self.fetch_concept_ancestors_and_descendants(row["concept_id"])
         
         if self.concept_relationship:
             for i, (_, row) in enumerate(grouped_results.iterrows()):
@@ -227,7 +227,7 @@ class OMOPMatcher:
             if syn_name is not None
         ]
 
-    def fetch_concept_ancestor(self, concept_id: str):
+    def fetch_concept_ancestors_and_descendants(self, concept_id: str):
         """
         Fetch concept ancestor for a given concept_id
 
@@ -243,69 +243,23 @@ class OMOPMatcher:
         list
             A list of retrieved concepts and their relationships to the provided concept_id
         """
-
-        query = f"""
-            (
-                SELECT
-                    'Ancestor' as relationship_type,
-                    ca.ancestor_concept_id AS concept_id,
-                    ca.ancestor_concept_id,
-                    ca.descendant_concept_id,
-                    c.concept_name,
-                    c.vocabulary_id,
-                    c.concept_code,
-                    ca.min_levels_of_separation,
-                    ca.max_levels_of_separation
-                FROM
-                    {self.schema}.concept_ancestor ca
-                JOIN
-                    {self.schema}.concept c ON ca.ancestor_concept_id = c.concept_id
-                WHERE
-                    ca.descendant_concept_id = %s AND
-                    ca.min_levels_of_separation >= %s AND
-                    ca.max_levels_of_separation <= %s
-            )
-            UNION
-            (
-                SELECT
-                    'Descendant' as relationship_type,
-                    ca.descendant_concept_id AS concept_id,
-                    ca.ancestor_concept_id,
-                    ca.descendant_concept_id,
-                    c.concept_name,
-                    c.vocabulary_id,
-                    c.concept_code,
-                    ca.min_levels_of_separation,
-                    ca.max_levels_of_separation
-                FROM
-                    {self.schema}.concept_ancestor ca
-                JOIN
-                    {self.schema}.concept c ON ca.descendant_concept_id = c.concept_id
-                WHERE
-                    ca.ancestor_concept_id = %s AND
-                    ca.min_levels_of_separation >= %s AND
-                    ca.max_levels_of_separation <= %s
-            )
-        """
         min_separation_ancestor = 1
         min_separation_descendant = 1
 
-        params = (
-            concept_id,
-            min_separation_ancestor,
-            self.max_separation_ancestor,
-            concept_id,
-            min_separation_descendant,
-            self.max_separation_descendant,
+        query = query_ancestors_and_descendants_by_id(
+            concept_id, 
+            min_separation_ancestor=min_separation_ancestor, 
+            max_separation_ancestor=self.max_separation_ancestor,   
+            min_separation_descendant=min_separation_descendant, 
+            max_separation_descendant=self.max_separation_descendant
         )
-
-        results = (
-            pd.read_sql(query, con=self.engine, params=params)
-            .drop_duplicates()
-            .query("concept_id != @concept_id")
-        )
-
-        breakpoint()
+        
+        with get_session() as session: 
+            results = session.execute(query).fetchall()
+            columns = ['relationship_type', 'concept_id', 'ancestor_concept_id', 
+                       'descendant_concept_id', 'concept_name', 'vocabulary_id', 
+                       'concept_code', 'min_levels_of_separation', 'max_levels_of_separation']
+            results = pd.DataFrame(results, columns=columns)
 
         return [
             {
