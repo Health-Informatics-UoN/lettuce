@@ -48,7 +48,7 @@ jobs:
       - name: Start lettuce Docker services
         run: |
           # Start the lettuce service with our compose file
-          docker compose -f lettuce/docker-compose.yml up -d
+          docker compose -f lettuce/compose.yaml up -d
           
           # Give some time for services to initialize
           sleep 15
