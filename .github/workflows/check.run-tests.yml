@@ -29,6 +29,7 @@ jobs:
       - name: Checkout lettuce repository
         uses: actions/checkout@v4
         with:
+          path: lettuce 
           ref: ${{ github.head_ref }}  
 
       - name: Move test data from synthetic into data
