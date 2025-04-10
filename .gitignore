@@ -1,12 +1,45 @@
-/Carrot-Assistant/.env
+# Python
 *.pyc
-/*/__pycache__/
-.env
+*.pyo
+*.pyd
+__pycache__/
+*.egg-info/
+dist/
+build/
+venv/
+.venv/
+
+# Environment Files
+*.env
+*.env.*
+!.env.example  # Keep example env files if you use them
+
+# Logs
+*.log
+logs/
+*/logs/
+*/log/
+
+# Web Development (Next.js/Node.js)
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# Testing
+.pytest_cache/
+coverage/
+*.coverage
+coverage.xml
+junit.xml
+
+# OS/Editor Files
 .DS_Store
-.vscode/settings.json
-/Lettuce/tests/log
-/Lettuce/evaluation/datasets/*
-!/Lettuce/evaluation/datasets/example.csv
-/Lettuce/log
-/website/.next
-/website/node_modules
+*.swp
+*~
+.vscode/
+.idea/
+
+# Project-Specific 
+/lettuce/tests/log
+/lettuce/log
