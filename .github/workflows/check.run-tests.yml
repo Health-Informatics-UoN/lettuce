@@ -53,7 +53,7 @@ jobs:
       - name: Start lettuce Docker services
         run: |
           # Start the lettuce service with our compose file
-          docker compose -f lettuce/compose.yaml up -d
+          docker compose -f lettuce/lettuce/compose.yaml up -d
           
           # Give some time for services to initialize
           sleep 15
@@ -66,23 +66,23 @@ jobs:
         with:
           version: "0.5.16"
           enable-cache: true
-          cache-dependency-glob: "lettuce/uv.lock"
+          cache-dependency-glob: "lettuce/lettuce/uv.lock"
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: "lettuce/.python-version" 
+          python-version-file: "lettuce/lettuce/.python-version" 
 
       - name: uv sync
         run: uv sync --all-extras 
-        working-directory: lettuce
+        working-directory: lettuce/lettuce 
 
       - name: Run tests
         run: |
           set -e
           uv run pytest tests --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=lettuce tests | tee pytest-coverage.txt
           test ${PIPESTATUS[0]} -eq 0
-        working-directory: lettuce 
+        working-directory: lettuce/lettuce 
         env:
           SKIP_DATABASE_TESTS: false
           SKIP_LLM_TESTS: true 
