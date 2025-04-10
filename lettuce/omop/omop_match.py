@@ -4,7 +4,6 @@ from typing import List
 import pandas as pd
 from rapidfuzz import fuzz
 from omop.omop_queries import text_search_query, query_ancestors_and_descendants_by_id, query_related_by_id
-from omop.db_manager import get_session, DB_SCHEMA, engine 
 
 from logging import Logger
 from omop.preprocess import preprocess_search_term
