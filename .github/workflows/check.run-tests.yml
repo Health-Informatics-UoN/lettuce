@@ -88,6 +88,9 @@ jobs:
           uv run pytest tests --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=lettuce tests | tee pytest-coverage.txt
           test ${PIPESTATUS[0]} -eq 0
         working-directory: lettuce/lettuce 
+        env:
+          DATABASE_URL: "postgresql://postgres:password@omop-ts-omop-ts-1:5432/omop" 
+
       
       - name: Cleanup Docker services
         if: always()
