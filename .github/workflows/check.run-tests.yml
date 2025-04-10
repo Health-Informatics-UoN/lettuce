@@ -45,6 +45,10 @@ jobs:
           # Give some time for database to initialize
           echo "Waiting for database to initialize..."
           sleep 15
+
+      - name: Debug step 
+        run: |
+          ls lettuce 
       
       - name: Start lettuce Docker services
         run: |
