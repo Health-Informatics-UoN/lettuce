@@ -1,9 +1,9 @@
 name: Run Tests
 
 on:
-  pull_request:
+  #pull_request:
 
-  push:
+ push:
     branches:
       - deliverable/implement-small-omop-db-for-ci-tests
 
@@ -52,20 +52,20 @@ jobs:
           echo "Waiting for database to initialise..."
           sleep 15
 
-      - name: Debug step 
+      - name: Check DNS resolution
         run: |
-          ls lettuce 
+          nslookup omop-ts-omop-ts-1 || echo "Failed to resolve hostname"
+          ping -c 3 omop-ts-omop-ts-1 || echo "Failed to ping host"
       
-      - name: Start lettuce Docker services
+      - name: Inspect Docker networks
         run: |
-          docker compose -f lettuce/lettuce/compose.yaml up -d
-          
-          echo "Waiting for service to initialise..."
-          sleep 15
-          
-          # Verify all services are running
+          docker network ls
+      
+      - name: Check running containers and their IPs
+        run: |
           docker ps
-
+          docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -q)
+      
       - name: Setup uv
         uses: astral-sh/setup-uv@v5
         with:
@@ -103,7 +103,7 @@ jobs:
         run: |
           # Cleanup all services to prevent resource issues
           docker compose -f lettuce/lettuce/compose.yaml down
-          docker compose -f omop-ts/compose-omop-ts.yml down
+          docker compose -f omop-lite/compose-omop-ts.yml down
           docker network rm omop-ts_default || true
 
       - name: Pytest coverage comment
