@@ -27,6 +27,15 @@ from components.embeddings import PGVectorQuery
 from haystack.dataclasses import Document
 
 
+DB_HOST = "omop-ts-omop-ts-1"
+DB_USER = "postgres"
+DB_PASSWORD = "password"
+DB_NAME = "omop"
+DB_PORT = "5432"
+DB_SCHEMA = "cdm" 
+DB_VECTABLE = "embeddings"
+DB_VECSIZE = "384"
+
 
 # --- Testing main OMOP_match --->
 @pytest.fixture
@@ -77,11 +86,11 @@ def test_three_query_returns_three_results(three_query_result):
 
 @pytest.fixture
 def db_connection():
-    DB_HOST = environ["DB_HOST"]
-    DB_USER = environ["DB_USER"]
-    DB_PASSWORD = quote_plus(environ["DB_PASSWORD"])
-    DB_NAME = environ["DB_NAME"]
-    DB_PORT = environ["DB_PORT"]
+    #DB_HOST = environ["DB_HOST"]
+    #DB_USER = environ["DB_USER"]
+    #DB_PASSWORD = quote_plus(environ["DB_PASSWORD"])
+    #DB_NAME = environ["DB_NAME"]
+    #DB_PORT = environ["DB_PORT"]
 
     connection_string = (
         f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
