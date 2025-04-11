@@ -1,34 +1,18 @@
 version: '3.8'
 
-name: lettuce-dev 
+name: lettuce
 
 services:
   lettuce: 
     build: 
       context: . 
       dockerfile: Dockerfile 
-    environment: 
-      - DATABASE_URL=postgresql://postgres:password@omop-ts-omop-ts-1:5432/omop 
-      - DB_HOST=omop-ts-omop-ts-1
-      - DB_USER=postgres
-      - DB_PASSWORD=password
-      - DB_NAME=omop
-      - DB_PORT=5432
-      - DB_SCHEMA=cdm
-      - DB_VECTABLE=embeddings
-      - DB_VECSIZE=384
+    env_file:
+      - .env.compose  # This will take precedence over local .env file 
     ports: 
       - "8000:8000"
     networks: 
       - omop-ts-network  # Connect the existing network
-    deploy:
-      resources:
-        limits:
-          memory: 24g 
-        reservations:
-          memory: 12g 
-    mem_limit: 24g  
-    memswap_limit: 48g 
 
 networks: 
   omop-ts-network: 

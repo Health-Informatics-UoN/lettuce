@@ -14,7 +14,6 @@ RUN uv sync
 # Runtime stage 
 FROM python:3.12-slim-bookworm
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgcc-s1 \
     libgomp1 \ 
     && rm -rf /var/lib/apt/lists/*
 ENV PATH="/src/.venv/bin:$PATH"
