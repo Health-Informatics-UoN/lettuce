@@ -72,7 +72,7 @@ def test_three_query_returns_three_results(three_query_result):
 
 
 # --- Testing utility queries -->
-load_dotenv()
+#load_dotenv()
 
 
 @pytest.fixture
