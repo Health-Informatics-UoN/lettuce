@@ -54,8 +54,8 @@ jobs:
 
       - name: Check DNS resolution
         run: |
-          nslookup omop-ts-omop-ts-1 || echo "Failed to resolve hostname"
-          ping -c 3 omop-ts-omop-ts-1 || echo "Failed to ping host"
+          nslookup localhost || echo "Failed to resolve hostname"
+          ping -c 3 localhost || echo "Failed to ping host"
       
       - name: Inspect Docker networks
         run: |

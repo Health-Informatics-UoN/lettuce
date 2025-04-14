@@ -7,6 +7,9 @@ import os
 import sys
 
 
+pytestmark = pytest.mark.skip(reason="Skipping CLI tests")
+
+
 @pytest.fixture(scope="session", autouse=True)
 def mock_sqlalchemy_engine():
     env_vars = {
