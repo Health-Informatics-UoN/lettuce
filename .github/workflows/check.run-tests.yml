@@ -88,15 +88,6 @@ jobs:
           uv run pytest tests --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=lettuce tests | tee pytest-coverage.txt
           test ${PIPESTATUS[0]} -eq 0
         working-directory: lettuce/lettuce 
-        env:
-          DB_HOST: "omop-ts-omop-ts-1"
-          DB_USER: "postgres"
-          DB_PASSWORD: "password"
-          DB_NAME: "omop"
-          DB_PORT: "5432"
-          DB_SCHEMA: "cdm" 
-          DB_VECTABLE: "embeddings"
-          DB_VECSIZE: "384"
 
       - name: Cleanup Docker services
         if: always()
