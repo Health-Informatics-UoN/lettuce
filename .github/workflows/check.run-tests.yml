@@ -16,7 +16,7 @@ jobs:
       SKIP_DATABASE_TESTS: false 
       SKIP_LLM_TESTS: true 
       SKIP_EVAL_TESTS: true 
-      DB_HOST: "omop-ts-omop-ts-1"
+      DB_HOST: "localhost"
       DB_USER: "postgres"
       DB_PASSWORD: "password"
       DB_NAME: "omop"
