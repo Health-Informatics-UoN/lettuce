@@ -49,6 +49,7 @@ class OMOPMatcher:
         concept_ancestor: bool = False,
         concept_relationship: bool = False,
         concept_synonym: bool = False,
+        standard_concept: bool = False, 
         max_separation_descendant: int = 1,
         max_separation_ancestor: int = 1
     ):
@@ -58,6 +59,7 @@ class OMOPMatcher:
         self.concept_ancestor = concept_ancestor 
         self.concept_relationship = concept_relationship 
         self.concept_synonym = concept_synonym
+        self.standard_concept = standard_concept 
         self.max_separation_descendant = max_separation_descendant
         self.max_separation_ancestor = max_separation_ancestor 
 
@@ -111,7 +113,7 @@ class OMOPMatcher:
             A list of search results from the OMOP database if the query comes back with results, otherwise returns None. 
         """
         query = text_search_query(
-            preprocess_search_term(search_term), self.vocabulary_id, self.concept_synonym
+            preprocess_search_term(search_term), self.vocabulary_id, self.standard_concept, self.concept_synonym
         )
         
         with get_session() as session:
