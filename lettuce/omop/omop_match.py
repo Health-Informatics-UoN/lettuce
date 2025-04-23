@@ -6,6 +6,7 @@ from rapidfuzz import fuzz
 from omop.omop_queries import text_search_query, query_ancestors_and_descendants_by_id, query_related_by_id
 
 from logging import Logger
+from omop.db_manager import get_session 
 from omop.preprocess import preprocess_search_term
 
 
