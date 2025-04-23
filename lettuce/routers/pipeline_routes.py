@@ -1,3 +1,4 @@
+from os import pipe
 from fastapi import APIRouter
 from collections.abc import AsyncGenerator
 import json
@@ -95,6 +96,7 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
     omop_output = OMOPMatcher(
         logger, 
         vocabulary_id=pipeline_opts.vocabulary_id,
+        standard_concept=pipeline_opts.standard_concept,
         concept_ancestor=pipeline_opts.concept_ancestor,
         concept_relationship=pipeline_opts.concept_relationship,
         concept_synonym=pipeline_opts.concept_synonym,
@@ -147,6 +149,7 @@ async def run_db(request: PipelineRequest) -> List[Dict[str, Any]]:
     omop_output = OMOPMatcher(
         logger, 
         vocabulary_id=pipeline_opts.vocabulary_id,
+        standard_concept=pipeline_opts.standard_concept,
         concept_ancestor=pipeline_opts.concept_ancestor,
         concept_relationship=pipeline_opts.concept_relationship,
         concept_synonym=pipeline_opts.concept_synonym,
@@ -177,11 +180,10 @@ async def run_vector_search(request: PipelineRequest):
     """
     search_terms = request.names
     embeddings = Embeddings(
-        embeddings_path=request.pipeline_options.embeddings_path,
-        force_rebuild=request.pipeline_options.force_rebuild,
         embed_vocab=request.pipeline_options.embed_vocab,
         model_name=request.pipeline_options.embedding_model,
-        search_kwargs=request.pipeline_options.embedding_search_kwargs,
+        standard_concept=request.pipeline_options.standard_concept,
+        top_k=request.pipeline_options.embeddings_top_k,
     )
     return {"event": "vector_search_output", "content": embeddings.search(search_terms)}
 
@@ -208,12 +210,11 @@ async def vector_llm_pipeline(request: PipelineRequest) -> List:
     pl = LLMPipeline(
         llm_model=request.pipeline_options.llm_model,
         temperature=request.pipeline_options.temperature,
-        embeddings_path=request.pipeline_options.embeddings_path,
-        force_rebuild=request.pipeline_options.force_rebuild,
         embed_vocab=request.pipeline_options.embed_vocab,
         embedding_model=request.pipeline_options.embedding_model,
-        embedding_search_kwargs=request.pipeline_options.embedding_search_kwargs,
         logger=logger,
+        standard_concept=request.pipeline_options.standard_concept,
+        top_k=request.pipeline_options.embeddings_top_k,
     ).get_rag_assistant()
     start = time.time()
     pl.warm_up()

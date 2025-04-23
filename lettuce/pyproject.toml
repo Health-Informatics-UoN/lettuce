@@ -2,7 +2,7 @@
 name = "lettuce"
 version = "0.1.0"
 description = "An LLM assistant for mapping OMOP concepts"
-authors = [{name = "James Mitchell White", email = "mbxjim@exmail.notingham.ac.uk"}]
+authors = [{name = "James Mitchell White", email = "mbzjim@exmail.notingham.ac.uk"}]
 license = "MIT"
 requires-python = ">=3.12"
 dependencies = [
