@@ -9,6 +9,7 @@ dependencies = [
     "haystack-ai>=2.7.0",
     "huggingface-hub>=0.24.6",
     "numpy==1.26.4",
+    "pandas>=2.1.0", 
     "python-dotenv>=1.0.1",
     "llama-cpp-haystack>=0.4.1",
     "llama-cpp-python>=0.2.89",
