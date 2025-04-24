@@ -15,8 +15,10 @@ from omop.omop_queries import (
     query_ids_matching_name,
     query_related_by_name,
     query_ancestors_and_descendants_by_id, 
-    query_related_by_id
+    query_related_by_id, 
+    text_search_query 
 )
+from omop.preprocess import preprocess_search_term 
 from utils.logging_utils import logger
 
 
@@ -41,6 +43,7 @@ def db_connection():
     return create_engine(connection_string)
 
 
+@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_matching_by_name(db_connection):
     Session = sessionmaker(db_connection)
     session = Session()
@@ -54,6 +57,7 @@ def test_matching_by_name(db_connection):
     assert results[0][0] == 1125315
 
 
+@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_fetch_related_concepts_by_name(db_connection):
     # I'm sure there's a neater pytest-y way to keep the session active, but honestly it's not worth the bother
     Session = sessionmaker(db_connection)
@@ -69,6 +73,7 @@ def test_fetch_related_concepts_by_name(db_connection):
     assert "Sinutab" in names
 
 
+@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_fetch_ancestor_concepts_by_name(db_connection):
     Session = sessionmaker(db_connection)
     session = Session()
@@ -86,6 +91,7 @@ def test_fetch_ancestor_concepts_by_name(db_connection):
     )
 
 
+@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_fetch_ancestor_concepts_by_name_with_separation_bounds(db_connection):
     Session = sessionmaker(db_connection)
     session = Session()
@@ -105,6 +111,7 @@ def test_fetch_ancestor_concepts_by_name_with_separation_bounds(db_connection):
     assert "homatropine methylbromide; systemic" in names
 
 
+@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_fetch_descendant_concepts_by_name(db_connection):
     Session = sessionmaker(db_connection)
     session = Session()
@@ -122,6 +129,7 @@ def test_fetch_descendant_concepts_by_name(db_connection):
     )
 
 
+@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_fetch_descendant_concepts_by_name_with_separation_bounds(db_connection):
     Session = sessionmaker(db_connection)
     session = Session()
@@ -136,6 +144,7 @@ def test_fetch_descendant_concepts_by_name_with_separation_bounds(db_connection)
     assert "Painaid BRF Oral Product" in names
 
 
+@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_query_descendants_and_ancestors_by_id(db_connection): 
     concept_id = 1125315  # Acetaminophen
 
@@ -161,6 +170,7 @@ def test_query_descendants_and_ancestors_by_id(db_connection):
     assert any("analgesic" in name or "pain" in name for name in names)
 
 
+@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_query_related_by_id(db_connection):
     concept_id = 1125315  # Acetaminophen
 
@@ -179,6 +189,24 @@ def test_query_related_by_id(db_connection):
 
     names = results["concept_name"].to_list()
     assert "Sinutab" in names
+
+
+def test_full_text_query(db_connection):
+    search_term = preprocess_search_term("Nervous System")
+    query = text_search_query(
+        search_term, 
+        vocabulary_id=None, 
+        standard_concept=True, 
+        concept_synonym=False
+    )
+    Session = sessionmaker(db_connection)
+    session = Session()
+    results = session.execute(query).fetchall()
+
+    assert len(results) > 1
+
+    expected_entry = (38001644, 'Respiratory System', 'MDC', '4', None)
+    assert expected_entry in results 
 
 
 def test_regression_query_descendants_and_ancestors(db_connection): 

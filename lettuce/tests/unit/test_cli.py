@@ -8,6 +8,7 @@ import sys
 
 from components.embeddings import EmbeddingModelName
 
+
 @pytest.fixture(scope="session", autouse=True)
 def mock_sqlalchemy_engine():
     env_vars = {

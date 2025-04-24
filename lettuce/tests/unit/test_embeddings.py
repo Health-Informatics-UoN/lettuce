@@ -39,11 +39,11 @@ class TestPGVectorQuery:
         mock_session.execute.return_value = mock_execute
 
         # Create the component
-        query_component = PGVectorQuery(connection=mock_session)
+        query_component = PGVectorQuery(connection=mock_session, top_k=2)
 
         # Run the method
         query_embedding = [0.1, 0.2, 0.3]  # Example embedding
-        result = query_component.run(query_embedding=query_embedding, top_k=2)
+        result = query_component.run(query_embedding=query_embedding)
 
         # Assertions
         assert len(result["documents"]) == 2
@@ -93,12 +93,12 @@ class TestPGVectorQuery:
 
         mock_session.execute.side_effect = execute_side_effect
 
-        query_component = PGVectorQuery(connection=mock_session)
         query_embedding = [0.1, 0.2, 0.3]
 
         # Test with different top_k values
         for k in [1, 3, 5]:
-            result = query_component.run(query_embedding=query_embedding, top_k=k)
+            query_component = PGVectorQuery(connection=mock_session, top_k=k)
+            result = query_component.run(query_embedding=query_embedding)
             assert len(result["documents"]) == k
 
     def test_invalid_embedding_type(self):
