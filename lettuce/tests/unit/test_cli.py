@@ -8,8 +8,6 @@ import sys
 
 from components.embeddings import EmbeddingModelName
 
-pytestmark = pytest.mark.skip(reason="Skipping CLI tests")
-
 
 @pytest.fixture(scope="session", autouse=True)
 def mock_sqlalchemy_engine():

@@ -15,8 +15,10 @@ from omop.omop_queries import (
     query_ids_matching_name,
     query_related_by_name,
     query_ancestors_and_descendants_by_id, 
-    query_related_by_id
+    query_related_by_id, 
+    text_search_query 
 )
+from omop.preprocess import preprocess_search_term 
 from utils.logging_utils import logger
 
 
@@ -179,6 +181,24 @@ def test_query_related_by_id(db_connection):
 
     names = results["concept_name"].to_list()
     assert "Sinutab" in names
+
+
+def test_full_text_query(db_connection):
+    search_term = preprocess_search_term("Nervous System")
+    query = text_search_query(
+        search_term, 
+        vocabulary_id=None, 
+        standard_concept=True, 
+        concept_synonym=False
+    )
+    Session = sessionmaker(db_connection)
+    session = Session()
+    results = session.execute(query).fetchall()
+
+    assert len(results) > 1
+
+    expected_entry = (38001644, 'Respiratory System', 'MDC', '4', None)
+    assert expected_entry in results 
 
 
 def test_regression_query_descendants_and_ancestors(db_connection): 
