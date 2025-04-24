@@ -56,6 +56,7 @@ def test_matching_by_name(db_connection):
     assert results[0][0] == 1125315
 
 
+@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_fetch_related_concepts_by_name(db_connection):
     # I'm sure there's a neater pytest-y way to keep the session active, but honestly it's not worth the bother
     Session = sessionmaker(db_connection)
@@ -71,6 +72,7 @@ def test_fetch_related_concepts_by_name(db_connection):
     assert "Sinutab" in names
 
 
+@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_fetch_ancestor_concepts_by_name(db_connection):
     Session = sessionmaker(db_connection)
     session = Session()
@@ -88,6 +90,7 @@ def test_fetch_ancestor_concepts_by_name(db_connection):
     )
 
 
+@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_fetch_ancestor_concepts_by_name_with_separation_bounds(db_connection):
     Session = sessionmaker(db_connection)
     session = Session()
@@ -107,6 +110,7 @@ def test_fetch_ancestor_concepts_by_name_with_separation_bounds(db_connection):
     assert "homatropine methylbromide; systemic" in names
 
 
+@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_fetch_descendant_concepts_by_name(db_connection):
     Session = sessionmaker(db_connection)
     session = Session()
@@ -124,6 +128,7 @@ def test_fetch_descendant_concepts_by_name(db_connection):
     )
 
 
+@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_fetch_descendant_concepts_by_name_with_separation_bounds(db_connection):
     Session = sessionmaker(db_connection)
     session = Session()
@@ -138,6 +143,7 @@ def test_fetch_descendant_concepts_by_name_with_separation_bounds(db_connection)
     assert "Painaid BRF Oral Product" in names
 
 
+@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_query_descendants_and_ancestors_by_id(db_connection): 
     concept_id = 1125315  # Acetaminophen
 
@@ -163,6 +169,7 @@ def test_query_descendants_and_ancestors_by_id(db_connection):
     assert any("analgesic" in name or "pain" in name for name in names)
 
 
+@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_query_related_by_id(db_connection):
     concept_id = 1125315  # Acetaminophen
 
@@ -337,3 +344,4 @@ def test_regression_query_related_by_id(db_connection):
     results_refactor_sorted = results_refactor.sort_values(by=columns).reset_index(drop=True)
 
     assert results_original_sorted.equals(results_refactor_sorted)
+    
