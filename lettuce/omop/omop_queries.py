@@ -7,12 +7,12 @@ from omop.omop_models import (
     Embedding,
 )
 
-from sqlalchemy import select, or_, func
-from sqlalchemy.sql import Select, text, null
+from sqlalchemy import select, or_, func, literal
+from sqlalchemy.sql import Select, CompoundSelect, text, null
 
 
 def text_search_query(
-    search_term: str, vocabulary_id: list[str] | None, concept_synonym: bool
+        search_term: str, vocabulary_id: list[str] | None, standard_concept:bool, concept_synonym: bool
 ) -> Select:
     """
     Builds an OMOP query to search for concepts
@@ -46,7 +46,10 @@ def text_search_query(
         Concept.concept_name,
         Concept.vocabulary_id,
         Concept.concept_code,
-    ).where(Concept.standard_concept == "S")
+    )
+    
+    if standard_concept:
+        query = query.where(Concept.standard_concept == "S")
 
     if vocabulary_id:
         query = query.where(Concept.vocabulary_id.in_(vocabulary_id))
@@ -156,7 +159,88 @@ def query_descendants_by_name(
         return descendants
 
 
-def query_ancestors_by_id() -> Select: ...
+def query_ancestors_and_descendants_by_id(
+    concept_id: int,
+    min_separation_ancestor: int = 1,
+    max_separation_ancestor: int | None = 1,
+    min_separation_descendant: int = 1,
+    max_separation_descendant: int | None = 1
+) -> CompoundSelect: 
+    """
+    Build a query to find both ancestors and descendants of a concept. 
+    
+    Parameters
+    ----------
+    concept_id: int
+        The concept_id to find hierarchy for
+    min_separation_ancestor: int
+        Minimum levels of separation for ancestors
+    max_separation_ancestor: int
+        Maximum levels of separation for ancestors
+    min_separation_descendant: int
+        Minimum levels of separation for descendants
+    max_separation_descendant: int
+        Maximum levels of separation for descendants
+        
+    Returns
+    -------
+    Select
+        SQLAlchemy Select object representing the query
+    """
+    if max_separation_ancestor is None:
+        max_separation_ancestor = 1000
+    if max_separation_descendant is None: 
+        max_separation_descendant = 1000 
+
+    ancestors = (
+        select(
+            literal('Ancestor').label('relationship_type'),
+            ConceptAncestor.ancestor_concept_id.label('concept_id'),
+            ConceptAncestor.ancestor_concept_id,
+            ConceptAncestor.descendant_concept_id,
+            Concept.concept_name,
+            Concept.vocabulary_id,
+            Concept.concept_code,
+            ConceptAncestor.min_levels_of_separation,
+            ConceptAncestor.max_levels_of_separation
+        )
+        .select_from(ConceptAncestor)
+        .join(
+            Concept, 
+            ConceptAncestor.ancestor_concept_id == Concept.concept_id
+        )
+        .where(
+            ConceptAncestor.descendant_concept_id == concept_id,
+            ConceptAncestor.min_levels_of_separation >= min_separation_ancestor,
+            ConceptAncestor.max_levels_of_separation <= max_separation_ancestor
+        )
+    )
+
+    descendants = (
+        select(
+            literal('Descendant').label('relationship_type'),
+            ConceptAncestor.descendant_concept_id.label('concept_id'),
+            ConceptAncestor.ancestor_concept_id,
+            ConceptAncestor.descendant_concept_id,
+            Concept.concept_name,
+            Concept.vocabulary_id,
+            Concept.concept_code,
+            ConceptAncestor.min_levels_of_separation,
+            ConceptAncestor.max_levels_of_separation
+        )
+        .select_from(ConceptAncestor)
+        .join(
+            Concept, 
+            ConceptAncestor.descendant_concept_id == Concept.concept_id
+        )
+        .where(
+            ConceptAncestor.ancestor_concept_id == concept_id,
+            ConceptAncestor.min_levels_of_separation >= min_separation_descendant,
+            ConceptAncestor.max_levels_of_separation <= max_separation_descendant
+        )
+    )
+
+    return ancestors.union(descendants)
 
 
 def query_related_by_name(
@@ -175,10 +259,55 @@ def query_related_by_name(
     )
 
 
-def query_related_by_id() -> Select: ...
+def query_related_by_id(concept_id: int) -> Select:
+    """
+    Build a query to find all concepts related to a given concept ID.
+    
+    This function creates a SQLAlchemy query that retrieves related concepts
+    from the concept_relationship table of the OMOP database. It finds all
+    active relationships where the given concept_id is the source concept.
+    
+    Parameters
+    ----------
+    concept_id : int
+        The source concept ID for which to find related concepts
+        
+    Returns
+    -------
+    Select 
+        SQLAlchemy Select object representing the query
+    """
+    related = (
+        select(
+            ConceptRelationship.concept_id_2.label("concept_id"), 
+            ConceptRelationship.concept_id_1, 
+            ConceptRelationship.relationship_id, 
+            ConceptRelationship.concept_id_2, 
+            Concept.concept_name,
+            Concept.vocabulary_id,
+            Concept.concept_code
+        )
+        .select_from(ConceptRelationship)
+        .join(
+            Concept, 
+            ConceptRelationship.concept_id_2 == Concept.concept_id 
+        )
+        .where(
+            (ConceptRelationship.concept_id_1 == concept_id) &
+            (ConceptRelationship.valid_end_date > func.now()) & 
+            (ConceptRelationship.concept_id_2 != ConceptRelationship.concept_id_1) 
+        )
+    )
+    return related 
 
-def query_vector(query_embedding: List[float], n: int = 5) -> Select:
-    return (
+
+def query_vector(
+        query_embedding,
+        embed_vocab: list[str] | None,
+        standard_concept: bool = False,
+        n: int = 5,
+        ) -> Select:
+    query = (
         select(
             Concept.concept_id.label("id"),
             Concept.concept_name.label("content"),
@@ -188,3 +317,9 @@ def query_vector(query_embedding: List[float], n: int = 5) -> Select:
         .order_by(Embedding.embedding.cosine_distance(query_embedding))
         .limit(n)
     )
+    if embed_vocab is not None:
+        query = query.where(Concept.vocabulary_id.in_(embed_vocab))
+    if standard_concept:
+        query = query.where(Concept.standard_concept == "S")
+
+    return query

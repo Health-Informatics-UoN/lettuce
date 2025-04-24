@@ -18,20 +18,6 @@ class LettuceResult:
         self.vector_search_results = vector_search_results
 
     def add_llm_answer(self, llm_answer: str):
-        self.llm_answer = llm_answer
-
-    def get_query(self):
-        """
-        Insert the results of a vector search
-
-        Parameters
-        ----------
-        vector_search_results: List[Dict[str, Any]]
-            The results from running a vector database search from an embeddings object
-        """
-        self.vector_search_results = vector_search_results
-
-    def add_llm_answer(self, llm_answer: str):
         """
         Insert the results of an LLM assistant's inference
 
@@ -57,25 +43,11 @@ class LettuceResult:
         if hasattr(self, "llm_answer"):
             return self.llm_answer
         elif hasattr(self, "vector_search_results"):
-            return self.vector_search_results[0]["content"]
+            return self.vector_search_results[0]["concept"]
         else:
             return self.search_term
 
     def add_matches(self, omop_matches: list, threshold: float):
-        self.omop_fuzzy_threshold = threshold
-        self.omop_matches = omop_matches
-
-    def to_dict(self):
-        """
-        Inserts the matches retrieved from a database search, after fuzzy string filtering.
-
-        Parameters
-        ----------
-        omop_matches: list
-            A list of the matches retrieved from the database
-        threshold: float
-            The threshold used for filtering
-        """
         self.omop_fuzzy_threshold = threshold
         self.omop_matches = omop_matches
 

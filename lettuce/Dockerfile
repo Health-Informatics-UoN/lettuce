@@ -1,3 +1,4 @@
+# Builder stage 
 FROM python:3.12-bookworm AS builder
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends --yes pipx
@@ -10,9 +11,13 @@ WORKDIR /src
 COPY pyproject.toml ./
 RUN uv sync 
 
+# Runtime stage 
 FROM python:3.12-slim-bookworm
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \ 
+    && rm -rf /var/lib/apt/lists/*
 ENV PATH="/src/.venv/bin:$PATH"
-WORKDIR src
+WORKDIR /src
 COPY --from=builder /src/.venv /src/.venv
 
 LABEL org.opencontainers.image.title=Lettuce

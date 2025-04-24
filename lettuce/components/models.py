@@ -121,12 +121,16 @@ def get_local_weights(
     # Load the model using llama 
     llm = LlamaCppGenerator(
         model=path_to_weights, 
-        n_ctx=0, 
-        n_batch=512, 
-        model_kwargs={"n_gpu_layers": device, "verbose": True}, 
+        model_kwargs={
+            "n_ctx": 512,
+            "n_batch": 32,
+            "n_gpu_layers": device,
+            "verbose": True
+        }, 
         generation_kwargs={"max_tokens": 128, "temperature": temperature}
     )
     logger.info(f"Succesfully loaded LlamaCppGenerator from {path_to_weights}")
+    logger.info(f"LLM Loaded: n_ctx={llm.config.get('n_ctx')}, n_batch={llm.config.get('n_batch')}")
     return llm 
 
 
@@ -135,8 +139,8 @@ def download_model_from_huggingface(
     temperature: float, 
     logger: logging.Logger, 
     fallback_model: str = "llama-3.1-8b",
-    n_ctx: int = 0,
-    n_batch: int = 512,
+    n_ctx: int = 512,
+    n_batch: int = 32,
     max_tokens: int = 128 
 ): 
     logger.info(f"Loading local model: {model_name}")
@@ -156,9 +160,12 @@ def download_model_from_huggingface(
     try: 
         llm = LlamaCppGenerator(
             model=model_path, 
-            n_ctx=n_ctx, 
-            n_batch=n_batch, 
-            model_kwargs={"n_gpu_layers": device, "verbose": True}, 
+            model_kwargs={
+                "n_ctx": n_ctx,
+                "n_batch": n_batch,
+                "n_gpu_layers": device,
+                "verbose": True
+            },
             generation_kwargs={"max_tokens": max_tokens, "temperature": temperature}
         )
     except Exception as e: 

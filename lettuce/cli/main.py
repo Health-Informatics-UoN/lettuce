@@ -5,7 +5,7 @@ from components.pipeline import LLMPipeline
 from components.result import LettuceResult
 from options.base_options import BaseOptions
 from options.pipeline_options import LLMModel
-from omop.OMOP_match import run 
+from omop.omop_match import OMOPMatcher
 from utils.logging_utils import logger
 
 
@@ -16,15 +16,16 @@ def main():
 
     results = [LettuceResult(name) for name in args.informal_names]
 
-    if args.vector_search & args.use_llm:
+    if args.vector_search and args.use_llm:
         start = time.time()
         pl = LLMPipeline(
-            LLMModel[args.llm_model],
-            args.temperature,
+            llm_model=LLMModel[args.llm_model],
+            temperature=args.temperature,
             logger=logger,
-            embeddings_path="concept_embeddings.qdrant",
-            embed_vocab=["RxNorm"],
-            embedding_model=EmbeddingModelName.BGESMALL,
+            embed_vocab=args.embed_vocab,
+            standard_concept=args.standard_concept,
+            embedding_model=args.embedding_model,
+            top_k=args.embedding_top_k,
         ).get_rag_assistant()
         pl.warm_up()
         logger.info(f"Pipeline warmup in {time.time() - start} seconds")
@@ -50,12 +51,11 @@ def main():
         logger.info(f"Total RAG inference time: {time.time()-run_start}")
     elif args.vector_search:
         embeddings = Embeddings(
-            embeddings_path="concept_embeddings.qdrant",
-            force_rebuild=False,
-            embed_vocab=["RxNorm"],
             model_name=EmbeddingModelName.BGESMALL,
-            search_kwargs={},
-        )
+            embed_vocab=args.embed_vocab,
+            standard_concept=args.standard_concept,
+            top_k=args.embedding_top_k,
+       )
         embed_results = embeddings.search(args.informal_names)
         for query, result in zip(results, embed_results):
             query.add_vector_search_results(result)
@@ -74,12 +74,11 @@ def main():
 
     db_queries = [query.get_query() for query in results]
 
-    db_results = run(
-        search_term=db_queries,
-        logger=logger,
+    db_results = OMOPMatcher(
+        logger, 
         vocabulary_id=args.vocabulary_id,
-        search_threshold=args.search_threshold,
-    )
+        search_threshold=args.search_threshold
+    ).run(search_terms=db_queries)
 
     for query, result in zip(results, db_results):
         query.add_matches(result, args.search_threshold)

@@ -1,3 +1,4 @@
+from os import pipe
 from fastapi import APIRouter
 from collections.abc import AsyncGenerator
 import json
@@ -8,7 +9,7 @@ from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 
 import assistant
-from omop import OMOP_match
+from omop.omop_match import OMOPMatcher
 from components.embeddings import Embeddings
 from components.pipeline import LLMPipeline
 from options.pipeline_options import PipelineOptions
@@ -92,17 +93,17 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
         output = {"event": "llm_output", "data": llm_output}
         yield json.dumps(output)
 
-    omop_output = OMOP_match.run(
+    omop_output = OMOPMatcher(
+        logger, 
         vocabulary_id=pipeline_opts.vocabulary_id,
+        standard_concept=pipeline_opts.standard_concept,
         concept_ancestor=pipeline_opts.concept_ancestor,
         concept_relationship=pipeline_opts.concept_relationship,
         concept_synonym=pipeline_opts.concept_synonym,
         search_threshold=pipeline_opts.search_threshold,
         max_separation_descendant=pipeline_opts.max_separation_descendants,
-        max_separation_ancestor=pipeline_opts.max_separation_ancestor,
-        search_term=[llm_output["reply"] for llm_output in llm_outputs],
-        logger=logger,
-    )
+        max_separation_ancestor=pipeline_opts.max_separation_ancestor
+    ).run(search_term=[llm_output["reply"] for llm_output in llm_outputs])
 
     output = [{"event": "omop_output", "data": result} for result in omop_output]
     yield json.dumps(output)
@@ -145,17 +146,17 @@ async def run_db(request: PipelineRequest) -> List[Dict[str, Any]]:
     search_terms = request.names
     pipeline_opts = request.pipeline_options
 
-    omop_output = OMOP_match.run(
+    omop_output = OMOPMatcher(
+        logger, 
         vocabulary_id=pipeline_opts.vocabulary_id,
+        standard_concept=pipeline_opts.standard_concept,
         concept_ancestor=pipeline_opts.concept_ancestor,
         concept_relationship=pipeline_opts.concept_relationship,
         concept_synonym=pipeline_opts.concept_synonym,
         search_threshold=pipeline_opts.search_threshold,
         max_separation_descendant=pipeline_opts.max_separation_descendants,
-        max_separation_ancestor=pipeline_opts.max_separation_ancestor,
-        search_term=search_terms,
-        logger=logger,
-    )
+        max_separation_ancestor=pipeline_opts.max_separation_ancestor
+    ).run(search_terms=search_terms)
     return [{"event": "omop_output", "content": result} for result in omop_output]
 
 
@@ -179,11 +180,10 @@ async def run_vector_search(request: PipelineRequest):
     """
     search_terms = request.names
     embeddings = Embeddings(
-        embeddings_path=request.pipeline_options.embeddings_path,
-        force_rebuild=request.pipeline_options.force_rebuild,
         embed_vocab=request.pipeline_options.embed_vocab,
         model_name=request.pipeline_options.embedding_model,
-        search_kwargs=request.pipeline_options.embedding_search_kwargs,
+        standard_concept=request.pipeline_options.standard_concept,
+        top_k=request.pipeline_options.embeddings_top_k,
     )
     return {"event": "vector_search_output", "content": embeddings.search(search_terms)}
 
@@ -210,12 +210,11 @@ async def vector_llm_pipeline(request: PipelineRequest) -> List:
     pl = LLMPipeline(
         llm_model=request.pipeline_options.llm_model,
         temperature=request.pipeline_options.temperature,
-        embeddings_path=request.pipeline_options.embeddings_path,
-        force_rebuild=request.pipeline_options.force_rebuild,
         embed_vocab=request.pipeline_options.embed_vocab,
         embedding_model=request.pipeline_options.embedding_model,
-        embedding_search_kwargs=request.pipeline_options.embedding_search_kwargs,
         logger=logger,
+        standard_concept=request.pipeline_options.standard_concept,
+        top_k=request.pipeline_options.embeddings_top_k,
     ).get_rag_assistant()
     start = time.time()
     pl.warm_up()
