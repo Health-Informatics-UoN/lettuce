@@ -1,7 +1,11 @@
 import { Steps, Callout, Tabs } from 'nextra/components'
 
-## components.embeddings
+# `components.embeddings`
 [source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/components/embeddings.py)
+
+This page documents the `embeddings.py` module, which provides functionality for embedding text and performing vector searches in a PostgreSQL database with `pgvector`.
+
+## Classes 
 ### `EmbeddingModelName`
 ```python
 class EmbeddingModelName()
@@ -36,26 +40,129 @@ class EmbeddingModel()
 A class to match the name of an embeddings model with the
 details required to download and use it.
 
+
+
+
+
+
+
+
 ### `PGVectorQuery`
 ```python
-class PGVectorQuery(connection: connection)
+@component
+class PGVectorQuery:
+    def __init__(
+		self,
+		embed_vocab: List[str] | None = None,
+		standard_concept: bool = False,
+		top_k: int = 5,
+	) -> None:
 ```
 
-A haystack component for retrieving concept information using embeddings in a postgres database with pgvector
+A haystack component for retrieving concept information using embeddings in a postgres database with `pgvector`
+
+#### Parameters 
+- `embed_vocab`: Optional list of vocabulary IDs to filter results
+- `standard_concept`: Whether to only return standard concepts 
+- `top_k`: Maximum number of results to return 
 
 
-#### Methods
-
-##### `run`
+#### `run`
 ```python
-def run()
+@component.output_types(documents=List[Document])
+def run(self, query_embedding: List[float])
+```
+Performs a vector similarity search in the database.
+
+##### Parameters:
+- `query_embedding`: List of floats representing the query embedding
+
+##### Returns
+Dictionary with key `documents` containing a list of Haystack `Document` objects with:
+- `id`: Concept ID
+- `content`: Concept text
+- `score`: Similarity score
+
+
+
+
+
+### `Embeddings`
+```python
+class Embeddings:
+    def __init__(
+        self,
+        model_name: EmbeddingModelName,
+        embed_vocab: List[str] | None = None,
+        standard_concept: bool = False,
+        top_k: int = 5,
+    ) -> None:
 ```
 
+The main class for interacting with embeddings and vector search functionality. This class serves as an interface between the embeddings table of the OMOP-CDM database and the Haystack components pipeline. 
+
+#### Parameters
+- `model_name`: The embedding model to use
+- `embed_vocab`: Optional list of vocabulary IDs to filter results
+- `standard_concept`: Whether to only return standard concepts
+- `top_k`: Maximum number of results to return
+
+#### `get_embedder`
+```python 
+def get_embedder(self) -> FastembedTextEmbedder:
+```
+Creates and returns a `FastembedTextEmbedder` instance configured with the selected model.
+Get an embedder for queries in LLM pipelines
+
+##### Returns
+- A configured `FastembedTextEmbedder` instance ready to generate embeddings
+
+#### `get_retriever`
+```python 
+def get_retriever(self) -> PGVectorQuery:
+```
+
+Creates and returns a PGVectorQuery instance for performing database searches.
+
+##### Returns
+A configured `PGVectorQuery` instance
+
+#### `search`
+```python
+def search(
+	self, 
+	query: List[str]
+) -> List[List[Dict[str, Any]]]:
+```
+
+Search the attached vector database with a list of informal medications
+
+##### Parameters
+`query: List[str]`
+A list of informal medication names
+
+##### Returns
+`List[List[Dict[str, Any]]]`
+For each medication in the query, the result of searching the vector database. This is a nested list where each list contains dictionaries with: 
+- `concept_id`: ID of the matching concept 
+- `concept`: Text of the matching concept 
+- `score`: Similarity score 
+
+
+
+
+
+
+
+
+
+
+## Functions 
 ### `get_embedding_model`
 ```python
 def get_embedding_model(
 	name: EmbeddingModelName
-)
+) -> EmbeddingModel:
 ```
 
 Collects the details of an embedding model when given its name
@@ -69,104 +176,4 @@ The name of an embedding model we have the details for
 `EmbeddingModel`
 An EmbeddingModel object containing the name and the details used
 
-
-### `Embeddings`
-```python
-class Embeddings(
-	embeddings_path: str
-	force_rebuild: bool
-	embed_vocab: str[List]
-	model_name: EmbeddingModelName
-	search_kwargs: dict
-)
-```
-
-This class allows the building or loading of a vector
-database of concept names. This database can then
-be used for vector search.
-
-### Methods
-
-#### `__init__`
-```python
-method __init__(
-	embeddings_path: str
-	force_rebuild: bool
-	embed_vocab: str[List]
-	model_name: EmbeddingModelName
-	search_kwargs: dict
-)
-```
-
-Initialises the connection to an embeddings database
-
-##### Parameters
-`embeddings_path: str`
-    A path for the embeddings database. If one is not found,
-    it will be built, which takes a long time. This is built
-    from concepts fetched from the OMOP database.
-
-`force_rebuild: bool`
-    If true, the embeddings database will be rebuilt.
-
-`embed_vocab: List[str]`
-    A list of OMOP vocabulary_ids. If the embeddings database is
-    built, these will be the vocabularies used in the OMOP query.
-
-`model: EmbeddingModel`
-    The model used to create embeddings.
-
-`search_kwargs: dict`
-    kwargs for vector search.
-
-#### `_build_embeddings`
-```
-def _build_embeddings()
-```
-
-Build a vector database of embeddings
-
-#### `_load_embeddings`
-```
-def _load_embeddings()
-```
-
-If available, load a vector database of concept embeddings
-
-#### `get_embedder`
-```
-def get_embedder()
-```
-
-Get an embedder for queries in LLM pipelines
-
-##### Returns
-FastembedTextEmbedder
-
-#### `get_retriever`
-```
-def get_retriever()
-```
-
-Get a retriever for LLM pipelines
-
-##### Returns
-QdrantEmbeddingRetriever
-
-#### `search`
-```python
-def search(
-	query: str[List]
-)
-```
-
-Search the attached vector database with a list of informal medications
-
-##### Parameters
-`query: List[str]`
-A list of informal medication names
-
-##### Returns
-`List[List[Dict[str, Any]]]`
-For each medication in the query, the result of searching the vector database
 
