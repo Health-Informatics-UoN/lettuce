@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 import os
 
 from omop.omop_queries import query_vector
-from omop.db_manager import db_session
+from omop.db_manager import get_session
 
 # -------- Embedding Models -------- >
 
@@ -103,12 +103,10 @@ class PGVectorQuery:
     """
     def __init__(
             self,
-            connection: Session,
             embed_vocab: List[str] | None = None,
             standard_concept:bool= False,
             top_k: int = 5,
             ) -> None:
-        self._connection = connection
         self._embed_vocab = embed_vocab
         self._standard_concept= standard_concept
         self._top_k = top_k
@@ -126,20 +124,21 @@ class PGVectorQuery:
                 standard_concept=self._standard_concept,
                 n = self._top_k,
                 ) 
-        try:
-            query_results = self._connection.execute(query).mappings().all()
-        except SQLAlchemyError as e:
-            raise SQLAlchemyError(f"Vector query execution failed: {str(e)}")
-        try:
-            return {"documents": [
-                Document(
-                    id=res["id"],
-                    content=res["content"],
-                    score=res["score"],
-                    ) for res in query_results]
-                }
-        except KeyError as e:
-            raise KeyError(f"Missing required key in query results: {str(e)}")
+        with get_session() as session: 
+            try:
+                query_results = session.execute(query).mappings().all()
+            except SQLAlchemyError as e:
+                raise SQLAlchemyError(f"Vector query execution failed: {str(e)}")
+            try:
+                return {"documents": [
+                    Document(
+                        id=res["id"],
+                        content=res["content"],
+                        score=res["score"],
+                        ) for res in query_results]
+                    }
+            except KeyError as e:
+                raise KeyError(f"Missing required key in query results: {str(e)}")
 
 def get_embedding_model(name: EmbeddingModelName) -> EmbeddingModel:
     """
@@ -231,7 +230,6 @@ class Embeddings:
         try:
             assert(self._model.info.dimensions == int(os.environ["DB_VECSIZE"]))
             return PGVectorQuery(
-                    db_session(),
                     embed_vocab=self._embed_vocab,
                     standard_concept=self._standard_concept,
                     top_k=self._top_k,
