@@ -6,8 +6,6 @@ import pandas as pd
 from urllib.parse import quote_plus
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from unittest.mock import Mock
-from haystack.dataclasses import Document
 
 from omop.omop_queries import (
     query_ancestors_by_name,
@@ -17,7 +15,6 @@ from omop.omop_queries import (
     query_ancestors_and_descendants_by_id, 
     query_related_by_id
 )
-from utils.logging_utils import logger
 
 
 pytestmark = pytest.mark.skipif(os.getenv('SKIP_DATABASE_TESTS') == 'true', reason="Skipping database tests")
