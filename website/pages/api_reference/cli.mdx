@@ -207,23 +207,68 @@ The model used to generate embeddings for vector search. Available options:
 
 ## Output Format
 
-The CLI returns results in JSON-like format printed to `stdout` (*under revision*):
+The CLI prints results to the console in a structured JSON format (*under revision*). Each query produces a comprehensive result object with vector search results, LLM matching, and OMOP concept data:
 
 ```json
-{
-  "query": "betnovate scalp application",
-  "omop_concepts": [
-    {
-      "concept_id": 19135308,
-      "concept_name": "Betamethasone Valerate 0.1% Scalp Application",
-      "domain_id": "Drug",
-      "vocabulary_id": "RxNorm",
-      "concept_class_id": "Clinical Drug",
-      "standard_concept": "S",
-      "concept_code": "1435513",
-      "match_score": 0.92
+[
+  {
+    "query": "acetaminophen",
+    "Vector Search Results": [
+      {"content": "Acetaminophen", "score": 5.960464815046862e-07},
+      // Additional vector search results omitted for brevity
+    ],
+    "llm_answer": "Acetaminophen",
+    "OMOP fuzzy threshold": 80,
+    "OMOP matches": {
+      "search_term": "Acetaminophen",
+      "CONCEPT": [
+        {
+          "concept_name": "acetaminophen",
+          "concept_id": 1125315,
+          "vocabulary_id": "RxNorm",
+          "concept_code": "161",
+          "concept_name_similarity_score": 100.0,
+          "CONCEPT_SYNONYM": [],
+          "CONCEPT_ANCESTOR": [],
+          "CONCEPT_RELATIONSHIP": []
+        },
+        {
+          "concept_name": "Acetaminophen Jr",
+          "concept_id": 19052416,
+          "vocabulary_id": "RxNorm", 
+          "concept_code": "214962",
+          "concept_name_similarity_score": 89.65,
+          "CONCEPT_SYNONYM": [],
+          "CONCEPT_ANCESTOR": [],
+          "CONCEPT_RELATIONSHIP": []
+        }
+        // Additional concept matches omitted for brevity
+      ]
     }
-  ],
-  "execution_time": "0.23s"
-}
+  },
+  {
+    "query": "codeine",
+    "Vector Search Results": [
+      {"content": "Codeine", "score": 4.76837158203125e-07},
+      // Additional vector search results omitted for brevity
+    ],
+    "llm_answer": "Codeine",
+    "OMOP fuzzy threshold": 80,
+    "OMOP matches": {
+      "search_term": "Codeine",
+      "CONCEPT": [
+        {
+          "concept_name": "codeine",
+          "concept_id": 1201620,
+          "vocabulary_id": "RxNorm",
+          "concept_code": "2670",
+          "concept_name_similarity_score": 100.0,
+          "CONCEPT_SYNONYM": [],
+          "CONCEPT_ANCESTOR": [],
+          "CONCEPT_RELATIONSHIP": []
+        }
+      ]
+    }
+  }
+]
 ```
