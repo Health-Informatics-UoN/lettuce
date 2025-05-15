@@ -59,6 +59,27 @@ def test_basic_search():
     assert all(match["vocabulary_id"] == "RxNorm" for match in omop_matches)
 
 
+def test_search_with_multiple_search_terms(): 
+    result = run_lettuce_cli_command([
+        "--vector_search", 
+        "--use_llm", 
+        "--vocabulary_id", 
+        "RxNorm", 
+        "--model_name", 
+        "tinyllama-1.1b-chat", 
+        "--informal_names", 
+        "acetaminophen", 
+        "codeine", 
+        "ibuprofen"
+    ])
+    output = parse_output(result.stdout)
+    omop_matches_acetaminophen = output[0]["OMOP matches"]["CONCEPT"]
+    assert result.returncode == 0 
+    assert len(output) == 3 
+    assert any(match["concept_name"] == "acetaminophen" for match in omop_matches_acetaminophen)
+    assert all(match["vocabulary_id"] == "RxNorm" for match in omop_matches_acetaminophen)
+
+
 def test_vector_search(): 
     result = run_lettuce_cli_command([
         "--vector_search", 
