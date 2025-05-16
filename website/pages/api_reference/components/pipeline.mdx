@@ -1,83 +1,87 @@
-## components.pipeline
-[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/components/pipeline.py)
-### `llm_pipeline`
+# `components.pipeline`
+The Pipeline module provides functionality for creating different types of inference pipelines using the Haystack framework. 
+It supports both simple LLM-based and Retrieval-Augmented Generation (RAG) pipelines for converting informal medication names to OMOP concepts.
+
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/components/pipeline.py)
+
+## `llm_pipeline`
+This class generates pipelines that connect LLMs with prompts and optionally vector search capabilities.
 ```python
-class llm_pipeline(
-	llm_model: LLMModel
-	temperature: float
-	logger: Logger
-	embeddings_path: str
-	force_rebuild: bool
-	embed_vocab: str[list]
-	embedding_model: EmbeddingModelName
-	embedding_search_kwargs: dict
+class LLMPipeline(
+    llm_model: LLMModel,
+    temperature: float,
+    logger: Logger,
+    embed_vocab: list[str] | None = None,
+    standard_concept: bool = False,
+    embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL,
+    top_k: int = 5
 )
 ```
+### Parameters 
+| Parameter         | Type                        | Description |
+|------------------|-----------------------------|-------------|
+| `llm_model`       | `LLMModel`                  | The LLM model to use for inference. Must be one of the values from the `LLMModel` enum. |
+| `temperature`     | `float`                     | Controls the randomness of LLM output generation. Lower values (e.g., `0.0`) produce more deterministic output. |
+| `logger`          | `logging.Logger`            | Logger instance for recording pipeline operations. |
+| `embed_vocab`     | `list[str] \| None`         | Optional list of OMOP vocabulary IDs to filter RAG results (e.g., `["RxNorm", "SNOMED"]`). |
+| `standard_concept`| `bool`                      | If `True`, restricts RAG results to standard concepts only. |
+| `embedding_model` | `EmbeddingModelName`        | The model used to create embeddings for vector search. Default is `BGESMALL`. |
+| `top_k`           | `int`                       | Number of top matching results to return from vector search for RAG. Default is `5`. |
 
-This class is used to generate a pipeline for the model
+
 ### Methods
-
-#### `__init__`
+#### `get_simple_assistant`
+Creates a basic pipeline that connects a prompt template with an LLM.
 ```python
-def __init__(
-	llm_model: LLMModel
-	temperature: float
-	logger: Logger
-	embeddings_path: str
-	force_rebuild: bool
-	embed_vocab: str[list]
-	embedding_model: EmbeddingModelName
-	embedding_search_kwargs: dict
-)
+get_simple_assistant() -> Pipeline
 ```
+##### Returns 
+`Pipeline` 
 
-Initializes the llm_pipeline class
-
-##### Parameters
-`llm_model: LLMModel` The choice of LLM to run the pipeline
-
-`temperature: float`
-    The temperature the LLM uses for generation
-
-`logger: logging.Logger|None`
-    Logger for the pipeline
-
-`embeddings_path: str`
-    A path for the embeddings database. If one is not found,
-    it will be built, which takes a long time. This is built
-    from concepts fetched from the OMOP database.
-
-`force_rebuild: bool`
-    If true, the embeddings database will be rebuilt.
-
-`embed_vocab: List[str]`
-    A list of OMOP vocabulary_ids. If the embeddings database is
-    built, these will be the vocabularies used in the OMOP query.
-
-`embedding_model: EmbeddingModel`
-    The model used to create embeddings.
-
-`embedding_search_kwargs: dict`
-    kwargs for vector search.
+	A Haystack pipeline that takes informal medication names and uses an LLM to infer OMOP concepts.
 
 #### `get_simple_assistant`
 ```
-def get_simple_assistant()
+def get_simple_assistant() -> Pipeline
 ```
 
-Get a simple assistant pipeline that connects a prompt with an LLM
+Get a simple assistant pipeline that connects a prompt with an LLM. 
 
 ##### Returns
-Pipeline
+`Pipeline`
+
     The pipeline for the assistant
 
 #### `get_rag_assistant`
 ```
-def get_rag_assistant()
+def get_rag_assistant() -> Pipeline
 ```
 
-Get an assistant that uses vector search to populate a prompt for an LLM
+Get an assistant that uses vector search to populate a prompt for an LLM. 
 
 ##### Returns
-Pipeline
-    The pipeline for the assistant
+`Pipeline`: 
+    A Haystack pipeline that takes informal medication names and uses an LLM to infer OMOP concepts.
+
+### Properties 
+#### `llm_model`
+Get or set the LLM model used by the pipeline.
+
+## Technical Details 
+### Pipeline Architecture
+The pipeline module uses Haystack's component architecture to create flexible processing pipelines:
+
+1. **Simple Assistant Pipeline:** 
+	- Prompt Template → LLM → Result
+
+2. **RAG Assistant Pipeline:**
+	- Query → Embedder → Retriever → Conditional Router →
+		- If exact match (score > 0.95) → Return vector results 
+		- If no exact match → Embedder → Prompt template with vector results → LLM → Result 
+
+### Environmental Variables 
+- `LOCAL_LLM`: Path to local model weights if using locally-stored models 
+
+<Callout type="warning">
+  When using the RAG pipeline, ensure you have built a vector database first.
+</Callout>
