@@ -10,7 +10,7 @@ class LettuceResult(
 	search_term: str
 )
 ```
-A class to hold the results of different stages of Lettuce pipelines. 
+A class to hold the results of different stages of `lettuce` pipelines. 
 
 ### Parameters
 
@@ -55,7 +55,7 @@ def get_query()
 ```
 
 Retrieve the appropriate part of the result object for querying an OMOP-CDM database.
-If no previous stages have been executed, uses the search_term.
+If no previous stages have been executed, uses the `search_term`.
 If there's only a vector search result, uses the top result.
 If there is a response from an LLM, uses that.
 
