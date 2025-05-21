@@ -1,0 +1,237 @@
+# `omop.omop_queries`
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/omop/omop_queries.py)
+
+The `omop_queries.py` module provides a collection of functions that construct SQLAlchemy queries for retrieving data from an OMOP Common Data Model database. 
+These queries enable searching for concepts, exploring concept hierarchies, discovering related concepts, and performing semantic similarity searches using vector embeddings.
+
+## Functions 
+
+
+
+
+
+### `text_search_query`
+```python 
+def text_search_query(
+    search_term: str, 
+    vocabulary_id: list[str] | None, 
+    standard_concept:bool, 
+    concept_synonym: bool
+) -> Select:
+```
+Builds a query to search for concepts by text, with options to filter by vocabulary and include synonyms. This query uses PostgreSQL full-text search capabilities with `to_tsvector` and `to_tsquery`. 
+
+#### Parameters
+
+| Parameter        | Type             | Description                                                                 |
+|------------------|------------------|-----------------------------------------------------------------------------|
+| `search_term`      | `str`              | The term to use for searching concept names and synonyms                    |
+| `vocabulary_id`    | `list[str] \| None` | List of vocabulary IDs to filter by (e.g., ['RxNorm', 'SNOMED']), or None for all vocabs |
+| `standard_concept` | `bool`             | If True, only return standard concepts (those with standard_concept = 'S')   |
+| `concept_synonym`  | `bool`             | If True, include matches from the concept_synonym table                      |
+
+#### Returns 
+- `Select`: SQLAlchemy Select object for the constructed query
+
+### `get_all_vocabs`
+```python
+def get_all_vocabs() -> Select
+```
+Returns a query to retrieve all distinct vocabulary IDs from the concept table.
+
+#### Returns 
+- `Select`: SQLAlchemy Select object for retrieving all vocabulary IDs. 
+
+
+
+
+
+
+
+
+
+### `query_ids_matching_name`
+```python 
+def query_ids_matching_name(
+    query_concept, 
+    vocabulary_ids: list[str] | None
+) -> Select:
+```
+Builds a query to retrieve concept IDs that match a specified concept name.
+
+#### Parameters
+| Parameter       | Type             | Description                                           |
+|-----------------|------------------|-------------------------------------------------------|
+| `query_concept`   | `str`             | The concept name to match (case-insensitive)          |
+| `vocabulary_ids`  | `list[str] \| None` | Optional list of vocabulary IDs to filter by          |
+
+#### Returns 
+- `Select`: SQLAlchemy Select object for the constructed query
+
+
+
+
+
+
+
+
+### `query_ancestors_and_descendants_by_id`
+``` python 
+def query_ancestors_and_descendants_by_id(
+    concept_id: int, 
+    min_separation_ancestor: int = 1, 
+    max_separation_ancestor: int | None = 1, 
+    min_separation_descendant: int = 1, 
+    max_separation_descendant: int | None = 1
+) -> CompoundSelect
+```
+Builds a query to find both ancestors and descendants of a concept within specified hierarchical distances. If max_separation values are None, they default to 1000 (essentially unlimited).
+The query returns a relationship type ('Ancestor' or 'Descendant') to distinguish the results. 
+
+#### Parameters 
+| Parameter                   | Type          | Default    | Description                                           |
+|----------------------------|---------------|------------|-------------------------------------------------------|
+| `concept_id    `             | `int`           | required   | The concept ID to find hierarchy for                  |
+| `min_separation_ancestor`    | `int`           | 1          | Minimum levels of separation for ancestors            |
+| `max_separation_ancestor`    | `int \| None`   | 1          | Maximum levels of separation for ancestors           |
+| `min_separation_descendant`  | `int`           | 1          | Minimum levels of separation for descendants          |
+| `max_separation_descendant`  | `int \| None`   | 1          | Maximum levels of separation for descendants          |
+
+#### Returns
+- `CompoundSelect`: SQLAlchemy union query combining ancestor and descendant results
+
+
+
+
+
+
+### `query_related_by_id`
+```python 
+def query_related_by_id(
+    concept_id: int
+) -> Select:
+```
+Builds a query to find all concepts related to a given concept ID through the concept_relationship table. It only returns active relationships (where valid_end_date is in the future) and it excludes self-relationships (where `concept_id_1` = `concept_id_2`). 
+It also returns detailed information about both the relationship and the related concept. 
+
+#### Parameters 
+| Parameter   | Type | Description                                   |
+|-------------|------|-----------------------------------------------|
+| `concept_id`  | int  | The source concept ID for which to find related concepts |
+
+#### Returns 
+- `Select`: SQLAlchemy Select object for the constructed query
+
+
+
+
+
+
+
+
+
+### `query_ancestors_by_name`
+```python
+def query_ancestors_by_name(
+    query_concept: str, 
+    vocabulary_ids: list[str] | None, 
+    min_separation_bound: int = 0, 
+    max_separation_bound: int | None = None
+) -> Select
+```
+Builds a query to find ancestors of concepts matching a specified name.
+#### Parameters 
+| Parameter              | Type             | Default   | Description                                   |
+|-----------------------|------------------|-----------|-----------------------------------------------|
+| `query_concept`         | `str`              | required  | The concept name to match                     |
+| `vocabulary_ids`        | `list[str] \| None` | required  | Optional list of vocabulary IDs to filter by  |
+| `min_separation_bound`  | `int`              | 0         | Minimum hierarchical distance                 |
+| `max_separation_bound`  | `int \| None`      | None      | Maximum hierarchical distance                 |
+
+#### Returns
+- `Select`: SQLAlchemy Select object for the constructed query
+
+
+
+
+
+
+
+### `query_descendants_by_name`
+```python 
+def query_descendants_by_name(
+    query_concept: str, 
+    vocabulary_ids: list[str] | None, 
+    min_separation_bound: int = 0, 
+    max_separation_bound: int | None = None
+) -> Select
+```
+Builds a query to find descendants of concepts matching a specified name.
+
+#### Parameters 
+| Parameter              | Type             | Default   | Description                                   |
+|-----------------------|------------------|-----------|-----------------------------------------------|
+| `query_concept`         | `str`              | required  | The concept name to match                     |
+| `vocabulary_ids`        | `list[str] \| None` | required  | Optional list of vocabulary IDs to filter by  |
+| `min_separation_bound`  | `int`              | 0         | Minimum hierarchical distance                 |
+| `max_separation_bound`  | `int \| None`      | None      | Maximum hierarchical distance                 |
+#### Returns 
+- `Select`: SQLAlchemy Select object for the constructed query
+
+
+
+
+
+
+### `query_related_by_name`
+```python 
+def query_related_by_name(
+    query_concept: str, 
+    vocabulary_ids: list[str] | None
+) -> Select
+```
+Builds a query to find concepts related to concepts matching a specified name.
+
+This function searches for concepts whose names match the provided query string,
+then returns a SQLAlchemy Select object that queries for all concepts that are
+related to the matching concepts through ConceptRelationship entries.
+#### Parameters
+| Parameter       | Type             | Description                                   |
+|-----------------|------------------|-----------------------------------------------|
+| `query_concept`   | `str`              | The concept name to match                     |
+| `vocabulary_ids`  | `list[str] \| None` | Optional list of vocabulary IDs to filter by  |
+
+#### Returns 
+- `Select`: SQLAlchemy Select object for the constructed query
+
+
+
+
+
+
+
+### `query_vector`
+```python 
+def query_vector(
+    query_embedding, 
+    embed_vocab: list[str] | None, 
+    standard_concept: bool = False, 
+    n: int = 5
+) -> Select
+```
+
+Builds a query to find concepts with embeddings similar to the provided vector - inferred from a pre-trained embeddings model. Uses PostgreSQL vector operations for cosine distance calculation
+and orders results by similarity (lowest cosine distance first). 
+
+
+#### Parameters 
+| Parameter         | Type             | Default | Description                                   |
+|-------------------|------------------|---------|-----------------------------------------------|
+| `query_embedding`   | `vector`           | required | The vector embedding to compare against       |
+| `embed_vocab`       | `list[str] \| None` | required | Optional list of vocabulary IDs to filter by  |
+| `standard_concept`  | `bool`             | False   | If True, only include standard concepts       |
+| `n`                 | `int`              | 5       | Maximum number of results to return           |
+
+
+#### Returns 
+- `Select`: SQLAlchemy Select object for the constructed query
