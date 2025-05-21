@@ -1,7 +1,10 @@
 # `omop.omop_match`
-The `omop_match` file provides functionality to match informal drug names and terms against standard concepts in a given set of OMOP Common Data Model vocabularies. It performs fuzzy matching to find the most relevant OMOP concepts and can optionally retrieve related concepts, ancestors, descendants, and synonyms.
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/omop/omop_match.py)
 
-[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/omop/OMOP_match.py)
+The `omop_match` file provides functionality to match informal drug names and terms against standard concepts in a given set of OMOP Common Data Model vocabularies. 
+It performs fuzzy matching to find the most relevant OMOP concepts and can optionally retrieve related concepts, ancestors, descendants, and synonyms.
+
+
 ## `OMOPMatcher`
 This class retrieves matches from an OMOP database and returns the best matching concepts based on fuzzy string matching.
 ```python
