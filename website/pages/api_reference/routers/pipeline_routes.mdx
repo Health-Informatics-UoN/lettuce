@@ -1,6 +1,10 @@
-## routers.pipeline_routes
+# `routers.pipeline_routes`
 [source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/routers/pipeline_routes.py)
-### `PipelineRequest`
+
+The `pipeline_routes.py` file defines FastAPI routes for `lettuce`. This API provides several endpoints for different conversion workflows, including LLM-based conversion, direct database lookups, vector search, and a RAG (Retrieval Augmented Generation) pipeline.
+
+## `PipelineRequest`
+
 ```python
 class PipelineRequest(
   names: List[str]
@@ -8,13 +12,15 @@ class PipelineRequest(
 )
 ```
 
-This class takes the format of a request to the API
+This class takes the format of a request to the API. 
 
-#### Attributes
-`name: str`
+### Attributes
+- `name: str`
+    
     The drug name sent to a pipeline
 
-`pipeline_options: Optional[PipelineOptions]`
+- `pipeline_options: Optional[PipelineOptions]`
+    
     Optionally, the default values can be overridden by instantiating a PipelineOptions object. If none is supplied, default arguments are used
 
 ### `generate_events`
@@ -22,17 +28,17 @@ This class takes the format of a request to the API
 async def generate_events(request: PipelineRequest)
 ```
 
-Generate LLM output and OMOP results for a list of informal names
+Generate LLM output and OMOP results for a list of informal names.
 
-##### Workflow
+#### Workflow
 For each informal name:
 
 1. The first event is to Query the OMOP database for a match
 2. The second event is to fetches relevant concepts from the OMOP database
 3. Finally, the function yields results as they become available,
     allowing for real-time streaming.
-##### Conditions
-If the OMOP database returns a match, the LLM is not queried
+#### Conditions
+If the OMOP database returns a match, the LLM is not queried.
 
 If the OMOP database does not return a match,
 the LLM is used to find the formal name and the OMOP database is
@@ -42,17 +48,20 @@ Finally, the function yields the results for real-time streaming.
 
 
 #### Parameters
-`request: PipelineRequest`
+- `request: PipelineRequest`
+    
     The request containing the list of informal names.
 
 
 
 
 #### Yields
-`str`
+- `str`
     JSON encoded strings of the event results. Two types are yielded:
-    1. "llm_output": The result from the language model processing.
-    2. "omop_output": The result from the OMOP database matching.
+    
+    - `llm_output`: The result from the language model processing.
+        
+    - `omop_output`: The result from the OMOP database matching.
 
 
 ### `run_pipeline`
@@ -62,13 +71,16 @@ async def run_pipeline(
   request: PipelineRequest
 )
 ```
-Call `generate_events` to run the pipeline
+Call `generate_events` to run the pipeline. 
 
 #### Parameters
-`request: PipelineRequest`
+- `request: PipelineRequest`
+    
     The request containing a list of informal names
+
 #### Returns
-`EventSourceResponse`
+- `EventSourceResponse`
+    
     The response containing the events
 
 
@@ -79,16 +91,18 @@ async def run_db(
   request: PipelineRequest
 )
 ```
-Fetch OMOP concepts for a name
+Fetch OMOP concepts for a name.
 
-Default options can be overridden by the pipeline_options in the request
+Default options can be overridden by the `pipeline_options` in the request.
 
 #### Parameters
-`request: PipelineRequest`
+- `request: PipelineRequest`
+    
     An API request containing a list of informal names and the options of a pipeline
 
 #### Returns
-`dict`
+- `dict`
+    
     Details of OMOP concept(s) fetched from a database query
 
 
@@ -101,15 +115,18 @@ async def run_vector_search(
 ```
 Search a vector database for a name
 
-Default options can be overridden by pipeline_options
-A warning: if you don't have a vector database set up under the embeddings_path, this method will build one for you. This takes a while, an hour using 2.8 GHz intel I7, 16 Gb RAM.
+Default options can be overridden by `pipeline_options`. 
+
+A warning: if you don't have a vector database set up under the `embeddings_path`, this method will build one for you. This takes a while, an hour using 2.8 GHz intel I7, 16 Gb RAM.
 
 #### Parameters
-`request: PipelineRequest`
+- `request: PipelineRequest`
+    
     An API request containing a list of informal names and the options of a pipeline
 
 #### Returns
-`list`
+- `list`
+    
     Details of OMOP concept(s) fetched from a vector database query
 
 
@@ -120,16 +137,18 @@ async def vector_llm_pipeline(
   request: PipelineRequest
 )
 ```
-Run a RAG pipeline that first checks a vector database, then uses an LLM
+Run a RAG pipeline that first checks a vector database, then uses an LLM. 
 
 This has a conditional router in it that checks whether there's an exact match for the term.
 If there is an exact match, the vector search results are returned.
-If there is not, the vector search results are used for retrieval augmented generation
+If there is not, the vector search results are used for retrieval augmented generation. 
 
 #### Parameters
-`request: PipelineRequest`
+- `request: PipelineRequest`
 
 #### Returns
-`list`
+- `list` 
+
+    Combined results from vector search and LLM processing 
 
 
