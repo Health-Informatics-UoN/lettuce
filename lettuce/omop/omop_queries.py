@@ -7,15 +7,19 @@ from omop.omop_models import (
 )
 
 import sqlalchemy as sa
-from sqlalchemy import select, or_, func, literal
+from sqlalchemy import select, or_, func, literal, distinct
 from sqlalchemy.sql import Select, CompoundSelect, text, null
+from typing import List, Optional
 
 from omop.preprocess import preprocess_search_term
 
+def count_concepts() -> Select:
+    return select(sa.func.count(distinct(Concept.concept_id)))
+
 def ts_rank_query(
         search_term: str,
-        vocabulary_id: List[str],
-        domain_id: List[str],
+        vocabulary_id: Optional[List[str]],
+        domain_id: Optional[List[str]],
         standard_concept: bool,
         valid_concept: bool,
         top_k: int,
