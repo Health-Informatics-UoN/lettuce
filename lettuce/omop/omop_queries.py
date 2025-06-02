@@ -24,6 +24,9 @@ def ts_rank_query(
         valid_concept: bool,
         top_k: int,
         ) -> Select:
+    pp_search = preprocess_search_term(search_term)
+    ts_query = sa.func.to_tsquery("english", pp_search)
+    ts_rank_col = sa.func.ts_rank(Concept.concept_name_tsv, ts_query).label("ts_rank")
     query = select(
             Concept.concept_name,
             Concept.concept_id,
@@ -32,6 +35,7 @@ def ts_rank_query(
             Concept.concept_class_id,
             Concept.standard_concept,
             Concept.invalid_reason,
+            ts_rank_col,
             )
     if vocabulary_id is not None:
         query = query.where(Concept.vocabulary_id.in_(vocabulary_id))
@@ -42,12 +46,10 @@ def ts_rank_query(
     if valid_concept:
         query = query.where(Concept.invalid_reason != None)
 
-    pp_search = preprocess_search_term(search_term)
-    ts_query = sa.func.to_tsquery("english", pp_search)
     return  query.where(
                 Concept.concept_name_tsv.bool_op("@@")(ts_query)
             ).order_by(
-                sa.func.ts_rank(Concept.concept_name_tsv, ts_query).desc()
+                ts_rank_col.desc()
             ).limit(top_k)
 
 

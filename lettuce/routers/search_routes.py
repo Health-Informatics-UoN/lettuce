@@ -38,9 +38,9 @@ async def text_search(
                     concept_class_id=r.concept_class_id,
                     standard_concept=r.standard_concept,
                     invalid_reason=r.invalid_reason,
-                    ranks=None,
-                    scores=None,
-                    ) for r in results
+                    ranks={"text_search": i+1},
+                    scores={"text_search": r.ts_rank},
+                    ) for i, r in enumerate(results)
                 ],
             metadata=metadata
             )
