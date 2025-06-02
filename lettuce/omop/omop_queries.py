@@ -1,4 +1,3 @@
-from typing import List
 from omop.omop_models import (
     Concept,
     ConceptRelationship,
@@ -34,7 +33,7 @@ def text_search_query(
         An SQLAlchemy Select for the desired query
     """
     concept_ts_condition = text(
-        "to_tsvector('english', concept_name) @@ to_tsquery('english', :search_term)"
+        "concept_name_tsv @@ to_tsquery('english', :search_term)"
     )
     synonym_ts_condition = text(
         "to_tsvector('english', concept_synonym_name) @@ to_tsquery('english', :search_term)"
