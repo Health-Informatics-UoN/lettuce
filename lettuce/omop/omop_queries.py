@@ -7,8 +7,46 @@ from omop.omop_models import (
     Embedding,
 )
 
+import sqlalchemy as sa
 from sqlalchemy import select, or_, func, literal
 from sqlalchemy.sql import Select, CompoundSelect, text, null
+
+from omop.preprocess import preprocess_search_term
+
+def ts_rank_query(
+        search_term: str,
+        vocabulary_id: List[str],
+        domain_id: List[str],
+        standard_concept: bool,
+        valid_concept: bool,
+        top_k: int,
+        ) -> Select:
+    query = select(
+            Concept.concept_name,
+            Concept.concept_id,
+            Concept.domain_id,
+            Concept.vocabulary_id,
+            Concept.concept_class_id,
+            Concept.standard_concept,
+            Concept.invalid_reason,
+            )
+    if vocabulary_id is not None:
+        query = query.where(Concept.vocabulary_id.in_(vocabulary_id))
+    if domain_id is not None:
+        query = query.where(Concept.domain_id.in_(domain_id))
+    if standard_concept:
+        query = query.where(Concept.standard_concept == "S")
+    if valid_concept:
+        query = query.where(Concept.invalid_reason != None)
+
+    pp_search = preprocess_search_term(search_term)
+    ts_query = sa.func.to_tsquery("english", pp_search)
+    return  query.where(
+                Concept.concept_name_tsv.bool_op("@@")(ts_query)
+            ).order_by(
+                sa.func.ts_rank(Concept.concept_name_tsv, ts_query).desc()
+            ).limit(top_k)
+
 
 
 def text_search_query(

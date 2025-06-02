@@ -1,5 +1,5 @@
 from typing import Dict, List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 class Suggestion(BaseModel):
     concept_name: str
@@ -15,8 +15,8 @@ class Suggestion(BaseModel):
 class SuggestionsMetaData(BaseModel):
     assistant: str = "Lettuce"
     version: str = "0.1.0"
-    pipeline: str
+    pipeline: Optional[str] = None
 
 class ConceptSuggestionResponse(BaseModel):
     recommendations: List[Suggestion]
-    metadata: SuggestionsMetaData
+    metadata: SuggestionsMetaData = Field(default_factory=SuggestionsMetaData)

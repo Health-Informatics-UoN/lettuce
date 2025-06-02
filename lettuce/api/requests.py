@@ -25,9 +25,12 @@ class ConceptSuggestionRequest(BaseModel):
     valid_concept: bool
         Filter on valid concepts.
         If True, only valid concepts will be suggested
+    top_k: int
+        The number of suggestions to make
     """
     source_term: str
     vocabulary_id: Optional[List[str]] = None
     domain_id: Optional[List[str]] = None
     standard_concept: bool = False
     valid_concept: bool = False
+    top_k: int = 5
