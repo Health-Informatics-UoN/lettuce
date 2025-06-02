@@ -43,7 +43,7 @@ jobs:
       - name: Move test data from synthetic into data
         run: |
           mkdir omop-lite/data
-          mv omop-lite/synthetic/* omop-lite/data/
+          mv omop-lite/omop_lite/synthetic/* omop-lite/data/
 
       - name: Start omop-ts Docker services
         run: |         
