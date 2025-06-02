@@ -44,7 +44,6 @@ def test_single_query_keys(single_query_result):
     assert list(single_query_result[0].keys()) == ["search_term", "CONCEPT"]
 
 
-@pytest.mark.skip(reason="Temporarily disabled until acetaminophen added to mini test database")
 def test_single_query_concept_keys(single_query_result):
     concept_keys = list(single_query_result[0]["CONCEPT"][0])
     assert concept_keys == [
