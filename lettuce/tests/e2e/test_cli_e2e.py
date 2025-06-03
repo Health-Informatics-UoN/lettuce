@@ -76,7 +76,6 @@ def test_basic_search_with_multiple_search_terms():
         assert any(match["concept_name"] == search_term for match in omop_matches)
 
 
-@pytest.mark.skip(reason="Acetaminophen/omeprazole not in the embeddings table")
 def test_vector_search(): 
     result = run_lettuce_cli_command([
         "--vector_search", 
@@ -110,7 +109,6 @@ def test_llm_pipeline():
     assert output[0]["llm_answer"] == "Acetaminophen"
 
 
-@pytest.mark.skip(reason="Acetaminophen/omeprazole not in the embeddings table")
 def test_combined_vector_and_llm(): 
     result = run_lettuce_cli_command([
         "--vector_search", 
@@ -128,4 +126,4 @@ def test_combined_vector_and_llm():
     assert len(omop_matches) > 0 
     assert output[0]["llm_answer"] == "Acetaminophen"
     assert len(vector_search_results) > 0 
-    assert any(match["content"] == "Acetaminophen" for match in vector_search_results)
+    assert any(match["content"].lower() == "acetaminophen" for match in vector_search_results)
