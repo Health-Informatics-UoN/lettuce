@@ -17,7 +17,7 @@ class ConceptSuggestionRequest(BaseModel):
     domain_id: Optional[List[str]]
         An optional filter on the domains searched.
         If None, no filter is applied.
-        If any vocabulary_id are supplied, only concepts from those
+        If any domain_id are supplied, only concepts from those
         domains will be suggested
     standard_concept: bool
         Filter on standard concepts.
