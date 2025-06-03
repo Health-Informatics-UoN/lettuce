@@ -30,6 +30,10 @@ class OMOPMatcher:
         
     concept_synonym: bool
         Whether to explore concept synonyms in the result
+    
+    standard_concept: bool 
+        Whether or notto filter the query results based upon whether or not the search 
+        space only includes standard concepts 
 
     search_threshold: int
         The fuzzy match threshold for results
