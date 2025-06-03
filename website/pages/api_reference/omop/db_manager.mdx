@@ -1,0 +1,34 @@
+# `omop.db_manager`
+
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/omop/db_manager.py)
+
+The `db_manager.py` module provides utilities for managing database connections to a PostgreSQL database hosting OMOP data tables. It creates a secure connection using environment variables and offers a context manager for safe session handling with SQLAlchemy.
+
+## Functions 
+### `get_db_connection`
+Retrieves database connection parameters from environment variables and constructs a PostgreSQL connection URI.
+
+#### Environmental variables 
+| Variable | Description |
+|----------|-------------|
+| `DB_HOST` | Database server hostname or IP address |
+| `DB_USER` | Database username for authentication |
+| `DB_PASSWORD` | Database password for authentication |
+| `DB_NAME` | Name of the database to connect to |
+| `DB_PORT` | Port number for database connection |
+| `DB_SCHEMA` | Schema name containing the OMOP tables |
+
+#### Returns 
+- Dictionary containing: 
+    - `uri`: Complete PostgreSQL connection URI for SQL Alchemy 
+    - `schema`: Database schema name 
+
+### `get_session`
+Context manager that provides a database session and ensures it is properly closed after use. It ensures timely release of database connections back to the connection pool, improving application scalability. 
+
+#### Returns 
+- A SQLAlchemy session object that can be used to execute database queries 
+
+### Module Variables
+- `engine` (`sqlalchemy.engine.base.Engine`): SQLAlchemy engine instance configured with the connection URI
+- `db_session` (`sqlalchemy.orm.session.sessionmaker`): SQLAlchemy sessionmaker configured with the engine 
