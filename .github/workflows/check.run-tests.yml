@@ -31,7 +31,7 @@ jobs:
         with:
           repository: Health-Informatics-UoN/omop-lite  
           path: omop-lite
-          ref: bug-fix/fix-new-entries-in-concept-and-concept-relationship-csv
+          ref: main
 
       - name: Checkout lettuce repository
         uses: actions/checkout@v4
