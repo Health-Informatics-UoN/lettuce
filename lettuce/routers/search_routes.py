@@ -7,6 +7,13 @@ from omop.omop_queries import count_concepts, ts_rank_query
 
 router = APIRouter()
 
+@router.get("/")
+def check_db():
+    with get_session() as session:
+        query = count_concepts()
+        result = session.execute(query).first()
+    return f"There are {result[0]} concepts"
+
 @router.get("/text-search/{search_term}")
 async def text_search(
         search_term: str,
@@ -45,10 +52,3 @@ async def text_search(
             metadata=metadata
             )
     return response
-
-@router.get("/")
-def check_db():
-    with get_session() as session:
-        query = count_concepts()
-        result = session.execute(query).first()
-    return f"There are {result[0]} concepts"

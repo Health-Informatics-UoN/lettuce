@@ -346,7 +346,8 @@ def query_related_by_id(concept_id: int) -> Select:
 
 def query_vector(
         query_embedding,
-        embed_vocab: list[str] | None,
+        embed_vocab: List[str] | None = None,
+        domain_id: List[str] | None = None,
         standard_concept: bool = False,
         n: int = 5,
         ) -> Select:
@@ -362,6 +363,8 @@ def query_vector(
     )
     if embed_vocab is not None:
         query = query.where(Concept.vocabulary_id.in_(embed_vocab))
+    if domain_id is not None:
+        query = query.where(Concept.domain_id.in_(domain_id))
     if standard_concept:
         query = query.where(Concept.standard_concept == "S")
 
