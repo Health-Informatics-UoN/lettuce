@@ -15,7 +15,6 @@ jobs:
     env:
       SKIP_DATABASE_TESTS: false 
       SKIP_LLM_TESTS: true 
-      SKIP_EVAL_TESTS: true 
       DB_HOST: "localhost"
       DB_USER: "postgres"
       DB_PASSWORD: "password"
@@ -32,7 +31,7 @@ jobs:
         with:
           repository: Health-Informatics-UoN/omop-lite  
           path: omop-lite
-          ref: main
+          ref: bug-fix/fix-new-entries-in-concept-and-concept-relationship-csv
 
       - name: Checkout lettuce repository
         uses: actions/checkout@v4
