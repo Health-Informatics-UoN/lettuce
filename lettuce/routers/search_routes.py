@@ -21,8 +21,10 @@ async def text_search(
         domain_id: Annotated[List[str] | None, Query()]=None,
         standard_concept: bool=False,
         valid_concept: bool=False,
-        top_k: int=5,
+        top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)]=5,
         ) -> ConceptSuggestionResponse:
+    if top_k:
+        top_k = top_k
     query = ts_rank_query(
             search_term=search_term,
             vocabulary_id=vocabulary_id,
