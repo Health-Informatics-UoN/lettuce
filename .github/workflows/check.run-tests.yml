@@ -1,11 +1,12 @@
 name: Run Tests
 
 on:
-  #pull_request:
-
- push:
+  pull_request:
     branches:
-      - deliverable/implement-small-omop-db-for-ci-tests
+      - main 
+  push:
+    branches:
+      - main
 
 jobs:
   run-tests:
