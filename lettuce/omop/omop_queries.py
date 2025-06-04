@@ -44,7 +44,7 @@ def ts_rank_query(
     if standard_concept:
         query = query.where(Concept.standard_concept == "S")
     if valid_concept:
-        query = query.where(Concept.invalid_reason != None)
+        query = query.where(Concept.invalid_reason == None)
 
     return  query.where(
                 Concept.concept_name_tsv.bool_op("@@")(ts_query)
