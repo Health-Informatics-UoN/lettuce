@@ -6,8 +6,52 @@ from omop.omop_models import (
     Embedding,
 )
 
-from sqlalchemy import select, or_, func, literal
+import sqlalchemy as sa
+from sqlalchemy import select, or_, func, literal, distinct
 from sqlalchemy.sql import Select, CompoundSelect, text, null
+from typing import List, Optional
+
+from omop.preprocess import preprocess_search_term
+
+def count_concepts() -> Select:
+    return select(sa.func.count(distinct(Concept.concept_id)))
+
+def ts_rank_query(
+        search_term: str,
+        vocabulary_id: Optional[List[str]],
+        domain_id: Optional[List[str]],
+        standard_concept: bool,
+        valid_concept: bool,
+        top_k: int,
+        ) -> Select:
+    pp_search = preprocess_search_term(search_term)
+    ts_query = sa.func.to_tsquery("english", pp_search)
+    ts_rank_col = sa.func.ts_rank(Concept.concept_name_tsv, ts_query).label("ts_rank")
+    query = select(
+            Concept.concept_name,
+            Concept.concept_id,
+            Concept.domain_id,
+            Concept.vocabulary_id,
+            Concept.concept_class_id,
+            Concept.standard_concept,
+            Concept.invalid_reason,
+            ts_rank_col,
+            )
+    if vocabulary_id is not None:
+        query = query.where(Concept.vocabulary_id.in_(vocabulary_id))
+    if domain_id is not None:
+        query = query.where(Concept.domain_id.in_(domain_id))
+    if standard_concept:
+        query = query.where(Concept.standard_concept == "S")
+    if valid_concept:
+        query = query.where(Concept.invalid_reason == None)
+
+    return  query.where(
+                Concept.concept_name_tsv.bool_op("@@")(ts_query)
+            ).order_by(
+                ts_rank_col.desc()
+            ).limit(top_k)
+
 
 
 def text_search_query(
@@ -302,7 +346,8 @@ def query_related_by_id(concept_id: int) -> Select:
 
 def query_vector(
         query_embedding,
-        embed_vocab: list[str] | None,
+        embed_vocab: List[str] | None = None,
+        domain_id: List[str] | None = None,
         standard_concept: bool = False,
         n: int = 5,
         ) -> Select:
@@ -318,6 +363,8 @@ def query_vector(
     )
     if embed_vocab is not None:
         query = query.where(Concept.vocabulary_id.in_(embed_vocab))
+    if domain_id is not None:
+        query = query.where(Concept.domain_id.in_(domain_id))
     if standard_concept:
         query = query.where(Concept.standard_concept == "S")
 
