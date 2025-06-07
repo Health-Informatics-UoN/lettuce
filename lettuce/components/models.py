@@ -116,7 +116,7 @@ def get_local_weights(
         raise FileNotFoundError(f"Model weights file not found at {path_to_weights}")
    
     logger.info(f"Loading local model weights from {path_to_weights}")
-    device = -1 if torch.cuda.is_available() else 0 
+    device = -1 if (torch.cuda.is_available() or torch.backends.mps.is_available()) else 0
     logger.info(f"Using {device} GPU layers")
 
     # Load the model using llama 
@@ -145,7 +145,7 @@ def download_model_from_huggingface(
     max_tokens: int = 128 
 ): 
     logger.info(f"Loading local model: {model_name}")
-    device = -1 if torch.cuda.is_available() else 0
+    device = -1 if (torch.cuda.is_available() or torch.backends.mps.is_available()) else 0
     logger.info(f"Using {device} GPU layers")
 
     try: 
