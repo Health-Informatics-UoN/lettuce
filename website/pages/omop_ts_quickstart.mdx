@@ -1,0 +1,64 @@
+import { Steps, Callout, Tabs } from 'nextra/components'
+
+# Database Setup for Lettuce
+Lettuce requires a PostgreSQL database with the OMOP CDM (Common Data Model) schema, along with specific extensions for full-text search and vector similarity capabilities.
+
+## Prerequisites 
+### Required OMOP Tables
+Lettuce expects the following tables from the OMOP CDM v5.0 vocabulary:
+
+| Table              | Purpose                                            | Key Columns                                                                 |
+|--------------------|----------------------------------------------------|-----------------------------------------------------------------------------|
+| `concept`            | Core vocabulary table containing all medical concepts | `concept_id`, `concept_name`, `vocabulary_id`, `concept_code`, `standard_concept`     |
+| `concept_synonym`    | Alternative names for concepts                    | `concept_id`, `concept_synonym_name`, `language_concept_id`                       |
+| `concept_relationship` | Relationships between concepts                  | `concept_id_1`, `concept_id_2`, `relationship_id`, `valid_start_date`, `valid_end_date`|
+| `concept_ancestor`   | Hierarchical relationships between concepts       | `ancestor_concept_id`, `descendant_concept_id`, `min_levels_of_separation`, `max_levels_of_separation` |
+
+### Custom Table for Vector Search
+You'll need to generate embeddings for your concepts. Lettuce provides utilities for this, or you can use your own embedding pipeline.
+
+<Callout type="info">
+The vector dimension (384 in this example) must match the embedding model you're using. Common dimensions:
+- BGE-small: 384
+- MiniLM: 384
+- E5-base: 768
+- GTR-T5-base: 768
+</Callout>
+
+
+## Option 2: Containerised database with `omop-ts`
+Alternatively, you can set up an ephemeral database via the `omop-lite` repository.
+
+<Steps>
+
+### Clone the `omop-lite` repository 
+
+Clone the repository to your local machine:
+```bash 
+git clone git@github.com:Health-Informatics-UoN/omop-lite.git
+cd omop-lite
+```
+
+### Build and start the `omop-ts` docker container
+
+```bash 
+docker compose -f compose-omop-ts.yml up -d 
+```
+This will start the PostgreSQL database with the required OMOP tables and extensions.
+
+### Verify 
+
+Verify that the database was properly populated by running the following command: 
+```bash 
+docker exec omop-ts-omop-ts-1 psql -U postgres -c "SELECT * FROM cdm.concept LIMIT 5;"
+```
+You should see output showing the first 5 rows from the concept table, confirming the database is set up correctly.
+
+</Steps>
+
+## Next Steps 
+Once your database is running, you can configure lettuce to connect to it using the appropriate connection string and credentials specified in the `.env` file as described in the quickstart.
+
+
+
+
