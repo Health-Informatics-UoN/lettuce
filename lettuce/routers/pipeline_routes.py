@@ -103,7 +103,7 @@ async def generate_events(request: PipelineRequest) -> AsyncGenerator[str]:
         search_threshold=pipeline_opts.search_threshold,
         max_separation_descendant=pipeline_opts.max_separation_descendants,
         max_separation_ancestor=pipeline_opts.max_separation_ancestor
-    ).run(search_term=[llm_output["reply"] for llm_output in llm_outputs])
+    ).run(search_terms=[llm_output["reply"] for llm_output in llm_outputs])
 
     output = [{"event": "omop_output", "data": result} for result in omop_output]
     yield json.dumps(output)

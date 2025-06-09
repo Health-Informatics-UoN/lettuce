@@ -11,7 +11,7 @@ dependencies = [
     "numpy==1.26.4",
     "pandas>=2.1.0", 
     "python-dotenv>=1.0.1",
-    "llama-cpp-haystack>=0.4.1",
+    "llama-cpp-haystack>=0.4.1,<=0.4.4", 
     "llama-cpp-python>=0.2.89",
     "fastapi>=0.112.2",
     "uvicorn>=0.30.6",
