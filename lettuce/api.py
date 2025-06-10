@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import pipeline_routes
+from routers import pipeline_routes, search_routes
 
 app = FastAPI(
     title="OMOP concept Assistant",
@@ -24,6 +24,11 @@ app.include_router(
     router=pipeline_routes.router,
     prefix="/pipeline",
 )
+
+app.include_router(
+        router=search_routes.router,
+        prefix="/search",
+        )
 
 
 def main():

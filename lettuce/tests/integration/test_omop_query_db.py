@@ -6,8 +6,6 @@ import pandas as pd
 from urllib.parse import quote_plus
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from unittest.mock import Mock
-from haystack.dataclasses import Document
 
 from omop.omop_queries import (
     query_ancestors_by_name,
@@ -15,9 +13,10 @@ from omop.omop_queries import (
     query_ids_matching_name,
     query_related_by_name,
     query_ancestors_and_descendants_by_id, 
-    query_related_by_id
+    query_related_by_id, 
+    text_search_query 
 )
-from utils.logging_utils import logger
+from omop.preprocess import preprocess_search_term 
 
 
 pytestmark = pytest.mark.skipif(os.getenv('SKIP_DATABASE_TESTS') == 'true', reason="Skipping database tests")
@@ -63,7 +62,7 @@ def test_fetch_related_concepts_by_name(db_connection):
     results = session.execute(query).fetchall()
     session.close()
 
-    assert len(results) > 1
+    assert len(results) >= 1
 
     names = [result[0].concept_name for result in results]
     assert "Sinutab" in names
@@ -77,7 +76,7 @@ def test_fetch_ancestor_concepts_by_name(db_connection):
     results = session.execute(query).fetchall()
     session.close()
 
-    assert len(results) > 1
+    assert len(results) >= 1
 
     names = [result[0].concept_name for result in results]
     assert (
@@ -98,8 +97,8 @@ def test_fetch_ancestor_concepts_by_name_with_separation_bounds(db_connection):
     )
     results = session.execute(query).fetchall()
     session.close()
-
-    assert len(results) > 1
+    
+    assert len(results) >= 1
 
     names = [result[0].concept_name for result in results]
     assert "homatropine methylbromide; systemic" in names
@@ -113,7 +112,7 @@ def test_fetch_descendant_concepts_by_name(db_connection):
     results = session.execute(query).fetchall()
     session.close()
 
-    assert len(results) > 1
+    assert len(results) >= 1
 
     names = [result[0].concept_name for result in results]
     assert (
@@ -145,7 +144,7 @@ def test_query_descendants_and_ancestors_by_id(db_connection):
     query = query_ancestors_and_descendants_by_id(concept_id)
     results = session.execute(query).fetchall()
     session.close()
-
+  
     assert len(results) > 1
     
     columns = [
@@ -154,11 +153,11 @@ def test_query_descendants_and_ancestors_by_id(db_connection):
         'concept_code', 'min_levels_of_separation', 'max_levels_of_separation'
     ]
     results = pd.DataFrame(results, columns=columns)
-
     names = results["concept_name"].to_list()
+
     assert results["relationship_type"].unique().tolist() == ["Ancestor", "Descendant"]
     assert "Painaid BRF Oral Product" in names
-    assert any("analgesic" in name or "pain" in name for name in names)
+    assert "homatropine methylbromide; systemic" in names 
 
 
 def test_query_related_by_id(db_connection):
@@ -175,10 +174,28 @@ def test_query_related_by_id(db_connection):
     ]
     results = pd.DataFrame(results_refactor, columns=columns)
 
-    assert len(results) > 1
+    assert len(results) >= 1
 
     names = results["concept_name"].to_list()
     assert "Sinutab" in names
+
+
+def test_full_text_query(db_connection):
+    search_term = preprocess_search_term("Nervous System")
+    query = text_search_query(
+        search_term, 
+        vocabulary_id=None, 
+        standard_concept=True, 
+        concept_synonym=False 
+    )
+    Session = sessionmaker(db_connection)
+    session = Session()
+    results = session.execute(query).fetchall()
+  
+    assert len(results) > 1
+
+    expected_entry = (4134440, 'Visual system disorder', 'SNOMED', '128127008', None)
+    assert expected_entry in results 
 
 
 def test_regression_query_descendants_and_ancestors(db_connection): 

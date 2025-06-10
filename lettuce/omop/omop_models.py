@@ -1,5 +1,6 @@
+from sqlalchemy.dialects.postgresql.types import TSVECTOR
 from sqlalchemy.orm import declarative_base, mapped_column
-from sqlalchemy import Column, Date, Integer, String
+from sqlalchemy import DATE, Column, Date, Integer, String
 from pgvector.sqlalchemy import Vector
 
 from os import environ
@@ -20,9 +21,15 @@ class Concept(Base):
 
     concept_id = Column(Integer, primary_key=True)
     concept_name = Column(String)
+    domain_id = Column(String)
     vocabulary_id = Column(String)
-    concept_code = Column(String)
+    concept_class_id = Column(String)
     standard_concept = Column(String)
+    concept_code = Column(String)
+    valid_start_date = Column(DATE)
+    valid_end_date = Column(DATE)
+    invalid_reason = Column(String)
+    concept_name_tsv = Column(TSVECTOR)
 
     def __repr__(self) -> str:
         return super().__repr__()
