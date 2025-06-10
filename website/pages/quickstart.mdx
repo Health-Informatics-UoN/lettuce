@@ -5,44 +5,44 @@ The fastest way to get started with Lettuce is to use the [command-line interfac
 
 ## Prerequisites
 - Python 3.12
-- uv[https://docs.astral.sh/uv/guides/install-python/]
+- [`uv`](https://docs.astral.sh/uv/guides/install-python/) for dependency management
 - Access to an OMOP-CDM database with a pgvector table for concept embeddings
 
 <Steps>
-#### Clone the [Lettuce repo](https://github.com/Health-Informatics-UoN/lettuce/)
 
-#### Navigate to the /Lettuce directory
+### Clone the [`lettuce`](https://github.com/Health-Informatics-UoN/lettuce/) repository
+```bash
+git clone https://github.com/Health-Informatics-UoN/lettuce.git
+cd lettuce
+```
 
-### Configure database connection
-The Lettuce CLI connects to an OMOP-CDM database as configured through environment variables. 
-The [database connection](/api_reference/omop/OMOP_match) loads your credentials from a `.env` file. {/*This will change when we have a working compose*/}
+### Set Up Your Environment
+Lettuce uses a `.env` file to manage database credentials.
 
-##### Create a `.env` file
-
-##### Insert database credentials
-You will need the following information for your OMOP-CDM database:
+Create a `.env` file with the following contents:
 
 ```sh copy
-DB_HOST="Your Host"
-DB_USER="Your User"
-DB_PASSWORD="Your Password"
-DB_NAME="Your Database Name"
-DB_PORT="Your Port, default is 5432"
-DB_SCHEMA="Your Schema"
-DB_VECTABLE="The name of your table containing vectors"
-DB_VECSIZE="The length of vectors in your vector table"
+DB_HOST="your-db-host"
+DB_USER="your-db-username"
+DB_PASSWORD="your-db-password" 
+DB_NAME="your-db-name"
+DB_PORT="5432" # or your custom port
+DB_SCHEMA="cdm"
+DB_VECTABLE="embeddings"  # or your custom vector table
+DB_VECSIZE="384" # or 768, depending on the embedding model
 ```
+<Callout type='info'>
+If you're using a containerised version, these values will differ—see the [Database Setup guide](/omop_ts_quickstart). 
+</Callout>
 
-Copy this template and insert your credentials.
-
-#### Run the CLI
-
-##### Install dependencies
-Dependencies are handled with uv, and first have to be installed
-
-```sh
+### Install dependencies
+Dependencies are handled with uv, and first have to be installed from the `pyproject.toml` via: 
+```bash
 uv sync
 ```
+
+### Run the CLI
+
 
 Once this is complete, you can run `lettuce-cli`
 
@@ -51,7 +51,7 @@ uv run --env-file .env lettuce-cli --informal_names "acetaminophen" --no-use_llm
 ```
 
 The flags in this command disable the vector search and LLM, just querying the database for "acetaminophen".
-Running the LLM will download a model, and vector search will first build a vector database, so these flags can be omitted when you're ready to take these steps
+Running the LLM will download a model, and vector search use the embeddings table to perform and semantic search on the search term, so these flags can be omitted when you're ready to take these steps. 
 </Steps>
 
 <Callout emoji="🥬">
