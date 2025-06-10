@@ -4,9 +4,13 @@ import { Steps, Callout, Tabs } from 'nextra/components'
 Lettuce requires a PostgreSQL database with the OMOP CDM (Common Data Model) schema, along with specific extensions for full-text search and vector similarity capabilities.
 
 ## Prerequisites 
+
+### Required PostgreSQL Extensions 
+- **Full-text search:** Built-in PostgreSQL capability for text searching
+- **pgvector:** Extension for vector similarity searches 
+
 ### Required OMOP Tables
 Lettuce expects the following tables from the OMOP CDM v5.0 vocabulary:
-
 | Table              | Purpose                                            | Key Columns                                                                 |
 |--------------------|----------------------------------------------------|-----------------------------------------------------------------------------|
 | `concept`            | Core vocabulary table containing all medical concepts | `concept_id`, `concept_name`, `vocabulary_id`, `concept_code`, `standard_concept`     |
@@ -15,39 +19,61 @@ Lettuce expects the following tables from the OMOP CDM v5.0 vocabulary:
 | `concept_ancestor`   | Hierarchical relationships between concepts       | `ancestor_concept_id`, `descendant_concept_id`, `min_levels_of_separation`, `max_levels_of_separation` |
 
 ### Custom Table for Vector Search
-You'll need to generate embeddings for your concepts. Lettuce provides utilities for this, or you can use your own embedding pipeline.
+To enable semantic similarity search, you'll need to generate vector embeddings for concepts using a supported model defined in `components.embeddings`.
+
 
 <Callout type="info">
-The vector dimension (384 in this example) must match the embedding model you're using. Common dimensions:
+The dimensions of your embeddings must match the selected model:
 - BGE-small: 384
-- MiniLM: 384
-- E5-base: 768
 - GTR-T5-base: 768
 </Callout>
 
 
-## Option 2: Containerised database with `omop-ts`
-Alternatively, you can set up an ephemeral database via the `omop-lite` repository.
+## Setup Options
+
+You can use either an existing OMOP-compliant database, or set up a containerized instance for development and testing.
+
+---
+
+## Option 1: Using an Existing OMOP Database
+If you already have access to a PostgreSQL instance with the required OMOP tables and extensions, you can proceed directly to [Next Steps](#next-steps).
+
+
+## Option 2: Set Up a Containerized Database with `omop-ts`
+
+Use the [`omop-lite`](https://github.com/Health-Informatics-UoN/omop-lite) repository to quickly spin up a local OMOP-compatible database.
 
 <Steps>
 
 ### Clone the `omop-lite` repository 
-
 Clone the repository to your local machine:
 ```bash 
 git clone git@github.com:Health-Informatics-UoN/omop-lite.git
 cd omop-lite
 ```
 
-### Build and start the `omop-ts` docker container
 
+### Prepare Data Directory
+Create a `data` directory at the root level of the repo: 
+```bash
+mkdir -p ./data
+```
+Copy your OMOP `.csv` files (e.g., `CONCEPT.csv`, `CONCEPT_SYNONYM.csv`) into this folder.
+
+<Callout type='info'>
+    For testing, minimal example files are provided in `omop_lite/synthetic`.
+</Callout>
+
+
+### Build and start the `omop-ts` docker container
+Start the containerized OMOP database using Docker Compose:
 ```bash 
 docker compose -f compose-omop-ts.yml up -d 
 ```
-This will start the PostgreSQL database with the required OMOP tables and extensions.
+This will launch a PostgreSQL instance with the necessary schema and extensions pre-configured.
+
 
 ### Verify 
-
 Verify that the database was properly populated by running the following command: 
 ```bash 
 docker exec omop-ts-omop-ts-1 psql -U postgres -c "SELECT * FROM cdm.concept LIMIT 5;"
@@ -57,8 +83,4 @@ You should see output showing the first 5 rows from the concept table, confirmin
 </Steps>
 
 ## Next Steps 
-Once your database is running, you can configure lettuce to connect to it using the appropriate connection string and credentials specified in the `.env` file as described in the quickstart.
-
-
-
-
+Once your database is running, configure Lettuce to connect to it using the connection string and credentials defined in your `.env` file, as outlined in the Quickstart guide.
