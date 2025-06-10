@@ -23,9 +23,12 @@ To enable semantic similarity search, you'll need to generate vector embeddings 
 
 
 <Callout type="info">
-The dimensions of your embeddings must match the selected model:
-- BGE-small: 384
-- GTR-T5-base: 768
+The embedding model used to generate your vector table **must match** the model specified in your Lettuce configuration. If they differ, semantic search will return inaccurate or empty results.
+
+Here are some common models and their expected embedding dimensions:
+
+- **BGE-small**: 384
+- **GTR-T5-base**: 768
 </Callout>
 
 
@@ -53,7 +56,7 @@ cd omop-lite
 ```
 
 
-### Prepare Data Directory
+### Prepare data directory
 Create a `data` directory at the root level of the repo: 
 ```bash
 mkdir -p ./data
@@ -80,7 +83,21 @@ docker exec omop-ts-omop-ts-1 psql -U postgres -c "SELECT * FROM cdm.concept LIM
 ```
 You should see output showing the first 5 rows from the concept table, confirming the database is set up correctly.
 
+
 </Steps>
 
 ## Next Steps 
-Once your database is running, configure Lettuce to connect to it using the connection string and credentials defined in your `.env` file, as outlined in the Quickstart guide.
+Once your database is running, configure Lettuce to connect by specifying the connection details in your `.env` file, as shown in the [Quickstart](/quickstart) guide.
+
+If you're using the containerised `omop-ts` setup, the corresponding `.env` file would look like:
+
+```sh
+DB_HOST="localhost"
+DB_USER="postgres"
+DB_PASSWORD="password"
+DB_NAME="omop"
+DB_PORT="5432"
+DB_SCHEMA="cdm"
+DB_VECTABLE="embeddings"
+DB_VECSIZE=384
+```
