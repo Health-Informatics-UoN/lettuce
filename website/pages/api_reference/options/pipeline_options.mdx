@@ -1,16 +1,19 @@
-## options.pipeline_options
-[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/options/pipeline_options.py)
-### `LLMModel`
+# `options.pipeline_options`
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/options/pipeline_options.py)
+
+The `pipeline_options.py` module contains the `LLMModel` enum and `PipelineOptions` class, which define the configuration options for the drug name conversion pipeline. This file provides a Pydantic model that can be used for API requests, with defaults matching those in `BaseOptions`.
+
+## `LLMModel`
 ```python
 class LLMModel()
 ```
 
 This enum holds the names of the different models the assistant can use.
-Details of the models implemented can be found [here](/api_reference/components/models)
+Details of the models implemented can be found [here](/api_reference/components/models). 
 
-#### Methods
+### Methods
 
-##### `get_eot_token`
+#### `get_eot_token`
 
 ```python
 def get_eot_token()
@@ -18,7 +21,7 @@ def get_eot_token()
 
 Some models need a special token to be appended to a prompt. If so, this returns the right end-of-turn token.
 
-### `PipelineOptions`
+## `PipelineOptions`
 ```python
 class PipelineOptions(
   llm_model: LLMModel = LLMModel.LLAMA_3_1_8B
@@ -39,14 +42,14 @@ class PipelineOptions(
 ```
 
 This class holds the options available to the
-Llettuce pipeline.
+`lettuce` pipeline.
 
-These are all the options in the BaseOptions parser.
+These are all the options in the `BaseOptions` parser.
 The defaults provided here match the default options in
-BaseOptions. Using a pydantic model means FastAPI
+`BaseOptions`. Using a pydantic model means FastAPI
 can take these as input in the API request.
 
-#### Attributes
+### Attributes
 `llm_model: LLMModel`
     The name of the LLM used in the pipeline. The permitted
     values are the possibilities in the LLMModel enum.

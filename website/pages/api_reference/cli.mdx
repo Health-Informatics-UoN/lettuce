@@ -1,68 +1,170 @@
 import { Steps, Callout } from 'nextra/components'
 
-## cli
-[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/cli/__init__.py)
+# Command Line Interface
 
-The command line interface for Lettuce can run any of the Lettuce components, as specified in command-line arguments.
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/cli/main.py)
 
-### Usage
+The `lettuce` CLI provides command-line access to all `lettuce` components, allowing you to convert informal drug names to standardized OMOP concepts through a simple terminal interface.
+
+
+## Usage
+
 <Steps>
 
-#### Navigate to the /Lettuce directory
+### Navigate to the `/lettuce` directory
 
-#### Run the cli app with poetry
+### Run the CLI with `uv`
 
 ```sh
-poetry run lettuce-cli -informal_names "betnovate scalp application"
+uv run --env-file .env lettuce-cli --informal_names "betnovate scalp application"
 ```
+
 </Steps>
 
-### Arguments
-The arguments used by the CLI are defined by [`BaseOptions`](/api_reference/options/base_options)
-#### `--informal_names`
-Provide a string for Lettuce to infer a concept for.
-You can supply multiple names by using the flag more than once
+## Examples
 
-#### `--vector_search, --no-vector_search`
-Choose whether to perform vector search on supplied informal names
-<Callout type="warning" emoji=" ">
-  Enabling vector search will require a vector database to be [built](/api_reference/components/embeddings)
+<Callout type="info">
+  The following examples demonstrate common usage patterns for the Lettuce CLI.
 </Callout>
 
-#### `--use_llm, --no-use_llm`
-Choose whether to have an LLM infer an OMOP concept for supplied informal names
-<Callout type="warning" emoji=" ">
-  Enabling LLM usage will download the model weights for an LLM, which requires ~5 Gb disk space
-</Callout>
-
-#### `--temperature`
-Controls LLM generation randomness
-
-#### `--vocabulary_id`
-The OMOP vocabularies to query in the OMOP-CDM database. Supply a comma separated list, e.g.
-
+### Multiple informal names
 ```sh
-"RxNorm, RxNorm extension"
+uv run --env-file .env lettuce-cli \
+  --informal_names "betnovate scalp application" "metformin 500mg"
 ```
 
-#### `--concept_ancestor, --no-concept_ancestor`
-Controls whether to query the concept_ancestor table
+### With vector search and LLM inference
+```bash
+uv run --env-file .env lettuce-cli \ 
+  --informal_names "betnovate scalp application" \
+  --vector_search \ 
+  --use_llm
+```
 
-#### `--max_separation_ancestor`
-The maximum levels of separation to return ancestors from the concept_ancestor query
+### Using a specific medical LLM
+```bash
+uv run --env-file .env lettuce-cli \ 
+  --informal_names "betnovate scalp application" \
+  --use_llm \
+  --llm_model MED_LLAMA_3_8B_V4
+```
+## Arguments
+### `--informal_names` (Required)
+Provide one or more strings for Lettuce to infer concepts for.
+You can supply multiple names in a single command:
 
-#### `--max_separation_descendants`
-The maximum levels of separation to return descendants from the concept_ancestor query
+```sh
+--informal_names "betnovate scalp application" "metformin 500mg"
+```
 
-#### `--concept_synonym, --no-concept_synonym`
-Controls whether to return concept synonyms from the OMOP-CDM query
+### `--vector_search`, `--no-vector_search` 
+Default: `--vector_search` (enabled)
 
-#### `--search_threshold`
-The fuzzy match threshold to use when filtering OMOP concept names
+Choose whether to perform vector search on supplied informal names.
 
-#### `--llm_model`
-The LLM used to infer concepts from an informal name.
-One of:
+<Callout type="warning">
+  Vector search requires a embeddings vector table to exist in your omop database.
+</Callout>
+
+### `--use_llm`, `--no-use_llm`
+Default: `--use_llm` (enabled)
+
+Choose whether to have an LLM infer an OMOP concept for supplied informal names.
+
+<Callout type="warning">
+  LLM usage will download the model weights, which requires ~5 GB disk space.
+</Callout>
+
+### `--temperature`
+Default: `0.0`
+
+Controls LLM generation randomness. A value of 0.0 produces deterministic results, while higher values (e.g., 0.9) produce more varied outputs.
+
+### `--vocabulary_id`
+Default: `None`
+
+The OMOP vocabularies to query in the OMOP-CDM database. You can specify vocabularies in two ways:
+
+```sh
+# As separate arguments
+--vocabulary_id "RxNorm" "RxNorm Extension"
+
+# OR as a comma-separated list
+--vocabulary_id "RxNorm,RxNorm Extension"
+```
+
+
+Common vocabularies include:
+- RxNorm
+- RxNorm Extension
+- SNOMED
+- ICD10
+- LOINC
+
+### `--embed-vocab`
+Default: `None`
+
+Vocabulary IDs for embedding filtering. You can specify vocabularies in two ways:
+
+```sh
+# As separate arguments
+--embed-vocab "RxNorm" "SNOMED"
+
+# OR as a comma-separated list
+--embed-vocab "RxNorm,SNOMED"
+```
+
+### `--standard-concept`
+Default: `False`
+
+Whether to filter output by the standard_concept field of the concept table.
+
+### `--concept_ancestor`, `--no-concept_ancestor`
+Default: `--no-concept_ancestor` (disabled)
+
+Controls whether to query the concept_ancestor table for hierarchical relationships.
+
+### `--concept_relationship`, `--no-concept_relationship`
+Default: `--no-concept_relationship` (disabled)
+
+Controls whether to query the concept_relationship table.
+
+### `--max_separation_ancestor`
+Default: `1`
+
+The maximum levels of separation to return ancestors from the concept_ancestor query.
+
+### `--max_separation_descendants`
+Default: `1`
+
+The maximum levels of separation to return descendants from the concept_ancestor query.
+
+### `--concept_synonym`, `--no-concept_synonym`
+Default: `--no-concept_synonym` (disabled)
+
+Controls whether to return concept synonyms from the OMOP-CDM query.
+
+### `--search_threshold`
+Default: `80` (equivalent to 0.8)
+
+The fuzzy match threshold to use when filtering OMOP concept names. Values range from 0 to 100, where 100 requires an exact match.
+
+### `--embedding-top-k`
+Default: `5`
+
+Number of suggestions to return from vector search for RAG (Retrieval-Augmented Generation).
+
+### `--embedding-top-k`
+Default: `5`
+
+Number of suggestions to return from vector search for RAG (Retrieval-Augmented Generation).
+
+### `--llm_model`
+Default: `LLAMA_3_1_8B`
+
+The LLM used to infer concepts from an informal name. Available options:
+
+**General-purpose models:**
 - LLAMA_2_7B
 - LLAMA_3_8B
 - LLAMA_3_70B
@@ -72,9 +174,11 @@ One of:
 - MISTRAL_7B
 - KUCHIKI_L2_7B
 - TINYLLAMA_1_1B_CHAT
-- BIOMISTRAL_7B
 - QWEN2_5_3B_INSTRUCT
 - AIROBOROS_3B
+
+**Medical-specialized models:**
+- BIOMISTRAL_7B
 - MEDICINE_CHAT
 - MEDICINE_LLM_13B
 - MED_LLAMA_3_8B_V1
@@ -82,16 +186,11 @@ One of:
 - MED_LLAMA_3_8B_V3
 - MED_LLAMA_3_8B_V4
 
-Defaults to LLAMA_3_1_8B
+### `--embedding_model`
+Default: `BGESMALL`
 
-#### `--embedding_model`
-The model used to generate embeddings
+The model used to generate embeddings for vector search. Available options:
 
-<Callout type="warning" emoji="⚠️">
-  The model used to generate query embeddings and used to build the vector database must be the same or the vector search will be nonsense
-</Callout>
-
-One of:
 - BGESMALL
 - MINILM
 - GTR_T5_BASE
@@ -102,4 +201,74 @@ One of:
 - DISTILUSE_BASE_MULTILINGUAL
 - CONTRIEVER
 
-Defaults to BGESMALL
+<Callout type="warning">
+  The model used to generate query embeddings and used to build the vector database must be the same or the vector search will be nonsense.
+</Callout>
+
+## Output Format
+
+The CLI prints results to the console in a structured JSON format (*under revision*). Each query produces a comprehensive result object with vector search results, LLM matching, and OMOP concept data:
+
+```json
+[
+  {
+    "query": "acetaminophen",
+    "Vector Search Results": [
+      {"content": "Acetaminophen", "score": 5.960464815046862e-07},
+      // Additional vector search results omitted for brevity
+    ],
+    "llm_answer": "Acetaminophen",
+    "OMOP fuzzy threshold": 80,
+    "OMOP matches": {
+      "search_term": "Acetaminophen",
+      "CONCEPT": [
+        {
+          "concept_name": "acetaminophen",
+          "concept_id": 1125315,
+          "vocabulary_id": "RxNorm",
+          "concept_code": "161",
+          "concept_name_similarity_score": 100.0,
+          "CONCEPT_SYNONYM": [],
+          "CONCEPT_ANCESTOR": [],
+          "CONCEPT_RELATIONSHIP": []
+        },
+        {
+          "concept_name": "Acetaminophen Jr",
+          "concept_id": 19052416,
+          "vocabulary_id": "RxNorm", 
+          "concept_code": "214962",
+          "concept_name_similarity_score": 89.65,
+          "CONCEPT_SYNONYM": [],
+          "CONCEPT_ANCESTOR": [],
+          "CONCEPT_RELATIONSHIP": []
+        }
+        // Additional concept matches omitted for brevity
+      ]
+    }
+  },
+  {
+    "query": "codeine",
+    "Vector Search Results": [
+      {"content": "Codeine", "score": 4.76837158203125e-07},
+      // Additional vector search results omitted for brevity
+    ],
+    "llm_answer": "Codeine",
+    "OMOP fuzzy threshold": 80,
+    "OMOP matches": {
+      "search_term": "Codeine",
+      "CONCEPT": [
+        {
+          "concept_name": "codeine",
+          "concept_id": 1201620,
+          "vocabulary_id": "RxNorm",
+          "concept_code": "2670",
+          "concept_name_similarity_score": 100.0,
+          "CONCEPT_SYNONYM": [],
+          "CONCEPT_ANCESTOR": [],
+          "CONCEPT_RELATIONSHIP": []
+        }
+      ]
+    }
+  }
+]
+```

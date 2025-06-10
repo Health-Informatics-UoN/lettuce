@@ -6,6 +6,6 @@ export default {
   components: "Components",
   omop: "OMOP",
   options: "Options",
-  routers: "Routers",
+  routers: "Routers", 
   utils: "utils"
 }

@@ -1,67 +1,35 @@
-## options.base_options
-[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/options/base_options.py)
-### `BaseOptions`
+# `options.base_options`
+
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/options/base_options.py)
+
+This module contains the `BaseOptions` class defines command-line options used during all types of experiments in `lettuce`. 
+It handles initialisation, parsing, and display of various configuration options, particularly focusing on LLM model settings, embedding configurations, and OMOP vocabulary filtering parameters.
+
+## `BaseOptions`
 ```python
 class BaseOptions()
 ```
 
-This class defines options used during all types of experiments.
-It also implements several helper functions such as parsing, printing, and saving the options.
-#### Methods
+A utility class that manages command-line arguments for configuring the `lettuce` pipeline. 
 
-##### `__init__`
-```python
-def __init__()
-```
+### Methods
 
-Initializes the BaseOptions class
-
-###### Parameters
-None
-
-###### Returns
-None
-
-##### `initialize`
+#### `initialize`
 ```python
 def initialize()
 ```
 
-Initializes the BaseOptions class
+Initialises the `BaseOptions` class. Sets up all available command-line arguments with their default values and help text.
 
-###### Parameters
-None
-
-###### Returns
-None
-
-##### `parse`
+#### `parse`
 ```python
 def parse()
 ```
 
-Parses the arguments passed to the script
+Parses the arguments passed to the script and prints the configuration.
 
-###### Parameters
-None
+##### Returns
+- `opt: argparse.Namespace`
 
-###### Returns
-`opt: argparse.Namespace`
-The parsed arguments
-
-##### `_print`
-```python
-def _print(
-	args: Dict
-)
-```
-
-Prints the arguments passed to the script
-
-###### Parameters
-`args: dict`
-The arguments to print
-
-###### Returns
-None
+	The parsed arguments
 

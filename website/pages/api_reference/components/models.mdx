@@ -1,33 +1,47 @@
-## components.models
-[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/components/models.py)
+# `components.models`
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/components/models.py)
+
+This module provides functionality to load the user specified model as part of the `components.pipeline.LLMPipeline`. 
+It supports both local model inference via llama.cpp and remote inference via OpenAI's API.
+
+The module manages LLM initialisation and selection to power the drug name standardisation pipeline, with support for:
+- Local model inference using quantized GGUF models
+- Remote inference using OpenAI models
+- Automatic model downloading from Hugging Face Hub
+
+## Functions 
+
 ### `get_model`
 ```python
-def get_model(
+def get_model(model, logger, temperature=0.7, path_to_local_weights=None
 	model: LLMModel
-	logger: 
-	temperature: float
-)
+	logger: Logger  
+	temperature: float = 0.7,  
+	path_to_local_weights: os.PathLike[Any] | str | None = None 
+) -> OpenAIGenerator | LlamaCppGenerator
 ```
 
-Get an interface for interacting with an LLM
+Get an interface for interacting with an LLM. 
 
-Uses Haystack Generators to provide an interface to a model.
-If the model_name is a GPT, then the interface is to a remote OpenAI model. Otherwise, uses a LlamaCppGenerator to start a llama.cpp model and provide an interface.
+If a path to a `.gguf` model file is provided via `path_to_local_weights`, the model is loaded locally using a `LlamaCppGenerator`. In this case, no remote download or API requests will take place.
+
+If no local path is provided, the function uses Haystack Generators to provide an interface to a model.
+If the `model_name` is a GPT, then the interface is to a remote OpenAI model. 
+Otherwise, uses a `LlamaCppGenerator` to start a llama.cpp model and provide an interface.
 
 #### Parameters
-`model: LLMModel`
-The name of the model
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `model` | `LLMModel` | An enum representing the desired model. The enum's value should match one of the registered model names (e.g., `"llama-3.1-8b"` or `"gpt-4"`). |
+| `logger` | `logging.Logger` | Logger instance for tracking progress and errors. |
+| `temperature` | `float` | Controls the randomness of the output. Higher values (e.g., 1.0) make output more diverse, while lower values (e.g., 0.2) make it more deterministic. Defaults to 0.7. |
+| `path_to_local_weights` | `os.PathLike`, `str`, or `None` | Path to a local `.gguf` model weights file. If provided, the function skips remote model loading and uses this local file. If not provided, the function will attempt to load the model from Hugging Face or connect to OpenAI.
 
-`temperature: float`
-The temperature for the model
-
-`logger: logging.Logger|None`
-The logger for the model
 
 #### Returns
-object
+`OpenAIGenerator` or `LlamaCppGenerator`
 
-An interface to generate text using an LLM
+A LLM text generation interface compatible with Haystack's component framework.
 
 ## Implemented models
 
