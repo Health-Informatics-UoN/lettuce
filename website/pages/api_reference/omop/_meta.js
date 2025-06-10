@@ -1,4 +1,6 @@
 export default{
-  OMOP_match: "OMOP match",
-  omop_models: "OMOP models"
+  db_manager: "Database Manager", 
+  omop_match: "OMOP match",
+  omop_models: "OMOP models", 
+  omop_queries: "OMOP queries"
 }

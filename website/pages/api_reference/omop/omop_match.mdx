@@ -1,0 +1,190 @@
+# `omop.omop_match`
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/omop/omop_match.py)
+
+The `omop_match` file provides functionality to match informal drug names and terms against standard concepts in a given set of OMOP Common Data Model vocabularies. 
+It performs fuzzy matching to find the most relevant OMOP concepts and can optionally retrieve related concepts, ancestors, descendants, and synonyms.
+
+
+## `OMOPMatcher`
+This class retrieves matches from an OMOP database and returns the best matching concepts based on fuzzy string matching.
+```python
+class OMOPMatcher(
+	logger: Logger, 
+	vocabulary_id: list[str],
+	search_threshold: int = 80,
+	concept_ancestor: bool = False,
+	concept_relationship: bool = False,
+	concept_synonym: bool = False,
+	standard_concept: bool = False, 
+	max_separation_descendant: int = 1,
+	max_separation_ancestor: int = 1
+)
+```
+### Constructor Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `logger` | `Logger` | *required* | Logging object for capturing events and errors |
+| `vocabulary_id` | `list[str]` | *required* | A list of vocabularies to use for search (e.g., ['RxNorm', 'SNOMED']) |
+| `search_threshold` | `int` | `80` | The fuzzy match threshold for results (0-100) |
+| `concept_ancestor` | `bool` | `False` | Whether to return ancestor concepts in the result |
+| `concept_relationship` | `bool` | `False` | Whether to return related concepts in the result |
+| `concept_synonym` | `bool` | `False` | Whether to explore concept synonyms in the result |
+| `standard_concept` | `bool` | `False` | Whether to restrict results to standard concepts |
+| `max_separation_descendant` | `int` | `1` | The maximum separation between a base concept and its descendants |
+| `max_separation_ancestor` | `int` | `1` | The maximum separation between a base concept and its ancestors |
+
+### `run`
+```python
+def run(
+	search_terms: List[str]
+)
+```
+The main method for processing drug name searches. It runs OMOP database queries for each provided search term and performs fuzzy pattern matching to select the best concept matches.
+
+#### Parameters 
+- `search_terms`: List of drug names or terms to search for 
+
+#### Returns 
+- A list of dictionaries, each containing: 
+	- `search_term`: The original search term
+	- `CONCEPT`: List of matching OMOP concepts with their details 
+
+
+### `fetch_omop_concepts`
+```python
+def fetch_omop_concepts(
+	search_term: str
+) -> list | None:
+```
+Fetches OMOP concepts for a given search term by querying the OMOP database.
+
+This functions builds a full-text query  using `omop.queries.text_search_query` to the OMOP database. 
+
+A similarity score is then applied to the concept name strings returned from this search and the results filtered according to whether the scores are above the user-defined threshold `search_threshold`. 
+
+#### Parameters 
+- `search_term`: A search term to full-text query the OMOP database with
+
+#### Returns 
+- A list of matching concepts with their details, or `None` if no matches are found
+
+
+### `calculate_similarity_score`
+```python
+@staticmethod 
+def calculate_similarity_score(
+	concept_name: str, 
+	search_term: str
+)
+```
+Static method that calculates a fuzzy similarity score between a concept name and a search term.  
+
+Uses the Levenshtein ratio from the `rapidfuzz` library, which measures the edit distance between two strings. 
+This returns a normalized score between 0 and 100, where:
+  - 100 indicates identical strings (perfect match)
+  - 0 indicates completely different strings (no similarity)
+  - Values in between represent partial matches, with higher scores indicating greater similarity
+
+This function also performs a simple pre-processing step whereby content from inside parentheses is removed from concept names. Case insensitive matching is then performed. 
+
+#### Parameters 
+- `concept-name`: The OMOP concept name to compare 
+- `search_term`: THe user-entered term to compare against
+
+#### Returns 
+
+### `fetch_concept_ancestors_and_descendants`
+```python
+def fetch_concept_ancestor(
+	concept_id: str
+) -> List
+```
+
+Retrieves ancestor and descendant concepts for a given concept ID.
+
+Queries the OMOP database's ancestor table to find ancestors for the concept_id provided within the constraints of the degrees of separation provided.
+
+Executes the query `omop.omop_queries.query_ancestors_and_descendants_by_id`. 
+
+#### Parameters
+`concept_id: str`
+The concept_id used to find ancestors
+
+#### Returns
+`list`
+A list of concepts related hierarchically to the provided concept ID, including their relationship details
+
+### `fetch_concept_relationship`
+```python
+def fetch_concept_relationship(
+	concept_id: 
+) -> List 
+```
+
+Fetch concept relationship for a given concept_id
+
+Queries the concept_relationship table of the OMOP database to find the relationship between concepts
+
+#### Parameters
+`concept_id: str`
+An id for a concept provided to the query for finding concept relationships
+
+#### Returns
+`list`
+A list of related concepts from the OMOP database
+
+### Response Structure 
+The `run` method returns a list of dictionaries with the following structure: 
+```json
+[
+  {
+    "search_term": "original_term",
+    "CONCEPT": [
+      {
+        "concept_name": "Standard Name",
+        "concept_id": "123456",
+        "vocabulary_id": "RxNorm",
+        "concept_code": "ABC123",
+        "concept_name_similarity_score": 95,
+        "CONCEPT_SYNONYM": [
+          {
+            "concept_synonym_name": "Alternative Name",
+            "concept_synonym_name_similarity_score": 85
+          }
+        ],
+        "CONCEPT_ANCESTOR": [
+          {
+            "concept_name": "Parent Concept",
+            "concept_id": "789012",
+            "vocabulary_id": "RxNorm",
+            "concept_code": "XYZ456",
+            "relationship": {
+              "relationship_type": "Ancestor",
+              "ancestor_concept_id": "789012",
+              "descendant_concept_id": "123456",
+              "min_levels_of_separation": 1,
+              "max_levels_of_separation": 1
+            }
+          }
+        ],
+        "CONCEPT_RELATIONSHIP": [
+          {
+            "concept_name": "Related Concept",
+            "concept_id": "345678",
+            "vocabulary_id": "RxNorm",
+            "concept_code": "DEF789",
+            "relationship": {
+              "concept_id_1": "123456",
+              "relationship_id": "Has ingredient",
+              "concept_id_2": "345678"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
+```
+
+
