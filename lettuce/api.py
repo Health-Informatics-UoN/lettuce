@@ -1,9 +1,12 @@
 import os 
+from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, HTTPException, status  
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials 
 from routers import pipeline_routes, search_routes
 
+
+load_dotenv()
 
 security = HTTPBearer()
 
