@@ -138,10 +138,24 @@ def get_all_vocabs() -> Select:
     return select(Concept.vocabulary_id.distinct())
 
 
-def query_ids_matching_name(query_concept, vocabulary_ids: list[str] | None) -> Select:
-    base_query = select(
-        Concept.concept_id,
-    ).where(func.lower(Concept.concept_name) == query_concept.lower())
+def query_ids_matching_name(
+        query_concept,
+        vocabulary_ids: list[str] | None,
+        full_concept: bool = False
+        ) -> Select:
+    if full_concept:
+        base_query = select(
+            Concept.concept_name,
+            Concept.concept_id,
+            Concept.domain_id,
+            Concept.vocabulary_id,
+            Concept.concept_class_id,
+            Concept.standard_concept,
+            Concept.invalid_reason,
+            )
+    else:
+        base_query = select(Concept.concept_id)
+    base_query = base_query.where(func.lower(Concept.concept_name) == query_concept.lower())
     if vocabulary_ids:
         return base_query.where(Concept.vocabulary_id.in_(vocabulary_ids))
     else:
