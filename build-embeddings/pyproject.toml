@@ -4,4 +4,8 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "pgvector>=0.4.1",
+    "psycopg>=3.2.9",
+    "sentence-transformers>=4.1.0",
+]

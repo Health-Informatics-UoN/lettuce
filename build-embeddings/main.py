@@ -1,30 +1,44 @@
-from os import getenv
+from os import environ
 from typing import List
-from logging import Logger
+import logging
 from pgvector.psycopg import register_vector
 import psycopg
+from psycopg import sql
 from sentence_transformers import SentenceTransformer
+import sys
 #consider importing tqdm to estimate running of batches
 
-DB_SCHEMA = getenv("DB_SCHEMA")
+try:
+    DB_SCHEMA = environ["DB_SCHEMA"]
+    DB_USER = environ['DB_USER']
+    DB_PASSWORD = environ['DB_PASSWORD']
+    DB_HOST = environ['DB_HOST']
+    DB_PORT = environ['DB_PORT']
+    DB_NAME = environ['DB_NAME']
+except KeyError:
+    sys.exit("Couldn't read database arguments")
 
-model = SentenceTransformer(getenv("EMBEDDING_MODEL"))
+try:
+    model = SentenceTransformer(environ["EMBEDDING_MODEL"])
+except KeyError:
+    sys.exit("Couldn't read the embedding model")
 
-#TODO: use method to get embedding length
-vector_length = "???"
+vector_length = model.get_sentence_embedding_dimension()
 
-logger = Logger("embeddings-upload")
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename='embedding_load.log', level=logging.INFO)
 
-uri = f"postgresql://{getenv('DB_USER')}:{getenv('DB_PASSWORD')}@{getenv('DB_HOST')}:{getenv('DB_PORT')}/{getenv('DB_NAME')}"
+uri = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+logger.info(f"Connecting to database at {uri}")
+print(f"Connecting to database at {uri}")
 
-#TODO: type annotations
-def embed_batch(cursor,
+def embed_batch(cursor: psycopg.Cursor,
                 concept_list: List[tuple[int,str]],
                 embedding_model: SentenceTransformer,
-                ):
+                ) -> None:
     embeddings = embedding_model.encode([emb for _, emb in concept_list])
     with cursor.copy(
-            f"COPY {DB_SCHEMA}.embeddings (concept_id, embedding) FROM STDIN WITH (FORMAT BINARY)"
+            sql.SQL("COPY {} (concept_id, embedding) FROM STDIN WITH (FORMAT BINARY)").format(sql.Identifier(DB_SCHEMA, "embeddings"))
             ) as copy:
         copy.set_types(["int4", "vector"])
         for entry in zip([id for id,_ in concept_list], embeddings):
@@ -40,20 +54,25 @@ with psycopg.connect(uri) as conn:
                  """)
     register_vector(conn)
     print("Registered vector type")
-    with conn.cursor() as cursor:
-        cursor.execute(
-                f"""
-                DROP TABLE IF EXISTS {DB_SCHEMA}.embeddings;
-                """
+    with conn.cursor() as table_manage_cursor:
+        table_manage_cursor.execute(
+                sql.SQL("""
+                DROP TABLE IF EXISTS {};
+                """).format(sql.Identifier(DB_SCHEMA, "embeddings"))
                 )
         logger.info(f"Creating a table for {vector_length} dimensional vectors")
-        cursor.execute(
-                f"""
-                CREATE TABLE cdm.embeddings (
+        table_manage_cursor.execute(
+                sql.SQL("""
+                CREATE TABLE {} (
                     concept_id  int,
-                    embedding  vector({vector_length})
+                    embedding  vector(%s)
                 );
-                """
+                """).format(sql.Identifier(DB_SCHEMA, "embeddings")), [vector_length]
                 )
-        #TODO: figure out how to fetch concepts in batches, then use embed_batch to encode and copy them
         conn.commit()
+    with conn.cursor(name="concept_fetch") as concept_cursor:
+        concept_cursor.itersize = 2000
+
+        query = """SELECT
+        concept_id,
+        concept_name"""
