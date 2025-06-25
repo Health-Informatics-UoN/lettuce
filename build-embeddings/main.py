@@ -50,7 +50,7 @@ with psycopg.connect(uri) as conn:
     logger.info("Loading pgvector extension")
 
     conn.execute("""
-                 CREATE EXTENSION vector;
+                 CREATE EXTENSION IF NOT EXISTS vector;
                  """)
     register_vector(conn)
     print("Registered vector type")
@@ -65,14 +65,23 @@ with psycopg.connect(uri) as conn:
                 sql.SQL("""
                 CREATE TABLE {} (
                     concept_id  int,
-                    embedding  vector(%s)
+                    embedding  vector({})
                 );
-                """).format(sql.Identifier(DB_SCHEMA, "embeddings")), [vector_length]
+                """).format(sql.Identifier(DB_SCHEMA, "embeddings"), vector_length)
                 )
         conn.commit()
     with conn.cursor(name="concept_fetch") as concept_cursor:
-        concept_cursor.itersize = 2000
+        concept_cursor.itersize = 2048
 
-        query = """SELECT
-        concept_id,
-        concept_name"""
+        query = sql.SQL("SELECT concept_id, concept_name FROM {}").format(sql.Identifier(DB_SCHEMA, "concept"))
+
+        concept_cursor.execute(query)
+
+        with conn.cursor() as embed_cursor:
+            while True:
+                rows = concept_cursor.fetchmany(512)
+                if len(rows) > 0:
+                    embed_batch(embed_cursor, rows, model)
+                else:
+                    break
+            conn.commit()
