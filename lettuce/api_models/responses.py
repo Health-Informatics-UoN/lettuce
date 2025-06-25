@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 
 class Suggestion(BaseModel):
@@ -16,6 +16,7 @@ class SuggestionsMetaData(BaseModel):
     assistant: str = "Lettuce"
     version: str = "0.1.0"
     pipeline: Optional[str] = None
+    info: Optional[Dict[str, Any]] = None
 
 class ConceptSuggestionResponse(BaseModel):
     recommendations: List[Suggestion]
