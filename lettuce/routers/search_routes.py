@@ -1,4 +1,5 @@
 from typing import Annotated, List
+from components.embeddings import EmbeddingModelName, Embeddings
 from fastapi import APIRouter, Query
 
 from api_models.responses import ConceptSuggestionResponse, Suggestion, SuggestionsMetaData
@@ -57,6 +58,44 @@ async def text_search(
             metadata=metadata
             )
     return response
+
+@router.get("/vector-search/{search_term}")
+async def vector_search(
+        search_term: str,
+        vocabulary_id: Annotated[List[str] | None, Query()]=None,
+        domain_id: Annotated[List[str] | None, Query()]=None,
+        standard_concept: bool=False,
+        valid_concept: bool=False,
+        top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)]=5,
+        ) -> ConceptSuggestionResponse:
+    embedding_handler = Embeddings(
+            model_name=EmbeddingModelName.BGESMALL,
+            embed_vocab=vocabulary_id,
+            standard_concept=standard_concept,
+            top_k=top_k
+            )
+    embedder = embedding_handler.get_embedder()
+    embedding = embedder.run(search_term)
+    retriever = embedding_handler.get_retriever()
+    result = retriever.run(embedding["embedding"], describe_concept=True)
+    return ConceptSuggestionResponse(
+            recommendations=[
+                Suggestion(
+                    concept_name=r.Concept.concept_name,
+                    concept_id=r.Concept.concept_id,
+                    domain_id=r.Concept.domain_id,
+                    vocabulary_id=r.Concept.vocabulary_id,
+                    concept_class_id=r.Concept.concept_class_id,
+                    standard_concept=r.Concept.standard_concept,
+                    invalid_reason=r.Concept.invalid_reason,
+                    ranks={"vector-search": i+1},
+                    scores={"vector-search": r.score}
+                    )
+                for i,r in enumerate(result)
+                ],
+            metadata=SuggestionsMetaData(pipeline="vector search")
+            )
+    
 
 @router.get("/ai-search/{search_term}")
 async def ai_search(

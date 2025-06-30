@@ -69,7 +69,7 @@ EMBEDDING_MODELS = {
     ),
     # ------ Generalizable T5 Retrieval ------- >
     EmbeddingModelName.GTR_T5_LARGE: EmbeddingModelInfo(
-        path="google/gtr-t5-large", dimensions=1024
+    path="google/gtr-t5-large", dimensions=1024
     ),
     # ------ Embedding Models for Search Engines ------- >
     EmbeddingModelName.E5_BASE: EmbeddingModelInfo(
@@ -105,18 +105,21 @@ class PGVectorQuery:
             self,
             connection: Session,
             embed_vocab: List[str] | None = None,
-            standard_concept:bool= False,
+            standard_concept:bool = False,
+            valid_concept:bool = False,
             top_k: int = 5,
             ) -> None:
         self._connection = connection
         self._embed_vocab = embed_vocab
-        self._standard_concept= standard_concept
+        self._standard_concept = standard_concept
+        self._valid_concept = valid_concept
         self._top_k = top_k
 
     @component.output_types(documents=List[Document])
     def run(
             self,
             query_embedding: List[float],
+            describe_concept: bool = False,
             ):
         # only have cosine_similarity at the moment
         #TODO add selection of distance metric to query_vector
@@ -124,22 +127,27 @@ class PGVectorQuery:
                 query_embedding=query_embedding,
                 embed_vocab=self._embed_vocab,
                 standard_concept=self._standard_concept,
+                valid_concept=self._valid_concept,
                 n = self._top_k,
+                describe_concept=describe_concept,
                 ) 
         try:
             query_results = self._connection.execute(query).mappings().all()
         except SQLAlchemyError as e:
             raise SQLAlchemyError(f"Vector query execution failed: {str(e)}")
-        try:
-            return {"documents": [
-                Document(
-                    id=res["id"],
-                    content=res["content"],
-                    score=res["score"],
-                    ) for res in query_results]
-                }
-        except KeyError as e:
-            raise KeyError(f"Missing required key in query results: {str(e)}")
+        if describe_concept:
+            return query_results
+        else:
+            try:
+                return {"documents": [
+                    Document(
+                        id=res["id"],
+                        content=res["content"],
+                        score=res["score"],
+                        ) for res in query_results]
+                    }
+            except KeyError as e:
+                raise KeyError(f"Missing required key in query results: {str(e)}")
 
 def get_embedding_model(name: EmbeddingModelName) -> EmbeddingModel:
     """
