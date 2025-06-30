@@ -71,7 +71,9 @@ async def vector_search(
     embedding_handler = Embeddings(
             model_name=EmbeddingModelName.BGESMALL,
             embed_vocab=vocabulary_id,
+            domain_id=domain_id,
             standard_concept=standard_concept,
+            valid_concept=valid_concept,
             top_k=top_k
             )
     embedder = embedding_handler.get_embedder()
