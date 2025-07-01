@@ -8,6 +8,7 @@ from sentence_transformers import SentenceTransformer
 import sys
 #consider importing tqdm to estimate running of batches
 
+
 try:
     DB_SCHEMA = environ["DB_SCHEMA"]
     DB_USER = environ['DB_USER']
@@ -36,7 +37,7 @@ def embed_batch(cursor: psycopg.Cursor,
                 concept_list: List[tuple[int,str]],
                 embedding_model: SentenceTransformer,
                 ) -> None:
-    embeddings = embedding_model.encode([emb for _, emb in concept_list])
+    embeddings = embedding_model.encode([emb for _, emb in concept_list], batch_size=128)
     with cursor.copy(
             sql.SQL("COPY {} (concept_id, embedding) FROM STDIN WITH (FORMAT BINARY)").format(sql.Identifier(DB_SCHEMA, "embeddings"))
             ) as copy:
@@ -49,9 +50,9 @@ with psycopg.connect(uri) as conn:
     logger.info("Connected to database\n")
     logger.info("Loading pgvector extension")
 
-    conn.execute("""
-                 CREATE EXTENSION IF NOT EXISTS vector;
-                 """)
+    # conn.execute("""
+    #              CREATE EXTENSION IF NOT EXISTS vector;
+    #              """)
     register_vector(conn)
     print("Registered vector type")
     with conn.cursor() as table_manage_cursor:
@@ -71,7 +72,7 @@ with psycopg.connect(uri) as conn:
                 )
         conn.commit()
     with conn.cursor(name="concept_fetch") as concept_cursor:
-        concept_cursor.itersize = 2048
+        concept_cursor.itersize = 16384
 
         query = sql.SQL("SELECT concept_id, concept_name FROM {}").format(sql.Identifier(DB_SCHEMA, "concept"))
 
