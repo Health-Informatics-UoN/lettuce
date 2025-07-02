@@ -3,7 +3,6 @@ from unittest.mock import Mock, patch
 from fastapi.testclient import TestClient
 from fastapi import FastAPI
 
-from api_models.responses import ConceptSuggestionResponse, SuggestionsMetaData, Suggestion
 from routers import search_routes
 
 app = FastAPI()
@@ -14,13 +13,14 @@ client = TestClient(app)
 
 class MockResult:
     """Mock database result object"""
-    def __init__(self, conceptName, conceptId, domain, vocabulary, 
-                 conceptClass, standard_concept, invalid_reason, ts_rank):
-        self.conceptName = conceptName
-        self.conceptId = conceptId
-        self.domain = domain
-        self.vocabulary = vocabulary
-        self.conceptClass = conceptClass
+    def __init__(self, concept_name, concept_id, concept_code, domain_id, vocabulary_id, 
+                 concept_class_id, standard_concept, invalid_reason, ts_rank):
+        self.concept_name = concept_name
+        self.concept_id = concept_id
+        self.concept_code = concept_code
+        self.domain_id = domain_id
+        self.vocabulary_id = vocabulary_id
+        self.concept_class_id = concept_class_id
         self.standard_concept = standard_concept
         self.invalid_reason = invalid_reason
         self.ts_rank = ts_rank
@@ -31,21 +31,23 @@ def mock_db_results():
     """Sample database results for testing"""
     return [
         MockResult(
-            conceptName="Diabetes mellitus",
-            conceptId=12345,
-            domain="Condition",
-            vocabulary="SNOMED",
-            conceptClass="Clinical Finding",
+            concept_name="Diabetes mellitus",
+            concept_id=12345,
+            domain_id="Condition",
+            concept_code="somecode",
+            vocabulary_id="SNOMED",
+            concept_class_id="Clinical Finding",
             standard_concept="S",
             invalid_reason=None,
             ts_rank=0.95
         ),
         MockResult(
-            conceptName="Type 2 diabetes",
-            conceptId="12346",
-            domain="Condition",
-            vocabulary="SNOMED",
-            conceptClass="Clinical Finding",
+            concept_name="Type 2 diabetes",
+            concept_id=12346,  # Changed from string to int to match Suggestion model
+            domain_id="Condition",
+            concept_code="anothercode",
+            vocabulary_id="SNOMED",
+            concept_class_id="Clinical Finding",
             standard_concept="S",
             invalid_reason=None,
             ts_rank=0.85
@@ -88,6 +90,8 @@ class TestTextSearchEndpoint:
         assert "recommendations" in data
         assert "metadata" in data
         assert data["metadata"]["pipeline"] == "Full-text search"
+        assert data["metadata"]["assistant"] == "Lettuce"
+        assert data["metadata"]["version"] == "0.1.0"
         
         # Check recommendations
         assert len(data["recommendations"]) == 2
@@ -97,13 +101,13 @@ class TestTextSearchEndpoint:
         assert first_recommendation["ranks"]["text_search"] == 1
         assert first_recommendation["scores"]["text_search"] == 0.95
         
-        # Verify function calls
+        # Verify function calls - updated with new default values
         mock_ts_rank_query.assert_called_once_with(
             search_term="diabetes",
             vocabulary_id=None,
             domain_id=None,
-            standard_concept=False,
-            valid_concept=False,
+            standard_concept=True,  # Changed from False to True
+            valid_concept=True,     # Changed from False to True
             top_k=5
         )
         mock_session.execute.assert_called_once_with(mock_query)
@@ -123,12 +127,12 @@ class TestTextSearchEndpoint:
         mock_query = Mock()
         mock_ts_rank_query.return_value = mock_query
         
-        # Make request with all parameters
+        # Make request with all parameters - updated parameter names
         response = client.get(
             "/text-search/diabetes",
             params={
-                "vocabulary": ["SNOMED", "ICD10CM"],
-                "domain": ["Condition", "Drug"],
+                "vocabulary": ["SNOMED", "ICD10CM"],  # Changed from vocabulary_id
+                "domain": ["Condition", "Drug"],      # Changed from domain_id
                 "standard_concept": True,
                 "valid_concept": True,
                 "top_k": 10
@@ -197,15 +201,15 @@ class TestTextSearchEndpoint:
             search_term=search_term,
             vocabulary_id=None,
             domain_id=None,
-            standard_concept=False,
-            valid_concept=False,
+            standard_concept=True,  # Updated default value
+            valid_concept=True,     # Updated default value
             top_k=5
         )
     
     @patch('routers.search_routes.get_session')
     @patch('routers.search_routes.ts_rank_query')
     def test_text_search_single_vocabulary_id(self, mock_ts_rank_query, mock_get_session, mock_db_results):
-        """Test text search with single vocabulary_id parameter"""
+        """Test text search with single vocabulary parameter"""
         # Setup mocks
         mock_session = Mock()
         mock_context_manager = Mock()
@@ -217,8 +221,8 @@ class TestTextSearchEndpoint:
         mock_query = Mock()
         mock_ts_rank_query.return_value = mock_query
         
-        # Make request with single vocabulary_id
-        response = client.get("/text-search/diabetes?vocabulary_id=SNOMED")
+        # Make request with single vocabulary parameter - updated parameter name
+        response = client.get("/text-search/diabetes?vocabulary=SNOMED")
         
         # Assertions
         assert response.status_code == 200
@@ -226,8 +230,8 @@ class TestTextSearchEndpoint:
             search_term="diabetes",
             vocabulary_id=["SNOMED"],
             domain_id=None,
-            standard_concept=False,
-            valid_concept=False,
+            standard_concept=True,  # Updated default value
+            valid_concept=True,     # Updated default value
             top_k=5
         )
     
@@ -237,9 +241,9 @@ class TestTextSearchEndpoint:
         """Test that results are properly ranked starting from 1"""
         # Setup mocks with multiple results
         results = [
-            MockResult("Concept A", "1", "Domain", "Vocab", "Class", "S", None, 0.9),
-            MockResult("Concept B", "2", "Domain", "Vocab", "Class", "S", None, 0.8),
-            MockResult("Concept C", "3", "Domain", "Vocab", "Class", "S", None, 0.7),
+            MockResult("Concept A", 1, "codeA", "Domain", "Vocab", "Class", "S", None, 0.9),
+            MockResult("Concept B", 2, "codeB", "Domain", "Vocab", "Class", "S", None, 0.8),
+            MockResult("Concept C", 3, "codeC", "Domain", "Vocab", "Class", "S", None, 0.7),
         ]
         
         mock_session = Mock()
@@ -297,10 +301,51 @@ class TestTextSearchEndpoint:
     
     def test_negative_top_k_parameter(self):
         """Test with negative top_k parameter"""
-        # This test depends on whether you have validation for top_k >= 0
+        # Should return 422 validation error due to ge=1 constraint
         response = client.get("/text-search/diabetes?top_k=-1")
-        # Should either return 422 (validation error) or handle gracefully
-        assert response.status_code in [200, 422]
+        assert response.status_code == 422
     
+    def test_zero_top_k_parameter(self):
+        """Test with zero top_k parameter"""  
+        # Should return 422 validation error due to ge=1 constraint
+        response = client.get("/text-search/diabetes?top_k=0")
+        assert response.status_code == 422
+    
+    @patch('routers.search_routes.get_session')
+    @patch('routers.search_routes.ts_rank_query')
+    def test_text_search_with_false_flags(self, mock_ts_rank_query, mock_get_session, mock_db_results):
+        """Test text search with standard_concept and valid_concept set to False"""
+        # Setup mocks
+        mock_session = Mock()
+        mock_context_manager = Mock()
+        mock_context_manager.__enter__ = Mock(return_value=mock_session)
+        mock_context_manager.__exit__ = Mock(return_value=None)
+        mock_get_session.return_value = mock_context_manager
+        
+        mock_session.execute.return_value.fetchall.return_value = mock_db_results
+        mock_query = Mock()
+        mock_ts_rank_query.return_value = mock_query
+        
+        # Make request with flags set to False
+        response = client.get(
+            "/text-search/diabetes",
+            params={
+                "standard_concept": False,
+                "valid_concept": False
+            }
+        )
+        
+        # Assertions
+        assert response.status_code == 200
+        mock_ts_rank_query.assert_called_once_with(
+            search_term="diabetes",
+            vocabulary_id=None,
+            domain_id=None,
+            standard_concept=False,
+            valid_concept=False,
+            top_k=5
+        )
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
