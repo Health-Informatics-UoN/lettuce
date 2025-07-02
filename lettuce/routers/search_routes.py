@@ -21,18 +21,18 @@ def check_db():
 @router.get("/text-search/{search_term}")
 async def text_search(
         search_term: str,
-        vocabulary_id: Annotated[List[str] | None, Query()]=None,
-        domain_id: Annotated[List[str] | None, Query()]=None,
-        standard_concept: bool=False,
-        valid_concept: bool=False,
+        vocabulary: Annotated[List[str] | None, Query()]=None,
+        domain: Annotated[List[str] | None, Query()]=None,
+        standard_concept: bool=True,
+        valid_concept: bool=True,
         top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)]=5,
         ) -> ConceptSuggestionResponse:
     if top_k:
         top_k = top_k
     query = ts_rank_query(
             search_term=search_term,
-            vocabulary_id=vocabulary_id,
-            domain_id=domain_id,
+            vocabulary_id=vocabulary,
+            domain_id=domain,
             standard_concept=standard_concept,
             valid_concept=valid_concept,
             top_k=top_k,
@@ -44,11 +44,12 @@ async def text_search(
     response = ConceptSuggestionResponse(
             recommendations=[
                 Suggestion(
-                    concept_name=r.concept_name,
-                    concept_id=r.concept_id,
-                    domain_id=r.domain_id,
-                    vocabulary_id=r.vocabulary_id,
-                    concept_class_id=r.concept_class_id,
+                    conceptName=r.concept_name,
+                    conceptId=r.concept_id,
+                    conceptCode=r.concept_code,
+                    domain=r.domain_id,
+                    vocabulary=r.vocabulary_id,
+                    conceptClass=r.concept_class_id,
                     standard_concept=r.standard_concept,
                     invalid_reason=r.invalid_reason,
                     ranks={"text_search": i+1},
@@ -62,16 +63,16 @@ async def text_search(
 @router.get("/vector-search/{search_term}")
 async def vector_search(
         search_term: str,
-        vocabulary_id: Annotated[List[str] | None, Query()]=None,
-        domain_id: Annotated[List[str] | None, Query()]=None,
-        standard_concept: bool=False,
+        vocabulary: Annotated[List[str] | None, Query()]=None,
+        domain: Annotated[List[str] | None, Query()]=None,
+        standard_concept: bool=True,
         valid_concept: bool=False,
         top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)]=5,
         ) -> ConceptSuggestionResponse:
     embedding_handler = Embeddings(
             model_name=EmbeddingModelName.BGESMALL,
-            embed_vocab=vocabulary_id,
-            domain_id=domain_id,
+            embed_vocab=vocabulary,
+            domain_id=domain,
             standard_concept=standard_concept,
             valid_concept=valid_concept,
             top_k=top_k
@@ -83,11 +84,12 @@ async def vector_search(
     return ConceptSuggestionResponse(
             recommendations=[
                 Suggestion(
-                    concept_name=r.Concept.concept_name,
-                    concept_id=r.Concept.concept_id,
-                    domain_id=r.Concept.domain_id,
-                    vocabulary_id=r.Concept.vocabulary_id,
-                    concept_class_id=r.Concept.concept_class_id,
+                    conceptName=r.Concept.concept_name,
+                    conceptId=r.Concept.concept_id,
+                    conceptCode=r.Concept.concept_code,
+                    domain=r.Concept.domain_id,
+                    vocabulary=r.Concept.vocabulary_id,
+                    conceptClass=r.Concept.concept_class_id,
                     standard_concept=r.Concept.standard_concept,
                     invalid_reason=r.Concept.invalid_reason,
                     ranks={"vector-search": i+1},
@@ -102,9 +104,9 @@ async def vector_search(
 @router.get("/ai-search/{search_term}")
 async def ai_search(
         search_term: str,
-        vocabulary_id: Annotated[List[str] | None, Query()]=None,
-        domain_id: Annotated[List[str] | None, Query()]=None,
-        standard_concept: bool=False,
+        vocabulary: Annotated[List[str] | None, Query()]=None,
+        domain: Annotated[List[str] | None, Query()]=None,
+        standard_concept: bool=True,
         valid_concept: bool=False,
         top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)]=5,
         ) -> ConceptSuggestionResponse:
@@ -112,7 +114,7 @@ async def ai_search(
             llm_model=LLMModel.LLAMA_3_1_8B,
             temperature=0,
             logger=logger,
-            embed_vocab=vocabulary_id,
+            embed_vocab=vocabulary,
             standard_concept=standard_concept,
             ).get_rag_assistant()
     answer = assistant.run({"prompt": {"informal_name": search_term}, "query_embedder": {"text": search_term}})
@@ -122,7 +124,7 @@ async def ai_search(
     logger.info(f"Meta: {meta}")
     query = query_ids_matching_name(
             query_concept=reply,
-            vocabulary_ids=vocabulary_id,
+            vocabulary_ids=vocabulary,
             full_concept=True
             )
     metadata = SuggestionsMetaData(
@@ -137,8 +139,8 @@ async def ai_search(
     if len(results) == 0:
         ts_query = ts_rank_query(
                 search_term=reply,
-                vocabulary_id=vocabulary_id,
-                domain_id=domain_id,
+                vocabulary_id=vocabulary,
+                domain_id=domain,
                 standard_concept=standard_concept,
                 valid_concept=valid_concept,
                 top_k=top_k,
@@ -148,11 +150,12 @@ async def ai_search(
         response = ConceptSuggestionResponse(
             recommendations=[
                 Suggestion(
-                    concept_name=r.concept_name,
-                    concept_id=r.concept_id,
-                    domain_id=r.domain_id,
-                    vocabulary_id=r.vocabulary_id,
-                    concept_class_id=r.concept_class_id,
+                    conceptName=r.concept_name,
+                    conceptId=r.concept_id,
+                    conceptCode=r.concept_code,
+                    domain=r.domain_id,
+                    vocabulary=r.vocabulary_id,
+                    conceptClass=r.concept_class_id,
                     standard_concept=r.standard_concept,
                     invalid_reason=r.invalid_reason,
                     ranks={"text_search": i+1},
@@ -165,11 +168,12 @@ async def ai_search(
         response = ConceptSuggestionResponse(
             recommendations=[
                 Suggestion(
-                    concept_name=r.concept_name,
-                    concept_id=r.concept_id,
-                    domain_id=r.domain_id,
-                    vocabulary_id=r.vocabulary_id,
-                    concept_class_id=r.concept_class_id,
+                    conceptName=r.concept_name,
+                    conceptId=r.concept_id,
+                    conceptCode=r.concept_code,
+                    domain=r.domain_id,
+                    vocabulary=r.vocabulary_id,
+                    conceptClass=r.concept_class_id,
                     standard_concept=r.standard_concept,
                     invalid_reason=r.invalid_reason,
                     ranks={},
