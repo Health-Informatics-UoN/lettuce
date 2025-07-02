@@ -30,6 +30,7 @@ def ts_rank_query(
     query = select(
             Concept.concept_name,
             Concept.concept_id,
+            Concept.concept_code,
             Concept.domain_id,
             Concept.vocabulary_id,
             Concept.concept_class_id,
@@ -147,6 +148,7 @@ def query_ids_matching_name(
         base_query = select(
             Concept.concept_name,
             Concept.concept_id,
+            Concept.concept_code,
             Concept.domain_id,
             Concept.vocabulary_id,
             Concept.concept_class_id,
@@ -363,23 +365,35 @@ def query_vector(
         embed_vocab: List[str] | None = None,
         domain_id: List[str] | None = None,
         standard_concept: bool = False,
+        valid_concept: bool = False,
         n: int = 5,
+        describe_concept:bool = False,
         ) -> Select:
-    query = (
-        select(
-            Concept.concept_id.label("id"),
-            Concept.concept_name.label("content"),
-            Embedding.embedding.cosine_distance(query_embedding).label("score"),
+    if describe_concept:
+        query = (
+            select(Concept, Embedding.embedding.cosine_distance(query_embedding).label("score"))
+            .join(Embedding, Concept.concept_id == Embedding.concept_id)
+            .order_by(Embedding.embedding.cosine_distance(query_embedding))
+            .limit(n)
         )
-        .join(Embedding, Concept.concept_id == Embedding.concept_id)
-        .order_by(Embedding.embedding.cosine_distance(query_embedding))
-        .limit(n)
-    )
+    else:
+        query = (
+            select(
+                Concept.concept_id.label("id"),
+                Concept.concept_name.label("content"),
+                Embedding.embedding.cosine_distance(query_embedding).label("score"),
+            )
+            .join(Embedding, Concept.concept_id == Embedding.concept_id)
+            .order_by(Embedding.embedding.cosine_distance(query_embedding))
+            .limit(n)
+        )
     if embed_vocab is not None:
         query = query.where(Concept.vocabulary_id.in_(embed_vocab))
     if domain_id is not None:
         query = query.where(Concept.domain_id.in_(domain_id))
     if standard_concept:
         query = query.where(Concept.standard_concept == "S")
+    if valid_concept:
+        query = query.where(Concept.invalid_reason == None)
 
     return query
