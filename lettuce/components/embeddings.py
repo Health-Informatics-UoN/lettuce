@@ -118,6 +118,12 @@ class PGVectorQuery:
             ):
         # only have cosine_similarity at the moment
         #TODO add selection of distance metric to query_vector
+        # Validate query_embedding type
+        if not isinstance(query_embedding, list):
+            raise TypeError("query_embedding must be a list of floats")
+        if not all(isinstance(x, (float, int)) for x in query_embedding):
+            raise TypeError("All elements of query_embedding must be floats or ints")
+
         query = query_vector(
                 query_embedding=query_embedding,
                 embed_vocab=self._embed_vocab,
