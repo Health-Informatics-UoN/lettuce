@@ -92,8 +92,8 @@ class TestTextSearchEndpoint:
         # Check recommendations
         assert len(data["recommendations"]) == 2
         first_recommendation = data["recommendations"][0]
-        assert first_recommendation["concept_name"] == "Diabetes mellitus"
-        assert first_recommendation["concept_id"] == 12345
+        assert first_recommendation["conceptName"] == "Diabetes mellitus"
+        assert first_recommendation["conceptId"] == 12345
         assert first_recommendation["ranks"]["text_search"] == 1
         assert first_recommendation["scores"]["text_search"] == 0.95
         
@@ -127,8 +127,8 @@ class TestTextSearchEndpoint:
         response = client.get(
             "/text-search/diabetes",
             params={
-                "vocabulary_id": ["SNOMED", "ICD10CM"],
-                "domain_id": ["Condition", "Drug"],
+                "vocabulary": ["SNOMED", "ICD10CM"],
+                "domain": ["Condition", "Drug"],
                 "standard_concept": True,
                 "valid_concept": True,
                 "top_k": 10
