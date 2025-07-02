@@ -14,13 +14,13 @@ client = TestClient(app)
 
 class MockResult:
     """Mock database result object"""
-    def __init__(self, concept_name, concept_id, domain_id, vocabulary_id, 
-                 concept_class_id, standard_concept, invalid_reason, ts_rank):
-        self.concept_name = concept_name
-        self.concept_id = concept_id
-        self.domain_id = domain_id
-        self.vocabulary_id = vocabulary_id
-        self.concept_class_id = concept_class_id
+    def __init__(self, conceptName, conceptId, domain, vocabulary, 
+                 conceptClass, standard_concept, invalid_reason, ts_rank):
+        self.conceptName = conceptName
+        self.conceptId = conceptId
+        self.domain = domain
+        self.vocabulary = vocabulary
+        self.conceptClass = conceptClass
         self.standard_concept = standard_concept
         self.invalid_reason = invalid_reason
         self.ts_rank = ts_rank
@@ -31,21 +31,21 @@ def mock_db_results():
     """Sample database results for testing"""
     return [
         MockResult(
-            concept_name="Diabetes mellitus",
-            concept_id=12345,
-            domain_id="Condition",
-            vocabulary_id="SNOMED",
-            concept_class_id="Clinical Finding",
+            conceptName="Diabetes mellitus",
+            conceptId=12345,
+            domain="Condition",
+            vocabulary="SNOMED",
+            conceptClass="Clinical Finding",
             standard_concept="S",
             invalid_reason=None,
             ts_rank=0.95
         ),
         MockResult(
-            concept_name="Type 2 diabetes",
-            concept_id="12346",
-            domain_id="Condition",
-            vocabulary_id="SNOMED",
-            concept_class_id="Clinical Finding",
+            conceptName="Type 2 diabetes",
+            conceptId="12346",
+            domain="Condition",
+            vocabulary="SNOMED",
+            conceptClass="Clinical Finding",
             standard_concept="S",
             invalid_reason=None,
             ts_rank=0.85
