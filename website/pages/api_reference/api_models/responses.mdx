@@ -1,0 +1,73 @@
+# `responses`
+These classes are Pydantic models for the response format for the suggestions API.
+The main class is `ConceptSuggestionResponse`, composed of a list of `Suggestion`s, and `SuggestionsMetaData` describing the pipeline.
+
+## `Suggestion`
+
+```python
+class Suggestion(BaseModel):
+    concept_name: str
+    concept_id: int
+    domain_id: str
+    vocabulary_id: str
+    concept_class_id: str
+    standard_concept: Optional[str]
+    invalid_reason: Optional[str]
+    ranks: Optional[Dict[str, int]]
+    scores: Optional[Dict[str, float]]
+```
+
+A model describing a single suggestion from a lettuce search.
+Most of the fields are OMOP concept table fields, but ranks and scores describe how well the suggestions match the request.
+
+### Attributes
+
+| Fields | Type | Description |
+|--------|------|-------------|
+| concept_name | str | The concept_name field from the OMOP concept table |
+| concept_id | int | The concept_id field from the OMOP concept table |
+| domain_id | str | The domain_id field from the OMOP concept table |
+| vocabulary_id | str | The vocabulary_id field from the OMOP concept table |
+| concept_class_id | str | The concept_class_id field from the OMOP concept table |
+| standard_concept | Optional[str] | The standard_concept field from the OMOP concept table. The field is nullable, so is `Optional` |
+| invalid_reason | Optional[str] | The invalid_reason field from the OMOP concept table. The field is nullable, so is `Optional` |
+| ranks | Optional[Dict[str, int]] | The ranks of the suggestion, as determined by some algorithm used. The keys of the dict describe the algorithms, the values are the rank. |
+| score | Optional[Dict[str, int]] | The scores of the suggestion, as determined by some algorithm used. The keys of the dict describe the algorithms, the values are the score. |
+
+
+## `SuggestionsMetaData`
+
+```python
+class SuggestionsMetaData(BaseModel):
+    assistant: str = "Lettuce"
+    version: str = "0.1.0"
+    pipeline: Optional[str] = None
+```
+
+A model describing the process used to get suggestions from a lettuce search.
+The fields are general so that if applications use lettuce and other assistants, the provenance can be tracked.
+
+### Attributes
+
+| Fields | Type | Description |
+|--------|------|-------------|
+| assistant | str | A description of the assistant used to make the suggestions. Defaults to "Lettuce" for obvious reasons |
+| version | str | The version of the application used to make the suggestions. There's probably a clever way of reading the version at run time |
+| pipeline | Optional[str] | A description of the pipeline within the application used to suggest concepts |
+
+## `ConceptSuggestionResponse`
+
+```python
+class ConceptSuggestionResponse(BaseModel):
+    recommendations: List[Suggestion]
+    metadata: SuggestionsMetaData = Field(default_factory=SuggestionsMetaData)
+```
+
+A model to bundle `Suggestion`s and their associated `SuggestionsMetaData` into a single response.
+
+### Attributes
+
+| Fields | Type | Description |
+|--------|------|-------------|
+| recommendations | List[Suggestion] | A list of `Suggestion`s made by lettuce |
+| metadata | SuggestionsMetaData | A description of the process used to generate suggestions |

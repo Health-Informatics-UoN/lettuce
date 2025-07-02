@@ -1,51 +1,127 @@
-## omop.omop_models
-[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/omop/omop_models.py)
-### `Concept`
+# `omop.omop_models`
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/omop/omop_models.py)
+
+The `omop_models.py` file defines SQLAlchemy ORM models for interacting with the OMOP standard tables and the additional embeddings table in a PostgreSQL database. These models map to the database tables used by `lettuce`, enabling programmatic access OMOP concepts.
+
+The models use the `sqlalchemy` library for ORM functionality and `pgvector` for vector-based operations, supporting semantic search capabilities. 
+
+This page documents each model, its attributes, and its role in the system. The models are defined using SQLAlchemy's `declarative_base()` and are organized as follows:
+## `Concept`
 ```python
-class Concept(
-  concept_id = Column(Integer, primary_key=True)
-  concept_name = Column(String)
-  vocabulary_id = Column(String)
-  concept_code = Column(String)
-  standard_concept = Column(String)
-)
+class Concept(Base):
+    __tablename__ = "concept"
+    __table_args__ = {"schema": DB_SCHEMA}
+
+    concept_id = Column(Integer, primary_key=True)
+    concept_name = Column(String)
+    vocabulary_id = Column(String)
+    concept_code = Column(String)
+    standard_concept = Column(String)
 ```
 
-This class represents an ORM mapping to the OMOP concept table
-### `ConceptSynonym`
+This class represents an ORM mapping to the OMOP concept table, representing standardised medical concepts (e.g., drugs, conditions).
+
+### Attributes 
+| Column             | Type       | Description                                      | Constraints       |
+|--------------------|------------|--------------------------------------------------|-------------------|
+| `concept_id`       | Integer    | Unique identifier for the concept.               | Primary Key       |
+| `concept_name`     | String     | Name of the concept (e.g., "Acetaminophen").     |                   |
+| `vocabulary_id`    | String     | Source vocabulary (e.g., "RxNorm").              |                   |
+| `concept_code`     | String     | Code for the concept in the vocabulary.          |                   |
+| `standard_concept` | String     | Indicates if it’s a standard concept (e.g., "S"). |                   |
+
+## `ConceptSynonym`
 ```python
-class ConceptSynonym(
-  concept_id = Column(Integer, primary_key=True)
-  concept_synonym_name = Column(String)
-  language_concept_id = Column(Integer)
-)
-```
+class ConceptSynonym(Base):
+    __tablename__ = "concept_synonym"
+    __table_args__ = {"schema": DB_SCHEMA}
 
-This class represents an ORM mapping to the OMOP concept_synonym table
-### `build_query`
+    concept_id = Column(Integer, primary_key=True)
+    concept_synonym_name = Column(String)
+    language_concept_id = Column(Integer)
+```
+This class represents an ORM mapping to the OMOP concept_synonym table, storing alternative names or synonyms for concepts.
+
+### Attributes
+| Column                 | Type       | Description                                  | Constraints       |
+|------------------------|------------|----------------------------------------------|-------------------|
+| `concept_id`           | Integer    | ID of the associated concept.                | Primary Key       |
+| `concept_synonym_name` | String     | Synonym name (e.g., "Tylenol").              |                   |
+| `language_concept_id`  | Integer    | ID of the language for the synonym.          |                   |
+
+
+## `ConceptRelationship`
 ```python
-def build_query(
-	search_term: str
-	vocabulary_id: 
-	concept_synonym: bool
-)
+class ConceptRelationship(Base):
+    __tablename__ = "concept_relationship"
+    __table_args__ = {"schema": DB_SCHEMA}
+
+    concept_id_1 = Column(Integer)
+    concept_id_2 = Column(Integer)
+    relationship_id = Column(String)
+    valid_start_date = Column(Date)
+    valid_end_date = Column(Date)
+    invalid_reason = Column(String)
+    dummy_primary = Column(Integer, primary_key=True)
 ```
+Maps to the `concept_relationship` table, defining relationships between concepts (e.g., "Maps to", "Is a").
 
-Builds an OMOP query to search for concepts
+### Attributes 
+| Column              | Type       | Description                                      | Constraints       |
+|---------------------|------------|--------------------------------------------------|-------------------|
+| `concept_id_1`      | Integer    | ID of the first concept.                         |                   |
+| `concept_id_2`      | Integer    | ID of the second concept.                        |                   |
+| `relationship_id`   | String     | Type of relationship (e.g., "Maps to").          |                   |
+| `valid_start_date`  | Date       | Start date of the relationship’s validity.       |                   |
+| `valid_end_date`    | Date       | End date of the relationship’s validity.         |                   |
+| `invalid_reason`    | String     | Reason if the relationship is invalid.           |                   |
+| `dummy_primary`     | Integer    | Dummy primary key for ORM compatibility.         | Primary Key       |
 
-Uses the ORM models for the concept and concept_synonym tables to build a query
+## `ConceptAncestor`
+```python
+class ConceptAncestor(Base):
+    __tablename__ = "concept_ancestor"
+    __table_args__ = {"schema": DB_SCHEMA}
 
-#### Parameters
-`search_term: str`
-The term to use when searching the relevant tables for concepts
+    ancestor_concept_id = Column(Integer)
+    descendant_concept_id = Column(Integer)
+    min_levels_of_separation = Column(Integer)
+    max_levels_of_separation = Column(Integer)
+    dummy_primary = Column(Integer, primary_key=True)
+```
+Maps to the `concept_ancestor` table, storing hierarchical relationships between ancestor and descendant concepts. Enables querying of concept hierarchies, such as finding broader categories (e.g., "Analgesics" for "Acetaminophen").
 
-`vocabulary_id: list[str]`
-A list of vocabulary_ids in the concepts table. The returned concepts will have one of these vocabulary_ids
 
-`concept_synonym: str`
-If true, then the query is expanded to find matches using the concept_synonym table
+### Attributes 
+| Column                     | Type       | Description                                      | Constraints       |
+|----------------------------|------------|--------------------------------------------------|-------------------|
+| `ancestor_concept_id`      | Integer    | ID of the ancestor concept.                      |                   |
+| `descendant_concept_id`    | Integer    | ID of the descendant concept.                    |                   |
+| `min_levels_of_separation` | Integer    | Minimum levels of separation in hierarchy.       |                   |
+| `max_levels_of_separation` | Integer    | Maximum levels of separation in hierarchy.       |                   |
+| `dummy_primary`            | Integer    | Dummy primary key for ORM compatibility.         | Primary Key       |
 
-#### Returns
-`Select`
-An SQLAlchemy Select for the desired query
+
+## `Embedding`
+```python
+class Embedding(Base):
+    __tablename__ = DB_VECTABLE
+    __table_args__ = {"schema": DB_SCHEMA}
+
+    concept_id = Column(Integer)
+    embedding = mapped_column(Vector(DB_VECSIZE))
+    dummy_primary = Column(Integer, primary_key=True)
+```
+Maps to the embeddings table, storing vector representations of OMOP concepts for semantic search. 
+
+To enable semantic search for mapping informal drug names to OMOP concept IDs, we use pgvector, an open-source PostgreSQL extension for storing, querying, and manipulating high-dimensional vector data. Vectors, representing embeddings generated by a pre-trained machine learning model, are stored as a `vector` data type in a single row of the embeddings table, each linked to a specific OMOP concept via its concept_id. This allows efficient similarity searches to match informal names to standardized concepts.
+
+### Attributes 
+| Column          | Type             | Description                                      | Constraints       |
+|-----------------|------------------|--------------------------------------------------|-------------------|
+| `concept_id`    | Integer          | ID of the associated concept.                    |                   |
+| `embedding`     | Vector           | Vector representation (size `DB_VECSIZE`).       |                   |
+| `dummy_primary` | Integer          | Dummy primary key for ORM compatibility.         | Primary Key       |
+
+
 

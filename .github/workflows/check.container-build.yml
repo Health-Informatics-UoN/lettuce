@@ -22,3 +22,22 @@ jobs:
           file: ./lettuce/Dockerfile
           push: false
           platforms: linux/amd64
+          load: true
+          tags: lettuce:test 
+      
+      - name: Test container startup 
+        run: | 
+          # Start container in background
+          docker run -d --name lettuce-test lettuce:test
+
+          if docker ps | grep lettuce-test; then
+            echo "Container started successfully"
+          else
+            echo "Container failed to start!"
+            docker logs lettuce-test
+            exit 1
+          fi
+          
+          docker stop lettuce-test
+          docker rm lettuce-test
+    
