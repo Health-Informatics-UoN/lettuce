@@ -86,7 +86,6 @@ def test_vector_search():
     output = parse_output(result.stdout)
     omop_matches = output[0]["OMOP matches"]["CONCEPT"]
     vector_search_results = output[0]["Vector Search Results"]
-    breakpoint()
     assert result.returncode == 0 
     assert len(output) > 0 
     assert len(omop_matches) > 0 

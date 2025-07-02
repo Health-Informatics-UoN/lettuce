@@ -123,11 +123,7 @@ def get_local_weights(
     llm = LlamaCppGenerator(
         model=path_to_weights, 
         model_kwargs={
-<<<<<<< HEAD
             "n_ctx": 2048,
-=======
-            "n_ctx": 1024,
->>>>>>> main
             "n_batch": 32,
             "n_gpu_layers": device,
             "verbose": True
@@ -144,11 +140,7 @@ def download_model_from_huggingface(
     temperature: float, 
     logger: logging.Logger, 
     fallback_model: str = "llama-3.1-8b",
-<<<<<<< HEAD
     n_ctx: int = 2048,
-=======
-    n_ctx: int = 1024,
->>>>>>> main
     n_batch: int = 32,
     max_tokens: int = 64
 ): 
