@@ -69,7 +69,7 @@ EMBEDDING_MODELS = {
     ),
     # ------ Generalizable T5 Retrieval ------- >
     EmbeddingModelName.GTR_T5_LARGE: EmbeddingModelInfo(
-        path="google/gtr-t5-large", dimensions=1024
+    path="google/gtr-t5-large", dimensions=1024
     ),
     # ------ Embedding Models for Search Engines ------- >
     EmbeddingModelName.E5_BASE: EmbeddingModelInfo(
@@ -104,17 +104,22 @@ class PGVectorQuery:
     def __init__(
             self,
             embed_vocab: List[str] | None = None,
-            standard_concept:bool= False,
+            domain_id: List[str] | None = None,
+            standard_concept:bool = False,
+            valid_concept:bool = False,
             top_k: int = 5,
             ) -> None:
         self._embed_vocab = embed_vocab
-        self._standard_concept= standard_concept
+        self._domain_id = domain_id
+        self._standard_concept = standard_concept
+        self._valid_concept = valid_concept
         self._top_k = top_k
 
     @component.output_types(documents=List[Document])
     def run(
             self,
             query_embedding: List[float],
+            describe_concept: bool = False,
             ):
         # only have cosine_similarity at the moment
         #TODO add selection of distance metric to query_vector
@@ -127,14 +132,22 @@ class PGVectorQuery:
         query = query_vector(
                 query_embedding=query_embedding,
                 embed_vocab=self._embed_vocab,
+                domain_id=self._domain_id,
                 standard_concept=self._standard_concept,
+                valid_concept=self._valid_concept,
                 n = self._top_k,
+                describe_concept=describe_concept,
                 ) 
+        
         with get_session() as session: 
             try:
                 query_results = session.execute(query).mappings().all()
             except SQLAlchemyError as e:
                 raise SQLAlchemyError(f"Vector query execution failed: {str(e)}")
+
+        if describe_concept:
+            return query_results
+        else:
             try:
                 return {"documents": [
                     Document(
@@ -181,7 +194,9 @@ class Embeddings:
         self,
         model_name: EmbeddingModelName,
         embed_vocab: List[str] | None=None,
+        domain_id: List[str] | None = None,
         standard_concept: bool=False,
+        valid_concept: bool = False,
         top_k: int=5,
     ) -> None:
         """
@@ -209,7 +224,9 @@ class Embeddings:
         """
         self._model = get_embedding_model(model_name)
         self._embed_vocab = embed_vocab
+        self._domain_id = domain_id
         self._standard_concept = standard_concept
+        self._valid_concept = valid_concept
         self._top_k = top_k
 
 
@@ -237,7 +254,9 @@ class Embeddings:
             assert(self._model.info.dimensions == int(os.environ["DB_VECSIZE"]))
             return PGVectorQuery(
                     embed_vocab=self._embed_vocab,
+                    domain_id=self._domain_id,
                     standard_concept=self._standard_concept,
+                    valid_concept=self._valid_concept,
                     top_k=self._top_k,
                     )
         except AssertionError:

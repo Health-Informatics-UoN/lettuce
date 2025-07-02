@@ -2,11 +2,12 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 
 class Suggestion(BaseModel):
-    concept_name: str
-    concept_id: int
-    domain_id: str
-    vocabulary_id: str
-    concept_class_id: str
+    conceptName: str
+    conceptId: int
+    conceptCode: str
+    domain: str
+    vocabulary: str
+    conceptClass: str
     standard_concept: Optional[str]
     invalid_reason: Optional[str]
     ranks: Optional[Dict[str, int]]
