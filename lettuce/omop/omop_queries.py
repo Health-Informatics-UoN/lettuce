@@ -30,6 +30,7 @@ def ts_rank_query(
     query = select(
             Concept.concept_name,
             Concept.concept_id,
+            Concept.concept_code,
             Concept.domain_id,
             Concept.vocabulary_id,
             Concept.concept_class_id,
@@ -147,6 +148,7 @@ def query_ids_matching_name(
         base_query = select(
             Concept.concept_name,
             Concept.concept_id,
+            Concept.concept_code,
             Concept.domain_id,
             Concept.vocabulary_id,
             Concept.concept_class_id,
