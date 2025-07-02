@@ -1,7 +1,10 @@
-## components.prompt
-[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/Lettuce/components/prompt.py)
-### `Prompts`
-```
+# `components.prompt`
+This module provides prompt generation functionality for `lettuce`.
+
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/components/prompt.py)
+
+## `Prompts`
+```python
 class Prompts(
 	model: LLMModel
 	prompt_type: str
@@ -9,34 +12,43 @@ class Prompts(
 ```
 
 This class is used to generate prompts for the models.
+
+### Parameters
+
+- `model_name: LLMModel`
+
+    The name of the model to use for prompt generation. 
+
+- `prompt_type: str | None`, optional (default: "simple")
+
+    The type of prompt to generate. Currrently supported values:
+    - `"simple"`: A few-shot prompt without external data.
+    - `"top_n_RAG"`: A retrieval-augmented generation prompt that includes an embeddings vector of related RxNorm terms. 
+
+
 ### Methods
 
-#### `__init__`
-```
-def __init__(
-	model: LLMModel
-	prompt_type: str
-)
-```
-
-Initializes the Prompts class
-
-Parameters
-----------
-`model_name: LLMModel`
-    The name of the model
-`prompt_type: str|None`
-    The type of prompt to generate
-
 #### `get_prompt`
-```
+```python
 def get_prompt()
 ```
-
-Get the prompt based on the prompt_type supplied to the object.
+Get the prompt based on the `prompt_type` supplied to the object.
 
 ##### Returns
-PromptBuilder
-    The prompt for the model
-
+- `haystack.components.builder.PromptBuilder`
+    - The prompt for the model. 
     - If the _prompt_type of the object is "simple", returns a simple prompt for few-shot learning of formal drug names.
+
+
+### Template Details 
+#### Simple Template 
+The simple template provides a few-shot learning approach with examples of common medication name conversions. It instructs the model to respond only with the formal medication name without additional explanation.
+
+#### Top-N RAG Template
+The retrieval-augmented generation template includes potentially related RxNorm terms retrieved from a vector database. It allows the model to incorporate this external knowledge when determining the formal medication name, with instructions to ignore irrelevant terms.
+
+### Integration Notes 
+- This class is designed to work with Haystack's `PromptBuilder` for template rendering
+- The EOT token is automatically appended based on the model type
+- For Llama 3.1 models, the EOT token is particularly important
+- The templates are designed to produce concise, accurate responses with formal medication names only

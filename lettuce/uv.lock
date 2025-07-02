@@ -756,7 +756,7 @@ requires-dist = [
     { name = "fastembed-haystack", specifier = ">=1.2.0" },
     { name = "haystack-ai", specifier = ">=2.7.0" },
     { name = "huggingface-hub", specifier = ">=0.24.6" },
-    { name = "llama-cpp-haystack", specifier = ">=0.4.1" },
+    { name = "llama-cpp-haystack", specifier = ">=0.4.1,<=0.4.4" },
     { name = "llama-cpp-python", specifier = ">=0.2.89" },
     { name = "numpy", specifier = "==1.26.4" },
     { name = "pandas", specifier = ">=2.1.0" },
@@ -779,15 +779,15 @@ provides-extras = ["test", "streamlit"]
 
 [[package]]
 name = "llama-cpp-haystack"
-version = "1.0.0"
+version = "0.4.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "haystack-ai" },
     { name = "llama-cpp-python" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e8/44/e2bce0a16ec272ad911e5635370769d5416950d05e6d14be464b0ff0c739/llama_cpp_haystack-1.0.0.tar.gz", hash = "sha256:55a4988860d05e612291c26eab7ce783a412d7665399dad88364a7edd9af6b19", size = 20048 }
+sdist = { url = "https://files.pythonhosted.org/packages/f9/3b/5e0c05591c701ad4a8134aeb7df4574936e7d9c917999dd028e42299ff82/llama_cpp_haystack-0.4.4.tar.gz", hash = "sha256:e30a7e3e9a74d2e8a337d1a8c77d8a1256bd9a0510c65651d03c2ed7dcc08a8e", size = 18437 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b8/20/ff7ef1f42f7114217a958f202b83e3b2846b44e94338aaac6098faa706a7/llama_cpp_haystack-1.0.0-py3-none-any.whl", hash = "sha256:4b90fdf97a72d7628222ea5a6985ac5761088707909b992239f62873921c1255", size = 13410 },
+    { url = "https://files.pythonhosted.org/packages/0d/5a/09cc8f7e0eca0525eda17ab818fbb7d0bb78d8fe67d7bc42b089ce92f65b/llama_cpp_haystack-0.4.4-py3-none-any.whl", hash = "sha256:cf7934ce6266e4465b4ef1cc8dba9c2fbe2e7b81c69f0d00782b13d5a87966f9", size = 12291 },
 ]
 
 [[package]]

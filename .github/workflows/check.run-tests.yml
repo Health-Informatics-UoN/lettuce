@@ -2,6 +2,11 @@ name: Run Tests
 
 on:
   pull_request:
+    branches:
+      - main 
+  push:
+    branches:
+      - main
 
 jobs:
   run-tests:
@@ -9,43 +14,88 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SKIP_DATABASE_TESTS: true  # Skip database tests globally for this job
+      SKIP_DATABASE_TESTS: false 
       SKIP_LLM_TESTS: true 
-      SKIP_EVAL_TESTS: true 
-      DB_HOST: "db"  # Dummy variables that mock the .env file required in the environmental configuration 
+      DB_HOST: "localhost"
       DB_USER: "postgres"
-      DB_PASSWORD: "postgres"
-      DB_NAME: "lettuce-omop"
+      DB_PASSWORD: "password"
+      DB_NAME: "omop"
       DB_PORT: "5432"
-      DB_SCHEMA: "public"
-      DB_VECTABLE: "test"
+      DB_SCHEMA: "cdm" 
+      DB_VECTABLE: "embeddings"
       DB_VECSIZE: "384"
 
-    steps:
-      - uses: actions/checkout@v4
 
+    steps:
+      - name: Checkout omop-lite repository
+        uses: actions/checkout@v4
+        with:
+          repository: Health-Informatics-UoN/omop-lite  
+          path: omop-lite
+          ref: 2a352a52b9244c25cfa87dfde045dbb65d8131fb
+
+      - name: Checkout lettuce repository
+        uses: actions/checkout@v4
+        with:
+          path: lettuce 
+          ref: ${{ github.head_ref }}  
+
+      - name: Move test data from synthetic into data
+        run: |
+          mkdir omop-lite/data
+          mv omop-lite/omop_lite/synthetic/* omop-lite/data/
+
+      - name: Start omop-ts Docker services
+        run: |         
+          docker compose -f omop-lite/compose-omop-ts.yml up -d
+          
+          echo "Waiting for database to initialise..."
+          sleep 15
+
+      - name: Check DNS resolution
+        run: |
+          nslookup localhost || echo "Failed to resolve hostname"
+          ping -c 3 localhost || echo "Failed to ping host"
+      
+      - name: Inspect Docker networks
+        run: |
+          docker network ls
+      
+      - name: Check running containers and their IPs
+        run: |
+          docker ps
+          docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -q)
+      
       - name: Setup uv
         uses: astral-sh/setup-uv@v5
         with:
           version: "0.5.16"
           enable-cache: true
-          cache-dependency-glob: "lettuce/uv.lock"
+          cache-dependency-glob: "lettuce/lettuce/uv.lock"
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: "lettuce/.python-version" 
+          python-version-file: "lettuce/lettuce/.python-version" 
 
       - name: uv sync
         run: uv sync --all-extras 
-        working-directory: lettuce
+        working-directory: lettuce/lettuce 
 
       - name: Run tests
         run: |
           set -e
           uv run pytest tests --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=lettuce tests | tee pytest-coverage.txt
           test ${PIPESTATUS[0]} -eq 0
-        working-directory: lettuce 
+        working-directory: lettuce/lettuce 
+
+      - name: Cleanup Docker services
+        if: always()
+        run: |
+          # Cleanup all services to prevent resource issues
+          docker compose -f lettuce/lettuce/compose.yaml down
+          docker compose -f omop-lite/compose-omop-ts.yml down
+          docker network rm omop-ts_default || true
 
       - name: Pytest coverage comment
         uses: MishaKav/pytest-coverage-comment@81882822c5b22af01f91bd3eacb1cefb6ad73dc2
