@@ -50,30 +50,6 @@ def mock_session_with_empty_results():
         yield mock_get_session
 
 
-@pytest.fixture
-def mock_session_with_more_than_k_results(): 
-    with patch("components.embeddings.get_session") as mock_get_session: 
-        # Prepare mock data
-        mock_results = [
-            {"id": f"concept{i}", "content": f"Sample Concept {i}", "score": 0.1 * i}
-            for i in range(1, 6)
-        ]
-
-         # Verifies that LIMIT is set correctly
-        def execute_side_effect(query):
-            assert query._limit_clause.value == k
-            mock_execute = Mock()
-            mock_execute.mappings.return_value.all.return_value = mock_results[:query._limit_clause.value]
-            return mock_execute
-
-        mock_session.execute.side_effect = execute_side_effect
-
-        # Mimic the context manager behaviour 
-        mock_get_session.return_value.__enter__.return_value = mock_session(mock_results)
-
-        yield mock_get_session
-
-
 class TestPGVectorQuery:
     def test_run_with_valid_embedding(self, mock_session_with_valid_results):
         """
