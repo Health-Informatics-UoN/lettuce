@@ -97,26 +97,26 @@ class TestPGVectorQuery:
                 for i in range(1, 6)
             ]
         
-        with patch("components.embeddings.get_session") as mock_get_session:
-            # Create the mock session
-            mock_session = Mock(spec=Session)
+            with patch("components.embeddings.get_session") as mock_get_session:
+                # Create the mock session
+                mock_session = Mock(spec=Session)
 
-            # Side effect that checks the limit clause
-            def execute_side_effect(query):
-                assert query._limit_clause.value == k, f"Expected LIMIT {k}, got {query._limit_clause.value}"
-                mock_execute = Mock()
-                mock_execute.mappings.return_value.all.return_value = mock_results[:k]
-                return mock_execute
+                # Side effect that checks the limit clause
+                def execute_side_effect(query):
+                    assert query._limit_clause.value == k, f"Expected LIMIT {k}, got {query._limit_clause.value}"
+                    mock_execute = Mock()
+                    mock_execute.mappings.return_value.all.return_value = mock_results[:k]
+                    return mock_execute
 
-            mock_session.execute.side_effect = execute_side_effect
-            mock_get_session.return_value.__enter__.return_value = mock_session
+                mock_session.execute.side_effect = execute_side_effect
+                mock_get_session.return_value.__enter__.return_value = mock_session
 
-            # Run the component with current top_k
-            query_component = PGVectorQuery(top_k=k)
-            result = query_component.run(query_embedding=query_embedding)
+                # Run the component with current top_k
+                query_component = PGVectorQuery(top_k=k)
+                result = query_component.run(query_embedding=query_embedding)
 
-            # Validate that only `k` documents were returned
-            assert len(result["documents"]) == k
+                # Validate that only `k` documents were returned
+                assert len(result["documents"]) == k
 
 
     def test_invalid_embedding_type(self, mock_session_with_valid_results):
