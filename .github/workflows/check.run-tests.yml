@@ -81,6 +81,20 @@ jobs:
       - name: uv sync
         run: uv sync --all-extras 
         working-directory: lettuce/lettuce 
+      
+      - name: Setup test environment
+        run: |
+          # Create .env file with CI environment variables
+          echo "SKIP_DATABASE_TESTS=${SKIP_DATABASE_TESTS}" > .env
+          echo "SKIP_LLM_TESTS=${SKIP_LLM_TESTS}" >> .env
+          echo "DB_HOST=${DB_HOST}" >> .env
+          echo "DB_USER=${DB_USER}" >> .env
+          echo "DB_PASSWORD=${DB_PASSWORD}" >> .env
+          echo "DB_NAME=${DB_NAME}" >> .env
+          echo "DB_PORT=${DB_PORT}" >> .env
+          echo "DB_SCHEMA=${DB_SCHEMA}" >> .env
+          echo "DB_VECTABLE=${DB_VECTABLE}" >> .env
+          echo "DB_VECSIZE=${DB_VECSIZE}" >> .env
 
       - name: Run tests
         run: |
