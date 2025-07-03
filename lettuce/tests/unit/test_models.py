@@ -47,8 +47,8 @@ def test_local_weights_success(mock_cuda, mock_llama, mock_isfile, mock_file_exi
     mock_isfile.assert_called_once_with(mock_file_exists)
     mock_llama.assert_called_once_with(
         model=mock_file_exists, 
-        model_kwargs={'n_ctx': 1024, 'n_batch': 32, 'n_gpu_layers': -1, 'verbose': True},
-        generation_kwargs={'max_tokens': 128, 'temperature': 0.7}
+        model_kwargs={'n_ctx': 2048, 'n_batch': 32, 'n_gpu_layers': -1, 'verbose': True},
+        generation_kwargs={'max_tokens': 64, 'temperature': 0.7}
     )
     mock_cuda.assert_called_once()
 

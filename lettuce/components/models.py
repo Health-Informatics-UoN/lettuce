@@ -123,12 +123,12 @@ def get_local_weights(
     llm = LlamaCppGenerator(
         model=path_to_weights, 
         model_kwargs={
-            "n_ctx": 1024,
+            "n_ctx": 2048,
             "n_batch": 32,
             "n_gpu_layers": device,
             "verbose": True
         }, 
-        generation_kwargs={"max_tokens": 128, "temperature": temperature}
+        generation_kwargs={"max_tokens": 64, "temperature": temperature}
     )
     logger.info(f"Succesfully loaded LlamaCppGenerator from {path_to_weights}")
     logger.info(f"LLM Loaded: n_ctx={llm.config.get('n_ctx')}, n_batch={llm.config.get('n_batch')}")
@@ -140,9 +140,9 @@ def download_model_from_huggingface(
     temperature: float, 
     logger: logging.Logger, 
     fallback_model: str = "llama-3.1-8b",
-    n_ctx: int = 1024,
+    n_ctx: int = 2048,
     n_batch: int = 32,
-    max_tokens: int = 128 
+    max_tokens: int = 64
 ): 
     logger.info(f"Loading local model: {model_name}")
     device = -1 if (torch.cuda.is_available() or torch.backends.mps.is_available()) else 0
