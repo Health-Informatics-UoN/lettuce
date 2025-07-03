@@ -95,6 +95,7 @@ jobs:
           echo "DB_SCHEMA=${DB_SCHEMA}" >> .env
           echo "DB_VECTABLE=${DB_VECTABLE}" >> .env
           echo "DB_VECSIZE=${DB_VECSIZE}" >> .env
+        working-directory: lettuce/lettuce
 
       - name: Run tests
         run: |
