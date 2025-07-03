@@ -1,12 +1,5 @@
 import os
-from os import environ
-from dotenv import load_dotenv
 import pytest
-from urllib.parse import quote_plus
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session 
-from unittest.mock import Mock
-from haystack.dataclasses import Document
 
 pytestmark = pytest.mark.skipif(os.getenv('SKIP_DATABASE_TESTS') == 'true', reason="Skipping database tests")
 
