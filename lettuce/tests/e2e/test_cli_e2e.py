@@ -51,6 +51,15 @@ def test_basic_search():
         "--informal_names", 
         "acetaminophen"
     ])
+
+    # Debug output
+    print(f"Return code: {result.returncode}")
+    print(f"STDOUT: '{result.stdout}'")
+    print(f"STDERR: '{result.stderr}'")
+    
+    if result.stdout.strip() == '':
+        pytest.fail(f"CLI produced no output. Return code: {result.returncode}, STDERR: {result.stderr}")
+        
     output = parse_output(result.stdout)
     omop_matches = output[0]["OMOP matches"]["CONCEPT"]
     assert result.returncode == 0 
