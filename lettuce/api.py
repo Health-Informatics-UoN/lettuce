@@ -1,4 +1,7 @@
-import os 
+import os
+import secrets 
+import hashlib 
+from typing import Set 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, HTTPException, status  
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,22 +10,46 @@ from routers import pipeline_routes, search_routes
 
 
 load_dotenv()
-
 security = HTTPBearer()
 
-def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)):
+
+def hash_api_key(api_key: str): 
+    """Hash an API key for secure storage comparison."""
+    return hashlib.sha256(api_key.encode()).hexdigest()
+
+
+def load_valid_api_keys() -> Set[str]: 
+    """Load and return hashed API key from the environment."""
     api_key = os.getenv("AUTH_API_KEY")
     if not api_key:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Server configuration error: API_KEY not set"
         )
-    valid_api_keys = {api_key}
-    if credentials.credentials not in valid_api_keys:
+    
+    valid_key = {hash_api_key(api_key)}  # can include logic for handling additional keys
+
+    return valid_key
+
+
+def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    valid_api_keys = load_valid_api_keys()
+
+    # Hash the provided API key
+    provided_key_hash = hash_api_key(credentials.credentials)
+
+    # Use constant-time comparison to prevent timing attacks
+    is_valid = any(
+        secrets.compare_digest(provided_key_hash, valid_key)
+        for valid_key in valid_api_keys
+    )
+      
+    if not is_valid:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid API key"
         )
+
     return credentials.credentials
 
 
