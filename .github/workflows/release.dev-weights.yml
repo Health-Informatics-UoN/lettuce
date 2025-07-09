@@ -5,9 +5,13 @@
 name: Build and publish pre-loaded weights image
 
 on:
-  push:
-    branches: [main]
-    
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to build from'
+        required: false
+        default: 'main'
+        
 env:
   image-name: lettuce
   repo-owner: ${{ github.repository_owner }}
@@ -22,6 +26,15 @@ jobs:
       packages: write
 
     steps:
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android  
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo docker system prune -af
+          df -h
+
       - name: Check out the repo
         uses: actions/checkout@v4
 
