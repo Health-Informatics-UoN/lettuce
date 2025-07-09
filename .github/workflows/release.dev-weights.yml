@@ -5,13 +5,9 @@
 name: Build and publish pre-loaded weights image
 
 on:
-  workflow_dispatch: 
-    inputs: 
-      branch: 
-        description: "Branch to build from"
-        required: true 
-        default: "main"
-
+  push:
+    branches: [main]
+    
 env:
   image-name: lettuce
   repo-owner: ${{ github.repository_owner }}
@@ -86,3 +82,11 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
+          
+      - name: Delete old package versions
+        uses: actions/delete-package-versions@v4
+        with:
+          package-name: lettuce
+          package-type: container
+          min-versions-to-keep: 10
+          token: ${{ secrets.GITHUB_TOKEN }}
