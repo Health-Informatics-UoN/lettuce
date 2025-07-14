@@ -2,7 +2,7 @@
 # This workflow is manually triggered, tags the image as a development release with the 'dev-weights-llama-3.1-8B' prefix,
 # and pushes it to GitHub Container Registry (ghcr.io).
 
-name: Build and publish pre-loaded weights image
+name: Build and publish pre-loaded weights image to GHCR and deploy to Azure
 
 on:
   workflow_dispatch:
