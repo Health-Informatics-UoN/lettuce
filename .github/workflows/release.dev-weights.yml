@@ -26,7 +26,7 @@ jobs:
       packages: write
     
     outputs:
-      image-tag: ${{ steps.tag.outputs.image_tag }}
+      image-sha: ${{ steps.tag.outputs.image_sha }}
 
     steps:
       - name: Free up disk space
@@ -91,8 +91,8 @@ jobs:
       - name: Extract image tag
         id: tag
         run: |
-          sha_tag=$(echo "$DOCKER_METADATA_OUTPUT_TAGS" | grep -oE "ghcr.io/health-informatics-uon/lettuce:dev-weights-llama-3\.1-8B-[a-f0-9]{7}")
-          echo "image_tag=$sha_tag" >> $GITHUB_OUTPUT
+          sha=$(echo "$DOCKER_METADATA_OUTPUT_TAGS" | tr ' ' '\n' | grep -E "dev-weights-llama-3\.1-8B-[a-f0-9]{7}$" | grep -oE "[a-f0-9]{7}")
+          echo "image_sha=$sha" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v5.3.0
@@ -124,5 +124,5 @@ jobs:
         with:
           app-name: ${{ vars.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: ${{ needs.build-and-publish-lettuce-weights-image.outputs.image-tag }}
+          images: ${{ env.registry }}/${{ env.repo-owner }}/${{ env.image-name }}:dev-weights-${{ env.model-name }}-${{ needs.build-and-publish-lettuce-weights-image.outputs.image-sha }}
       
