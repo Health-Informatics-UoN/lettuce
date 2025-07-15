@@ -88,11 +88,11 @@ jobs:
           annotations: |
             org.opencontainers.image.description=lettuce
       
-      - name: Extract timestamped image tag
+      - name: Extract image tag
         id: tag
         run: |
-          first_tag=$(echo "${{ steps.meta.outputs.tags }}" | awk -F',' '{print $1}')
-          echo "image_tag=$first_tag" >> $GITHUB_OUTPUT
+          sha_tag=$(echo "$DOCKER_METADATA_OUTPUT_TAGS" | grep -oE "${{ env.registry }}/${{ env.repo-owner }}/${{ env.image-name }}:dev-weights-${{ env.model-name }}-[a-f0-9]{7}$")
+          echo "image_tag=$sha_tag" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v5.3.0
