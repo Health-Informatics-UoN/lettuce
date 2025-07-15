@@ -91,7 +91,7 @@ jobs:
       - name: Extract image tag
         id: tag
         run: |
-          sha_tag=$(echo "$DOCKER_METADATA_OUTPUT_TAGS" | grep -oE "ghcr.io/health-informatics-uon/lettuce:dev-weights-llama-3\.1-8B-[a-f0-9]{7}" | head -n 1)
+          sha_tag=$(echo "$DOCKER_METADATA_OUTPUT_TAGS" | grep -oE "ghcr.io/health-informatics-uon/lettuce:dev-weights-llama-3\.1-8B-[a-f0-9]{7}")
           echo "image_tag=$sha_tag" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker images
@@ -124,5 +124,5 @@ jobs:
         with:
           app-name: ${{ vars.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: ghcr.io/${{ env.repo-owner }}/${{ env.image-name }}:${{ needs.build-and-publish-lettuce-weights-image.outputs.image-tag }}
+          images: ${{ needs.build-and-publish-lettuce-weights-image.outputs.image-tag }}
       
