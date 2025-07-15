@@ -91,7 +91,7 @@ jobs:
       - name: Extract image tag
         id: tag
         run: |
-          sha_tag=$(echo "$DOCKER_METADATA_OUTPUT_TAGS" | grep -oE "${{ env.registry }}/${{ env.repo-owner }}/${{ env.image-name }}:dev-weights-${{ env.model-name }}-[a-f0-9]{7}$")
+          sha_tag=$(echo "$DOCKER_METADATA_OUTPUT_TAGS" | grep -oE "ghcr.io/health-informatics-uon/lettuce:dev-weights-llama-3\.1-8B-[a-f0-9]{7}" | head -n 1)
           echo "image_tag=$sha_tag" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker images
