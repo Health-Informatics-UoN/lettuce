@@ -5,12 +5,9 @@
 name: Build and publish pre-loaded weights image to GHCR and deploy to Azure
 
 on:
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch to build from'
-        required: false
-        default: 'main'
+  push:
+    branches:
+      - main
         
 env:
   image-name: lettuce
