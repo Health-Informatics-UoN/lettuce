@@ -131,7 +131,6 @@ def get_local_weights(
         generation_kwargs={"max_tokens": 128, "temperature": temperature}
     )
     logger.info(f"Succesfully loaded LlamaCppGenerator from {path_to_weights}")
-    logger.info(f"LLM Loaded: n_ctx={llm.config.get('n_ctx')}, n_batch={llm.config.get('n_batch')}")
     return llm 
 
 
