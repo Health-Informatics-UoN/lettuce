@@ -1,8 +1,7 @@
 import os 
 import logging
 from typing import Any 
-from haystack.components.generators import OpenAIGenerator
-from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
+from haystack.components.generators import OpenAIGenerator, HuggingFaceLocalGenerator
 from huggingface_hub import hf_hub_download
 from options.pipeline_options import LLMModel
 import torch
@@ -148,33 +147,38 @@ def download_model_from_huggingface(
     device = -1 if (torch.cuda.is_available() or torch.backends.mps.is_available()) else 0
     logger.info(f"Using {device} GPU layers")
 
-    try: 
-        model_config = local_models[model_name]
-        model_path = hf_hub_download(**model_config) 
-    except KeyError: 
-        logger.warning(f"Model {model_name} not found in local_models. Falling back to {fallback_model}")
-        model_config = local_models[fallback_model]
-        model_path = hf_hub_download(**model_config)
-    except Exception as e: 
-        logger.error(f"Failed to download model {model_name}: {str(e)}")
-        raise ValueError(f"Failed to load model {model_name}: {str(e)}")
+    # try: 
+    #     model_config = local_models[model_name]
+    #     model_path = hf_hub_download(**model_config) 
+    # except KeyError: 
+    #     logger.warning(f"Model {model_name} not found in local_models. Falling back to {fallback_model}")
+    #     model_config = local_models[fallback_model]
+    #     model_path = hf_hub_download(**model_config)
+    # except Exception as e: 
+    #     logger.error(f"Failed to download model {model_name}: {str(e)}")
+    #     raise ValueError(f"Failed to load model {model_name}: {str(e)}")
     
     try: 
-        llm = LlamaCppGenerator(
-            model=model_path, 
-            model_kwargs={
-                "n_ctx": n_ctx,
-                "n_batch": n_batch,
-                "n_gpu_layers": device,
-                "verbose": True
-            },
-            generation_kwargs={"max_tokens": max_tokens, "temperature": temperature}
+        # llm = LlamaCppGenerator(
+        #     model=model_path, 
+        #     model_kwargs={
+        #         "n_ctx": n_ctx,
+        #         "n_batch": n_batch,
+        #         "n_gpu_layers": device,
+        #         "verbose": True
+        #     },
+        #     generation_kwargs={"max_tokens": max_tokens, "temperature": temperature}
+        # )
+        model_config = local_models[model_name]
+        llm = HuggingFaceLocalGenerator(
+            model="Qwen/Qwen2-7B-Instruct", 
+            generation_kwargs={"max_new_tokens": max_tokens, "temperature": temperature}
         )
     except Exception as e: 
-        logger.error(f"Failed to initialize LlamaCppGenerator for {model_name}: {str(e)}")
+        logger.error(f"Failed to initialize HuggingFaceLocalGenerator for {model_name}: {str(e)}")
         raise ValueError(f"Failed to initialize local model {model_name}: {str(e)}")
 
-    return llm 
+    return llm
 
 
 def connect_to_openai(
@@ -194,7 +198,7 @@ def get_model(
     logger: logging.Logger, 
     temperature: float = 0.7, 
     path_to_local_weights: os.PathLike[Any] | str | None = None 
-) -> OpenAIGenerator | LlamaCppGenerator:
+) -> OpenAIGenerator | HuggingFaceLocalGenerator:
     """
     Get an interface for interacting with an LLM
 
