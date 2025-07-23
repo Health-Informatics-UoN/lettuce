@@ -2,6 +2,7 @@ from sqlalchemy.dialects.postgresql.types import TSVECTOR
 from sqlalchemy.orm import declarative_base, mapped_column
 from sqlalchemy import DATE, Column, Date, Integer, String
 from pgvector.sqlalchemy import Vector
+from sqlalchemy.ext.hybrid import hybrid_method
 
 from os import environ
 
@@ -98,3 +99,7 @@ class Embedding(Base):
     concept_id = Column(Integer)
     embedding = mapped_column(Vector(DB_VECSIZE))
     dummy_primary = Column(Integer, primary_key=True)
+
+    @hybrid_method
+    def score(self, query_embedding):
+        return self.embedding.cosine_distance(query_embedding)
