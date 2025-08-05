@@ -4,12 +4,11 @@ from unittest.mock import Mock
 import pytest
 from haystack.dataclasses import Document
 from sqlalchemy.orm import Session
+from components.embeddings import PGVectorQuery
 
 pytestmark = pytest.mark.skipif(
     os.getenv("SKIP_DATABASE_TESTS") == "true", reason="Skipping database tests"
 )
-
-from components.embeddings import PGVectorQuery
 
 
 class TestPGVectorQuery:
@@ -86,6 +85,9 @@ class TestPGVectorQuery:
 
         # Test with different top_k values
         for k in [1, 3, 5]:
+            # Mock the results to return only k items
+            mock_execute.mappings.return_value.all.return_value = mock_results[:k]
+            
             query_component = PGVectorQuery(connection=mock_session, top_k=k)
             result = query_component.run(query_embedding=query_embedding)
             assert len(result["documents"]) == k
