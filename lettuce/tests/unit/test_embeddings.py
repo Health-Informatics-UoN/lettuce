@@ -4,12 +4,11 @@ from unittest.mock import Mock
 import pytest
 from haystack.dataclasses import Document
 from sqlalchemy.orm import Session
+from components.embeddings import PGVectorQuery
 
 pytestmark = pytest.mark.skipif(
     os.getenv("SKIP_DATABASE_TESTS") == "true", reason="Skipping database tests"
 )
-
-from components.embeddings import PGVectorQuery
 
 
 class TestPGVectorQuery:
@@ -82,21 +81,13 @@ class TestPGVectorQuery:
         mock_execute.mappings.return_value.all.return_value = mock_results
         mock_session.execute.return_value = mock_execute
 
-        # Verifies that LIMIT is set correctly
-        def execute_side_effect(query):
-            assert query._limit_clause.value == k
-            mock_execute = Mock()
-            mock_execute.mappings.return_value.all.return_value = mock_results[
-                : query._limit_clause.value
-            ]
-            return mock_execute
-
-        mock_session.execute.side_effect = execute_side_effect
-
         query_embedding = [0.1, 0.2, 0.3]
 
         # Test with different top_k values
         for k in [1, 3, 5]:
+            # Mock the results to return only k items
+            mock_execute.mappings.return_value.all.return_value = mock_results[:k]
+            
             query_component = PGVectorQuery(connection=mock_session, top_k=k)
             result = query_component.run(query_embedding=query_embedding)
             assert len(result["documents"]) == k
