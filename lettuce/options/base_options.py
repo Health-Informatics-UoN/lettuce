@@ -1,6 +1,6 @@
-from components.embeddings import EmbeddingModelName
 from options.pipeline_options import LLMModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from .pipeline_options import EmbeddingModelName
 
 class BaseOptions(BaseSettings):
     model_config = SettingsConfigDict(
@@ -24,6 +24,9 @@ class BaseOptions(BaseSettings):
     embedding_top_k: int = 5
     
     auth_api_key: str | None = None
+
+    def connection_url(self) -> str:
+        return f"postgresql://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
 
     def print(self):
         print("------------ Options -------------")
