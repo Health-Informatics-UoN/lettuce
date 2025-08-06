@@ -1,9 +1,7 @@
 import os
-from os import environ
-from dotenv import load_dotenv
+from options.base_options import BaseOptions
 import pytest
 import pandas as pd 
-from urllib.parse import quote_plus
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -21,21 +19,13 @@ from omop.preprocess import preprocess_search_term
 
 pytestmark = pytest.mark.skipif(os.getenv('SKIP_DATABASE_TESTS') == 'true', reason="Skipping database tests")
 
-
-load_dotenv()
-DB_SCHEMA = environ["DB_SCHEMA"]
+settings = BaseOptions()
 
 
 @pytest.fixture
 def db_connection():
-    DB_HOST = environ["DB_HOST"]
-    DB_USER = environ["DB_USER"]
-    DB_PASSWORD = quote_plus(environ["DB_PASSWORD"])
-    DB_NAME = environ["DB_NAME"]
-    DB_PORT = environ["DB_PORT"]
-
     connection_string = (
-        f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+        f"postgresql://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}"
     )
     return create_engine(connection_string)
 
@@ -212,9 +202,9 @@ def test_regression_query_descendants_and_ancestors(db_connection):
                     ca.min_levels_of_separation,
                     ca.max_levels_of_separation
                 FROM
-                    {DB_SCHEMA}.concept_ancestor ca
+                    {settings.db_schema}.concept_ancestor ca
                 JOIN
-                    {DB_SCHEMA}.concept c ON ca.ancestor_concept_id = c.concept_id
+                    {settings.db_schema}.concept c ON ca.ancestor_concept_id = c.concept_id
                 WHERE
                     ca.descendant_concept_id = %s AND
                     ca.min_levels_of_separation >= %s AND
@@ -233,9 +223,9 @@ def test_regression_query_descendants_and_ancestors(db_connection):
                     ca.min_levels_of_separation,
                     ca.max_levels_of_separation
                 FROM
-                    {DB_SCHEMA}.concept_ancestor ca
+                    {settings.db_schema}.concept_ancestor ca
                 JOIN
-                    {DB_SCHEMA}.concept c ON ca.descendant_concept_id = c.concept_id
+                    {settings.db_schema}.concept c ON ca.descendant_concept_id = c.concept_id
                 WHERE
                     ca.ancestor_concept_id = %s AND
                     ca.min_levels_of_separation >= %s AND
@@ -302,9 +292,9 @@ def test_regression_query_related_by_id(db_connection):
             c.vocabulary_id,
             c.concept_code
         FROM
-            {DB_SCHEMA}.concept_relationship cr
+            {settings.db_schema}.concept_relationship cr
         JOIN
-            {DB_SCHEMA}.concept c ON cr.concept_id_2 = c.concept_id
+            {settings.db_schema}.concept c ON cr.concept_id_2 = c.concept_id
         WHERE
             cr.concept_id_1 = %s AND
             cr.valid_end_date > NOW()
