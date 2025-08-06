@@ -8,7 +8,6 @@ from typing import Any, List, Dict
 from pydantic import BaseModel
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-import os
 
 from omop.omop_queries import query_vector
 from omop.db_manager import db_session
