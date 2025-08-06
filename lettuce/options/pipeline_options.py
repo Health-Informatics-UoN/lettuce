@@ -79,8 +79,6 @@ class PipelineOptions(BaseModel):
         The maximum separation to search for concept ancestors
     """
 
-    llm_model: LLMModel = LLMModel.LLAMA_3_1_8B
-    temperature: float = 0
     vocabulary_id: list[str] = ["RxNorm"]
     standard_concept: bool = True
     concept_ancestor: bool = False
@@ -89,8 +87,5 @@ class PipelineOptions(BaseModel):
     search_threshold: int = 80
     max_separation_descendants: int = 1
     max_separation_ancestor: int = 1
-    embeddings_path: str = "concept_embeddings.qdrant"
-    force_rebuild: bool = False
     embed_vocab: list[str] = ["RxNorm", "RxNorm Extension"]
-    embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL
     embeddings_top_k: int = 5
