@@ -13,6 +13,10 @@ import os
 from omop.omop_queries import query_vector
 from omop.db_manager import db_session
 
+from options.base_options import BaseOptions
+
+settings = BaseOptions()
+
 # -------- Embedding Models -------- >
 
 
@@ -244,7 +248,7 @@ class Embeddings:
         PGVectorQuery
         """
         try:
-            assert(self._model.info.dimensions == int(os.environ["DB_VECSIZE"]))
+            assert(self._model.info.dimensions == settings.db_vecsize)
             return PGVectorQuery(
                     db_session(),
                     embed_vocab=self._embed_vocab,

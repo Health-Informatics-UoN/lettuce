@@ -13,7 +13,9 @@ class BaseOptions(BaseSettings):
     db_name: str = "omop"
     db_port: int = 5432
     db_schema: str = "cdm"
-    db_vectable: str= "embeddings"
+    db_vectable: str = "embeddings"
+    # have a branch where this comes from database - hard to integrate,#TODO
+    db_vecsize: int = 384 
     
     llm_model: LLMModel = LLMModel.LLAMA_3_1_8B
     temperature: float = 0.0
