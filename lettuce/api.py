@@ -1,15 +1,14 @@
-import os
 import secrets 
 import hashlib 
 from typing import Set 
-from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, HTTPException, status  
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials 
 from routers import pipeline_routes, search_routes
+from options.base_options import BaseOptions
 
+settings = BaseOptions()
 
-load_dotenv()
 security = HTTPBearer()
 
 
@@ -20,7 +19,7 @@ def hash_api_key(api_key: str):
 
 def load_valid_api_keys() -> Set[str]: 
     """Load and return hashed API key from the environment."""
-    api_key = os.getenv("AUTH_API_KEY")
+    api_key = settings.auth_api_key
     if not api_key:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

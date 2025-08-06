@@ -43,6 +43,7 @@ build-backend = "hatchling.build"
 
 [project.scripts]
 lettuce-cli = "cli.main:main"
+lettuce-api = "api.main:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["."]
