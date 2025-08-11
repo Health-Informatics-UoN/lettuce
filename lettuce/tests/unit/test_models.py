@@ -46,7 +46,7 @@ def test_local_weights_success(mock_cuda, mock_llama, mock_isfile, mock_file_exi
     mock_isfile.assert_called_once_with(mock_file_exists)
     mock_llama.assert_called_once_with(
         model=mock_file_exists, 
-        model_kwargs={'n_ctx': 1024, 'n_batch': 32, 'n_gpu_layers': -1, 'verbose': True},
+        model_kwargs={'n_ctx': 1024, 'n_batch': 32, 'n_gpu_layers': -1, 'verbose': False},
         generation_kwargs={'max_tokens': 128, 'temperature': 0.7}
     )
     mock_cuda.assert_called_once()
@@ -135,7 +135,7 @@ def test_get_model_local_weights(mock_get_local, mock_llm_model):
     result = get_model(mock_llm_model, logger, path_to_local_weights=fake_path_to_local_weights)
 
     assert result == mock_llm_instance
-    mock_get_local.assert_called_once_with(fake_path_to_local_weights, 0.7, logger)
+    mock_get_local.assert_called_once_with(fake_path_to_local_weights, 0.7, logger, False)
 
 
 @patch("components.models.connect_to_openai")
@@ -158,4 +158,4 @@ def test_get_model_huggingface(mock_hf_download, mock_llm_model):
     result = get_model(mock_llm_model, logger)
 
     assert result == mock_llm_instance
-    mock_hf_download.assert_called_once_with("llama-2-7b-chat", 0.7, logger)
+    mock_hf_download.assert_called_once_with("llama-2-7b-chat", 0.7, logger, False)
