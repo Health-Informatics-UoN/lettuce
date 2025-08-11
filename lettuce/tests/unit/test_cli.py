@@ -56,7 +56,7 @@ def mock_args():
 def mock_base_options(mock_args):
     with patch('lettuce.cli.main.BaseOptions', autospec=True) as mock_options_class:
         mock_instance = mock_options_class.return_value
-        mock_instance.parse.return_value = type('Args', (), mock_args)()
+        mock_instance.return_value = type('Args', (), mock_args)()
         yield mock_options_class
 
 @pytest.fixture
@@ -116,7 +116,7 @@ def test_main_with_vector_search_and_llm(mock_base_options, mock_llm_pipeline):
 
         
         # Debug: Verify args values
-        args = mock_base_options.return_value.parse.return_value
+        args = mock_base_options.return_value.return_value
         sys.stdout.write(f"Debug: vector_search={args.vector_search}, use_llm={args.use_llm}, condition={args.vector_search & args.use_llm}\n")
         sys.stdout.flush()
         
@@ -125,8 +125,8 @@ def test_main_with_vector_search_and_llm(mock_base_options, mock_llm_pipeline):
         mock_time.side_effect = cycle([1, 2, 3, 4, 5, 6])
         main()
         
-        assert mock_base_options.return_value.parse.return_value.vector_search
-        assert mock_base_options.return_value.parse.return_value.use_llm
+        assert mock_base_options.return_value.return_value.vector_search
+        assert mock_base_options.return_value.return_value.use_llm
         assert mock_print.called
         assert mock_llm_patch.called, "LLMPipeline was not instantiated"
         assert mock_pipeline_instance.get_rag_assistant.called, "get_rag_assistant was not called"
@@ -136,7 +136,7 @@ def test_main_with_vector_search_only(mock_base_options, mock_args):
     mock_args_copy = mock_args.copy()
     mock_args_copy['vector_search'] = True
     mock_args_copy['use_llm'] = False 
-    mock_base_options.return_value.parse.return_value = type('Args', (), mock_args_copy)()
+    mock_base_options.return_value.return_value = type('Args', (), mock_args_copy)()
     
     with patch('time.time'), \
          patch('builtins.print') as mock_print, \
@@ -164,7 +164,7 @@ def test_main_with_use_llm_only(mock_base_options, mock_args):
     mock_args_copy = mock_args.copy()
     mock_args_copy['vector_search'] = False
     mock_args_copy['use_llm'] = True
-    mock_base_options.return_value.parse.return_value = type('Args', (), mock_args_copy)()
+    mock_base_options.return_value.return_value = type('Args', (), mock_args_copy)()
     
     with patch('time.time') as mock_time, \
          patch('builtins.print') as mock_print, \

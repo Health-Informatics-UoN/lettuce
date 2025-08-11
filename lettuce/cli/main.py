@@ -10,22 +10,20 @@ from utils.logging_utils import logger
 
 
 def main():
-    opt = BaseOptions()
-    opt.initialize()
-    args = opt.parse()
+    settings = BaseOptions()
 
     results = [LettuceResult(name) for name in args.informal_names]
 
     if args.vector_search and args.use_llm:
         start = time.time()
         pl = LLMPipeline(
-            llm_model=LLMModel[args.llm_model],
-            temperature=args.temperature,
+            llm_model=LLMModel[settings.llm_model],
+            temperature=settings.temperature,
             logger=logger,
             embed_vocab=args.embed_vocab,
             standard_concept=args.standard_concept,
-            embedding_model=args.embedding_model,
-            top_k=args.embedding_top_k,
+            embedding_model=settings.embedding_model,
+            top_k=settings.embedding_top_k,
         ).get_rag_assistant()
         pl.warm_up()
         logger.info(f"Pipeline warmup in {time.time() - start} seconds")
@@ -54,7 +52,7 @@ def main():
             model_name=EmbeddingModelName.BGESMALL,
             embed_vocab=args.embed_vocab,
             standard_concept=args.standard_concept,
-            top_k=args.embedding_top_k,
+            top_k=settings.embedding_top_k,
        )
         embed_results = embeddings.search(args.informal_names)
         for query, result in zip(results, embed_results):
@@ -62,8 +60,8 @@ def main():
     elif args.use_llm:
         run_start = time.time()
         pipeline = LLMPipeline(
-            llm_model=LLMModel[args.llm_model],
-            temperature=args.temperature,
+            llm_model=LLMModel[settings.llm_model],
+            temperature=settings.temperature,
             logger=logger,
         ).get_simple_assistant()
         pipeline.warm_up()

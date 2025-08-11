@@ -24,10 +24,7 @@ settings = BaseOptions()
 
 @pytest.fixture
 def db_connection():
-    connection_string = (
-        f"postgresql://{settings.db_user}:{settings.db_password}@{settings.db_host}:{settings.db_port}/{settings.db_name}"
-    )
-    return create_engine(connection_string)
+    return create_engine(settings.connection_url())
 
 
 def test_matching_by_name(db_connection):
