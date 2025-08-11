@@ -1,4 +1,6 @@
 import time
+from typing import List, Optional
+from typing_extensions import Annotated
 
 from components.embeddings import Embeddings, EmbeddingModelName
 from components.pipeline import LLMPipeline
@@ -8,22 +10,39 @@ from options.pipeline_options import LLMModel
 from omop.omop_match import OMOPMatcher
 from utils.logging_utils import logger
 
+import typer
 
-def main():
+app = typer.Typer()
+
+@app.command()
+def search(
+        informal_names: Annotated[List[str], typer.Argument(help="Source term to search for")],
+        vector_search: Annotated[bool, typer.Option(help="Whether to enable vector search in your pipeline")] = True,
+        use_llm: Annotated[bool, typer.Option(help="Whether to enable the LLM step in your pipeline")] = True,
+        vocabulary_id: Annotated[Optional[List[str]], typer.Option(help="Which vocabularies to return OMOP concepts from")] = None,
+        embed_vocab: Annotated[Optional[List[str]], typer.Option(help="Which vocabularies to use for semantic search")] = None,
+        standard_concept: Annotated[bool, typer.Option(help="Whether to search through only standard concepts")] = True,
+        search_threshold: Annotated[int, typer.Option(help="What fuzzy matching threshold to limit responses to")] = 80,
+        verbose_llm: Annotated[bool, typer.Option(help="Whether the LLM should report on its state while initializing")] = False
+        ):
+    """
+    Start a Lettuce search pipeline
+    """
     settings = BaseOptions()
 
-    results = [LettuceResult(name) for name in args.informal_names]
+    results = [LettuceResult(name) for name in informal_names]
 
-    if args.vector_search and args.use_llm:
+    if vector_search and use_llm:
         start = time.time()
         pl = LLMPipeline(
-            llm_model=LLMModel[settings.llm_model],
+            llm_model=settings.llm_model,
             temperature=settings.temperature,
             logger=logger,
-            embed_vocab=args.embed_vocab,
-            standard_concept=args.standard_concept,
+            embed_vocab=embed_vocab,
+            standard_concept=standard_concept,
             embedding_model=settings.embedding_model,
             top_k=settings.embedding_top_k,
+            verbose_llm=verbose_llm,
         ).get_rag_assistant()
         pl.warm_up()
         logger.info(f"Pipeline warmup in {time.time() - start} seconds")
@@ -47,17 +66,17 @@ def main():
             if "llm" in rag.keys():
                 query.add_llm_answer(rag["llm"]["replies"][0].strip())
         logger.info(f"Total RAG inference time: {time.time()-run_start}")
-    elif args.vector_search:
+    elif vector_search:
         embeddings = Embeddings(
             model_name=EmbeddingModelName.BGESMALL,
-            embed_vocab=args.embed_vocab,
-            standard_concept=args.standard_concept,
+            embed_vocab=embed_vocab,
+            standard_concept=standard_concept,
             top_k=settings.embedding_top_k,
        )
-        embed_results = embeddings.search(args.informal_names)
+        embed_results = embeddings.search(informal_names)
         for query, result in zip(results, embed_results):
             query.add_vector_search_results(result)
-    elif args.use_llm:
+    elif use_llm:
         run_start = time.time()
         pipeline = LLMPipeline(
             llm_model=LLMModel[settings.llm_model],
@@ -74,11 +93,15 @@ def main():
 
     db_results = OMOPMatcher(
         logger, 
-        vocabulary_id=args.vocabulary_id,
-        search_threshold=args.search_threshold
+        vocabulary_id= vocabulary_id,
+        search_threshold=search_threshold
     ).run(search_terms=db_queries)
 
     for query, result in zip(results, db_results):
-        query.add_matches(result, args.search_threshold)
+        query.add_matches(result, search_threshold)
 
     print([result.to_dict() for result in results])
+
+
+if __name__ == "__main__":
+    typer.run(main)
