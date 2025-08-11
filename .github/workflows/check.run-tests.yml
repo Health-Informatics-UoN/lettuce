@@ -24,7 +24,7 @@ jobs:
       DB_SCHEMA: "cdm" 
       DB_VECTABLE: "embeddings"
       DB_VECSIZE: "384"
-
+      AUTH_API_KEY: "test_key_123"
 
     steps:
       - name: Checkout omop-lite repository
