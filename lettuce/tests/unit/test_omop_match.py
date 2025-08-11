@@ -1,11 +1,7 @@
-import os
 import re 
 from collections import namedtuple
 from unittest.mock import Mock, MagicMock
 import pytest
-import pandas as pd 
-from haystack.dataclasses import Document
-from sqlalchemy.orm import Session
 
 from omop.omop_match import OMOPMatcher 
 

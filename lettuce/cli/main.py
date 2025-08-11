@@ -68,7 +68,7 @@ def search(
         logger.info(f"Total RAG inference time: {time.time()-run_start}")
     elif vector_search:
         embeddings = Embeddings(
-            model_name=EmbeddingModelName.BGESMALL,
+            model_name=settings.embedding_model,
             embed_vocab=embed_vocab,
             standard_concept=standard_concept,
             top_k=settings.embedding_top_k,
@@ -79,7 +79,7 @@ def search(
     elif use_llm:
         run_start = time.time()
         pipeline = LLMPipeline(
-            llm_model=LLMModel[settings.llm_model],
+            llm_model=settings.llm_model,
             temperature=settings.temperature,
             logger=logger,
         ).get_simple_assistant()
