@@ -10,7 +10,9 @@ from components.embeddings import Embeddings, EmbeddingModelName
 from components.models import get_model
 from components.prompt import Prompts
 from options.pipeline_options import LLMModel
+from options.base_options import BaseOptions
 
+settings = BaseOptions()
 
 class LLMPipeline:
     """
@@ -24,7 +26,7 @@ class LLMPipeline:
         logger: Logger,
         embed_vocab: list[str] | None = None,
         standard_concept: bool = False,
-        embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL,
+        embedding_model: EmbeddingModelName = settings.embedding_model,
         top_k: int=5,
         verbose_llm: bool = False,
     ) -> None:
