@@ -1,11 +1,8 @@
 from logging import Logger
 import time
 
-from dotenv import load_dotenv
-
 from components.pipeline import LLMPipeline
 from options.pipeline_options import LLMModel
-
 
 def run(
     llm_model: LLMModel,
@@ -39,7 +36,6 @@ def run(
 
     """
     run_start = time.time()
-    load_dotenv()
 
     pipeline = LLMPipeline(
         llm_model=llm_model, temperature=temperature, logger=logger
@@ -66,17 +62,3 @@ def run(
 
     logger.info(f"Complete run in {time.time()-run_start} seconds")
     return results
-
-
-if __name__ == "__main__":
-    from options.base_options import BaseOptions
-    from utils.logging_utils import logger
-
-    opt = BaseOptions().parse()
-    informal_names = opt.informal_names
-    run(
-        llm_model=opt.LLMModel,
-        temperature=opt.temperature,
-        informal_names=informal_names,
-        logger=logger,
-    )

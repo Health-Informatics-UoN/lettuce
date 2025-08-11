@@ -10,7 +10,9 @@ from components.embeddings import Embeddings, EmbeddingModelName
 from components.models import get_model
 from components.prompt import Prompts
 from options.pipeline_options import LLMModel
+from options.base_options import BaseOptions
 
+settings = BaseOptions()
 
 class LLMPipeline:
     """
@@ -24,8 +26,9 @@ class LLMPipeline:
         logger: Logger,
         embed_vocab: list[str] | None = None,
         standard_concept: bool = False,
-        embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL,
+        embedding_model: EmbeddingModelName = settings.embedding_model,
         top_k: int=5,
+        verbose_llm: bool = False,
     ) -> None:
         """
         Initializes the LLMPipeline class
@@ -52,6 +55,9 @@ class LLMPipeline:
 
         top_k: int
             The number of RAG results to return
+
+        verbose_llm: bool
+            Whether the LLM should report on its running or not
         """
         self._model = llm_model
         self._logger = logger
@@ -60,6 +66,7 @@ class LLMPipeline:
         self._standard_concept = standard_concept
         self._embedding_model = embedding_model
         self._top_k=top_k
+        self._verbose_llm=verbose_llm
 
     @property
     def llm_model(self): 
@@ -103,7 +110,8 @@ class LLMPipeline:
             model=self._model,
             temperature=self._temperature,
             logger=self._logger,
-            path_to_local_weights=path_to_local_model_weights
+            path_to_local_weights=path_to_local_model_weights,
+            verbose=self._verbose_llm,
         )
         pipeline.add_component("llm", llm)
         self._logger.info(f"LLM added to pipeline in {time.time()-start} seconds")
@@ -159,7 +167,8 @@ class LLMPipeline:
             model=self._model,
             temperature=self._temperature,
             logger=self._logger,
-            path_to_local_weights=path_to_local_model_weights
+            path_to_local_weights=path_to_local_model_weights,
+            verbose=self._verbose_llm,
         )
 
         pipeline.add_component("query_embedder", vec_embedder)

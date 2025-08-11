@@ -87,7 +87,8 @@ local_models = {
 def get_local_weights(
     path_to_weights: os.PathLike | str | None, 
     temperature: float, 
-    logger: logging.Logger
+    logger: logging.Logger,
+    verbose: bool
 ):
     """
     Load a local GGUF model weights file and return a LlamaCppGenerator object.
@@ -126,7 +127,7 @@ def get_local_weights(
             "n_ctx": 1024,
             "n_batch": 32,
             "n_gpu_layers": device,
-            "verbose": True
+            "verbose": verbose
         }, 
         generation_kwargs={"max_tokens": 128, "temperature": temperature}
     )
@@ -139,6 +140,7 @@ def download_model_from_huggingface(
     model_name: str, 
     temperature: float, 
     logger: logging.Logger, 
+    verbose: bool,
     fallback_model: str = "llama-3.1-8b",
     n_ctx: int = 1024,
     n_batch: int = 32,
@@ -166,7 +168,7 @@ def download_model_from_huggingface(
                 "n_ctx": n_ctx,
                 "n_batch": n_batch,
                 "n_gpu_layers": device,
-                "verbose": True
+                "verbose": verbose,
             },
             generation_kwargs={"max_tokens": max_tokens, "temperature": temperature}
         )
@@ -193,7 +195,8 @@ def get_model(
     model: LLMModel, 
     logger: logging.Logger, 
     temperature: float = 0.7, 
-    path_to_local_weights: os.PathLike[Any] | str | None = None 
+    path_to_local_weights: os.PathLike[Any] | str | None = None,
+    verbose: bool = False,
 ) -> OpenAIGenerator | LlamaCppGenerator:
     """
     Get an interface for interacting with an LLM
@@ -219,11 +222,11 @@ def get_model(
     """
     model_name = model.value
     if path_to_local_weights: 
-        llm = get_local_weights(path_to_local_weights, temperature, logger)
+        llm = get_local_weights(path_to_local_weights, temperature, logger, verbose)
     else: 
         if "gpt" in model_name.lower():
             llm = connect_to_openai(model_name, temperature, logger)
         else:
-            llm = download_model_from_huggingface(model_name, temperature, logger)
+            llm = download_model_from_huggingface(model_name, temperature, logger, verbose)
 
     return llm

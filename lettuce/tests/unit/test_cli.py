@@ -4,9 +4,7 @@ from unittest.mock import patch, MagicMock
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session as SQLAlchemySession
 import os
-import sys
-
-from components.embeddings import EmbeddingModelName
+from typer.testing import CliRunner
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -32,41 +30,16 @@ def mock_sqlalchemy_engine():
             yield mock_create
 
 @pytest.fixture
-def mock_args():
-    return {
-        'informal_names': ['aspirin', 'tylenol'],
-        'vector_search': True,
-        'use_llm': True,
-        'llm_model': 'LLAMA_3_1_8B',
-        'embedding_model': EmbeddingModelName.BGESMALL,
-        'temperature': 0.7,
-        'vocabulary_id': 'RxNorm',
-        'search_threshold': 0.8,
-        'concept_ancestor': False,
-        'concept_relationship': False,
-        'concept_synonym': False,
-        'max_separation_descendants': None,
-        'max_separation_ancestor': None,
-        'embed_vocab': None,
-        'standard_concept': False,
-        'embedding_top_k': 5,
-    }
-
-@pytest.fixture
-def mock_base_options(mock_args):
-    with patch('lettuce.cli.main.BaseOptions', autospec=True) as mock_options_class:
-        mock_instance = mock_options_class.return_value
-        mock_instance.parse.return_value = type('Args', (), mock_args)()
-        yield mock_options_class
+def cli_runner():
+    """Fixture to provide Typer CLI runner"""
+    return CliRunner()
 
 @pytest.fixture
 def mock_llm_pipeline():
     print("Applying mock_llm_pipeline fixture")
-    # Create the mock class and instance
     mock_pipeline_class = MagicMock()
     mock_pipeline_instance = MagicMock()
     
-    # Set up the RAG assistant mock
     mock_rag_assistant = MagicMock()
     mock_rag_assistant.run.return_value = {
         'retriever': {
@@ -81,65 +54,52 @@ def mock_llm_pipeline():
     }
     mock_rag_assistant.warm_up.return_value = None
     
-    # Configure the instance methods
     mock_pipeline_instance.get_rag_assistant.return_value = mock_rag_assistant
     mock_pipeline_instance.get_simple_assistant.return_value = MagicMock()
     
-    # Define the side_effect for instantiation
     def create_mock_instance(*args, **kwargs):
         print("Mock LLMPipeline instantiated with args:", args, "kwargs:", kwargs)
         return mock_pipeline_instance
     
     mock_pipeline_class.side_effect = create_mock_instance
     
-    # Return a tuple of the class mock and instance for flexibility
     return mock_pipeline_class, mock_pipeline_instance
 
-def test_main_with_vector_search_and_llm(mock_base_options, mock_llm_pipeline):
-    mock_llm_class, mock_pipeline_instance = mock_llm_pipeline  # Unpack the fixture
+
+def test_main_with_vector_search_and_llm(cli_runner, mock_llm_pipeline):
+    """Test the CLI command with vector search and LLM enabled"""
+    mock_llm_class, mock_pipeline_instance = mock_llm_pipeline
     
     with patch('time.time') as mock_time, \
-         patch('builtins.print') as mock_print, \
          patch('huggingface_hub.snapshot_download', side_effect=lambda *args, **kwargs: AssertionError("Hugging Face snapshot download detected")), \
          patch('requests.get', side_effect=lambda *args, **kwargs: AssertionError("HTTP request detected")), \
          patch('lettuce.cli.main.LLMPipeline', autospec=True) as mock_llm_patch, \
          patch('lettuce.cli.main.OMOPMatcher') as mock_OMOPMatcher:
         
-        # Configure the patch to use the fixture's mock behavior
         mock_llm_patch.side_effect = mock_llm_class.side_effect
         
-        # Mock run() return value
         mock_OMOPMatcher.return_value.run.return_value = [
             {'search_term': 'aspirin', 'CONCEPT': [{'concept_id': 123, 'concept_name': 'Aspirin'}]},
             {'search_term': 'tylenol', 'CONCEPT': [{'concept_id': 456, 'concept_name': 'Tylenol'}]}
         ]
-
-        
-        # Debug: Verify args values
-        args = mock_base_options.return_value.parse.return_value
-        sys.stdout.write(f"Debug: vector_search={args.vector_search}, use_llm={args.use_llm}, condition={args.vector_search & args.use_llm}\n")
-        sys.stdout.flush()
-        
-        from lettuce.cli.main import main
         
         mock_time.side_effect = cycle([1, 2, 3, 4, 5, 6])
-        main()
         
-        assert mock_base_options.return_value.parse.return_value.vector_search
-        assert mock_base_options.return_value.parse.return_value.use_llm
-        assert mock_print.called
+        from lettuce.cli.main import app
+        
+        result = cli_runner.invoke(app, [
+            "aspirin", "tylenol",
+            "--search-threshold", "80",
+        ])
+        
+        assert result.exit_code == 0
         assert mock_llm_patch.called, "LLMPipeline was not instantiated"
         assert mock_pipeline_instance.get_rag_assistant.called, "get_rag_assistant was not called"
 
 
-def test_main_with_vector_search_only(mock_base_options, mock_args):
-    mock_args_copy = mock_args.copy()
-    mock_args_copy['vector_search'] = True
-    mock_args_copy['use_llm'] = False 
-    mock_base_options.return_value.parse.return_value = type('Args', (), mock_args_copy)()
-    
+def test_main_with_vector_search_only(cli_runner):
+    """Test the CLI command with only vector search enabled"""
     with patch('time.time'), \
-         patch('builtins.print') as mock_print, \
          patch('lettuce.cli.main.Embeddings') as mock_embeddings, \
          patch('lettuce.cli.main.OMOPMatcher') as mock_OMOPMatcher:
         
@@ -151,23 +111,24 @@ def test_main_with_vector_search_only(mock_base_options, mock_args):
         mock_embeddings_instance = mock_embeddings.return_value
         mock_embeddings_instance.search.return_value = [[{'concept': 'Aspirin info'}], [{'concept': 'Tylenol info'}]]
         
-        from lettuce.cli.main import main
-        main()
+        from lettuce.cli.main import app
         
+        result = cli_runner.invoke(app, [
+            "aspirin", "tylenol",
+            "--vector-search",
+            "--no-use-llm",
+            "--search-threshold", "80"
+        ])
+        
+        assert result.exit_code == 0
         assert mock_embeddings.called
         assert mock_embeddings_instance.search.called
         assert mock_OMOPMatcher.return_value.run.called
-        assert mock_print.called
 
 
-def test_main_with_use_llm_only(mock_base_options, mock_args):
-    mock_args_copy = mock_args.copy()
-    mock_args_copy['vector_search'] = False
-    mock_args_copy['use_llm'] = True
-    mock_base_options.return_value.parse.return_value = type('Args', (), mock_args_copy)()
-    
+def test_main_with_use_llm_only(cli_runner):
+    """Test the CLI command with only LLM enabled"""
     with patch('time.time') as mock_time, \
-         patch('builtins.print') as mock_print, \
          patch('lettuce.cli.main.LLMPipeline', autospec=True) as mock_llm_patch, \
          patch('lettuce.cli.main.OMOPMatcher') as mock_OMOPMatcher:
         
@@ -185,11 +146,58 @@ def test_main_with_use_llm_only(mock_base_options, mock_args):
         
         mock_time.side_effect = cycle([1, 2, 3, 4])
         
-        from lettuce.cli.main import main
-        main()
+        from lettuce.cli.main import app
         
+        result = cli_runner.invoke(app, [
+            "aspirin", "tylenol",
+            "--no-vector-search",
+            "--use-llm",
+            "--search-threshold", "80"
+        ])
+        
+        assert result.exit_code == 0
         assert mock_llm_patch.called
         assert mock_pipeline_instance.get_simple_assistant.called
         assert mock_simple_assistant.warm_up.called
         assert mock_OMOPMatcher.return_value.run.called
-        assert mock_print.called
+
+
+def test_cli_help(cli_runner):
+    """Test that the CLI help message works"""
+    from lettuce.cli.main import app
+    
+    result = cli_runner.invoke(app, ["--help"])
+    assert result.exit_code == 0
+    assert "help" in result.stdout.lower()
+
+
+def test_cli_invalid_arguments(cli_runner):
+    """Test CLI with invalid arguments"""
+    from lettuce.cli.main import app
+    
+    result = cli_runner.invoke(app, [])
+    assert result.exit_code != 0
+    
+    result = cli_runner.invoke(app, [
+        "aspirin",
+        "--search-threshold", "invalid_number"
+    ])
+    assert result.exit_code != 0
+
+
+def test_cli_output_format(cli_runner):
+    """Test that CLI produces expected output format"""
+    with patch('lettuce.cli.main.OMOPMatcher') as mock_OMOPMatcher:
+        mock_OMOPMatcher.return_value.run.return_value = [
+            {'search_term': 'aspirin', 'CONCEPT': [{'concept_id': 123, 'concept_name': 'Aspirin'}]}
+        ]
+        
+        from lettuce.cli.main import app
+        
+        result = cli_runner.invoke(app, [
+            "aspirin",
+            "--no-vector-search",
+            "--no-use-llm"
+        ])
+        
+        assert result.exit_code == 0

@@ -48,7 +48,7 @@ class OMOPMatcher:
     def __init__(
         self, 
         logger: Logger, 
-        vocabulary_id: list[str],
+        vocabulary_id: list[str] | None,
         search_threshold: int = 80,
         concept_ancestor: bool = False,
         concept_relationship: bool = False,

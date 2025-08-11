@@ -3,12 +3,9 @@ from sqlalchemy.orm import declarative_base, mapped_column
 from sqlalchemy import DATE, Column, Date, Integer, String
 from pgvector.sqlalchemy import Vector
 from sqlalchemy.ext.hybrid import hybrid_method
+from options.base_options import BaseOptions
 
-from os import environ
-
-DB_SCHEMA = environ["DB_SCHEMA"]
-DB_VECTABLE = environ["DB_VECTABLE"]
-DB_VECSIZE = int(environ["DB_VECSIZE"])
+settings = BaseOptions()
 
 Base = declarative_base()
 
@@ -18,7 +15,7 @@ class Concept(Base):
     """
 
     __tablename__ = "concept"
-    __table_args__ = {"schema": DB_SCHEMA}
+    __table_args__ = {"schema": settings.db_schema}
 
     concept_id = Column(Integer, primary_key=True)
     concept_name = Column(String)
@@ -42,7 +39,7 @@ class ConceptSynonym(Base):
     """
 
     __tablename__ = "concept_synonym"
-    __table_args__ = {"schema": DB_SCHEMA}
+    __table_args__ = {"schema": settings.db_schema}
 
     concept_id = Column(Integer, primary_key=True)
     concept_synonym_name = Column(String)
@@ -58,7 +55,7 @@ class ConceptRelationship(Base):
     """
 
     __tablename__ = "concept_relationship"
-    __table_args__ = {"schema": DB_SCHEMA}
+    __table_args__ = {"schema": settings.db_schema}
 
     concept_id_1 = Column(Integer)
     concept_id_2 = Column(Integer)
@@ -79,7 +76,7 @@ class ConceptAncestor(Base):
     """
 
     __tablename__ = "concept_ancestor"
-    __table_args__ = {"schema": DB_SCHEMA}
+    __table_args__ = {"schema": settings.db_schema}
 
     ancestor_concept_id = Column(Integer)
     descendant_concept_id = Column(Integer)
@@ -93,11 +90,11 @@ class Embedding(Base):
     This class represents an ORM mapping to an embeddings table
     """
 
-    __tablename__ = DB_VECTABLE
-    __table_args__ = {"schema": DB_SCHEMA}
+    __tablename__ = settings.db_vectable
+    __table_args__ = {"schema": settings.db_schema}
 
     concept_id = Column(Integer)
-    embedding = mapped_column(Vector(DB_VECSIZE))
+    embedding = mapped_column(Vector(settings.db_vecsize))
     dummy_primary = Column(Integer, primary_key=True)
 
     @hybrid_method
