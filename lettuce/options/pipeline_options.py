@@ -1,6 +1,15 @@
 from enum import Enum
 from pydantic import BaseModel
 
+class InferenceType(str, Enum):
+    """
+    This enum holds the different ways that users can perform inference
+    """
+
+    OPEN_AI = "OpenAI"
+    OLLAMA = "Ollama"
+    LLAMA_CPP = "llama-cpp-python"
+
 class LLMModel(str, Enum):
     """
     This enum holds the names of the different models the assistant can use
