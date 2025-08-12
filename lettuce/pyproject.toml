@@ -48,8 +48,11 @@ llama-gpu = [
 llama-cpp-python = [
   { index = "llama-cpp-cpu", extra = "llama-cpu" },
   { index = "llama-cpp-gpu-metal", extra = "llama-gpu", marker = "platform_system == 'Darwin' and platform_machine == 'arm64'" },
-  { index = "llama-cpp-gpu-cuda", extra = "llama-gpu", marker = "platform_system == 'Linux'" },
-  { index = "llama-cpp-gpu-cuda", extra = "llama-gpu", marker = "platform_system == 'Windows'" },
+  { index = "llama-cpp-gpu-cu121", extra = "llama-gpu-cu121" },
+  { index = "llama-cpp-gpu-cu122", extra = "llama-gpu-cu121" },
+  { index = "llama-cpp-gpu-cu123", extra = "llama-gpu-cu121" },
+  { index = "llama-cpp-gpu-cu124", extra = "llama-gpu-cu121" },
+  { index = "llama-cpp-gpu-cu125", extra = "llama-gpu-cu121" },
   { index = "pypi" },
 ]
 
@@ -62,7 +65,23 @@ name = "llama-cpp-gpu-metal"
 url = "https://abetlen.github.io/llama-cpp-python/whl/metal"
 
 [[tool.uv.index]]
-name = "llama-cpp-gpu-cuda"
+name = "llama-cpp-gpu-cu121" 
+url = "https://abetlen.github.io/llama-cpp-python/whl/cu121"
+
+[[tool.uv.index]]
+name = "llama-cpp-gpu-cu122" 
+url = "https://abetlen.github.io/llama-cpp-python/whl/cu121"
+
+[[tool.uv.index]]
+name = "llama-cpp-gpu-cu123" 
+url = "https://abetlen.github.io/llama-cpp-python/whl/cu121"
+
+[[tool.uv.index]]
+name = "llama-cpp-gpu-cu124"
+url = "https://abetlen.github.io/llama-cpp-python/whl/cu124"
+
+[[tool.uv.index]]
+name = "llama-cpp-gpu-cu125" 
 url = "https://abetlen.github.io/llama-cpp-python/whl/cu121"
 
 [[tool.uv.index]]
