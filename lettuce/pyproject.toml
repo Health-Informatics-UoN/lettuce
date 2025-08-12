@@ -119,6 +119,11 @@ url = "https://abetlen.github.io/llama-cpp-python/whl/cu123"
 name = "llama-cpp-gpu-cu124"
 url = "https://abetlen.github.io/llama-cpp-python/whl/cu124"
 
+[project.urls]
+Homepage = "https://health-informatics-uon.github.io/lettuce/"
+Repository = "https://github.com/health-Informatics-UoN/lettuce"
+Issues = "https://github.com/Health-Informatics-UoN/lettuce/issues"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
