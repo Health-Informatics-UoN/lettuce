@@ -9,7 +9,7 @@ ENV UV_CACHE_DIR=/tmp/uv_cache \
 
 WORKDIR /src
 COPY pyproject.toml ./
-RUN uv sync 
+RUN uv sync --extra llama-cpp
 
 # Runtime stage 
 FROM python:3.12-slim-bookworm
@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgomp1 \ 
     && rm -rf /var/lib/apt/lists/*
 ENV PATH="/src/.venv/bin:$PATH"
+ENV INFERENCE_TYPE="llama-cpp-python"
 WORKDIR /src
 COPY --from=builder /src/.venv /src/.venv
 
