@@ -14,7 +14,7 @@ if settings.inference_type == InferenceType.LLAMA_CPP:
     try:
         from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
     except ImportError:
-        raise ImportError("To use a Llama.cpp generator you have to install one of the optional dependency groups 'llama-cpu' or 'llama-gpu'")
+        raise ImportError("To use a Llama.cpp generator you have to install one of the optional dependency groups. Consult the documentation for details.")
 
 local_models = {
     "llama-2-7b-chat": {
