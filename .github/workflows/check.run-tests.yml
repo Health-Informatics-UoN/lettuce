@@ -79,7 +79,7 @@ jobs:
           python-version-file: "lettuce/lettuce/.python-version" 
 
       - name: uv sync
-        run: uv sync --all-extras 
+        run: uv sync --extra test 
         working-directory: lettuce/lettuce 
 
       - name: Run tests
