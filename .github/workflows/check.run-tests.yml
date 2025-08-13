@@ -21,7 +21,7 @@ jobs:
       DB_PASSWORD: "password"
       DB_NAME: "omop"
       DB_PORT: "5432"
-      DB_SCHEMA: "cdm" 
+      DB_SCHEMA: "public" 
       DB_VECTABLE: "embeddings"
       DB_VECSIZE: "384"
       AUTH_API_KEY: "test_key_123"
@@ -32,7 +32,6 @@ jobs:
         with:
           repository: Health-Informatics-UoN/omop-lite  
           path: omop-lite
-          ref: 2a352a52b9244c25cfa87dfde045dbb65d8131fb
 
       - name: Checkout lettuce repository
         uses: actions/checkout@v4
@@ -47,7 +46,7 @@ jobs:
 
       - name: Start omop-ts Docker services
         run: |         
-          docker compose -f omop-lite/compose-omop-ts.yml up -d
+          docker compose --profile text-search up -d
           
           echo "Waiting for database to initialise..."
           sleep 15
