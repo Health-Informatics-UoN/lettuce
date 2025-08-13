@@ -9,7 +9,7 @@ ENV UV_CACHE_DIR=/tmp/uv_cache \
 
 WORKDIR /src
 COPY pyproject.toml ./
-RUN uv sync --extra llama-cpp
+RUN uv sync
 
 # Runtime stage 
 FROM python:3.12-slim-bookworm
