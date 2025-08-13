@@ -20,8 +20,6 @@ dependencies = [
     "SQLAlchemy>=2.0.32",
     "sseclient-py>=1.8.0",
     "fastembed-haystack>=1.2.0",
-    "torch==2.2; platform_system == 'Darwin' and platform_machine == 'x86_64'",
-    "torch>=2.7; platform_system != 'Darwin' or platform_machine != 'x86_64'",
     "sentence-transformers>=3.3.1",
     "pgvector>=0.3.6",
     "pydantic-settings>=2.10.1",
@@ -81,7 +79,7 @@ conflicts = [
     {extra = "llama-gpu-cu124"},
     {extra = "llama-gpu-cu125"}
   ],
-  
+
 ]
 
 [tool.uv.sources]
