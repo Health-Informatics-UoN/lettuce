@@ -46,7 +46,7 @@ jobs:
 
       - name: Start omop-ts Docker services
         run: |         
-          docker compose -f omop-lite/docker-compose.yml --profile text-search up -d
+          docker compose -f omop-lite/docker-compose.yml --profile postgres up -d
           
           echo "Waiting for database to initialise..."
           sleep 15
