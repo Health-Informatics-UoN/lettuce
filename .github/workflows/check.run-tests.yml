@@ -93,7 +93,7 @@ jobs:
         run: |
           # Cleanup all services to prevent resource issues
           docker compose -f lettuce/lettuce/compose.yaml down
-          docker compose -f omop-lite/compose-omop-ts.yml down
+          docker compose -f omop-lite/docker-compose.yml down
           docker network rm omop-ts_default || true
 
       - name: Pytest coverage comment
