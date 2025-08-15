@@ -1,6 +1,6 @@
 from options.pipeline_options import LLMModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from .pipeline_options import EmbeddingModelName
+from .pipeline_options import EmbeddingModelName, InferenceType
 
 class BaseOptions(BaseSettings):
     model_config = SettingsConfigDict(
@@ -16,9 +16,14 @@ class BaseOptions(BaseSettings):
     db_vectable: str = "embeddings"
     # have a branch where this comes from database - hard to integrate,#TODO
     db_vecsize: int = 384 
-    
+
+    inference_type: InferenceType = InferenceType.OLLAMA
+
+    ollama_url: str = "http://localhost:11434"    
+
     llm_model: LLMModel = LLMModel.LLAMA_3_1_8B
     temperature: float = 0.0
+    local_llm: str | None = None
 
     embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL
     embedding_top_k: int = 5

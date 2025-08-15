@@ -21,7 +21,7 @@ jobs:
       DB_PASSWORD: "password"
       DB_NAME: "omop"
       DB_PORT: "5432"
-      DB_SCHEMA: "cdm" 
+      DB_SCHEMA: "public" 
       DB_VECTABLE: "embeddings"
       DB_VECSIZE: "384"
       AUTH_API_KEY: "test_key_123"
@@ -32,7 +32,6 @@ jobs:
         with:
           repository: Health-Informatics-UoN/omop-lite  
           path: omop-lite
-          ref: 2a352a52b9244c25cfa87dfde045dbb65d8131fb
 
       - name: Checkout lettuce repository
         uses: actions/checkout@v4
@@ -47,7 +46,7 @@ jobs:
 
       - name: Start omop-ts Docker services
         run: |         
-          docker compose -f omop-lite/compose-omop-ts.yml up -d
+          docker compose -f omop-lite/docker-compose.yml --profile postgres up -d
           
           echo "Waiting for database to initialise..."
           sleep 15
@@ -79,7 +78,7 @@ jobs:
           python-version-file: "lettuce/lettuce/.python-version" 
 
       - name: uv sync
-        run: uv sync --all-extras 
+        run: uv sync --extra test 
         working-directory: lettuce/lettuce 
 
       - name: Run tests
@@ -94,7 +93,7 @@ jobs:
         run: |
           # Cleanup all services to prevent resource issues
           docker compose -f lettuce/lettuce/compose.yaml down
-          docker compose -f omop-lite/compose-omop-ts.yml down
+          docker compose -f omop-lite/docker-compose.yml down
           docker network rm omop-ts_default || true
 
       - name: Pytest coverage comment

@@ -105,12 +105,13 @@ class LLMPipeline:
         self._logger.info(f"Prompt added to pipeline in {time.time()-start} seconds")
         start = time.time()
 
-        path_to_local_model_weights = os.getenv("LOCAL_LLM")
         llm = get_model(
             model=self._model,
+            inference_type=settings.inference_type,
             temperature=self._temperature,
+            url=settings.ollama_url,
             logger=self._logger,
-            path_to_local_weights=path_to_local_model_weights,
+            path_to_local_weights=settings.local_llm,
             verbose=self._verbose_llm,
         )
         pipeline.add_component("llm", llm)
@@ -165,6 +166,8 @@ class LLMPipeline:
         path_to_local_model_weights = os.getenv("LOCAL_LLM")
         llm = get_model(
             model=self._model,
+            inference_type=settings.inference_type,
+            url=settings.ollama_url,
             temperature=self._temperature,
             logger=self._logger,
             path_to_local_weights=path_to_local_model_weights,
