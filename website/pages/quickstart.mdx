@@ -7,6 +7,7 @@ The fastest way to get started with Lettuce is to use the [command-line interfac
 - Python 3.12
 - [`uv`](https://docs.astral.sh/uv/guides/install-python/) for dependency management
 - Access to an OMOP-CDM database with a pgvector table for concept embeddings
+- (Optional) An [Ollama](https://ollama.com/) server accepting connections
 
 <Steps>
 
@@ -41,13 +42,52 @@ Dependencies are handled with uv, and first have to be installed from the `pypro
 uv sync
 ```
 
+This will install the dependencies for running Lettuce with the LLM running in an Ollama server.
+For this to work, you'll have to have an Ollama server running, and make requests to a model that you have previously pulled to Ollama.
+For example, if you specify `LLM_MODEL="gemma3n:e4b"` in lettuce, you will need to have previously run
+
+```bash
+ollama pull gemma3n:e4b
+```
+
+Lettuce can also be run without Ollama, instead using [Llama.cpp](https://github.com/ggml-org/llama.cpp) for inference.
+
+<Callout type='warning'>
+Llama.cpp installation can be tricky, particularly on Windows
+</Callout>
+
+The dependencies for running inference in Llama.cpp are installed using the `--extra` flag, e.g.
+
+```bash
+uv sync --extra llama-cpp
+```
+
+This will try to build Llama.cpp on your machine.
+There are a few pitfalls here.
+On Windows, you will need to have Visual Code set up correctly.
+On Apple silicon, this seems fairly bulletproof, but on other operating systems we have also had issues with the installation not correctly recognising GPUs.
+Workarounds can be found on the [Llama.cpp repository](https://github.com/ggml-org/llama.cpp).
+These seem to change fairly often, so caveat developer!
+
+As an alternative, we provide the option of using precompiled wheels as dependencies.
+
+| Extra name | Description |
+|------------|-------------|
+| `llama-cpp` | Builds from source |
+| `llama-cpu` | Pre-compiled wheel with basic CPU support |
+| `llama-gpu-metal` | Pre-compiled wheel with Apple silicon support |
+| `llama-gpu-cu121` | Pre-compiled wheel for CUDA 12.1 |
+| `llama-gpu-cu122` | Pre-compiled wheel for CUDA 12.2 |
+| `llama-gpu-cu123` | Pre-compiled wheel for CUDA 12.3 |
+| `llama-gpu-cu124` | Pre-compiled wheel for CUDA 12.4 |
+
 ### Run the CLI
 
 
 Once this is complete, you can run `lettuce-cli`
 
 ```sh
-uv run --env-file .env lettuce-cli --informal_names "acetaminophen" --no-use_llm --no-vector_search
+uv run lettuce-cli --no-use_llm --no-vector_search "acetaminophen" 
 ```
 
 The flags in this command disable the vector search and LLM, just querying the database for "acetaminophen".
