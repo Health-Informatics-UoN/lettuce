@@ -3,6 +3,13 @@ export default {
   project: {
     link: 'https://github.com/health-informatics-uon/lettuce'
   },
+  head: () => {
+    return (
+      <>
+        <title>Lettuce documentation</title>
+      </>
+    )
+  },
   footer: {
     content: (
     <span>

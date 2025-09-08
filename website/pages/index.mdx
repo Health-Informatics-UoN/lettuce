@@ -9,7 +9,7 @@ import { Callout } from 'nextra/components'
 </div>
 **Lettuce** is an application for medical researchers that matches the informal medicine names supplied by the user to concepts in the [Observational Health Data Sciences and Informatics](https://www.ohdsi.org) (OMOP) [standardised vocabularies](https://github.com/OHDSI/Vocabulary-v5.0/wiki).
 
-The application can be used as an API, or run with a graphical user interface (GUI).
+The application can be used as an API, or run with a command-line interface (CLI).
 
 <Callout type="warning" emoji="⚠️">
    This project is under active development
@@ -22,30 +22,33 @@ This is the rough process that the Llettuce API follows. Subject to change
 
 ```mermaid
   graph TD
-    usr[User provides informal name]
-    json[JSON output]
-    fuzz[[Fuzzy matching]]
-    subgraph vector_search[Vector Search]
-      vs[Vector query]
-      v_db[(Vector database)]
+    usr[User submits source term]
+    subgraph Lettuce
+      lettuce(Lettuce API/CLI)
+      embed(Embedding model)
+      lettuce --> embed
+
+      subgraph LLM
+        prompt --> llm(LLM)
+      end
+
+      LLM --> output
+
+      text_search(Text search query)
+      llm --> text_search
     end
-    subgraph assistant[LLM assistant]
-      prompt[Prompt builder]
-      llm[LLM assistant]
+
+    subgraph Database
+        cdm[(OMOP-CDM)]
+        embed_table(Embedding Table)
     end
-    subgraph db[OMOP-CDM]
-      db_query[Database query]
-      omop[(OMOP-CDM)]
-    end
-    usr -. Query turned into vector .-> vs
-    usr -.-> prompt
-    usr -.-> db_query
-    vs --> v_db[(Vector database)]
-    v_db -- Nearest neighbours --> prompt
-    v_db -- Contains an exact match --> db_query
-    prompt --> llm
-    llm --> db_query
-    db_query --> omop[(OMOP-CDM)]
-    omop --> fuzz
-    fuzz -- Matches meeting threshold --> json
+
+    embed_table -.-> output(Output)
+    cdm --> output
+    text_search --> cdm
+    embed --> embed_table
+    embed_table -.-> prompt(Prompt Template)
+    cdm --> embed_table
+    usr --> lettuce
+    output --> json(JSON response)
 ```

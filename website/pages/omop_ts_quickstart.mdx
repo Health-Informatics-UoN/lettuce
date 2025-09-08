@@ -10,7 +10,7 @@ Lettuce requires a PostgreSQL database with the OMOP CDM (Common Data Model) sch
 - **pgvector:** Extension for vector similarity searches 
 
 ### Required OMOP Tables
-Lettuce expects the following tables from the OMOP CDM v5.0 vocabulary:
+Lettuce expects the following tables from the OMOP CDM v5.0:
 | Table              | Purpose                                            | Key Columns                                                                 |
 |--------------------|----------------------------------------------------|-----------------------------------------------------------------------------|
 | `concept`            | Core vocabulary table containing all medical concepts | `concept_id`, `concept_name`, `vocabulary_id`, `concept_code`, `standard_concept`     |
@@ -23,12 +23,7 @@ To enable semantic similarity search, you'll need to generate vector embeddings 
 
 
 <Callout type="info">
-The embedding model used to generate your vector table **must match** the model specified in your Lettuce configuration. If they differ, semantic search will return inaccurate or empty results.
-
-Here are some common models and their expected embedding dimensions:
-
-- **BGE-small**: 384
-- **GTR-T5-base**: 768
+The embedding model used to generate your vector table **must match** the model specified in your Lettuce configuration. If they differ, semantic search will return inaccurate results or throw an error.
 </Callout>
 
 
@@ -39,12 +34,46 @@ You can use either an existing OMOP-compliant database, or set up a containerize
 ---
 
 ## Option 1: Using an Existing OMOP Database
-If you already have access to a PostgreSQL instance with the required OMOP tables and extensions, you can proceed directly to [Next Steps](#next-steps).
+If you have an existing Postgres instance running an OMOP-CDM database, it needs some modifications to serve as a database for Lettuce.
 
+<Steps>
+### Full-text search
+The only way the text search features can work with a reasonable latency is to materialise a column for `tsvector`s and index on that column, otherwise the database has to effectively compute the column each time the query is run.
+Lettuce assumes this column is present.
+To create the column:
+
+```sql
+ALTER TABLE {SCHEMA_NAME}.concept
+ADD COLUMN concept_name_tsv tsvector
+GENERATED ALWAYS AS (to_tsvector('english', concept_name)) STORED;
+```
+
+Then the index:
+```sql
+CREATE INDEX idx_concept_fts ON {SCHEMA_NAME}.concept USING GIN (concept_name_tsv);
+```
+
+### Embeddings
+Lettuce uses the pgvector postgres extension for semantic search.
+To install pgvector, follow their [installation instructions](https://github.com/pgvector/pgvector)
+
+Then:
+```sql
+CREATE EXTENSION IF NOT EXISTS vector;
+```
+
+If you have a parquet file containing embeddings, you can copy them to a table in your cdm schema for Lettuce to read from.
+Example code for this can be found in [omop-lite](https://github.com/Health-Informatics-UoN/omop-lite/blob/main/text-search/load_text_search.py)
+
+<Callout>
+  Code for reading the concept table from an existing database, then encoding the concepts is a [work in progress](https://github.com/Health-Informatics-UoN/lettuce/tree/embedding-building-code/build-embeddings).
+  It works, but is highly experimental.
+</Callout>
+</Steps>
 
 ## Option 2: Set Up a Containerized Database with `omop-ts`
 
-Use the [`omop-lite`](https://github.com/Health-Informatics-UoN/omop-lite) repository to quickly spin up a local OMOP-compatible database.
+Use the [`omop-lite`](https://github.com/Health-Informatics-UoN/omop-lite) repository to quickly spin up a local OMOP-CDM database.
 
 <Steps>
 
@@ -67,11 +96,20 @@ Copy your OMOP `.csv` files (e.g., `CONCEPT.csv`, `CONCEPT_SYNONYM.csv`) into th
     For testing, minimal example files are provided in `omop_lite/synthetic`.
 </Callout>
 
+### Prepare embeddings
+Building omop-lite assumes you have pre-computed embeddings stored in a parquet file in `omop-lite/text-search/embeddings.parquet`.
+An example file is provided in the omop-lite repository.
+This parquet file holds a table with concept IDs in the first column, and embedding vectors in the third. 
+
+<Callout type='info'>
+  If you wish to create embeddings online, the embeddings table can be dropped and rebuilt. If using omop-lite, still run with the text-search profile.
+</Callout>
+
 
 ### Build and start the `omop-ts` docker container
 Start the containerized OMOP database using Docker Compose:
 ```bash 
-docker compose -f compose-omop-ts.yml up -d 
+docker compose --profile text-search up -d 
 ```
 This will launch a PostgreSQL instance with the necessary schema and extensions pre-configured.
 
@@ -88,16 +126,3 @@ You should see output showing the first 5 rows from the concept table, confirmin
 
 ## Next Steps 
 Once your database is running, configure Lettuce to connect by specifying the connection details in your `.env` file, as shown in the [Quickstart](/quickstart) guide.
-
-If you're using the containerised `omop-ts` setup, the corresponding `.env` file would look like:
-
-```sh
-DB_HOST="localhost"
-DB_USER="postgres"
-DB_PASSWORD="password"
-DB_NAME="omop"
-DB_PORT="5432"
-DB_SCHEMA="cdm"
-DB_VECTABLE="embeddings"
-DB_VECSIZE=384
-```
