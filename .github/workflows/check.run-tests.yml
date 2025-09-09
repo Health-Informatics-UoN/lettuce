@@ -21,7 +21,7 @@ jobs:
       DB_PASSWORD: "password"
       DB_NAME: "omop"
       DB_PORT: "5432"
-      DB_SCHEMA: "cdm" 
+      DB_SCHEMA: "public" 
       DB_VECTABLE: "embeddings"
       DB_VECSIZE: "384"
       AUTH_API_KEY: "test_key_123"
@@ -46,7 +46,7 @@ jobs:
 
       - name: Start omop-ts Docker services
         run: |         
-          docker compose -f omop-lite/docker-compose.yml --profile postgres up -d
+          docker compose -f omop-lite/docker-compose.yml --profile text-search up -d
           
           echo "Waiting for database to initialise..."
           sleep 15
