@@ -79,7 +79,6 @@ conflicts = [
     {extra = "llama-gpu-cu124"},
     {extra = "llama-gpu-cu125"}
   ],
-
 ]
 
 [tool.uv.sources]
@@ -90,6 +89,7 @@ llama-cpp-python = [
   { index = "llama-cpp-gpu-cu122", extra = "llama-gpu-cu122" },
   { index = "llama-cpp-gpu-cu123", extra = "llama-gpu-cu123" },
   { index = "llama-cpp-gpu-cu124", extra = "llama-gpu-cu124" },
+  { index = "llama-cpp-gpu-cu125", extra = "llama-gpu-cu125" },
 ]
 
 [[tool.uv.index]]
@@ -116,6 +116,10 @@ url = "https://abetlen.github.io/llama-cpp-python/whl/cu123"
 name = "llama-cpp-gpu-cu124"
 url = "https://abetlen.github.io/llama-cpp-python/whl/cu124"
 
+[[tool.uv.index]]
+name = "llama-cpp-gpu-cu125"
+url = "https://abetlen.github.io/llama-cpp-python/whl/cu125"
+
 [project.urls]
 Homepage = "https://health-informatics-uon.github.io/lettuce/"
 Repository = "https://github.com/health-Informatics-UoN/lettuce"
@@ -126,8 +130,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project.scripts]
-lettuce-cli = "cli.main:app"
-lettuce-api = "api:main"
+lettuce-cli = "lettuce.cli.main:app"
+lettuce-api = "lettuce.api:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["."]
+packages = ["lettuce"]
