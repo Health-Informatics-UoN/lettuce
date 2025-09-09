@@ -58,10 +58,6 @@ llama-gpu-cu124 = [
   "llama-cpp-python>=0.2.89",
   "llama-cpp-haystack>=1.1"
 ]
-llama-gpu-cu125 = [
-  "llama-cpp-python>=0.2.89",
-  "llama-cpp-haystack>=1.1"
-]
 llama-gpu-metal = [
   "llama-cpp-python>=0.2.89",
   "llama-cpp-haystack>=1.1"
@@ -77,7 +73,6 @@ conflicts = [
     {extra = "llama-gpu-cu122"},
     {extra = "llama-gpu-cu123"},
     {extra = "llama-gpu-cu124"},
-    {extra = "llama-gpu-cu125"}
   ],
 ]
 
@@ -89,7 +84,6 @@ llama-cpp-python = [
   { index = "llama-cpp-gpu-cu122", extra = "llama-gpu-cu122" },
   { index = "llama-cpp-gpu-cu123", extra = "llama-gpu-cu123" },
   { index = "llama-cpp-gpu-cu124", extra = "llama-gpu-cu124" },
-  { index = "llama-cpp-gpu-cu125", extra = "llama-gpu-cu125" },
 ]
 
 [[tool.uv.index]]
@@ -115,10 +109,6 @@ url = "https://abetlen.github.io/llama-cpp-python/whl/cu123"
 [[tool.uv.index]]
 name = "llama-cpp-gpu-cu124"
 url = "https://abetlen.github.io/llama-cpp-python/whl/cu124"
-
-[[tool.uv.index]]
-name = "llama-cpp-gpu-cu125"
-url = "https://abetlen.github.io/llama-cpp-python/whl/cu125"
 
 [project.urls]
 Homepage = "https://health-informatics-uon.github.io/lettuce/"
