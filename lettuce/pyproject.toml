@@ -124,4 +124,4 @@ lettuce-cli = "lettuce.cli.main:app"
 lettuce-api = "lettuce.api:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["lettuce"]
+packages = ["."]
