@@ -39,11 +39,6 @@ jobs:
           path: lettuce 
           ref: ${{ github.head_ref }}  
 
-      - name: Move test data from synthetic into data
-        run: |
-          mkdir omop-lite/data
-          mv omop-lite/omop_lite/synthetic/* omop-lite/data/
-
       - name: Start omop-ts Docker services
         run: |         
           docker compose -f omop-lite/docker-compose.yml --profile postgres up
