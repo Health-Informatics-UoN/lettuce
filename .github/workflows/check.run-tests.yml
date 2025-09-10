@@ -74,7 +74,7 @@ jobs:
           python-version-file: "lettuce/lettuce/.python-version" 
 
       - name: uv sync
-        run: uv sync --extra test --extra llama-cpp
+        run: uv sync --extra test --extra llama-cpu
         working-directory: lettuce/lettuce 
 
       - name: Run tests
