@@ -39,8 +39,8 @@ llama-cpp = [
   "llama-cpp-haystack>=1.0"
 ]
 llama-cpu = [
-  "llama-cpp-python>=0.2.89",
-  "llama-cpp-haystack>=1.1"
+  "llama-cpp-python==0.2.89",
+  "llama-cpp-haystack==1.1"
 ]
 llama-gpu-cu121 = [
   "llama-cpp-python>=0.2.89",
