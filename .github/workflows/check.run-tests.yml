@@ -71,7 +71,7 @@ jobs:
       - name: Setup musl
         run: |
           sudo apt-get install -y musl-dev
-          ln -s /usr/lib/x86_64-linux-musl/libc.so /lib/libc.musl-x86_64.so.1
+          sudo ln -s /usr/lib/x86_64-linux-musl/libc.so /lib/libc.musl-x86_64.so.1
 
       - name: Setup Python
         uses: actions/setup-python@v5
