@@ -68,6 +68,9 @@ jobs:
           enable-cache: true
           cache-dependency-glob: "lettuce/lettuce/uv.lock"
 
+      - name: Add musl
+        run: sudo apt-get install -y musl
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
