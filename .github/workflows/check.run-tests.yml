@@ -32,7 +32,7 @@ jobs:
         with:
           repository: Health-Informatics-UoN/omop-lite  
           path: omop-lite
-          ref: 7fd042ad8d254e34a829465eb5ad721c8263a2fe
+          ref: 31d6280947de78acd8a41928ef2a3da04b93cf43
 
       - name: Checkout lettuce repository
         uses: actions/checkout@v4
