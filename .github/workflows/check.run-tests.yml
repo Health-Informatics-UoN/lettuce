@@ -74,13 +74,13 @@ jobs:
           python-version-file: "lettuce/lettuce/.python-version" 
 
       - name: uv sync
-        run: uv sync --extra test
+        run: uv sync --extra test --extra llama-cpp
         working-directory: lettuce/lettuce 
 
       - name: Run tests
         run: |
           set -e
-          uv run pytest tests --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=lettuce tests | tee pytest-coverage.txt
+          INFERENCE_TYPE="LLAMA_CPP" uv run pytest tests --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=lettuce tests | tee pytest-coverage.txt
           test ${PIPESTATUS[0]} -eq 0
         working-directory: lettuce/lettuce 
 

@@ -9,6 +9,7 @@ from components.models import (
     local_models
 )
 from options.pipeline_options import LLMModel 
+from options.base_options import InferenceType
 
 # Configure logging for tests
 logging.basicConfig(level=logging.INFO)
@@ -31,10 +32,10 @@ def mock_file_exists(tmp_path):
     return str(file_path)
  
 
-@patch("components.models.os.path.isfile")
 @patch("components.models.LlamaCppGenerator")
+@patch("components.models.os.path.isfile")
 @patch("components.models.torch.cuda.is_available")
-def test_local_weights_success(mock_cuda, mock_llama, mock_isfile, mock_file_exists):
+def test_local_weights_success(mock_cuda, mock_isfile, mock_llama, mock_file_exists):
     mock_isfile.return_value = True 
     mock_llm_instance = Mock() 
     mock_llama.return_value = mock_llm_instance 
@@ -64,9 +65,9 @@ def test_get_local_weights_file_not_found(mock_isfile):
     mock_isfile.assert_called_once_with(path) 
 
 
-@patch("components.models.hf_hub_download")
 @patch("components.models.LlamaCppGenerator")
-def test_download_model_from_huggingface_success(mock_llama, mock_download): 
+@patch("components.models.hf_hub_download")
+def test_download_model_from_huggingface_success(mock_download, mock_llama): 
     mock_download.return_value = "/downloaded/fallback.gguf"
     mock_llm_instance = Mock()
     mock_llama.return_value = mock_llm_instance
@@ -81,9 +82,9 @@ def test_download_model_from_huggingface_success(mock_llama, mock_download):
     mock_llama.assert_called_once()
 
 
-@patch("components.models.hf_hub_download")
 @patch("components.models.LlamaCppGenerator")
-def test_download_model_from_huggingface_fallback(mock_llama, mock_download):
+@patch("components.models.hf_hub_download")
+def test_download_model_from_huggingface_fallback(mock_download, mock_llama):
     mock_download.return_value = "/downloaded/fallback.gguf"
     mock_llm_instance = Mock()
     mock_llama.return_value = mock_llm_instance
@@ -132,7 +133,13 @@ def test_get_model_local_weights(mock_get_local, mock_llm_model):
     mock_llm_instance = Mock()
     mock_get_local.return_value = mock_llm_instance
 
-    result = get_model(mock_llm_model, logger, path_to_local_weights=fake_path_to_local_weights)
+    result = get_model(
+            model=mock_llm_model,
+            logger=logger,
+            inference_type=InferenceType.LLAMA_CPP,
+            url="",
+            path_to_local_weights=fake_path_to_local_weights
+            )
 
     assert result == mock_llm_instance
     mock_get_local.assert_called_once_with(fake_path_to_local_weights, 0.7, logger, False)
@@ -144,7 +151,12 @@ def test_get_model_openai(mock_openai_download, mock_llm_model):
     mock_openai_download.return_value = mock_llm_instance
     mock_llm_model.value = "gpt-3.5-turbo"
 
-    result = get_model(mock_llm_model, logger)
+    result = get_model(
+            model=mock_llm_model,
+            logger=logger,
+            inference_type=InferenceType.OPEN_AI,
+            url=""
+            )
 
     assert result == mock_llm_instance
     mock_openai_download.assert_called_once_with("gpt-3.5-turbo", 0.7, logger)
@@ -155,7 +167,12 @@ def test_get_model_huggingface(mock_hf_download, mock_llm_model):
     mock_llm_instance = Mock()
     mock_hf_download.return_value = mock_llm_instance
 
-    result = get_model(mock_llm_model, logger)
+    result = get_model(
+            model=mock_llm_model,
+            logger=logger,
+            inference_type=InferenceType.LLAMA_CPP,
+            url=""
+            )
 
     assert result == mock_llm_instance
     mock_hf_download.assert_called_once_with("llama-2-7b-chat", 0.7, logger, False)
