@@ -1,7 +1,5 @@
 from enum import Enum
 from pydantic import BaseModel
-from components.embeddings import EmbeddingModelName
-
 
 class LLMModel(str, Enum):
     """
@@ -79,8 +77,6 @@ class PipelineOptions(BaseModel):
         The maximum separation to search for concept ancestors
     """
 
-    llm_model: LLMModel = LLMModel.LLAMA_3_1_8B
-    temperature: float = 0
     vocabulary_id: list[str] = ["RxNorm"]
     standard_concept: bool = True
     concept_ancestor: bool = False
@@ -89,8 +85,83 @@ class PipelineOptions(BaseModel):
     search_threshold: int = 80
     max_separation_descendants: int = 1
     max_separation_ancestor: int = 1
-    embeddings_path: str = "concept_embeddings.qdrant"
-    force_rebuild: bool = False
     embed_vocab: list[str] = ["RxNorm", "RxNorm Extension"]
-    embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL
     embeddings_top_k: int = 5
+
+class EmbeddingModelName(str, Enum):
+    """
+    This class enumerates the embedding models we
+    have the download details for.
+
+    The models are:
+    """
+
+    BGESMALL = "BGESMALL"
+    MINILM = "MINILM"
+    GTR_T5_BASE = "gtr-t5-base"
+    GTR_T5_LARGE = "gtr-t5-large"
+    E5_BASE = "e5-base"
+    E5_LARGE = "e5-large"
+    DISTILBERT_BASE_UNCASED = "distilbert-base-uncased"
+    DISTILUSE_BASE_MULTILINGUAL = "distiluse-base-multilingual-cased-v1"
+    CONTRIEVER = "contriever"
+
+
+class EmbeddingModelInfo(BaseModel):
+    """
+    A simple class to hold the information for embeddings models
+    """
+
+    path: str
+    dimensions: int
+
+
+class EmbeddingModel(BaseModel):
+    """
+    A class to match the name of an embeddings model with the
+    details required to download and use it.
+    """
+
+    name: EmbeddingModelName
+    info: EmbeddingModelInfo
+
+
+EMBEDDING_MODELS = {
+    # ------ Bidirectional Gated Encoder  ------- >
+    EmbeddingModelName.BGESMALL: EmbeddingModelInfo(
+        path="BAAI/bge-small-en-v1.5", dimensions=384
+    ),
+    # ------ SBERT (Sentence-BERT) ------- >
+    EmbeddingModelName.MINILM: EmbeddingModelInfo(
+        path="sentence-transformers/all-MiniLM-L6-v2", dimensions=384
+    ),
+    # ------ Generalizable T5 Retrieval ------- >
+    EmbeddingModelName.GTR_T5_BASE: EmbeddingModelInfo(
+        path="google/gtr-t5-base", dimensions=768
+    ),
+    # ------ Generalizable T5 Retrieval ------- >
+    EmbeddingModelName.GTR_T5_LARGE: EmbeddingModelInfo(
+    path="google/gtr-t5-large", dimensions=1024
+    ),
+    # ------ Embedding Models for Search Engines ------- >
+    EmbeddingModelName.E5_BASE: EmbeddingModelInfo(
+        path="microsoft/e5-base", dimensions=768
+    ),
+    # ------ Embedding Models for Search Engines ------- >
+    EmbeddingModelName.E5_LARGE: EmbeddingModelInfo(
+        path="microsoft/e5-large", dimensions=1024
+    ),
+    # ------ DistilBERT ------- >
+    EmbeddingModelName.DISTILBERT_BASE_UNCASED: EmbeddingModelInfo(
+        path="distilbert-base-uncased", dimensions=768
+    ),
+    # ------ distiluse-base-multilingual-cased-v1 ------- >
+    EmbeddingModelName.DISTILUSE_BASE_MULTILINGUAL: EmbeddingModelInfo(
+        path="sentence-transformers/distiluse-base-multilingual-cased-v1",
+        dimensions=512,
+    ),
+    # ------ Contriever ------- >
+    EmbeddingModelName.CONTRIEVER: EmbeddingModelInfo(
+        path="facebook/contriever", dimensions=768
+    ),
+}

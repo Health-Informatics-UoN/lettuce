@@ -6,12 +6,13 @@ authors = [{name = "James Mitchell White", email = "mbzjim@exmail.notingham.ac.u
 license = "MIT"
 requires-python = ">=3.12"
 dependencies = [
+    "aiohttp>=3.12",
     "haystack-ai>=2.7.0",
     "huggingface-hub>=0.24.6",
     "numpy==1.26.4",
-    "pandas>=2.1.0", 
+    "pandas>=2.1.0",
     "python-dotenv>=1.0.1",
-    "llama-cpp-haystack>=0.4.1,<=0.4.4", 
+    "llama-cpp-haystack>=1.0",
     "llama-cpp-python>=0.2.89",
     "fastapi>=0.112.2",
     "uvicorn>=0.30.6",
@@ -23,7 +24,9 @@ dependencies = [
     "fastembed-haystack>=1.2.0",
     "torch==2.2",
     "sentence-transformers>=3.3.1",
-    "pgvector==0.3.6"
+    "pgvector==0.3.6",
+    "pydantic-settings>=2.10.1",
+    "typer>=0.16.0",
 ]
 
 [project.optional-dependencies]
@@ -40,7 +43,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project.scripts]
-lettuce-cli = "cli.main:main"
+lettuce-cli = "cli.main:app"
+lettuce-api = "api:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["."]
