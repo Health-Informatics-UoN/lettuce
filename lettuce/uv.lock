@@ -862,7 +862,7 @@ requires-dist = [
     { name = "fastembed-haystack", specifier = ">=1.2.0" },
     { name = "haystack-ai", specifier = ">=2.7.0" },
     { name = "huggingface-hub", specifier = ">=0.24.6" },
-    { name = "llama-cpp-haystack", marker = "extra == 'llama-cpp'", specifier = ">=1.0" },
+    { name = "llama-cpp-haystack", marker = "extra == 'llama-cpp'", specifier = ">=1.1" },
     { name = "llama-cpp-haystack", marker = "extra == 'llama-cpu'", specifier = ">=1.1" },
     { name = "llama-cpp-haystack", marker = "extra == 'llama-gpu-cu121'", specifier = ">=1.1" },
     { name = "llama-cpp-haystack", marker = "extra == 'llama-gpu-cu122'", specifier = ">=1.1" },
