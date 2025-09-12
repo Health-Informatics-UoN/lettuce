@@ -7,7 +7,7 @@ name: Build and publish pre-loaded weights image to GHCR and deploy to Azure
 on:
   push:
     branches:
-      - bugfix/fix-docker-image-build-on-cicd-pipeline
+      - main
         
 env:
   image-name: lettuce
