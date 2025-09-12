@@ -21,7 +21,7 @@ jobs:
       DB_PASSWORD: "password"
       DB_NAME: "omop"
       DB_PORT: "5432"
-      DB_SCHEMA: "cdm" 
+      DB_SCHEMA: "public" 
       DB_VECTABLE: "embeddings"
       DB_VECSIZE: "384"
       AUTH_API_KEY: "test_key_123"
@@ -32,7 +32,7 @@ jobs:
         with:
           repository: Health-Informatics-UoN/omop-lite  
           path: omop-lite
-          ref: 2a352a52b9244c25cfa87dfde045dbb65d8131fb
+          ref: 31d6280947de78acd8a41928ef2a3da04b93cf43
 
       - name: Checkout lettuce repository
         uses: actions/checkout@v4
@@ -40,14 +40,9 @@ jobs:
           path: lettuce 
           ref: ${{ github.head_ref }}  
 
-      - name: Move test data from synthetic into data
-        run: |
-          mkdir omop-lite/data
-          mv omop-lite/omop_lite/synthetic/* omop-lite/data/
-
       - name: Start omop-ts Docker services
         run: |         
-          docker compose -f omop-lite/compose-omop-ts.yml up -d
+          docker compose -f omop-lite/docker-compose.yml --profile text-search up -d
           
           echo "Waiting for database to initialise..."
           sleep 15
@@ -69,9 +64,14 @@ jobs:
       - name: Setup uv
         uses: astral-sh/setup-uv@v5
         with:
-          version: "0.5.16"
+          version: "0.8.15"
           enable-cache: true
           cache-dependency-glob: "lettuce/lettuce/uv.lock"
+
+      - name: Setup musl
+        run: |
+          sudo apt-get install -y musl-dev
+          sudo ln -s /usr/lib/x86_64-linux-musl/libc.so /lib/libc.musl-x86_64.so.1
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -79,13 +79,13 @@ jobs:
           python-version-file: "lettuce/lettuce/.python-version" 
 
       - name: uv sync
-        run: uv sync --all-extras 
+        run: uv sync --extra test --extra llama-cpu
         working-directory: lettuce/lettuce 
 
       - name: Run tests
         run: |
           set -e
-          uv run pytest tests --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=lettuce tests | tee pytest-coverage.txt
+          INFERENCE_TYPE="llama-cpp-python" uv run pytest tests --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=lettuce tests | tee pytest-coverage.txt
           test ${PIPESTATUS[0]} -eq 0
         working-directory: lettuce/lettuce 
 
@@ -94,7 +94,7 @@ jobs:
         run: |
           # Cleanup all services to prevent resource issues
           docker compose -f lettuce/lettuce/compose.yaml down
-          docker compose -f omop-lite/compose-omop-ts.yml down
+          docker compose -f omop-lite/docker-compose.yml down
           docker network rm omop-ts_default || true
 
       - name: Pytest coverage comment
