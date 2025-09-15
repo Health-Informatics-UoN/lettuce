@@ -120,8 +120,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project.scripts]
-lettuce-cli = "lettuce.cli.main:app"
-lettuce-api = "lettuce.api:main"
+lettuce-cli = "cli.main:app"
+lettuce-api = "api:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["."]
