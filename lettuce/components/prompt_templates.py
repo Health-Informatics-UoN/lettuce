@@ -64,10 +64,7 @@ Informal name: Aleve
 Response: Naproxen
 
 Possible related terms:
-{% for result in vec_results %}
-    {{result.content}}
-{% endfor %}
-
+{{ vec_results }}
 Task:
 
 Informal name: {{informal_name}}""",

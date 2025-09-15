@@ -148,14 +148,18 @@ class LLMPipeline:
         router = ConditionalRouter(
             routes=[
                 {
-                    "condition": "{{vec_results[0].score > 0.95}}",
+                    "condition": "{{vec_results[0].score < 0.05}}",
                     "output": "{{vec_results}}",
                     "output_name": "exact_match",
                     "output_type": List[Dict],
                 },
                 {
-                    "condition": "{{vec_results[0].score <=0.95}}",
-                    "output": "{{vec_results}}",
+                    "condition": "{{vec_results[0].score >=0.05}}",
+                    "output": """
+                    {%- for result in vec_results %}
+                    concept name: {{ result.content }} (score: {{ (100 * (1-result.score))|round(2) }}%)
+                    {% endfor %}
+                    """,
                     "output_name": "no_exact_match",
                     "output_type": List[Dict],
                 },
