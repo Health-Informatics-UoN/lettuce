@@ -117,7 +117,7 @@ async def ai_search(
             embed_vocab=vocabulary,
             standard_concept=standard_concept,
             ).get_rag_assistant()
-    answer = assistant.run({"prompt": {"informal_name": search_term}, "query_embedder": {"text": search_term}})
+    answer = assistant.run({"prompt": {"informal_name": search_term, "domain": domain}, "query_embedder": {"text": search_term}})
     reply = answer["llm"]["replies"][0].strip()
     meta = answer["llm"]["meta"]
     logger.info(f"Reply: {reply}")
