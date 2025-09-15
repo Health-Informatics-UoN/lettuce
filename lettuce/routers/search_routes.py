@@ -6,7 +6,6 @@ from api_models.responses import ConceptSuggestionResponse, Suggestion, Suggesti
 from components.pipeline import LLMPipeline
 from omop.db_manager import get_session
 from omop.omop_queries import count_concepts, query_ids_matching_name, ts_rank_query
-from options.pipeline_options import LLMModel
 from utils.logging_utils import logger
 from options.base_options import BaseOptions
 
@@ -120,7 +119,13 @@ async def ai_search(
             embed_vocab=vocabulary,
             standard_concept=standard_concept,
             ).get_rag_assistant()
-    answer = assistant.run({"prompt": {"informal_name": search_term, "domain": domain}, "query_embedder": {"text": search_term}})
+    answer = assistant.run(
+            {
+                "prompt": {"informal_name": search_term, "domain": domain},
+                "query_embedder": {"text": search_term}
+                },
+            include_outputs_from="prompt"
+            )
     reply = answer["llm"]["replies"][0].strip()
     meta = answer["llm"]["meta"]
     logger.info(f"Reply: {reply}")
@@ -130,12 +135,17 @@ async def ai_search(
             vocabulary_ids=vocabulary,
             full_concept=True
             )
-    metadata = SuggestionsMetaData(
-            pipeline="LLM RAG pipeline",
-            info={
+    suggestion_info = {
                 "LLM": settings.llm_model.value,
                 "LLM reply": reply,
                 }
+
+    if settings.debug_prompt:
+        suggestion_info["prompt"] = answer["prompt"]
+
+    metadata = SuggestionsMetaData(
+            pipeline="LLM RAG pipeline",
+            info=suggestion_info
             )
     with get_session() as session:
         results = session.execute(query).fetchall()
