@@ -1,4 +1,3 @@
-import os 
 from logging import Logger
 import time
 from typing import List, Dict
@@ -163,14 +162,13 @@ class LLMPipeline:
             ]
         )
 
-        path_to_local_model_weights = os.getenv("LOCAL_LLM")
         llm = get_model(
             model=self._model,
             inference_type=settings.inference_type,
             url=settings.ollama_url,
             temperature=self._temperature,
             logger=self._logger,
-            path_to_local_weights=path_to_local_model_weights,
+            path_to_local_weights=settings.local_llm,
             verbose=self._verbose_llm,
         )
 
