@@ -8,6 +8,9 @@ from omop.db_manager import get_session
 from omop.omop_queries import count_concepts, query_ids_matching_name, ts_rank_query
 from options.pipeline_options import LLMModel
 from utils.logging_utils import logger
+from options.base_options import BaseOptions
+
+settings = BaseOptions()
 
 router = APIRouter()
 
@@ -111,7 +114,7 @@ async def ai_search(
         top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)]=5,
         ) -> ConceptSuggestionResponse:
     assistant = LLMPipeline(
-            llm_model=LLMModel.LLAMA_3_1_8B,
+            llm_model=settings.llm_model,
             temperature=0,
             logger=logger,
             embed_vocab=vocabulary,
@@ -130,7 +133,7 @@ async def ai_search(
     metadata = SuggestionsMetaData(
             pipeline="LLM RAG pipeline",
             info={
-                "LLM": "Llama 3.1 8b (quantised to 4-bit)",
+                "LLM": settings.llm_model.value,
                 "LLM reply": reply,
                 }
             )
