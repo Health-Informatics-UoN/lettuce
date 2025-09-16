@@ -44,7 +44,7 @@ async def text_search(
 
     metadata = SuggestionsMetaData(pipeline="Full-text search")
     response = ConceptSuggestionResponse(
-            recommendations=[
+            items=[
                 Suggestion(
                     conceptName=r.concept_name,
                     conceptId=r.concept_id,
@@ -84,7 +84,7 @@ async def vector_search(
     retriever = embedding_handler.get_retriever()
     result = retriever.run(embedding["embedding"], describe_concept=True)
     return ConceptSuggestionResponse(
-            recommendations=[
+            items=[
                 Suggestion(
                     conceptName=r.Concept.concept_name,
                     conceptId=r.Concept.concept_id,
@@ -161,7 +161,7 @@ async def ai_search(
         with get_session() as session:
             results = session.execute(ts_query).fetchall()
         response = ConceptSuggestionResponse(
-            recommendations=[
+            items=[
                 Suggestion(
                     conceptName=r.concept_name,
                     conceptId=r.concept_id,
@@ -179,7 +179,7 @@ async def ai_search(
             )
     else:
         response = ConceptSuggestionResponse(
-            recommendations=[
+            items=[
                 Suggestion(
                     conceptName=r.concept_name,
                     conceptId=r.concept_id,
