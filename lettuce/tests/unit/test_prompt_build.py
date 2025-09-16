@@ -37,6 +37,7 @@ def mock_rag_results():
     return [{"content": "apple"}]
 
 
+# Informal name tests
 def test_simple_prompt_returned(llama_3_simple_prompt_builder):
     assert (
         "banana" in llama_3_simple_prompt_builder.run(informal_name="banana")["prompt"]
@@ -64,3 +65,16 @@ def test_rag_prompt_with_eot(llama_3_1_rag_prompt_builder, mock_rag_results):
     assert "banana" in result
     assert "apple" in result
     assert "<|eot_id|>" in result
+
+# Domain tests
+def test_no_domain_provided(llama_3_1_rag_prompt_builder):
+    result = llama_3_1_rag_prompt_builder.run()["prompt"]
+    assert "source term, along" in result
+
+def test_single_domain(llama_3_1_rag_prompt_builder):
+    result = llama_3_1_rag_prompt_builder.run(domain = ["Drug"])["prompt"]
+    assert "Drug, along" in result
+
+def test_multiple_domains(llama_3_1_rag_prompt_builder):
+    result = llama_3_1_rag_prompt_builder.run(domain = ["Drug", "Condition", "Observation"])["prompt"]
+    assert "Drug, Condition, or Observation, along" in result

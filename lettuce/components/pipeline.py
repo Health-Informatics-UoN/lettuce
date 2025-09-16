@@ -1,4 +1,3 @@
-import os 
 from logging import Logger
 import time
 from typing import List, Dict
@@ -149,28 +148,31 @@ class LLMPipeline:
         router = ConditionalRouter(
             routes=[
                 {
-                    "condition": "{{vec_results[0].score > 0.95}}",
+                    "condition": "{{vec_results[0].score < 0.05}}",
                     "output": "{{vec_results}}",
                     "output_name": "exact_match",
                     "output_type": List[Dict],
                 },
                 {
-                    "condition": "{{vec_results[0].score <=0.95}}",
-                    "output": "{{vec_results}}",
+                    "condition": "{{vec_results[0].score >=0.05}}",
+                    "output": """
+                    {%- for result in vec_results %}
+                    concept name: {{ result.content }} (score: {{ (100 * (1-result.score))|round(2) }}%)
+                    {% endfor %}
+                    """,
                     "output_name": "no_exact_match",
                     "output_type": List[Dict],
                 },
             ]
         )
 
-        path_to_local_model_weights = os.getenv("LOCAL_LLM")
         llm = get_model(
             model=self._model,
             inference_type=settings.inference_type,
             url=settings.ollama_url,
             temperature=self._temperature,
             logger=self._logger,
-            path_to_local_weights=path_to_local_model_weights,
+            path_to_local_weights=settings.local_llm,
             verbose=self._verbose_llm,
         )
 

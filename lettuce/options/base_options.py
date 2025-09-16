@@ -24,6 +24,7 @@ class BaseOptions(BaseSettings):
     llm_model: LLMModel = LLMModel.LLAMA_3_1_8B
     temperature: float = 0.0
     local_llm: str | None = None
+    debug_prompt: bool = False
 
     embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL
     embedding_top_k: int = 5
