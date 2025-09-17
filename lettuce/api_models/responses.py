@@ -20,5 +20,5 @@ class SuggestionsMetaData(BaseModel):
     info: Optional[Dict[str, Any]] = None
 
 class ConceptSuggestionResponse(BaseModel):
-    recommendations: List[Suggestion]
+    items: List[Suggestion]
     metadata: SuggestionsMetaData = Field(default_factory=SuggestionsMetaData)
