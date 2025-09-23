@@ -2,18 +2,16 @@
 name = "lettuce"
 version = "0.1.0"
 description = "An LLM assistant for mapping OMOP concepts"
-authors = [{name = "James Mitchell White", email = "mbzjim@exmail.notingham.ac.uk"}]
+authors = [{name = "James Mitchell White", email = "james.mitchell-white1@nottingham.ac.uk"}]
 license = "MIT"
 requires-python = ">=3.12"
 dependencies = [
     "aiohttp>=3.12",
     "haystack-ai>=2.7.0",
     "huggingface-hub>=0.24.6",
-    "numpy==1.26.4",
+    "numpy<2; platform_system == 'Darwin' and platform_machine == 'x86_64'",
     "pandas>=2.1.0",
     "python-dotenv>=1.0.1",
-    "llama-cpp-haystack>=1.0",
-    "llama-cpp-python>=0.2.89",
     "fastapi>=0.112.2",
     "uvicorn>=0.30.6",
     "sse-starlette>=2.1.3",
@@ -22,11 +20,11 @@ dependencies = [
     "SQLAlchemy>=2.0.32",
     "sseclient-py>=1.8.0",
     "fastembed-haystack>=1.2.0",
-    "torch==2.2",
     "sentence-transformers>=3.3.1",
-    "pgvector==0.3.6",
+    "pgvector>=0.3.6",
     "pydantic-settings>=2.10.1",
     "typer>=0.16.0",
+    "ollama-haystack>=4.1.0",
 ]
 
 [project.optional-dependencies]
@@ -36,7 +34,86 @@ test = [
     "pytest-cov>=6.0.0",
     "pytest-mock>=3.12.0"
 ]
-streamlit = ["streamlit>=1.37.1"]
+llama-cpp = [
+  "llama-cpp-python>=0.2.89",
+  "llama-cpp-haystack>=1.1"
+]
+llama-cpu = [
+  "llama-cpp-python>=0.2.89",
+  "llama-cpp-haystack>=1.1"
+]
+llama-gpu-cu121 = [
+  "llama-cpp-python>=0.2.89",
+  "llama-cpp-haystack>=1.1"
+]
+llama-gpu-cu122 = [
+  "llama-cpp-python>=0.2.89",
+  "llama-cpp-haystack>=1.1"
+]
+llama-gpu-cu123 = [
+  "llama-cpp-python>=0.2.89",
+  "llama-cpp-haystack>=1.1"
+]
+llama-gpu-cu124 = [
+  "llama-cpp-python>=0.2.89",
+  "llama-cpp-haystack>=1.1"
+]
+llama-gpu-metal = [
+  "llama-cpp-python>=0.2.89",
+  "llama-cpp-haystack>=1.1"
+]
+
+[tool.uv]
+conflicts = [
+  [
+    {extra = "llama-cpp"},
+    {extra = "llama-cpu"},
+    {extra = "llama-gpu-metal"},
+    {extra = "llama-gpu-cu121"},
+    {extra = "llama-gpu-cu122"},
+    {extra = "llama-gpu-cu123"},
+    {extra = "llama-gpu-cu124"},
+  ],
+]
+
+[tool.uv.sources]
+llama-cpp-python = [
+  { index = "llama-cpp-cpu", extra = "llama-cpu" },
+  { index = "llama-cpp-gpu-metal", extra = "llama-gpu-metal", marker = "platform_system == 'Darwin' and platform_machine == 'arm64'" },
+  { index = "llama-cpp-gpu-cu121", extra = "llama-gpu-cu121" },
+  { index = "llama-cpp-gpu-cu122", extra = "llama-gpu-cu122" },
+  { index = "llama-cpp-gpu-cu123", extra = "llama-gpu-cu123" },
+  { index = "llama-cpp-gpu-cu124", extra = "llama-gpu-cu124" },
+]
+
+[[tool.uv.index]]
+name = "llama-cpp-cpu"
+url = "https://abetlen.github.io/llama-cpp-python/whl/cpu"
+
+[[tool.uv.index]]
+name = "llama-cpp-gpu-metal"
+url = "https://abetlen.github.io/llama-cpp-python/whl/metal"
+
+[[tool.uv.index]]
+name = "llama-cpp-gpu-cu121" 
+url = "https://abetlen.github.io/llama-cpp-python/whl/cu121"
+
+[[tool.uv.index]]
+name = "llama-cpp-gpu-cu122" 
+url = "https://abetlen.github.io/llama-cpp-python/whl/cu122"
+
+[[tool.uv.index]]
+name = "llama-cpp-gpu-cu123" 
+url = "https://abetlen.github.io/llama-cpp-python/whl/cu123"
+
+[[tool.uv.index]]
+name = "llama-cpp-gpu-cu124"
+url = "https://abetlen.github.io/llama-cpp-python/whl/cu124"
+
+[project.urls]
+Homepage = "https://health-informatics-uon.github.io/lettuce/"
+Repository = "https://github.com/health-Informatics-UoN/lettuce"
+Issues = "https://github.com/Health-Informatics-UoN/lettuce/issues"
 
 [build-system]
 requires = ["hatchling"]

@@ -87,15 +87,15 @@ class TestTextSearchEndpoint:
         data = response.json()
         
         # Check response structure
-        assert "recommendations" in data
+        assert "items" in data
         assert "metadata" in data
         assert data["metadata"]["pipeline"] == "Full-text search"
         assert data["metadata"]["assistant"] == "Lettuce"
         assert data["metadata"]["version"] == "0.1.0"
         
-        # Check recommendations
-        assert len(data["recommendations"]) == 2
-        first_recommendation = data["recommendations"][0]
+        # Check items
+        assert len(data["items"]) == 2
+        first_recommendation = data["items"][0]
         assert first_recommendation["conceptName"] == "Diabetes mellitus"
         assert first_recommendation["conceptId"] == 12345
         assert first_recommendation["ranks"]["text_search"] == 1
@@ -173,7 +173,7 @@ class TestTextSearchEndpoint:
         # Assertions
         assert response.status_code == 200
         data = response.json()
-        assert len(data["recommendations"]) == 0
+        assert len(data["items"]) == 0
         assert data["metadata"]["pipeline"] == "Full-text search"
     
     @patch('routers.search_routes.get_session')
@@ -264,16 +264,16 @@ class TestTextSearchEndpoint:
         data = response.json()
         
         # Check ranking order
-        recommendations = data["recommendations"]
-        assert len(recommendations) == 3
-        assert recommendations[0]["ranks"]["text_search"] == 1
-        assert recommendations[1]["ranks"]["text_search"] == 2
-        assert recommendations[2]["ranks"]["text_search"] == 3
+        items = data["items"]
+        assert len(items) == 3
+        assert items[0]["ranks"]["text_search"] == 1
+        assert items[1]["ranks"]["text_search"] == 2
+        assert items[2]["ranks"]["text_search"] == 3
         
         # Check scores are preserved
-        assert recommendations[0]["scores"]["text_search"] == 0.9
-        assert recommendations[1]["scores"]["text_search"] == 0.8
-        assert recommendations[2]["scores"]["text_search"] == 0.7
+        assert items[0]["scores"]["text_search"] == 0.9
+        assert items[1]["scores"]["text_search"] == 0.8
+        assert items[2]["scores"]["text_search"] == 0.7
     
     @patch('routers.search_routes.get_session')
     @patch('routers.search_routes.ts_rank_query')
