@@ -1,3 +1,37 @@
+"""
+Template definitions for LLM prompts used in medical term standardization.
+
+This module contains Jinja2 template strings that are used to generate prompts for
+different LLM inference scenarios. Templates support domain-specific customization
+and variable substitution for flexible prompt generation.
+
+Templates
+---------
+simple : str
+    A few-shot learning template that provides examples of medication name standardization
+    without external context. Uses conditional domain rendering.
+    
+top_n_RAG : str  
+    A retrieval-augmented generation template that includes potentially related OMOP
+    concept names from vector similarity search. Allows the model to leverage external
+    knowledge while making standardisation decisions.
+
+Template Variables
+------------------
+All templates support the following Jinja2 variables:
+- informal_name : str
+    The source term to be standardized
+- domain : list[str], optional
+    List of domain types (e.g., ["drug", "condition"]) for context
+- vec_results : str (top_n_RAG only)
+    String containing related terms from vector similarity search
+
+Notes
+-----
+Templates use Jinja2 syntax for conditional rendering and iteration, particularly
+for handling domain specification in a grammatically correct manner.
+"""
+
 templates = {
         "simple": """You are an assistant that suggests formal OMOP concept names for a source term. Respond only with the formal name of that {% if domain %}
     {%- if domain|length == 1 -%}
