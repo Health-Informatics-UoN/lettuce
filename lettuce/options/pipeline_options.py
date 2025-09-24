@@ -48,7 +48,7 @@ class LLMModel(str, Enum):
 class PipelineOptions(BaseModel):
     """
     This class holds the options available to the
-    Llettuce pipeline.
+    Lettuce pipeline.
 
     These are all the options in the BaseOptions parser.
     The defaults provided here match the default options in
