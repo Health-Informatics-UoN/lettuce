@@ -14,9 +14,30 @@ The `lettuce` CLI provides command-line access to all `lettuce` components, allo
 ### Navigate to the `/lettuce` directory
 
 ### Run the CLI with `uv`
+You can always check the CLI commands with 
 
 ```sh
-uv run --env-file .env lettuce-cli --informal_names "betnovate scalp application"
+uv run --help
+```
+
+which should show something like
+
+```sh
+╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ *    informal_names      INFORMAL_NAMES...  Source term to search for [default: None] [required]                                                     │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --vector-search         --no-vector-search                Whether to enable vector search in your pipeline [default: vector-search]                  │
+│ --use-llm               --no-use-llm                      Whether to enable the LLM step in your pipeline [default: use-llm]                         │
+│ --vocabulary-id                                  TEXT     Which vocabularies to return OMOP concepts from [default: None]                            │
+│ --embed-vocab                                    TEXT     Which vocabularies to use for semantic search [default: None]                              │
+│ --standard-concept      --no-standard-concept             Whether to search through only standard concepts [default: standard-concept]               │
+│ --search-threshold                               INTEGER  What fuzzy matching threshold to limit responses to [default: 80]                          │
+│ --verbose-llm           --no-verbose-llm                  Whether the LLM should report on its state while initializing [default: no-verbose-llm]    │
+│ --install-completion                                      Install completion for the current shell.                                                  │
+│ --show-completion                                         Show completion for the current shell, to copy it or customize the installation.           │
+│ --help                                                    Show this message and exit.                                                                │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 
 </Steps>
@@ -29,181 +50,64 @@ uv run --env-file .env lettuce-cli --informal_names "betnovate scalp application
 
 ### Multiple informal names
 ```sh
-uv run --env-file .env lettuce-cli \
-  --informal_names "betnovate scalp application" "metformin 500mg"
-```
-
-### With vector search and LLM inference
-```bash
-uv run --env-file .env lettuce-cli \ 
-  --informal_names "betnovate scalp application" \
-  --vector_search \ 
-  --use_llm
+uv run lettuce-cli "betnovate scalp application" "metformin 500mg"
 ```
 
 ### Using a specific medical LLM
 ```bash
-uv run --env-file .env lettuce-cli \ 
-  --informal_names "betnovate scalp application" \
-  --use_llm \
-  --llm_model MED_LLAMA_3_8B_V4
+LLM_MODEL='MED_LLAMA_3_8B_V4' uv run lettuce-cli\ 
+  "betnovate scalp application" 
 ```
 ## Arguments
-### `--informal_names` (Required)
+### `* informal_names` (Required)
 Provide one or more strings for Lettuce to infer concepts for.
 You can supply multiple names in a single command:
 
-```sh
---informal_names "betnovate scalp application" "metformin 500mg"
-```
-
-### `--vector_search`, `--no-vector_search` 
-Default: `--vector_search` (enabled)
+### `--vector-search`, `--no-vector-search` 
+Default: `--vector-search` (enabled)
 
 Choose whether to perform vector search on supplied informal names.
 
-<Callout type="warning">
-  Vector search requires a embeddings vector table to exist in your omop database.
-</Callout>
-
-### `--use_llm`, `--no-use_llm`
+### `--use-llm`, `--no-use-llm`
 Default: `--use_llm` (enabled)
 
 Choose whether to have an LLM infer an OMOP concept for supplied informal names.
 
 <Callout type="warning">
-  LLM usage will download the model weights, which requires ~5 GB disk space.
+  If using llama.cpp LLM usage will download the model weights, which requires ~5 GB disk space.
 </Callout>
 
-### `--temperature`
-Default: `0.0`
-
-Controls LLM generation randomness. A value of 0.0 produces deterministic results, while higher values (e.g., 0.9) produce more varied outputs.
-
-### `--vocabulary_id`
+### `--vocabulary-id`
 Default: `None`
 
-The OMOP vocabularies to query in the OMOP-CDM database. You can specify vocabularies in two ways:
+The OMOP vocabularies to query in the OMOP-CDM database.
+If you don't specify a vocabulary_id, all the vocabularies will be used.
+To specify multiple vocabularies, you can add more than one like this:
 
 ```sh
-# As separate arguments
---vocabulary_id "RxNorm" "RxNorm Extension"
-
-# OR as a comma-separated list
---vocabulary_id "RxNorm,RxNorm Extension"
+--vocabulary-id "RxNorm" --vocabulary-id "RxNorm Extension"
 ```
-
-
-Common vocabularies include:
-- RxNorm
-- RxNorm Extension
-- SNOMED
-- ICD10
-- LOINC
 
 ### `--embed-vocab`
 Default: `None`
 
-Vocabulary IDs for embedding filtering. You can specify vocabularies in two ways:
+Which vocabularies to use for vector search.
+This is a distinct option from `--vocabulary-id` in case you want to allow RAG to take context from more vocabularies than the final result should come from, for example.
 
 ```sh
-# As separate arguments
---embed-vocab "RxNorm" "SNOMED"
-
-# OR as a comma-separated list
---embed-vocab "RxNorm,SNOMED"
+--embed-vocab "RxNorm" --embed-vocab "SNOMED"
 ```
 
 ### `--standard-concept`
 Default: `False`
 
-Whether to filter output by the standard_concept field of the concept table.
-
-### `--concept_ancestor`, `--no-concept_ancestor`
-Default: `--no-concept_ancestor` (disabled)
-
-Controls whether to query the concept_ancestor table for hierarchical relationships.
-
-### `--concept_relationship`, `--no-concept_relationship`
-Default: `--no-concept_relationship` (disabled)
-
-Controls whether to query the concept_relationship table.
-
-### `--max_separation_ancestor`
-Default: `1`
-
-The maximum levels of separation to return ancestors from the concept_ancestor query.
-
-### `--max_separation_descendants`
-Default: `1`
-
-The maximum levels of separation to return descendants from the concept_ancestor query.
-
-### `--concept_synonym`, `--no-concept_synonym`
-Default: `--no-concept_synonym` (disabled)
-
-Controls whether to return concept synonyms from the OMOP-CDM query.
+Whether to filter output by the `standard_concept` field of the concept table.
+If `True`, then only concepts with non-null values in the `standard_concept` field will be returned.
 
 ### `--search_threshold`
 Default: `80` (equivalent to 0.8)
 
 The fuzzy match threshold to use when filtering OMOP concept names. Values range from 0 to 100, where 100 requires an exact match.
-
-### `--embedding-top-k`
-Default: `5`
-
-Number of suggestions to return from vector search for RAG (Retrieval-Augmented Generation).
-
-### `--embedding-top-k`
-Default: `5`
-
-Number of suggestions to return from vector search for RAG (Retrieval-Augmented Generation).
-
-### `--llm_model`
-Default: `LLAMA_3_1_8B`
-
-The LLM used to infer concepts from an informal name. Available options:
-
-**General-purpose models:**
-- LLAMA_2_7B
-- LLAMA_3_8B
-- LLAMA_3_70B
-- GEMMA_7BL
-- LLAMA_3_1_8B
-- LLAMA_3_2_3B
-- MISTRAL_7B
-- KUCHIKI_L2_7B
-- TINYLLAMA_1_1B_CHAT
-- QWEN2_5_3B_INSTRUCT
-- AIROBOROS_3B
-
-**Medical-specialized models:**
-- BIOMISTRAL_7B
-- MEDICINE_CHAT
-- MEDICINE_LLM_13B
-- MED_LLAMA_3_8B_V1
-- MED_LLAMA_3_8B_V2
-- MED_LLAMA_3_8B_V3
-- MED_LLAMA_3_8B_V4
-
-### `--embedding_model`
-Default: `BGESMALL`
-
-The model used to generate embeddings for vector search. Available options:
-
-- BGESMALL
-- MINILM
-- GTR_T5_BASE
-- GTR_T5_LARGE
-- E5_BASE
-- E5_LARGE
-- DISTILBERT_BASE_UNCASED
-- DISTILUSE_BASE_MULTILINGUAL
-- CONTRIEVER
-
-<Callout type="warning">
-  The model used to generate query embeddings and used to build the vector database must be the same or the vector search will be nonsense.
-</Callout>
 
 ## Output Format
 
