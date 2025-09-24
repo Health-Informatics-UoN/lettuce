@@ -1,0 +1,51 @@
+import { Callout } from 'nextra/components';
+
+# Search routes
+
+Each of the search routes is a `GET` request to a `lettuce/search/<search-type>/<source-term>` URL, and returns a [`ConceptSuggestionResponse`](/api_reference/api_models/responses).
+
+## Parameters
+The concepts searched through by each route can be filtered by modifying the URL with parameters.
+
+`lettuce/search/<search-type>/<source-term>?<parameter-1>=<parameter-1-value>&<parameter-2>=<parameter-2-value>` etc.
+
+Where the parameter takes a list, append multiple values for that parameter.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| vocabulary | List\[str\] | If any vocabulary_id are supplied, only concepts from those vocabularies will be suggested |
+| domain | List\[str\] | If any domain_id are supplied, only concepts from those domains will be suggested |
+| standard_concept | bool | Filter on standard concepts. If True, only standard concepts will be suggested |
+| valid_concept | bool | Filter on valid concepts. If True, only valid concepts will be suggested |
+| top_k | int | The number of suggestions to make |
+
+## Endpoints
+
+### `text-search`
+Runs a full-text search against the `concept_name` of each concept in the concept table, then ranks them by the frequency of matching lexemes.
+This is the fastest endpoint, but is least flexible and will only get a match if your source term has some of the same lexemes as the matching concept.
+
+### `vector-search`
+Encodes the text of your source term as an embedding.
+Takes a subset of concepts matching the search criteria and matching embeddings from the `embeddings` table, then sorts the embeddings by their similarity to the embedding for your source term.
+The top $k$ concepts are returned.
+
+<Callout>
+Vector search is more computationally intensive than text search, and can take a while to execute.
+There are steps you can take to speed this up.
+
+Vector search takes longer the more documents are compared, so limiting your search to single domains or vocabularies can help.
+If you can change your database parameters you can speed it up significantly:
+
+```sql
+SET work_mem='512MB';
+SET max_parallel_workers=32;
+SET max_parallel_workers_per_gather=16;
+```
+
+for example.
+</Callout>
+
+### `ai-search`
+Runs the vector search, but then uses the concept names as context for the LLM to help infer a concept name.
+The LLM output is then checked for exact matches in the concept table, and if no match is found, used as the input for text search.
