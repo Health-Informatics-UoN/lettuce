@@ -1,9 +1,6 @@
 # Builder stage 
-FROM python:3.12-bookworm AS builder
-RUN apt-get update && \
-    apt-get install --no-install-suggests --no-install-recommends --yes pipx
+FROM ghcr.io/astral-sh/uv:python:3.12-bookworm AS builder
 
-RUN pipx install uv 
 ENV UV_CACHE_DIR=/tmp/uv_cache \
     PATH="/root/.local/bin:${PATH}"
 
