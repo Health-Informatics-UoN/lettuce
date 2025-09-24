@@ -1,5 +1,5 @@
 # Builder stage 
-FROM ghcr.io/astral-sh/uv:python:3.12-bookworm AS builder
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm AS builder
 
 ENV UV_CACHE_DIR=/tmp/uv_cache \
     PATH="/root/.local/bin:${PATH}"
