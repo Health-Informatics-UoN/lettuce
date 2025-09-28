@@ -59,7 +59,7 @@ The fields are general so that if applications use lettuce and other assistants,
 
 ```python
 class ConceptSuggestionResponse(BaseModel):
-    recommendations: List[Suggestion]
+    items: List[Suggestion]
     metadata: SuggestionsMetaData = Field(default_factory=SuggestionsMetaData)
 ```
 
@@ -69,5 +69,5 @@ A model to bundle `Suggestion`s and their associated `SuggestionsMetaData` into 
 
 | Fields | Type | Description |
 |--------|------|-------------|
-| recommendations | List[Suggestion] | A list of `Suggestion`s made by lettuce |
+| items | List[Suggestion] | A list of `Suggestion`s made by lettuce |
 | metadata | SuggestionsMetaData | A description of the process used to generate suggestions |

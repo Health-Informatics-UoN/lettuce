@@ -1,54 +1,115 @@
 # `components.prompt`
-This module provides prompt generation functionality for `lettuce`.
 
 [source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/components/prompt.py)
 
-## `Prompts`
+This module provides prompt generation functionality for lettuce, managing template selection and prompt building for different LLM models with automatic handling of model-specific formatting requirements.
+
+## Classes
+
+### `Prompts`
 ```python
 class Prompts(
-	model: LLMModel
-	prompt_type: str
+    model: LLMModel,
+    prompt_type: str = "simple"
 )
 ```
 
-This class is used to generate prompts for the models.
+This class is used to generate prompts for the models. The Prompts class manages template selection and prompt building for different LLM models, automatically handling model-specific formatting requirements such as end-of-turn tokens. It supports multiple prompt types including simple few-shot learning and retrieval-augmented generation approaches.
 
-### Parameters
+#### Parameters
 
-- `model_name: LLMModel`
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `model` | `LLMModel` | The LLM model enum containing model name and configuration details |
+| `prompt_type` | `str` | The type of prompt to generate. Defaults to "simple". Available options: "simple" (few-shot learning prompt without external data), "top_n_RAG" (retrieval-augmented generation prompt with related terms) |
 
-    The name of the model to use for prompt generation. 
+#### Methods
 
-- `prompt_type: str | None`, optional (default: "simple")
-
-    The type of prompt to generate. Currrently supported values:
-    - `"simple"`: A few-shot prompt without external data.
-    - `"top_n_RAG"`: A retrieval-augmented generation prompt that includes an embeddings vector of related RxNorm terms. 
-
-
-### Methods
-
-#### `get_prompt`
+##### `get_prompt`
 ```python
-def get_prompt()
+def get_prompt() -> PromptBuilder:
 ```
-Get the prompt based on the `prompt_type` supplied to the object.
 
-##### Returns
-- `haystack.components.builder.PromptBuilder`
-    - The prompt for the model. 
-    - If the _prompt_type of the object is "simple", returns a simple prompt for few-shot learning of formal drug names.
+Get the prompt based on the `prompt_type` supplied to the object. Retrieves the appropriate template based on the prompt type, appends the model's end-of-turn token, and returns a configured PromptBuilder instance.
 
+###### Returns
 
-### Template Details 
-#### Simple Template 
-The simple template provides a few-shot learning approach with examples of common medication name conversions. It instructs the model to respond only with the formal medication name without additional explanation.
+`PromptBuilder`
 
-#### Top-N RAG Template
-The retrieval-augmented generation template includes potentially related RxNorm terms retrieved from a vector database. It allows the model to incorporate this external knowledge when determining the formal medication name, with instructions to ignore irrelevant terms.
+A configured Haystack PromptBuilder object with the selected template. The template includes model-specific formatting and is ready for rendering with the required variables (informal_name, domain, vec_results as applicable).
 
-### Integration Notes 
-- This class is designed to work with Haystack's `PromptBuilder` for template rendering
-- The EOT token is automatically appended based on the model type
-- For Llama 3.1 models, the EOT token is particularly important
+###### Raises
+
+`KeyError`
+
+If the specified prompt_type is not found in the available templates. Prints an error message and continues execution.
+
+###### Notes
+
+The method automatically appends the model's end-of-turn token and a "Response:" prompt to guide the model's output formatting.
+
+## Template Details 
+
+### Simple Template 
+The simple template provides a few-shot learning approach with examples of common medication name conversions. It instructs the model to respond only with the formal medication name without additional explanation. The template uses Jinja2 conditional logic to handle domain specification grammatically.
+
+**Template Variables:**
+- `informal_name`: The source term to be standardized
+- `domain` (optional): List of domain types for contextual information
+
+### Top-N RAG Template
+The retrieval-augmented generation template includes potentially related OMOP concept names retrieved from a vector database. It allows the model to incorporate this external knowledge when determining the formal medication name, with instructions to ignore irrelevant terms.
+
+**Template Variables:**
+- `informal_name`: The source term to be standardized  
+- `domain` (optional): List of domain types for contextual information
+- `vec_results`: String containing related terms from vector similarity search
+
+## Supporting Module: `prompt_templates`
+
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/components/prompt_templates.py)
+
+Contains Jinja2 template definitions for LLM prompts used in medical term standardization. Templates support domain-specific customization and variable substitution for flexible prompt generation.
+
+### Available Templates
+
+| Template Name | Description |
+|---------------|-------------|
+| `simple` | A few-shot learning template with medication name standardization examples |
+| `top_n_RAG` | A retrieval-augmented generation template that includes related OMOP concept names |
+
+### Template Features
+
+- **Domain-aware rendering**: Templates conditionally format domain information in grammatically correct English
+- **Jinja2 templating**: Full support for Jinja2 syntax including loops and conditionals
+- **Consistent formatting**: All templates follow the same response format for standardized output
+- **Flexible context**: Templates adapt to single or multiple domain contexts
+
+## Integration Notes 
+
+- The EOT (end-of-turn) token is automatically appended based on the model type
+- For Llama 3.1 models, there can be a bug where the wrong EOT token is appended and the model produces gibberish
 - The templates are designed to produce concise, accurate responses with formal medication names only
+- Templates use conditional Jinja2 logic to handle domain specification in a natural language format
+
+## Usage Example
+
+```python
+from components.prompt import Prompts
+from options.pipeline_options import LLMModel
+
+# Initialize with simple prompt
+prompt_handler = Prompts(
+    model=LLMModel.LLAMA_3_1_8B, 
+    prompt_type="simple"
+)
+
+# Get configured prompt builder
+prompt_builder = prompt_handler.get_prompt()
+
+# Render prompt with variables
+rendered_prompt = prompt_builder.run(
+    informal_name="Tylenol",
+    domain=["drug"]
+)
+```

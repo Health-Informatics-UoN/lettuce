@@ -2,34 +2,113 @@
 
 [source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/options/base_options.py)
 
-This module contains the `BaseOptions` class defines command-line options used during all types of experiments in `lettuce`. 
-It handles initialisation, parsing, and display of various configuration options, particularly focusing on LLM model settings, embedding configurations, and OMOP vocabulary filtering parameters.
+This module contains the `BaseOptions` class that defines configuration settings for all experiments in `lettuce`. It handles initialization, validation, and management of various configuration options, particularly focusing on database connections, LLM model settings, embedding configurations, and inference parameters.
 
-## `BaseOptions`
+The class uses Pydantic BaseSettings to automatically load configuration from environment variables and `.env` files, providing a robust and type-safe configuration management system.
+
+## Classes
+
+### `BaseOptions`
 ```python
-class BaseOptions()
+class BaseOptions(BaseSettings)
 ```
 
-A utility class that manages command-line arguments for configuring the `lettuce` pipeline. 
+A configuration settings class for the lettuce pipeline that manages all configuration options including database connections, LLM model settings, embedding configurations, and inference parameters. It uses Pydantic BaseSettings to handle environment variable loading and configuration validation with sensible defaults for all configuration options.
 
-### Methods
+#### Configuration Fields
 
-#### `initialize`
+##### Database Configuration
+| Field | Environment Variable | Type | Default | Description |
+|-------|---------------------|------|---------|-------------|
+| `db_host` | `DB_HOST` | `str` | `"localhost"` | Database host address |
+| `db_user` | `DB_USER` | `str` | `"postgres"` | Database username |
+| `db_password` | `DB_PASSWORD` | `str` | `"password"` | Database password |
+| `db_name` | `DB_NAME` | `str` | `"omop"` | Database name |
+| `db_port` | `DB_PORT` | `int` | `5432` | Database port |
+| `db_schema` | `DB_SCHEMA` | `str` | `"cdm"` | Database schema name |
+| `db_vectable` | `DB_VECTABLE` | `str` | `"embeddings"` | Name of the vector embeddings table |
+| `db_vecsize` | `DB_VECSIZE` | `int` | `384` | Dimension size of embedding vectors |
+
+##### Inference Configuration
+| Field | Environment Variable | Type | Default | Description |
+|-------|---------------------|------|---------|-------------|
+| `inference_type` | `INFERENCE_TYPE` | `InferenceType` | `InferenceType.OLLAMA` | Type of inference backend to use |
+| `ollama_url` | `OLLAMA_URL` | `str` | `"http://localhost:11434"` | URL for Ollama server |
+
+##### LLM Model Configuration
+| Field | Environment Variable | Type | Default | Description |
+|-------|---------------------|------|---------|-------------|
+| `llm_model` | `LLM_MODEL` | `LLMModel` | `LLMModel.LLAMA_3_1_8B` | LLM model to use for inference |
+| `temperature` | `TEMPERATURE` | `float` | `0.0` | Sampling temperature for LLM generation |
+| `local_llm` | `LOCAL_LLM` | `str \| None` | `None` | Path to local LLM weights file |
+| `debug_prompt` | `DEBUG_PROMPT` | `bool` | `False` | Enable prompt debugging output |
+
+##### Embedding Configuration
+| Field | Environment Variable | Type | Default | Description |
+|-------|---------------------|------|---------|-------------|
+| `embedding_model` | `EMBEDDING_MODEL` | `EmbeddingModelName` | `EmbeddingModelName.BGESMALL` | Embedding model to use |
+| `embedding_top_k` | `EMBEDDING_TOP_K` | `int` | `5` | Number of top embeddings to retrieve |
+
+##### Authentication
+| Field | Environment Variable | Type | Default | Description |
+|-------|---------------------|------|---------|-------------|
+| `auth_api_key` | `AUTH_API_KEY` | `str \| None` | `None` | API key for authentication |
+
+#### Methods
+
+##### `connection_url`
 ```python
-def initialize()
+def connection_url() -> str:
 ```
 
-Initialises the `BaseOptions` class. Sets up all available command-line arguments with their default values and help text.
+Generate a PostgreSQL connection URL from the database configuration. Constructs a connection string in the format required by SQLAlchemy and other database libraries using the configured database parameters.
 
-#### `parse`
+###### Returns
+`str`
+
+PostgreSQL connection URL in the format: "postgresql://user:password@host:port/database"
+
+###### Examples
 ```python
-def parse()
+settings = BaseOptions()
+settings.connection_url()
+'postgresql://postgres:password@localhost:5432/omop'
 ```
 
-Parses the arguments passed to the script and prints the configuration.
+##### `print`
+```python
+def print() -> None:
+```
 
-##### Returns
-- `opt: argparse.Namespace`
+Print all configuration settings in a formatted display. Outputs all current configuration values in a readable format, useful for debugging and verification of loaded settings.
 
-	The parsed arguments
+###### Examples
+```python
+settings = BaseOptions()
+settings.print()
+------------ Options -------------
+db_host: localhost
+db_user: postgres
+db_password: password
+...
+-------------- End ---------------
+```
 
+## Environment Variables
+
+The `BaseOptions` class automatically loads configuration from environment variables and `.env` files. Environment variables should be prefixed with the field name in uppercase:
+
+### Using .env Files
+If you have configuration different from the defaults, create a `.env` file in your project root:
+```env
+DB_HOST=my-database-server
+DB_USER=myuser
+DB_PASSWORD=mypassword
+LLM_MODEL=LLAMA_3_1_8B
+TEMPERATURE=0.7
+```
+
+The configuration will be automatically loaded:
+```python
+settings = BaseOptions()
+```

@@ -12,7 +12,7 @@ If you have successfully run the [quickstart](/quickstart) then you have the cor
 The code for the server runs from [api.py](/api_reference/api)
 
 ```sh copy
-uv run --env-file .env api.py
+uv run lettuce-api
 ```
 
 After running this command, you should see messages like these in your terminal:
@@ -26,29 +26,19 @@ INFO:     Application startup complete.
 ```
 
 This means that the server is running, and is able to accept HTTP requests.
-A request can be made using e.g. curl
 
-```sh copy
-curl -X POST "http://127.0.0.1:8000/pipeline/" -H "Content-Type: application/json" -d '{"names": ["Betnovate Scalp Application", "Panadol"]}'
-```
+Lettuce requires authentication, with the API key configured through the environment.
+The easiest way to test the API is through a service like [postman](https://www.postman.com/) or a client like [bruno](https://www.usebruno.com/).
+You will need to set up authentication by adding an API key with the key `Authorization`, and the value set in the environment as `AUTH_API_KEY`.
 
 ## Endpoints
 
-<Callout type="warning" emoji=" ">
-  The endpoints will soon be re-arranged once the experimental pipelines have been stabilised. Consult the [routes documentation](/api_reference/routers).
-</Callout>
+The following endpoints will take HTTP `GET` requests:
 
-The following endpoints will take HTTP `POST` requests:
-
-- `/pipeline/`: generates a suggested formal name for a source term(s) and searches the OMOP-CDM for that suggestion
-- `/pipeline/db`: searches the OMOP-CDM for a provided source term(s)
-- `/pipeline/vector_search`: searches a vector database for concepts semantically similar to the provided source term(s)
-- `/pipeline/vector_llm`: searches a vector database for concepts semantically similar to the source term(s) and uses these for retrieval-augmented generation with the LLM
+- `/search/text-search/<source term>`: Runs full-text search for the source term
+- `/search/vector-search/<source term>`: Runs semantic search for the source term
+- `/search/ai-search/<source term>`: Runs retrieval-augmented generation search for the source term
 
 ## Request options
-
-Requests to the API endpoints must have a body containing a list of informal names (`"names"`), and can optionally define options for the pipeline, ([`pipeline_options`](/api_reference/options/pipeline_options#pipelineoptions)).
-
-
-
-Once you have the API accepting requests, you can use the [GUI](/api_reference/ui) to more easily make requests.
+Pipeline options can be configured by appending them to the URL.
+For more information, consult [the search routes documentation](/api_reference/routers/search_routes.mdx)
