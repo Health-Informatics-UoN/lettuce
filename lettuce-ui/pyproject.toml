@@ -1,0 +1,14 @@
+[project]
+name = "lettuce-ui"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "lettuce",
+    "streamlit>=1.50.0",
+]
+
+[tool.uv.sources]
+lettuce = { workspace = true }
+
