@@ -26,6 +26,19 @@ def count_concepts() -> Select:
     """
     return select(sa.func.count(distinct(Concept.concept_id)))
 
+def get_domains() -> Select:
+    """
+    Build a query to retrieve the domain IDs from the concepts in your OMOP-CDM
+    database in order of the number of concepts in that domain
+
+    Returns
+    -------
+    Select
+        SQLAlchemy Select object that returns the distinct domain_ids in the
+        concept table
+    """
+    return select(Concept.domain_id).group_by(Concept.domain_id).order_by(sa.func.count(distinct(Concept.concept_id)))
+
 
 def ts_rank_query(
         search_term: str,
