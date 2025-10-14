@@ -1054,12 +1054,14 @@ version = "0.1.0"
 source = { editable = "lettuce-ui" }
 dependencies = [
     { name = "lettuce" },
+    { name = "pandas" },
     { name = "streamlit" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "lettuce", editable = "lettuce" },
+    { name = "pandas", specifier = ">=2.3.3" },
     { name = "streamlit", specifier = ">=1.50.0" },
 ]
 

@@ -39,6 +39,18 @@ def get_domains() -> Select:
     """
     return select(Concept.domain_id).group_by(Concept.domain_id).order_by(sa.func.count(distinct(Concept.concept_id)))
 
+def get_vocabs() -> Select:
+    """
+    Build a query to retrieve the vocabulary IDs from the concepts in your OMOP-CDM
+    database in order of the number of concepts in that domain
+
+    Returns
+    -------
+    Select
+        SQLAlchemy Select object that returns the distinct vocabulary_ids in the
+        concept table
+    """
+    return select(Concept.vocabulary_id).group_by(Concept.vocabulary_id).order_by(sa.func.count(distinct(Concept.concept_id)))
 
 def ts_rank_query(
         search_term: str,
