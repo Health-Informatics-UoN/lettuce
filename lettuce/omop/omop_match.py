@@ -1,13 +1,84 @@
 import re
-from typing import List
+from typing import List, Optional
+from collections import defaultdict
 
-import pandas as pd
+from pydantic import BaseModel, Field
 from rapidfuzz import fuzz
-from omop.omop_queries import text_search_query, query_ancestors_and_descendants_by_id, query_related_by_id
 
 from logging import Logger
+from omop.omop_queries import text_search_query, query_ancestors_and_descendants_by_id, query_related_by_id
 from omop.db_manager import get_session 
 from omop.preprocess import preprocess_search_term
+
+
+class ConceptSynonym(BaseModel):
+    """Model for concept synonym information"""
+    concept_synonym_name: str
+    concept_synonym_name_similarity_score: float
+
+
+class ConceptRelationship(BaseModel):
+    """Model for concept relationship information"""
+    concept_id_1: int
+    relationship_id: str
+    concept_id_2: int
+
+
+class AncestorRelationship(BaseModel):
+    """Model for ancestor/descendant relationship information"""
+    relationship_type: str
+    ancestor_concept_id: int
+    descendant_concept_id: int
+    min_levels_of_separation: int
+    max_levels_of_separation: int
+
+
+class RelatedConcept(BaseModel):
+    """Model for related concept with relationship details"""
+    concept_name: str
+    concept_id: int
+    vocabulary_id: str
+    concept_code: str
+    relationship: ConceptRelationship
+
+
+class AncestorConcept(BaseModel):
+    """Model for ancestor/descendant concept with relationship details"""
+    concept_name: str
+    concept_id: int
+    vocabulary_id: str
+    concept_code: str
+    relationship: AncestorRelationship
+
+
+class OMOPConcept(BaseModel):
+    """Model for OMOP concept search result"""
+    concept_name: str
+    concept_id: int
+    vocabulary_id: str
+    concept_code: str
+    concept_name_similarity_score: float
+    concept_synonym: List[ConceptSynonym] = Field(default_factory=list)
+    concept_ancestor: List[AncestorConcept] = Field(default_factory=list)
+    concept_relationship: List[RelatedConcept] = Field(default_factory=list)
+
+
+class SearchResult(BaseModel):
+    """Model for search term result"""
+    search_term: str
+    concept: Optional[List[OMOPConcept]]
+
+
+class ConceptRow:
+    """Internal data structure for processing concept query results"""
+    def __init__(self, row_tuple):
+        self.concept_id = row_tuple[0]
+        self.concept_name = row_tuple[1]
+        self.vocabulary_id = row_tuple[2]
+        self.concept_code = row_tuple[3]
+        self.concept_synonym_name = row_tuple[4] if len(row_tuple) > 4 else None
+        self.concept_name_similarity_score = 0.0
+        self.concept_synonym_name_similarity_score = 0.0
 
 
 class OMOPMatcher:
@@ -32,7 +103,7 @@ class OMOPMatcher:
         Whether to explore concept synonyms in the result
     
     standard_concept: bool 
-        Whether or notto filter the query results based upon whether or not the search 
+        Whether or not to filter the query results based upon whether or not the search 
         space only includes standard concepts 
 
     search_threshold: int
@@ -90,12 +161,12 @@ class OMOPMatcher:
             float: A similarity score between 0 and 100, where higher values indicate a stronger match.
         """
         if concept_name is None:
-            return 0  # Return a default score (e.g., 0) for null values
+            return 0.0
         cleaned_concept_name = re.sub(r"\(.*?\)", "", concept_name).strip()
         score = fuzz.ratio(search_term.lower(), cleaned_concept_name.lower())
-        return score
+        return float(score)
             
-    def fetch_omop_concepts(self, search_term: str) -> list | None:
+    def fetch_omop_concepts(self, search_term: str) -> List[OMOPConcept] | None:
         """
         Fetch OMOP concepts for a given search term
 
@@ -113,7 +184,7 @@ class OMOPMatcher:
 
         Returns
         -------
-        list | None
+        List[OMOPConcept] | None
             A list of search results from the OMOP database if the query comes back with results, otherwise returns None. 
         """
         query = text_search_query(
@@ -121,117 +192,84 @@ class OMOPMatcher:
         )
         
         with get_session() as session:
-           results = session.execute(query).fetchall() 
-           results = pd.DataFrame(results)
+            results = session.execute(query).fetchall() 
     
-        if results.empty:  
+        if not results:  
             return None 
  
-        # Apply the score function to 'concept_name' and 'concept_synonym_name' columns
-        results = self._apply_concept_similarity_score_to_columns(
-            results, 
-            search_term, 
-            source_cols=["concept_name", "concept_synonym_name"],
-            target_cols=["concept_name_similarity_score", "concept_synonym_name_similarity_score"]
+        # Convert results to ConceptRow objects and calculate similarity scores
+        concept_rows = []
+        for row_tuple in results:
+            row = ConceptRow(row_tuple)
+            row.concept_name_similarity_score = self.calculate_similarity_score(row.concept_name, search_term)
+            row.concept_synonym_name_similarity_score = self.calculate_similarity_score(row.concept_synonym_name, search_term)
+            concept_rows.append(row)
+
+        # Filter by similarity threshold
+        concept_ids_above_threshold = {
+            row.concept_id for row in concept_rows
+            if row.concept_name_similarity_score > self.search_threshold 
+            or row.concept_synonym_name_similarity_score > self.search_threshold
+        }
+        
+        if not concept_ids_above_threshold:
+            return None
+
+        filtered_rows = [row for row in concept_rows if row.concept_id in concept_ids_above_threshold]
+        
+        # Sort by highest similarity score
+        filtered_rows.sort(
+            key=lambda row: max(row.concept_name_similarity_score, row.concept_synonym_name_similarity_score),
+            reverse=True
         )
 
-        # Filter the original DataFrame to include all rows with these concept_ids
-        # Sort the filtered results by the highest score (descending order)
-        results = self._filter_and_sort_by_concept_ids_above_similarity_score_threshold(
-            results, 
-            score_cols = ["concept_name_similarity_score", "concept_synonym_name_similarity_score"]  
-        )
+        return self._format_concept_results(filtered_rows)
 
-        return self._format_concept_results(results)
-    
-    def _apply_concept_similarity_score_to_columns(
-            self, 
-            results:  pd.DataFrame, 
-            search_term: str, 
-            source_cols: List[str], 
-            target_cols: List[str]
-    ): 
-        for col_src, col_target in zip(source_cols, target_cols): 
-            results[col_target] = results[col_src].apply(
-                lambda row: OMOPMatcher.calculate_similarity_score(row, search_term)
-            ) 
-        return results 
-    
-    def _filter_and_sort_by_concept_ids_above_similarity_score_threshold(
-        self, 
-        results: pd.DataFrame,
-        score_cols: List[str],
-        id_col: str = "concept_id" 
-    ):
-        concept_ids_above_threshold = set(
-            results.loc[(results[score_cols] > self.search_threshold).any(axis=1), id_col]
-        )
-        results = results[results[id_col].isin(concept_ids_above_threshold)]
-        results = results.sort_values(
-            by=score_cols,
-            ascending=False,
-        )
-        return results 
-
-    def _format_concept_results(self, results: pd.DataFrame): 
-        grouped_results = (
-            results.groupby("concept_id")
-            .agg(
-                {
-                    "concept_name": "first",
-                    "vocabulary_id": "first",
-                    "concept_code": "first",
-                    "concept_name_similarity_score": "first",
-                    "concept_synonym_name": list,
-                    "concept_synonym_name_similarity_score": list,
-                }
-            )
-            .reset_index()
-        )
+    def _format_concept_results(self, concept_rows: List[ConceptRow]) -> List[OMOPConcept]:
+        """Format concept rows into Pydantic models"""
+        # Group by concept_id
+        grouped = defaultdict(list)
+        for row in concept_rows:
+            grouped[row.concept_id].append(row)
 
         formatted_results = []
-        for _, row in grouped_results.iterrows():
-            result = self._format_base_concept(row)
-            result["CONCEPT_SYNONYM"] = self._format_concept_synonyms(row)
-            result["CONCEPT_ANCESTOR"] = []  
-            result["CONCEPT_RELATIONSHIP"] = []  
-            formatted_results.append(result)
+        for _, rows in grouped.items():
+            # Use first row for base concept info
+            first_row = rows[0]
+            
+            # Collect synonyms
+            synonyms = [
+                ConceptSynonym(
+                    concept_synonym_name=row.concept_synonym_name,
+                    concept_synonym_name_similarity_score=row.concept_synonym_name_similarity_score
+                )
+                for row in rows if row.concept_synonym_name is not None
+            ]
+            
+            # Create base concept
+            concept = OMOPConcept(
+                concept_name=first_row.concept_name,
+                concept_id=first_row.concept_id,
+                vocabulary_id=first_row.vocabulary_id,
+                concept_code=first_row.concept_code,
+                concept_name_similarity_score=first_row.concept_name_similarity_score,
+                concept_synonym=synonyms
+            )
+            
+            formatted_results.append(concept)
 
+        # Fetch ancestors and relationships if requested
         if self.concept_ancestor:
-            for i, (_, row) in enumerate(grouped_results.iterrows()):
-                formatted_results[i]["CONCEPT_ANCESTOR"] = self.fetch_concept_ancestors_and_descendants(row["concept_id"])
+            for concept in formatted_results:
+                concept.concept_ancestor = self.fetch_concept_ancestors_and_descendants(concept.concept_id)
         
         if self.concept_relationship:
-            for i, (_, row) in enumerate(grouped_results.iterrows()):
-                formatted_results[i]["CONCEPT_RELATIONSHIP"] = self.fetch_concept_relationships(row["concept_id"])
+            for concept in formatted_results:
+                concept.concept_relationship = self.fetch_concept_relationships(concept.concept_id)
                 
         return formatted_results
-    
-    def _format_base_concept(self, row):
-        """Format the base concept information from a row."""
-        return {
-            "concept_name": row["concept_name"],
-            "concept_id": row["concept_id"],
-            "vocabulary_id": row["vocabulary_id"],
-            "concept_code": row["concept_code"],
-            "concept_name_similarity_score": row["concept_name_similarity_score"]
-        }
 
-    def _format_concept_synonyms(self, row):
-        """Format the concept synonyms from a row."""
-        return [
-            {
-                "concept_synonym_name": syn_name,
-                "concept_synonym_name_similarity_score": syn_score,
-            }
-            for syn_name, syn_score in zip(
-                row["concept_synonym_name"],
-                row["concept_synonym_name_similarity_score"],
-            )
-            if syn_name is not None
-        ]
-
-    def fetch_concept_ancestors_and_descendants(self, concept_id: str):
+    def fetch_concept_ancestors_and_descendants(self, concept_id: int) -> List[AncestorConcept]:
         """
         Fetch concept ancestors and descendants for a given concept_id
 
@@ -240,12 +278,12 @@ class OMOPMatcher:
 
         Parameters
         ----------
-        concept_id: str
+        concept_id: int
             The concept_id used to find ancestors and descendants.
 
         Returns
         -------
-        list
+        List[AncestorConcept]
             A list of retrieved concepts and their relationships to the provided concept_id
         """
         min_separation_ancestor = 1
@@ -261,29 +299,25 @@ class OMOPMatcher:
         
         with get_session() as session: 
             results = session.execute(query).fetchall()
-            columns = ['relationship_type', 'concept_id', 'ancestor_concept_id', 
-                       'descendant_concept_id', 'concept_name', 'vocabulary_id', 
-                       'concept_code', 'min_levels_of_separation', 'max_levels_of_separation']
-            results = pd.DataFrame(results, columns=columns)
 
         return [
-            {
-                "concept_name": row["concept_name"],
-                "concept_id": row["concept_id"],
-                "vocabulary_id": row["vocabulary_id"],
-                "concept_code": row["concept_code"],
-                "relationship": {
-                    "relationship_type": row["relationship_type"],
-                    "ancestor_concept_id": row["ancestor_concept_id"],
-                    "descendant_concept_id": row["descendant_concept_id"],
-                    "min_levels_of_separation": row["min_levels_of_separation"],
-                    "max_levels_of_separation": row["max_levels_of_separation"],
-                },
-            }
-            for _, row in results.iterrows()
+            AncestorConcept(
+                concept_name=row[4],
+                concept_id=row[1],
+                vocabulary_id=row[5],
+                concept_code=row[6],
+                relationship=AncestorRelationship(
+                    relationship_type=row[0],
+                    ancestor_concept_id=row[2],
+                    descendant_concept_id=row[3],
+                    min_levels_of_separation=row[7],
+                    max_levels_of_separation=row[8]
+                )
+            )
+            for row in results
         ]
 
-    def fetch_concept_relationships(self, concept_id):
+    def fetch_concept_relationships(self, concept_id: int) -> List[RelatedConcept]:
         """
         Fetch concept relationship for a given concept_id
 
@@ -291,40 +325,34 @@ class OMOPMatcher:
 
         Parameters
         ----------
-
-        concept_id: str
+        concept_id: int
             An id for a concept provided to the query for finding concept relationships
 
         Returns
         -------
-        list
+        List[RelatedConcept]
             A list of related concepts from the OMOP database
         """
         with get_session() as session: 
             query = query_related_by_id(concept_id)
             results = session.execute(query).fetchall()
-            columns = [
-                'concept_id', 'concept_id_1', 'relationship_id', 'concept_id_2',
-                'concept_name', 'vocabulary_id', 'concept_code'
-            ]
-            results = pd.DataFrame(results, columns=columns)
 
         return [
-            {
-                "concept_name": row["concept_name"],
-                "concept_id": row["concept_id"],
-                "vocabulary_id": row["vocabulary_id"],
-                "concept_code": row["concept_code"],
-                "relationship": {
-                    "concept_id_1": row["concept_id_1"],
-                    "relationship_id": row["relationship_id"],
-                    "concept_id_2": row["concept_id_2"],
-                },
-            }
-            for _, row in results.iterrows()
+            RelatedConcept(
+                concept_name=row[4],
+                concept_id=row[0],
+                vocabulary_id=row[5],
+                concept_code=row[6],
+                relationship=ConceptRelationship(
+                    concept_id_1=row[1],
+                    relationship_id=row[2],
+                    concept_id_2=row[3]
+                )
+            )
+            for row in results
         ]
 
-    def run(self, search_terms: List[str]):
+    def run(self, search_terms: List[str]) -> List[SearchResult]:
         """
         Main method for the OMOPMatcherRunner class. 
         
@@ -334,12 +362,12 @@ class OMOPMatcher:
 
         Parameters
         ----------
-        search_terms: str
-            The name of a drug to use in queries to the OMOP database
+        search_terms: List[str]
+            The names of drugs to use in queries to the OMOP database
 
         Returns
         -------
-        list
+        List[SearchResult]
             A list of OMOP concepts relating to the search term and relevant information
         """
         try:
@@ -351,14 +379,13 @@ class OMOPMatcher:
             overall_results = []
 
             for search_term in search_terms:
-                OMOP_concepts = self.fetch_omop_concepts(search_term)
-
+                omop_concepts = self.fetch_omop_concepts(search_term)
                 overall_results.append(
-                    {"search_term": search_term, "CONCEPT": OMOP_concepts}
+                    SearchResult(search_term=search_term, concept=omop_concepts)
                 )
 
             self.logger.info(f"Best OMOP matches for {search_terms} calculated")
-            self.logger.info(f"OMOP Output: {overall_results}")
+            self.logger.info(f"OMOP Output: {[r.model_dump() for r in overall_results]}")
             return overall_results
 
         except Exception as e:
