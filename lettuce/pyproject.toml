@@ -10,7 +10,6 @@ dependencies = [
     "haystack-ai>=2.7.0",
     "huggingface-hub>=0.24.6",
     "numpy<2; platform_system == 'Darwin' and platform_machine == 'x86_64'",
-    "pandas>=2.1.0",
     "fastapi>=0.112.2",
     "uvicorn>=0.30.6",
     "sse-starlette>=2.1.3",
@@ -23,6 +22,7 @@ dependencies = [
     "typer>=0.16.0",
     "ollama-haystack>=4.1.0",
     "rapidfuzz>=3.14.1",
+    "torch[llama-gpu-metal]>=2.8.0",
 ]
 
 [project.optional-dependencies]
@@ -34,31 +34,38 @@ test = [
 ]
 llama-cpp = [
   "llama-cpp-python>=0.2.89",
-  "llama-cpp-haystack>=1.1"
+  "llama-cpp-haystack>=1.1",
+  "torch>=2.7"
 ]
 llama-cpu = [
   "llama-cpp-python>=0.2.89",
-  "llama-cpp-haystack>=1.1"
+  "llama-cpp-haystack>=1.1",
+  "torch>=2.7"
 ]
 llama-gpu-cu121 = [
   "llama-cpp-python>=0.2.89",
-  "llama-cpp-haystack>=1.1"
+  "llama-cpp-haystack>=1.1",
+  "torch>=2.7"
 ]
 llama-gpu-cu122 = [
   "llama-cpp-python>=0.2.89",
-  "llama-cpp-haystack>=1.1"
+  "llama-cpp-haystack>=1.1",
+  "torch>=2.7"
 ]
 llama-gpu-cu123 = [
   "llama-cpp-python>=0.2.89",
-  "llama-cpp-haystack>=1.1"
+  "llama-cpp-haystack>=1.1",
+  "torch>=2.7"
 ]
 llama-gpu-cu124 = [
   "llama-cpp-python>=0.2.89",
-  "llama-cpp-haystack>=1.1"
+  "llama-cpp-haystack>=1.1",
+  "torch>=2.7"
 ]
 llama-gpu-metal = [
   "llama-cpp-python>=0.2.89",
-  "llama-cpp-haystack>=1.1"
+  "llama-cpp-haystack>=1.1",
+  "torch>=2.7"
 ]
 
 [tool.uv]
