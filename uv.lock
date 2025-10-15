@@ -169,6 +169,15 @@ wheels = [
 ]
 
 [[package]]
+name = "asttokens"
+version = "3.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/4a/e7/82da0a03e7ba5141f05cce0d302e6eed121ae055e0456ca228bf693984bc/asttokens-3.0.0.tar.gz", hash = "sha256:0dcd8baa8d62b0c1d118b399b2ddba3c4aff271d0d7a9e0d4c1681c79035bbc7", size = 61978, upload-time = "2024-11-30T04:30:14.439Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/25/8a/c46dcc25341b5bce5472c718902eb3d38600a903b14fa6aeecef3f21a46f/asttokens-3.0.0-py3-none-any.whl", hash = "sha256:e3078351a059199dd5138cb1c706e6430c05eff2ff136af5eb4790f9d28932e2", size = 26918, upload-time = "2024-11-30T04:30:10.946Z" },
+]
+
+[[package]]
 name = "attrs"
 version = "25.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -345,6 +354,15 @@ wheels = [
 ]
 
 [[package]]
+name = "decorator"
+version = "5.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/43/fa/6d96a0978d19e17b68d634497769987b16c8f4cd0a7a05048bec693caa6b/decorator-5.2.1.tar.gz", hash = "sha256:65f266143752f734b0a7cc83c46f4618af75b8c5911b00ccb61d0ac9b6da0360", size = 56711, upload-time = "2025-02-24T04:41:34.073Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4e/8c/f3147f5c4b73e7550fe5f9352eaa956ae838d5c51eb58e7a25b9f3e2643b/decorator-5.2.1-py3-none-any.whl", hash = "sha256:d316bb415a2d9e2d2b3abcc4084c6502fc09240e292cd76a76afc106a1c8e04a", size = 9190, upload-time = "2025-02-24T04:41:32.565Z" },
+]
+
+[[package]]
 name = "diskcache"
 version = "5.6.3"
 source = { registry = "https://pypi.org/simple" }
@@ -378,6 +396,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/4a/c0/89fe6215b443b919cb98a5002e107cb5026854ed1ccb6b5833e0768419d1/docutils-0.22.2.tar.gz", hash = "sha256:9fdb771707c8784c8f2728b67cb2c691305933d68137ef95a75db5f4dfbc213d", size = 2289092, upload-time = "2025-09-20T17:55:47.994Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/66/dd/f95350e853a4468ec37478414fc04ae2d61dad7a947b3015c3dcc51a09b9/docutils-0.22.2-py3-none-any.whl", hash = "sha256:b0e98d679283fc3bb0ead8a5da7f501baa632654e7056e9c5846842213d674d8", size = 632667, upload-time = "2025-09-20T17:55:43.052Z" },
+]
+
+[[package]]
+name = "executing"
+version = "2.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cc/28/c14e053b6762b1044f34a13aab6859bbf40456d37d23aa286ac24cfd9a5d/executing-2.2.1.tar.gz", hash = "sha256:3632cc370565f6648cc328b32435bd120a1e4ebb20c77e3fdde9a13cd1e533c4", size = 1129488, upload-time = "2025-09-01T09:48:10.866Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c1/ea/53f2148663b321f21b5a606bd5f191517cf40b7072c0497d3c92c4a13b1e/executing-2.2.1-py2.py3-none-any.whl", hash = "sha256:760643d3452b4d777d295bb167ccc74c64a81df23fb5e08eff250c425a4b2017", size = 28317, upload-time = "2025-09-01T09:48:08.5Z" },
 ]
 
 [[package]]
@@ -774,6 +801,39 @@ wheels = [
 ]
 
 [[package]]
+name = "ipython"
+version = "9.6.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "colorama", marker = "sys_platform == 'win32' or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-cpu') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu121') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu121') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu123' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-gpu-cu123' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu124' and extra == 'extra-7-lettuce-llama-gpu-metal')" },
+    { name = "decorator" },
+    { name = "ipython-pygments-lexers" },
+    { name = "jedi" },
+    { name = "matplotlib-inline" },
+    { name = "pexpect", marker = "(sys_platform != 'emscripten' and sys_platform != 'win32') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-cpu') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu121') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-metal') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu121') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-metal') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-metal') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-metal') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-gpu-cu123' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-gpu-cu123' and extra == 'extra-7-lettuce-llama-gpu-metal') or (sys_platform == 'emscripten' and extra == 'extra-7-lettuce-llama-gpu-cu124' and extra == 'extra-7-lettuce-llama-gpu-metal') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-cpu') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu121') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-metal') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu121') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-metal') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-metal') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-metal') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-gpu-cu123' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-gpu-cu123' and extra == 'extra-7-lettuce-llama-gpu-metal') or (sys_platform == 'win32' and extra == 'extra-7-lettuce-llama-gpu-cu124' and extra == 'extra-7-lettuce-llama-gpu-metal')" },
+    { name = "prompt-toolkit" },
+    { name = "pygments" },
+    { name = "stack-data" },
+    { name = "traitlets" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2a/34/29b18c62e39ee2f7a6a3bba7efd952729d8aadd45ca17efc34453b717665/ipython-9.6.0.tar.gz", hash = "sha256:5603d6d5d356378be5043e69441a072b50a5b33b4503428c77b04cb8ce7bc731", size = 4396932, upload-time = "2025-09-29T10:55:53.948Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/48/c5/d5e07995077e48220269c28a221e168c91123ad5ceee44d548f54a057fc0/ipython-9.6.0-py3-none-any.whl", hash = "sha256:5f77efafc886d2f023442479b8149e7d86547ad0a979e9da9f045d252f648196", size = 616170, upload-time = "2025-09-29T10:55:47.676Z" },
+]
+
+[[package]]
+name = "ipython-pygments-lexers"
+version = "1.1.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pygments" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ef/4c/5dd1d8af08107f88c7f741ead7a40854b8ac24ddf9ae850afbcf698aa552/ipython_pygments_lexers-1.1.1.tar.gz", hash = "sha256:09c0138009e56b6854f9535736f4171d855c8c08a563a0dcd8022f78355c7e81", size = 8393, upload-time = "2025-01-17T11:24:34.505Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d9/33/1f075bf72b0b747cb3288d011319aaf64083cf2efef8354174e3ed4540e2/ipython_pygments_lexers-1.1.1-py3-none-any.whl", hash = "sha256:a9462224a505ade19a605f71f8fa63c2048833ce50abc86768a0d81d876dc81c", size = 8074, upload-time = "2025-01-17T11:24:33.271Z" },
+]
+
+[[package]]
 name = "itsdangerous"
 version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1025,18 +1085,22 @@ name = "lettuce-ui"
 version = "0.1.0"
 source = { editable = "lettuce-ui" }
 dependencies = [
+    { name = "ipython" },
     { name = "lettuce" },
     { name = "marimo" },
     { name = "polars" },
     { name = "ruff" },
+    { name = "sentence-transformers" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "ipython", specifier = ">=9.6.0" },
     { name = "lettuce", editable = "lettuce" },
     { name = "marimo", specifier = ">=0.16.5" },
     { name = "polars", specifier = ">=1.34.0" },
     { name = "ruff", specifier = ">=0.14.0" },
+    { name = "sentence-transformers", specifier = ">=5.1.1" },
 ]
 
 [[package]]
@@ -1367,6 +1431,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/fb/df/5bd7a48c256faecd1d36edc13133e51397e41b73bb77e1a69deab746ebac/markupsafe-3.0.3-cp314-cp314t-win32.whl", hash = "sha256:915c04ba3851909ce68ccc2b8e2cd691618c4dc4c4232fb7982bca3f41fd8c3d", size = 14819, upload-time = "2025-09-27T18:37:26.285Z" },
     { url = "https://files.pythonhosted.org/packages/1a/8a/0402ba61a2f16038b48b39bccca271134be00c5c9f0f623208399333c448/markupsafe-3.0.3-cp314-cp314t-win_amd64.whl", hash = "sha256:4faffd047e07c38848ce017e8725090413cd80cbc23d86e55c587bf979e579c9", size = 15426, upload-time = "2025-09-27T18:37:27.316Z" },
     { url = "https://files.pythonhosted.org/packages/70/bc/6f1c2f612465f5fa89b95bead1f44dcb607670fd42891d8fdcd5d039f4f4/markupsafe-3.0.3-cp314-cp314t-win_arm64.whl", hash = "sha256:32001d6a8fc98c8cb5c947787c5d08b0a50663d139f1305bac5885d98d9b40fa", size = 14146, upload-time = "2025-09-27T18:37:28.327Z" },
+]
+
+[[package]]
+name = "matplotlib-inline"
+version = "0.1.7"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "traitlets" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/99/5b/a36a337438a14116b16480db471ad061c36c3694df7c2084a0da7ba538b7/matplotlib_inline-0.1.7.tar.gz", hash = "sha256:8423b23ec666be3d16e16b60bdd8ac4e86e840ebd1dd11a30b9f117f2fa0ab90", size = 8159, upload-time = "2024-04-15T13:44:44.803Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8f/8e/9ad090d3553c280a8060fbf6e24dc1c0c29704ee7d1c372f0c174aa59285/matplotlib_inline-0.1.7-py3-none-any.whl", hash = "sha256:df192d39a4ff8f21b1895d72e6a13f5fcc5099f00fa84384e0ea28c2cc0653ca", size = 9899, upload-time = "2024-04-15T13:44:43.265Z" },
 ]
 
 [[package]]
@@ -1905,6 +1981,18 @@ wheels = [
 ]
 
 [[package]]
+name = "pexpect"
+version = "4.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "ptyprocess" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/42/92/cc564bf6381ff43ce1f4d06852fc19a2f11d180f23dc32d9588bee2f149d/pexpect-4.9.0.tar.gz", hash = "sha256:ee7d41123f3c9911050ea2c2dac107568dc43b2d3b0c7557a33212c398ead30f", size = 166450, upload-time = "2023-11-25T09:07:26.339Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9e/c3/059298687310d527a58bb01f3b1965787ee3b40dce76752eda8b44e9a2c5/pexpect-4.9.0-py2.py3-none-any.whl", hash = "sha256:7236d1e080e4936be2dc3e326cec0af72acf9212a7e1d060210e70a47e253523", size = 63772, upload-time = "2023-11-25T06:56:14.81Z" },
+]
+
+[[package]]
 name = "pgvector"
 version = "0.4.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1996,6 +2084,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/e2/ce/11d6fa30ab517018796e1d675498992da585479e7079770ec8fa99a61561/posthog-6.7.6.tar.gz", hash = "sha256:ee5c5ad04b857d96d9b7a4f715e23916a2f206bfcf25e5a9d328a3d27664b0d3", size = 119129, upload-time = "2025-09-22T18:11:12.365Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/de/84/586422d8861b5391c8414360b10f603c0b7859bb09ad688e64430ed0df7b/posthog-6.7.6-py3-none-any.whl", hash = "sha256:b09a7e65a042ec416c28874b397d3accae412a80a8b0ef3fa686fbffc99e4d4b", size = 137348, upload-time = "2025-09-22T18:11:10.807Z" },
+]
+
+[[package]]
+name = "prompt-toolkit"
+version = "3.0.52"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "wcwidth" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a1/96/06e01a7b38dce6fe1db213e061a4602dd6032a8a97ef6c1a862537732421/prompt_toolkit-3.0.52.tar.gz", hash = "sha256:28cde192929c8e7321de85de1ddbe736f1375148b02f2e17edd840042b1be855", size = 434198, upload-time = "2025-08-27T15:24:02.057Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/84/03/0d3ce49e2505ae70cf43bc5bb3033955d2fc9f932163e84dc0779cc47f48/prompt_toolkit-3.0.52-py3-none-any.whl", hash = "sha256:9aac639a3bbd33284347de5ad8d68ecc044b91a762dc39b7c21095fcd6a19955", size = 391431, upload-time = "2025-08-27T15:23:59.498Z" },
 ]
 
 [[package]]
@@ -2145,6 +2245,24 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/76/36/03801461b31b29fe58d228c24388f999fe814dfc302856e0d17f97d7c54d/psycopg2_binary-2.9.11-cp314-cp314-musllinux_1_2_ppc64le.whl", hash = "sha256:9bd81e64e8de111237737b29d68039b9c813bdf520156af36d26819c9a979e5f", size = 3298663, upload-time = "2025-10-10T11:13:44.878Z" },
     { url = "https://files.pythonhosted.org/packages/67/69/f36abe5f118c1dca6d3726ceae164b9356985805480731ac6712a63f24f0/psycopg2_binary-2.9.11-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:c3cb3a676873d7506825221045bd70e0427c905b9c8ee8d6acd70cfcbd6e576d", size = 3347643, upload-time = "2025-10-10T11:13:53.499Z" },
     { url = "https://files.pythonhosted.org/packages/e1/36/9c0c326fe3a4227953dfb29f5d0c8ae3b8eb8c1cd2967aa569f50cb3c61f/psycopg2_binary-2.9.11-cp314-cp314-win_amd64.whl", hash = "sha256:4012c9c954dfaccd28f94e84ab9f94e12df76b4afb22331b1f0d3154893a6316", size = 2803913, upload-time = "2025-10-10T11:13:57.058Z" },
+]
+
+[[package]]
+name = "ptyprocess"
+version = "0.7.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/20/e5/16ff212c1e452235a90aeb09066144d0c5a6a8c0834397e03f5224495c4e/ptyprocess-0.7.0.tar.gz", hash = "sha256:5c5d0a3b48ceee0b48485e0c26037c0acd7d29765ca3fbb5cb3831d347423220", size = 70762, upload-time = "2020-12-28T15:15:30.155Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/22/a6/858897256d0deac81a172289110f31629fc4cee19b6f01283303e18c8db3/ptyprocess-0.7.0-py2.py3-none-any.whl", hash = "sha256:4b41f3967fce3af57cc7e94b888626c18bf37a083e3651ca8feeb66d492fef35", size = 13993, upload-time = "2020-12-28T15:15:28.35Z" },
+]
+
+[[package]]
+name = "pure-eval"
+version = "0.2.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cd/05/0a34433a064256a578f1783a10da6df098ceaa4a57bbeaa96a6c0352786b/pure_eval-0.2.3.tar.gz", hash = "sha256:5f4e983f40564c576c7c8635ae88db5956bb2229d7e9237d03b3c0b0190eaf42", size = 19752, upload-time = "2024-07-21T12:58:21.801Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8e/37/efad0257dc6e593a18957422533ff0f87ede7c9c6ea010a2177d738fb82f/pure_eval-0.2.3-py3-none-any.whl", hash = "sha256:1db8e35b67b3d218d818ae653e27f06c3aa420901fa7b081ca98cbedc874e0d0", size = 11842, upload-time = "2024-07-21T12:58:20.04Z" },
 ]
 
 [[package]]
@@ -2929,6 +3047,20 @@ wheels = [
 ]
 
 [[package]]
+name = "stack-data"
+version = "0.6.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asttokens" },
+    { name = "executing" },
+    { name = "pure-eval" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/28/e3/55dcc2cfbc3ca9c29519eb6884dd1415ecb53b0e934862d3559ddcb7e20b/stack_data-0.6.3.tar.gz", hash = "sha256:836a778de4fec4dcd1dcd89ed8abff8a221f58308462e1c4aa2a3cf30148f0b9", size = 44707, upload-time = "2023-09-30T13:58:05.479Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f1/7b/ce1eafaf1a76852e2ec9b22edecf1daa58175c090266e9f6c64afcd81d91/stack_data-0.6.3-py3-none-any.whl", hash = "sha256:d5558e0c25a4cb0853cddad3d77da9891a08cb85dd9f9f91b9f8cd66e511e695", size = 24521, upload-time = "2023-09-30T13:58:03.53Z" },
+]
+
+[[package]]
 name = "starlette"
 version = "0.48.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3061,6 +3193,15 @@ wheels = [
 ]
 
 [[package]]
+name = "traitlets"
+version = "5.14.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/eb/79/72064e6a701c2183016abbbfedaba506d81e30e232a68c9f0d6f6fcd1574/traitlets-5.14.3.tar.gz", hash = "sha256:9ed0579d3502c94b4b3732ac120375cda96f923114522847de4b3bb98b96b6b7", size = 161621, upload-time = "2024-04-19T11:11:49.746Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/00/c0/8f5d070730d7836adc9c9b6408dec68c6ced86b304a9b26a14df072a6e8c/traitlets-5.14.3-py3-none-any.whl", hash = "sha256:b74e89e397b1ed28cc831db7aea759ba6640cb3de13090ca145426688ff1ac4f", size = 85359, upload-time = "2024-04-19T11:11:46.763Z" },
+]
+
+[[package]]
 name = "transformers"
 version = "4.57.0"
 source = { registry = "https://pypi.org/simple" }
@@ -3159,6 +3300,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/5e/42/e0e305207bb88c6b8d3061399c6a961ffe5fbb7e2aa63c9234df7259e9cd/uvicorn-0.35.0.tar.gz", hash = "sha256:bc662f087f7cf2ce11a1d7fd70b90c9f98ef2e2831556dd078d131b96cc94a01", size = 78473, upload-time = "2025-06-28T16:15:46.058Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d2/e2/dc81b1bd1dcfe91735810265e9d26bc8ec5da45b4c0f6237e286819194c3/uvicorn-0.35.0-py3-none-any.whl", hash = "sha256:197535216b25ff9b785e29a0b79199f55222193d47f820816e7da751e9bc8d4a", size = 66406, upload-time = "2025-06-28T16:15:44.816Z" },
+]
+
+[[package]]
+name = "wcwidth"
+version = "0.2.14"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/24/30/6b0809f4510673dc723187aeaf24c7f5459922d01e2f794277a3dfb90345/wcwidth-0.2.14.tar.gz", hash = "sha256:4d478375d31bc5395a3c55c40ccdf3354688364cd61c4f6adacaa9215d0b3605", size = 102293, upload-time = "2025-09-22T16:29:53.023Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/af/b5/123f13c975e9f27ab9c0770f514345bd406d0e8d3b7a0723af9d43f710af/wcwidth-0.2.14-py2.py3-none-any.whl", hash = "sha256:a7bb560c8aee30f9957e5f9895805edd20602f2d7f720186dfd906e82b4982e1", size = 37286, upload-time = "2025-09-22T16:29:51.641Z" },
 ]
 
 [[package]]
