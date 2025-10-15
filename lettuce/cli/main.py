@@ -10,6 +10,7 @@ from omop.omop_match import OMOPMatcher
 from utils.logging_utils import logger
 
 import typer
+from rich import print
 
 app = typer.Typer()
 
@@ -99,6 +100,7 @@ def search(
     for query, result in zip(results, db_results):
         query.add_matches(result, search_threshold)
 
+    print("----- Results -------")
     print([result.to_dict() for result in results])
 
 
