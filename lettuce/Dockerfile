@@ -7,7 +7,7 @@ ENV UV_CACHE_DIR=/tmp/uv_cache \
 WORKDIR /src
 COPY pyproject.toml ./
 RUN uv sync --no-dev --extra llama-cpu && rm -rf /tmp/uv_cache ~/.cache/pip
-RUN uv pip uninstall torch && uv pip install torch==2.7.1+cpu -f https://download.pytorch.org/whl/cpu
+RUN uv pip uninstall torch && uv pip install torch==2.7.1+cpu --index-url https://download.pytorch.org/whl/cpu
 
 # Runtime stage 
 FROM python:3.12-slim-bookworm
