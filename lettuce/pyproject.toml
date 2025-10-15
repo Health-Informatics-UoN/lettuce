@@ -8,7 +8,6 @@ requires-python = ">=3.12"
 dependencies = [
     "aiohttp>=3.12",
     "haystack-ai>=2.7.0",
-    "huggingface-hub>=0.24.6",
     "numpy<2; platform_system == 'Darwin' and platform_machine == 'x86_64'",
     "fastapi>=0.112.2",
     "uvicorn>=0.30.6",
@@ -16,7 +15,6 @@ dependencies = [
     "psycopg2-binary>=2.9.9",
     "SQLAlchemy>=2.0.32",
     "sseclient-py>=1.8.0",
-    "fastembed-haystack>=1.2.0",
     "pgvector>=0.3.6",
     "pydantic-settings>=2.10.1",
     "typer>=0.16.0",
@@ -84,7 +82,6 @@ conflicts = [
 [tool.uv.sources]
 llama-cpp-python = [
   { index = "llama-cpp-cpu", extra = "llama-cpu" },
-  { index = "torch-cpu", extra = "llama-cpu"},
   { index = "llama-cpp-gpu-metal", extra = "llama-gpu-metal", marker = "platform_system == 'Darwin' and platform_machine == 'arm64'" },
   { index = "llama-cpp-gpu-cu121", extra = "llama-gpu-cu121" },
   { index = "llama-cpp-gpu-cu122", extra = "llama-gpu-cu122" },
@@ -95,10 +92,6 @@ llama-cpp-python = [
 [[tool.uv.index]]
 name = "llama-cpp-cpu"
 url = "https://abetlen.github.io/llama-cpp-python/whl/cpu"
-
-[[tool.uv.index]]
-name = "torch-cpu"
-url = "https://download.pytorch.org/whl/cpu"
 
 [[tool.uv.index]]
 name = "llama-cpp-gpu-metal"
