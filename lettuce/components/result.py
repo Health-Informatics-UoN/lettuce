@@ -1,4 +1,5 @@
 from typing import List, Dict, Any
+from omop.omop_match import SearchResult
 
 
 class LettuceResult:
@@ -47,7 +48,7 @@ class LettuceResult:
         else:
             return self.search_term
 
-    def add_matches(self, omop_matches: list, threshold: float):
+    def add_matches(self, omop_matches: SearchResult, threshold: float):
         self.omop_fuzzy_threshold = threshold
         self.omop_matches = omop_matches
 
@@ -68,5 +69,5 @@ class LettuceResult:
             out["llm_answer"] = self.llm_answer
         if hasattr(self, "omop_matches"):
             out["OMOP fuzzy threshold"] = self.omop_fuzzy_threshold
-            out["OMOP matches"] = self.omop_matches
+            out["OMOP matches"] = self.omop_matches.model_dump()
         return out

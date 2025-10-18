@@ -66,6 +66,21 @@ def mock_llm_pipeline():
     return mock_pipeline_class, mock_pipeline_instance
 
 
+def create_mock_search_result(search_term, concept_id, concept_name):
+    """Helper function to create mock SearchResult objects"""
+    from lettuce.omop.omop_match import SearchResult, OMOPConcept
+    
+    concept = OMOPConcept(
+        concept_id=concept_id,
+        concept_name=concept_name,
+        vocabulary_id='RxNorm',
+        concept_code='12345',
+        concept_name_similarity_score=95.0
+    )
+    
+    return SearchResult(search_term=search_term, concept=[concept])
+
+
 def test_main_with_vector_search_and_llm(cli_runner, mock_llm_pipeline):
     """Test the CLI command with vector search and LLM enabled"""
     mock_llm_class, mock_pipeline_instance = mock_llm_pipeline
@@ -79,8 +94,8 @@ def test_main_with_vector_search_and_llm(cli_runner, mock_llm_pipeline):
         mock_llm_patch.side_effect = mock_llm_class.side_effect
         
         mock_OMOPMatcher.return_value.run.return_value = [
-            {'search_term': 'aspirin', 'CONCEPT': [{'concept_id': 123, 'concept_name': 'Aspirin'}]},
-            {'search_term': 'tylenol', 'CONCEPT': [{'concept_id': 456, 'concept_name': 'Tylenol'}]}
+            create_mock_search_result('aspirin', 123, 'Aspirin'),
+            create_mock_search_result('tylenol', 456, 'Tylenol')
         ]
         
         mock_time.side_effect = cycle([1, 2, 3, 4, 5, 6])
@@ -104,8 +119,8 @@ def test_main_with_vector_search_only(cli_runner):
          patch('lettuce.cli.main.OMOPMatcher') as mock_OMOPMatcher:
         
         mock_OMOPMatcher.return_value.run.return_value = [
-            {'search_term': 'aspirin', 'CONCEPT': [{'concept_id': 123, 'concept_name': 'Aspirin'}]},
-            {'search_term': 'tylenol', 'CONCEPT': [{'concept_id': 456, 'concept_name': 'Tylenol'}]}
+            create_mock_search_result('aspirin', 123, 'Aspirin'),
+            create_mock_search_result('tylenol', 456, 'Tylenol')
         ]
         
         mock_embeddings_instance = mock_embeddings.return_value
@@ -133,8 +148,8 @@ def test_main_with_use_llm_only(cli_runner):
          patch('lettuce.cli.main.OMOPMatcher') as mock_OMOPMatcher:
         
         mock_OMOPMatcher.return_value.run.return_value = [
-            {'search_term': 'aspirin', 'CONCEPT': [{'concept_id': 123, 'concept_name': 'Aspirin'}]},
-            {'search_term': 'tylenol', 'CONCEPT': [{'concept_id': 456, 'concept_name': 'Tylenol'}]}
+            create_mock_search_result('aspirin', 123, 'Aspirin'),
+            create_mock_search_result('tylenol', 456, 'Tylenol')
         ]
         
         mock_pipeline_instance = MagicMock()
@@ -189,7 +204,7 @@ def test_cli_output_format(cli_runner):
     """Test that CLI produces expected output format"""
     with patch('lettuce.cli.main.OMOPMatcher') as mock_OMOPMatcher:
         mock_OMOPMatcher.return_value.run.return_value = [
-            {'search_term': 'aspirin', 'CONCEPT': [{'concept_id': 123, 'concept_name': 'Aspirin'}]}
+            create_mock_search_result('aspirin', 123, 'Aspirin')
         ]
         
         from lettuce.cli.main import app

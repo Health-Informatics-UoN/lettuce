@@ -1,8 +1,7 @@
 import os
 from options.base_options import BaseOptions
 import pytest
-import pandas as pd 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, sql
 from sqlalchemy.orm import sessionmaker
 
 from omop.omop_queries import (
@@ -134,15 +133,11 @@ def test_query_descendants_and_ancestors_by_id(db_connection):
   
     assert len(results) > 1
     
-    columns = [
-        'relationship_type', 'concept_id', 'ancestor_concept_id',
-        'descendant_concept_id', 'concept_name', 'vocabulary_id',
-        'concept_code', 'min_levels_of_separation', 'max_levels_of_separation'
-    ]
-    results = pd.DataFrame(results, columns=columns)
-    names = results["concept_name"].to_list()
+    # Extract data without pandas
+    names = [row[4] for row in results]  # concept_name is at index 4
+    relationship_types = {row[0] for row in results}  # relationship_type is at index 0
 
-    assert results["relationship_type"].unique().tolist() == ["Ancestor", "Descendant"]
+    assert relationship_types == {"Ancestor", "Descendant"}
     assert "Painaid BRF Oral Product" in names
     assert "homatropine methylbromide; systemic" in names 
 
@@ -154,16 +149,12 @@ def test_query_related_by_id(db_connection):
     session = Session()
 
     query = query_related_by_id(concept_id)
-    results_refactor = session.execute(query).fetchall()
-    columns = [
-        'concept_id', 'concept_id_1', 'relationship_id', 'concept_id_2',
-        'concept_name', 'vocabulary_id', 'concept_code'
-    ]
-    results = pd.DataFrame(results_refactor, columns=columns)
+    results = session.execute(query).fetchall()
+    session.close()
 
     assert len(results) >= 1
 
-    names = results["concept_name"].to_list()
+    names = [row[4] for row in results]  # concept_name is at index 4
     assert "Sinutab" in names
 
 
@@ -178,6 +169,7 @@ def test_full_text_query(db_connection):
     Session = sessionmaker(db_connection)
     session = Session()
     results = session.execute(query).fetchall()
+    session.close()
   
     assert len(results) > 1
 
@@ -203,9 +195,9 @@ def test_regression_query_descendants_and_ancestors(db_connection):
                 JOIN
                     {settings.db_schema}.concept c ON ca.ancestor_concept_id = c.concept_id
                 WHERE
-                    ca.descendant_concept_id = %s AND
-                    ca.min_levels_of_separation >= %s AND
-                    ca.max_levels_of_separation <= %s
+                    ca.descendant_concept_id = :concept_id AND
+                    ca.min_levels_of_separation >= :min_separation_ancestor AND
+                    ca.max_levels_of_separation <= :max_separation_ancestor
             )
             UNION
             (
@@ -224,9 +216,9 @@ def test_regression_query_descendants_and_ancestors(db_connection):
                 JOIN
                     {settings.db_schema}.concept c ON ca.descendant_concept_id = c.concept_id
                 WHERE
-                    ca.ancestor_concept_id = %s AND
-                    ca.min_levels_of_separation >= %s AND
-                    ca.max_levels_of_separation <= %s
+                    ca.ancestor_concept_id = :concept_id AND
+                    ca.min_levels_of_separation >= :min_separation_descendant AND
+                    ca.max_levels_of_separation <= :max_separation_descendant
             )
         """
     concept_id = 1125315
@@ -235,46 +227,47 @@ def test_regression_query_descendants_and_ancestors(db_connection):
     max_separation_ancestor = 1
     max_separation_descendant = 1
 
-
-    params = (
-        concept_id,
-        min_separation_ancestor,
-        max_separation_ancestor,
-        concept_id,
-        min_separation_descendant,
-        max_separation_descendant,
-    )
-    results_original = (
-        pd.read_sql(query, con=db_connection, params=params)
-        .drop_duplicates()
-        .query("concept_id != @concept_id")
-    )
-
-    # New query using SQLAlchemy
+    params = {
+            "concept_id": concept_id,
+            "min_separation_ancestor": min_separation_ancestor,
+            "max_separation_ancestor": max_separation_ancestor,
+            "min_separation_descendant": min_separation_descendant,
+            "max_separation_descendant": max_separation_descendant,
+    }
+    
+    # Execute original query
     Session = sessionmaker(db_connection)
     session = Session()
-
-    query = query_ancestors_and_descendants_by_id(
-        concept_id,
-        min_separation_ancestor = 1, 
-        min_separation_descendant = 1, 
-        max_separation_ancestor = 1, 
-        max_separation_descendant = 1 
-    )
-    results = session.execute(query).fetchall()
-    session.close()
-
-    columns = [
-        'relationship_type', 'concept_id', 'ancestor_concept_id',
-        'descendant_concept_id', 'concept_name', 'vocabulary_id',
-        'concept_code', 'min_levels_of_separation', 'max_levels_of_separation'
-    ]
-    results_refactor = pd.DataFrame(results, columns=columns)
+    results_original_raw = session.execute(sql.text(query), params).fetchall()
     
-    results_original_sorted = results_original.sort_values(by=columns).reset_index(drop=True)
-    results_refactor_sorted = results_refactor.sort_values(by=columns).reset_index(drop=True)
+    # Remove duplicates and filter out self-references
+    seen = set()
+    results_original = []
+    for row in results_original_raw:
+        row_tuple = tuple(row)
+        if row_tuple not in seen and row[1] != concept_id:  # concept_id is at index 1
+            seen.add(row_tuple)
+            results_original.append(row_tuple)
+    
+    # New query using SQLAlchemy
+    query_new = query_ancestors_and_descendants_by_id(
+        concept_id,
+        min_separation_ancestor=1, 
+        min_separation_descendant=1, 
+        max_separation_ancestor=1, 
+        max_separation_descendant=1 
+    )
+    results_refactor = session.execute(query_new).fetchall()
+    session.close()
+    
+    # Convert to comparable format
+    results_refactor = [tuple(row) for row in results_refactor]
+    
+    # Sort both for comparison
+    results_original_sorted = sorted(results_original)
+    results_refactor_sorted = sorted(results_refactor)
 
-    assert results_original_sorted.equals(results_refactor_sorted)
+    assert results_original_sorted == results_refactor_sorted
 
 
 def test_regression_query_related_by_id(db_connection): 
@@ -293,31 +286,34 @@ def test_regression_query_related_by_id(db_connection):
         JOIN
             {settings.db_schema}.concept c ON cr.concept_id_2 = c.concept_id
         WHERE
-            cr.concept_id_1 = %s AND
+            cr.concept_id_1 = :concept_id AND
             cr.valid_end_date > NOW()
     """
-    # Old query 
-    results_original = (
-        pd.read_sql(query, con=db_connection, params=(concept_id,))
-        .drop_duplicates()
-        .query("concept_id != @concept_id")
-    )
-
-    # New query using SQLAlchemy
+    
+    # Execute original query
     Session = sessionmaker(db_connection)
     session = Session()
-
-    query = query_related_by_id(concept_id)
-    results_refactor = session.execute(query).fetchall()
+    results_original_raw = session.execute(sql.text(query), {"concept_id": concept_id}).fetchall()
+    
+    # Process original results - remove duplicates and filter out self-references
+    seen = set()
+    results_original = []
+    for row in results_original_raw:
+        row_tuple = tuple(row)
+        if row_tuple not in seen and row[0] != concept_id:  # concept_id is at index 0
+            seen.add(row_tuple)
+            results_original.append(row_tuple)
+    
+    # New query using SQLAlchemy
+    query_new = query_related_by_id(concept_id)
+    results_refactor = session.execute(query_new).fetchall()
     session.close()
 
-    columns = [
-        'concept_id', 'concept_id_1', 'relationship_id', 'concept_id_2',
-        'concept_name', 'vocabulary_id', 'concept_code'
-    ]
-    results_refactor = pd.DataFrame(results_refactor, columns=columns)
+    # Convert to comparable format
+    results_refactor = [tuple(row) for row in results_refactor]
+    
+    # Sort both for comparison
+    results_original_sorted = sorted(results_original)
+    results_refactor_sorted = sorted(results_refactor)
 
-    results_original_sorted = results_original.sort_values(by=columns).reset_index(drop=True)
-    results_refactor_sorted = results_refactor.sort_values(by=columns).reset_index(drop=True)
-
-    assert results_original_sorted.equals(results_refactor_sorted)
+    assert results_original_sorted == results_refactor_sorted

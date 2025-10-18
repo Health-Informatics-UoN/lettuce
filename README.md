@@ -1,6 +1,18 @@
-# Lettuce: LLM for Efficient Translation and Transformation into Uniform Clinical Encoding 
 
-**Lettuce** is an application for medical researchers that matches the informal medicine names supplied by the user to concepts in the [Observational Health Data Sciences and Informatics](https://www.ohdsi.org) (OMOP) [standardised vocabularies](https://github.com/OHDSI/Vocabulary-v5.0/wiki)
+<p align="center">
+  <picture>
+    <img alt="Lettuce Logo" src="/website/public/logo/lettuce-primary.png" width="280"/>
+  </picture>
+  </a>
+</p>
+<div align="center">
+  <strong>
+  LLM for Efficient Translation and Transformation into Uniform Clinical Encoding
+  <br />
+  </strong>
+</div>
+
+Lettuce is an application for medical researchers that matches the informal medicine names supplied by the user to concepts in the [Observational Health Data Sciences and Informatics](https://www.ohdsi.org) (OMOP) [standardised vocabularies](https://github.com/OHDSI/Vocabulary-v5.0/wiki)
 
 The application can be used as an API, or run with a graphical user interface (GUI).
 
