@@ -1,5 +1,4 @@
 from haystack.components.builders import PromptBuilder
-from options.pipeline_options import LLMModel
 from components.prompt_templates import templates
 
 
@@ -13,7 +12,7 @@ class Prompts:
     generation approaches.
     """
 
-    def __init__(self, model: LLMModel, prompt_type: str = "simple") -> None:
+    def __init__(self, prompt_type: str = "simple") -> None:
         """
         Initializes the Prompts class.
 
@@ -27,9 +26,7 @@ class Prompts:
             - "simple": Few-shot learning prompt without external data
             - "top_n_RAG": Retrieval-augmented generation prompt with related terms
         """
-        self._model_name = model.value
         self._prompt_type = prompt_type
-        self._eot_token = model.get_eot_token()
         self._prompt_templates = templates
 
     def get_prompt(self) -> PromptBuilder:
@@ -59,7 +56,6 @@ class Prompts:
         """
         try:
             template = self._prompt_templates[self._prompt_type]
-            template += self._eot_token + "\nResponse:"
         except KeyError:
             print(f"No prompt named {self._prompt_type}")
         return PromptBuilder(template)
