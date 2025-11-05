@@ -8,7 +8,7 @@ from haystack.components.routers import ConditionalRouter
 from components.embeddings import Embeddings, EmbeddingModelName
 from components.models import get_model
 from components.prompt import Prompts
-from options.pipeline_options import LLMModel
+from options.pipeline_options import LLMModel, InferenceType
 from options.base_options import BaseOptions
 
 settings = BaseOptions()
@@ -23,6 +23,8 @@ class LLMPipeline:
         llm_model: LLMModel,
         temperature: float,
         logger: Logger,
+        inference_type: InferenceType = settings.inference_type,
+        inference_url: str | None = settings.ollama_url,
         embed_vocab: list[str] | None = None,
         standard_concept: bool = False,
         embedding_model: EmbeddingModelName = settings.embedding_model,
@@ -59,6 +61,8 @@ class LLMPipeline:
             Whether the LLM should report on its running or not
         """
         self._model = llm_model
+        self._inference_type = inference_type
+        self._url = inference_url
         self._logger = logger
         self._temperature = temperature
         self._embed_vocab = embed_vocab
@@ -106,9 +110,9 @@ class LLMPipeline:
 
         llm = get_model(
             model=self._model,
-            inference_type=settings.inference_type,
+            inference_type=self._inference_type,
             temperature=self._temperature,
-            url=settings.ollama_url,
+            url=self._url,
             logger=self._logger,
             path_to_local_weights=settings.local_llm,
             verbose=self._verbose_llm,
