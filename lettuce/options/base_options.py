@@ -2,7 +2,6 @@ from options.pipeline_options import LLMModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from .pipeline_options import EmbeddingModelName, InferenceType
 
-
 class BaseOptions(BaseSettings):
     """
     Configuration settings class for the lettuce pipeline.
@@ -55,7 +54,7 @@ class BaseOptions(BaseSettings):
     
     model_config = SettingsConfigDict(
             env_file=".env",
-            env_file_encoding="utf-8",
+env_file_encoding="utf-8",
             )
     
     # Database configuration
@@ -129,3 +128,10 @@ class BaseOptions(BaseSettings):
         for k, v in self.model_dump().items():
             print(f"{str(k)}: {str(v)}")
         print("-------------- End ---------------")
+
+    def hf_hub_config(self) -> dict[str, str]:
+        return {
+                "repo_id": self.llm_model.repo_id,
+                "filename": self.llm_model.filename,
+                }
+        

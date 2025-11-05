@@ -16,82 +16,6 @@ if settings.inference_type == InferenceType.LLAMA_CPP:
     except ImportError:
         raise ImportError("To use a Llama.cpp generator you have to install one of the optional dependency groups. Consult the documentation for details.")
 
-    local_models = {
-        "llama-2-7b-chat": {
-            "repo_id": "TheBloke/Llama-2-7B-Chat-GGUF",
-            "filename": "llama-2-7b-chat.Q4_0.gguf",
-        },
-        "llama-3-8b": {
-            "repo_id": "QuantFactory/Meta-Llama-3-8B-GGUF-v2",
-            "filename": "Meta-Llama-3-8B.Q4_K_M.gguf",
-        },
-        "llama-3-70b": {
-            "repo_id": "QuantFactory/Meta-Llama-3-70B-Instruct-GGUF-v2",
-            "filename": "Meta-Llama-3-70B-Instruct-v2.Q4_K_M.gguf",
-        },
-        "gemma-7b": {
-            "repo_id": "MaziyarPanahi/gemma-7b-GGUF",
-            "filename": "gemma-7b.Q4_K_M.gguf",
-        },
-        "llama-3.1-8b": {
-            "repo_id": "MaziyarPanahi/Meta-Llama-3.1-8B-Instruct-GGUF",
-            "filename": "Meta-Llama-3.1-8B-Instruct.Q4_K_M.gguf",
-        },
-        "llama-3.2-3b": {
-            "repo_id": "bartowski/Llama-3.2-3B-Instruct-GGUF",
-            "filename": "Llama-3.2-3B-Instruct-Q6_K.gguf",
-        },
-        "mistral-7b": {
-            "repo_id": "TheBloke/Mistral-7B-GGUF",
-            "filename": "mistral-7b.Q4_K_M.gguf",
-        },
-        "kuchiki-l2-7b": {
-            "repo_id": "TheBloke/Kuchiki-L2-7B-GGUF",
-            "filename": "kuchiki-l2-7b.Q4_K_M.gguf",
-        },
-        "tinyllama-1.1b-chat": {
-            "repo_id": "TheBloke/TinyLlama-1.1B-Chat-v0.3-GGUF",
-            "filename": "tinyllama-1.1b-chat-v0.3.Q4_K_M.gguf",
-        },
-        "biomistral-7b": {
-            "repo_id": "MaziyarPanahi/BioMistral-7B-GGUF",
-            "filename": "BioMistral-7B.Q4_K_M.gguf",
-        },
-        "qwen2.5-3b-instruct": {
-            "repo_id": "Qwen/Qwen2.5-3B-Instruct-GGUF",
-            "filename": "qwen2.5-3b-instruct-q5_k_m.gguf",
-        },
-        "airoboros-3b": {
-            "repo_id": "afrideva/airoboros-3b-3p0-GGUF",
-            "filename": "airoboros-3b-3p0.q4_k_m.gguf",
-        },
-        "medicine-chat": {
-            "repo_id": "TheBloke/medicine-chat-GGUF",
-            "filename": "medicine-chat.Q4_K_M.gguf",
-        },
-        "medicine-llm-13b": {
-            "repo_id": "TheBloke/medicine-LLM-13B-GGUF",
-            "filename": "medicine-llm-13b.Q3_K_S.gguf",
-        },
-        "med-llama-3-8b-v1": {
-            "repo_id": "bartowski/JSL-MedLlama-3-8B-v1.0-GGUF",
-            "filename": "JSL-MedLlama-3-8B-v1.0-Q5_K_S.gguf",
-        },
-        "med-llama-3-8b-v2": {
-            "repo_id": "bartowski/JSL-MedLlama-3-8B-v1.0-GGUF",
-            "filename": "JSL-MedLlama-3-8B-v1.0-Q4_K_M.gguf",
-        },
-        "med-llama-3-8b-v3": {
-            "repo_id": "bartowski/JSL-MedLlama-3-8B-v1.0-GGUF",
-            "filename": "JSL-MedLlama-3-8B-v1.0-Q3_K_M.gguf",
-        },
-        "med-llama-3-8b-v4": {
-            "repo_id": "bartowski/JSL-MedLlama-3-8B-v1.0-GGUF",
-            "filename": "JSL-MedLlama-3-8B-v1.0-IQ3_M.gguf",
-        },
-    }
-    
-    
     def get_local_weights(
         path_to_weights: os.PathLike | str | None, 
         temperature: float, 
@@ -146,11 +70,11 @@ if settings.inference_type == InferenceType.LLAMA_CPP:
     
     
     def download_model_from_huggingface(
-        model_name: str, 
+        filename: str,
+        repo_id: str,
         temperature: float, 
         logger: logging.Logger, 
         verbose: bool,
-        fallback_model: str = "llama-3.1-8b",
         n_ctx: int = 1024,
         n_batch: int = 32,
         max_tokens: int = 128 
@@ -168,8 +92,6 @@ if settings.inference_type == InferenceType.LLAMA_CPP:
             Logger instance for tracking progress and errors.
         verbose: bool
             If true, the generator logs information about loading weights and generation
-        fallback_model: str
-            If the model name that's specified is not in the local_models dictionary, loads this one instead. Defaults to llama-3.1-8b
         n_ctx: int
             Context size for the model
         n_batch: int
@@ -187,20 +109,15 @@ if settings.inference_type == InferenceType.LLAMA_CPP:
         ValueError
             If the model fails to download or initialize.
         """
-        logger.info(f"Loading local model: {model_name}")
+        logger.info(f"Loading local model: {filename}")
         device = -1 if (torch.cuda.is_available() or torch.backends.mps.is_available()) else 0
         logger.info(f"Using {device} GPU layers")
     
         try: 
-            model_config = local_models[model_name]
-            model_path = hf_hub_download(**model_config) 
-        except KeyError: 
-            logger.warning(f"Model {model_name} not found in local_models. Falling back to {fallback_model}")
-            model_config = local_models[fallback_model]
-            model_path = hf_hub_download(**model_config)
+            model_path = hf_hub_download(repo_id=repo_id, filename=filename) 
         except Exception as e: 
-            logger.error(f"Failed to download model {model_name}: {str(e)}")
-            raise ValueError(f"Failed to load model {model_name}: {str(e)}")
+            logger.error(f"Failed to download model {filename}: {str(e)}")
+            raise ValueError(f"Failed to load model {filename}: {str(e)}")
         
         try: 
             llm = LlamaCppGenerator(
@@ -214,8 +131,8 @@ if settings.inference_type == InferenceType.LLAMA_CPP:
                 generation_kwargs={"max_tokens": max_tokens, "temperature": temperature}
             )
         except Exception as e: 
-            logger.error(f"Failed to initialize LlamaCppGenerator for {model_name}: {str(e)}")
-            raise ValueError(f"Failed to initialize local model {model_name}: {str(e)}")
+            logger.error(f"Failed to initialize LlamaCppGenerator for {filename}: {str(e)}")
+            raise ValueError(f"Failed to initialize local model {filename}: {str(e)}")
     
         return llm 
 
@@ -301,7 +218,7 @@ def get_model(
     model: LLMModel, 
     logger: logging.Logger, 
     inference_type: InferenceType,
-    url: str,
+    url: str|None,
     temperature: float = 0.7, 
     path_to_local_weights: os.PathLike[Any] | str | None = None,
     verbose: bool = False,
@@ -333,16 +250,15 @@ def get_model(
     OpenAIGenerator | LlamaCppGenerator | OllamaGenerator
         An interface to generate text using an LLM
     """
-    model_name = model.value
     # I know a match might seem like overkill, this is in case other inference engines are added
     match inference_type:
         case InferenceType.OPEN_AI:
-            llm = connect_to_openai(model_name, temperature, logger)
+            llm = connect_to_openai(model.value, temperature, logger)
         case InferenceType.OLLAMA:
-            llm = connect_to_ollama(model_name, url, temperature, logger)
+            llm = connect_to_ollama(model.ollama_spec, url, temperature, logger)
         case _:
             if path_to_local_weights:
                 llm = get_local_weights(path_to_local_weights, temperature, logger, verbose)
             else:
-                llm = download_model_from_huggingface(model_name, temperature, logger, verbose)
+                llm = download_model_from_huggingface(model.filename, model.repo_id, temperature, logger, verbose)
     return llm
