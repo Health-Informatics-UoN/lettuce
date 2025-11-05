@@ -1,5 +1,5 @@
 from typing import Annotated, List
-from components.embeddings import EmbeddingModelName, Embeddings
+from components.embeddings import Embeddings
 from fastapi import APIRouter, Query
 
 from api_models.responses import ConceptSuggestionResponse, Suggestion, SuggestionsMetaData
@@ -72,7 +72,7 @@ async def vector_search(
         top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)]=5,
         ) -> ConceptSuggestionResponse:
     embedding_handler = Embeddings(
-            model_name=EmbeddingModelName.BGESMALL,
+            model_name=settings.embedding_model,
             embed_vocab=vocabulary,
             domain_id=domain,
             standard_concept=standard_concept,
