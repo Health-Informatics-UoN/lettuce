@@ -90,7 +90,7 @@ def ts_rank_query(
     """
     pp_search = preprocess_search_term(search_term)
     ts_query = sa.func.to_tsquery("english", pp_search)
-    ts_rank_col = sa.func.ts_rank(Concept.concept_name_tsv, ts_query).label("ts_rank")
+    ts_rank_col = sa.func.ts_rank(Concept.concept_name_tsv, ts_query, 16).label("ts_rank")
     query = select(
             Concept.concept_name,
             Concept.concept_id,
