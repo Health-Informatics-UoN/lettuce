@@ -1,11 +1,7 @@
 import marimo
 
 __generated_with = "0.16.5"
-app = marimo.App(
-    width="medium",
-    app_title="Lettuce",
-    layout_file="layouts/ui.grid.json",
-)
+app = marimo.App(width="full", app_title="Lettuce")
 
 
 @app.cell
@@ -20,7 +16,6 @@ def _():
     from dataclasses import dataclass
     import marimo as mo
     import polars as pl
-    from sentence_transformers import SentenceTransformer
 
     from omop.db_manager import get_session
     from omop.omop_queries import (
@@ -28,17 +23,25 @@ def _():
         get_vocabs,
         ts_rank_query,
         query_vector,
+        query_ids_matching_name,
     )
+    from components.models import connect_to_ollama
+    from components.pipeline import LLMPipeline
+    from components.embeddings import EmbeddingModel, Embeddings
+    from utils.logging_utils import logger
     return (
+        Embeddings,
+        LLMPipeline,
         List,
-        SentenceTransformer,
+        connect_to_ollama,
         dataclass,
         get_domains,
         get_session,
         get_vocabs,
+        logger,
         mo,
         pl,
-        query_vector,
+        query_ids_matching_name,
         ts_rank_query,
     )
 
@@ -52,16 +55,24 @@ def _(dataclass):
         domain_id: str
         vocabulary_id: str
         standard_concept: str
+        score: float = 0
     return (ConceptSuggestion,)
 
 
 @app.cell
 def _(
     ConceptSuggestion,
+    Embeddings,
+    LLMPipeline,
     List,
-    embed_model,
+    connect_to_ollama,
+    embeddings_model_name,
     get_session,
-    query_vector,
+    llm_name,
+    llm_url,
+    logger,
+    query_ids_matching_name,
+    top_k,
     ts_rank_query,
 ):
     def search(
@@ -79,57 +90,153 @@ def _(
                 vocabulary_id=vocabulary,
                 standard_concept=standard_concept,
                 valid_concept=valid_concept,
-                top_k=5,
+                top_k=10,
             )
             with get_session() as session:
                 results = session.execute(query).fetchall()
-                return [
-                    ConceptSuggestion(
-                        concept_id=r.concept_id,
-                        concept_name=r.concept_name,
-                        domain_id=r.domain_id,
-                        vocabulary_id=r.vocabulary_id,
-                        standard_concept=r.standard_concept,
-                    )
-                    for r in results
-                ]
+            return [
+                ConceptSuggestion(
+                    concept_id=r.concept_id,
+                    concept_name=r.concept_name,
+                    domain_id=r.domain_id,
+                    vocabulary_id=r.vocabulary_id,
+                    standard_concept=r.standard_concept,
+                )
+                for r in results
+            ]
         elif search_mode == "vector-search":
-            query_embedding = embed_model.encode(search_term)
-            query = query_vector(
-                query_embedding=query_embedding,
-                domain_id=domain,
+            embedding_handler = Embeddings(
+                model_name=embeddings_model_name.value,
                 embed_vocab=vocabulary,
+                domain_id=domain,
                 standard_concept=standard_concept,
                 valid_concept=valid_concept,
-                describe_concept=True,
+                top_k=10,
+            )
+            embedder = embedding_handler.get_embedder()
+            embedding = embedder.run(search_term)
+            retriever = embedding_handler.get_retriever()
+            results = retriever.run(embedding["embedding"], describe_concept=True)
+            print(results)
+            return [
+                ConceptSuggestion(
+                    concept_id=r.Concept.concept_id,
+                    concept_name=r.Concept.concept_name,
+                    domain_id=r.Concept.domain_id,
+                    vocabulary_id=r.Concept.vocabulary_id,
+                    standard_concept=r.Concept.standard_concept,
+                    score=r.score,
+                )
+                for r in results
+            ]
+        else:
+            llm = connect_to_ollama(
+                model_name=llm_name.value,
+                url=llm_url.value,
+                temperature=0.7,
+                logger=logger,
+            )
+            assistant = LLMPipeline(
+                llm=llm,
+                temperature=0,
+                logger=logger,
+                embed_vocab=vocabulary,
+                standard_concept=standard_concept,
+            ).get_rag_assistant()
+            answer = assistant.run(
+                {
+                    "prompt": {"informal_name": search_term, "domain": domain},
+                    "query_embedder": {"text": search_term},
+                },
+            )
+            reply = answer["llm"]["replies"][0].strip()
+            query = query_ids_matching_name(
+                query_concept=reply, vocabulary_ids=vocabulary, full_concept=True
             )
             with get_session() as session:
                 results = session.execute(query).fetchall()
                 return [
                     ConceptSuggestion(
-                        concept_id=r[0].concept_id,
-                        concept_name=r[0].concept_name,
-                        domain_id=r[0].domain_id,
-                        vocabulary_id=r[0].vocabulary_id,
-                        standard_concept=r[0].standard_concept,
+                        concept_id=r[1],
+                        concept_name=r[0],
+                        domain_id=r[3],
+                        vocabulary_id=r[4],
+                        standard_concept=r[6],
                     )
                     for r in results
                 ]
-        else:
-            # TODO: Implement ai-search
-            raise NotImplementedError("I've not done the ai-search yet!")
+            if len(results) == 0:
+                ts_query = ts_rank_query(
+                    search_term=reply,
+                    vocabulary_id=vocabulary,
+                    domain_id=domain,
+                    standard_concept=standard_concept,
+                    valid_concept=valid_concept,
+                    top_k=top_k,
+                )
+                with get_session() as session:
+                    results = session.execute(ts_query).fetchall()
+                return [
+                    ConceptSuggestion(
+                        concept_id=r.Concept.concept_id,
+                        concept_name=r.Concept.concept_name,
+                        domain_id=r.Concept.domain_id,
+                        vocabulary_id=r.Concept.vocabulary_id,
+                        standard_concept=r.Concept.standard_concept,
+                    )
+                    for r in results
+                ]
     return (search,)
 
 
 @app.cell
 def _(mo):
-    embeddings_model_name = mo.ui.text(value="BAAI/bge-small-en-v1.5")
+    def update_search_options(search_options):
+        if embeddings_enabled.value:
+            search_options.add("vector-search")
+        elif "vector-search" in search_options:
+            search_options.remove("vector-search")
+
+
+    embeddings_model_name = mo.ui.text(value="BGESMALL")
     embeddings_enabled = mo.ui.checkbox(value=False)
-    return embeddings_enabled, embeddings_model_name
+
+    llm_enabled = mo.ui.checkbox(value=False)
+    llm_inference = mo.ui.dropdown(["Ollama", "Llama.cpp"], value="Ollama")
+    llm_url = mo.ui.text(value="http://localhost:11434")
+    llm_name = mo.ui.text(value="gemma3n:e4b")
+    return (
+        embeddings_enabled,
+        embeddings_model_name,
+        llm_enabled,
+        llm_name,
+        llm_url,
+    )
 
 
 @app.cell
-def _(embeddings_enabled, embeddings_model_name, mo):
+def _(embeddings_enabled, llm_enabled):
+    if embeddings_enabled.value:
+        from sentence_transformers import SentenceTransformer
+
+        if llm_enabled.value:
+            search_options = ["text-search", "vector-search", "ai-search"]
+        else:
+            search_options = ["text-search", "vector-search"]
+    else:
+        search_options = ["text-search"]
+    return (search_options,)
+
+
+@app.cell
+def _(
+    embeddings_enabled,
+    embeddings_model_name,
+    llm_enabled,
+    llm_name,
+    llm_url,
+    mo,
+):
     config = mo.sidebar(
         [
             mo.md("## Configuration"),
@@ -139,25 +246,16 @@ def _(embeddings_enabled, embeddings_model_name, mo):
             mo.md(f"Enable embeddings? {embeddings_enabled}"),
             mo.md("### LLM"),
             mo.md(
-                "To use the LLM, you must either have installed one of the llama-cpp extras or have an Ollama server running"
+                "To use the LLM, you must either have installed one of the llama-cpp extras or have an Ollama server running, and to have enabled embeddings."
             ),
-            mo.ui.dropdown(
-                ["Ollama", "Llama.cpp"], value="Ollama", label="Inference type\n"
-            ),
-            mo.ui.text(value="http://localhost:11434", label="Ollama URL"),
-            mo.ui.text(value="gemma3n:e4b", label="Model name"),
+            mo.md(f"Enable LLM? {llm_enabled}"),
+            mo.md(f"Ollama URL: {llm_url}"),
+            mo.md(f"Model name: {llm_name}"),
         ]
     )
 
     config
     return
-
-
-@app.cell
-def _(SentenceTransformer, embeddings_enabled, embeddings_model_name):
-    if embeddings_enabled.value:
-        embed_model = SentenceTransformer(embeddings_model_name.value)
-    return (embed_model,)
 
 
 @app.cell
@@ -172,7 +270,7 @@ def _(get_domains, get_session, get_vocabs):
 
 @app.cell
 def _(mo):
-    source_file = mo.ui.file(filetypes=[".csv"])
+    source_file = mo.ui.file(filetypes=[".csv"], label="Upload source file")
     source_file
     return (source_file,)
 
@@ -189,10 +287,17 @@ def _(mo, pl, source_file):
 
 
 @app.cell
-def _(domains, mo, search, source_df, source_term_column, vocabs):
+def _(
+    domains,
+    mo,
+    search,
+    search_options,
+    source_df,
+    source_term_column,
+    vocabs,
+):
     # Create arrays for each column of inputs
     source_terms = source_df[source_term_column.value].to_list()
-    # TODO: initialise results with text-search
     get_preferences, set_preferences = mo.state(
         {
             "domain_dropdowns": mo.ui.array(
@@ -210,7 +315,7 @@ def _(domains, mo, search, source_df, source_term_column, vocabs):
             "search_modes": mo.ui.array(
                 [
                     mo.ui.dropdown(
-                        ["text-search", "vector-search", "ai-search"],
+                        search_options,
                         value="text-search",
                     )
                     for _ in range(len(source_terms))
@@ -222,12 +327,22 @@ def _(domains, mo, search, source_df, source_term_column, vocabs):
     get_results, set_results = mo.state(
         {i: search(v) for i, v in enumerate(source_terms)}
     )
-    return get_preferences, get_results, set_results, source_terms
+
+    get_accepted, set_accepted = mo.state(
+        {i: None for i in range(len(source_terms))}
+    )
+    return (
+        get_accepted,
+        get_preferences,
+        get_results,
+        set_accepted,
+        set_results,
+        source_terms,
+    )
 
 
 @app.cell
 def _(get_results, search, set_results):
-    # Modified search function that stores results
     def search_and_store(
         i,
         source_term,
@@ -256,7 +371,24 @@ def _(get_results, search, set_results):
 
 
 @app.cell
-def _(get_preferences, get_results, mo, search_and_store, source_terms):
+def _(get_accepted, set_accepted):
+    def choose_result(source_term_index, chosen_result):
+        current_accepted = get_accepted()
+        current_accepted[source_term_index] = chosen_result
+        set_accepted(current_accepted)
+    return (choose_result,)
+
+
+@app.cell
+def _(
+    choose_result,
+    get_accepted,
+    get_preferences,
+    get_results,
+    mo,
+    search_and_store,
+    source_terms,
+):
     submit_buttons = mo.ui.array(
         [
             mo.ui.button(
@@ -274,38 +406,94 @@ def _(get_preferences, get_results, mo, search_and_store, source_terms):
             for i in range(len(source_terms))
         ]
     )
-    # TODO: separate fields, dropdown for concept_id
-    # TODO: persist selections with state
     # Show name as link to athena for concept
     view_suggestion = mo.ui.array(
         [
             mo.ui.dropdown(
                 options={
-                    f"{result.concept_name} ({result.concept_id})": result
+                    result.concept_name: result
                     for result in get_results().get(i, [])
                 }
                 if get_results().get(i)
-                else {}
+                else {},
+                on_change=lambda v, i=i: choose_result(i, v),
             )
             for i in range(len(source_terms))
         ]
     )
     # Create the table
-    table = mo.ui.table(
+    search_table = mo.ui.table(
         {
             "Source term": source_terms,
             "Domain": list(get_preferences()["domain_dropdowns"]),
             "Vocabulary": list(get_preferences()["vocabularies_dropdowns"]),
-            "Standard Concept": list(
+            "Standard\nConcept": list(
                 get_preferences()["standard_concept_checkboxes"]
             ),
-            "Valid Concept": list(get_preferences()["valid_concept_checkboxes"]),
-            "Search mode": list(get_preferences()["search_modes"]),
+            "Valid\nConcept": list(get_preferences()["valid_concept_checkboxes"]),
+            "Search\nmode": list(get_preferences()["search_modes"]),
             "Submit": list(submit_buttons),
             "Suggestion": list(view_suggestion),
+            "Concept ID": [
+                mo.md(
+                    f"[{concept.concept_id}](https://athena.ohdsi.org/search-terms/terms/{concept.concept_id})"
+                )
+                if concept is not None
+                else ""
+                for concept in get_accepted().values()
+            ],
         }
     )
-    table
+    return search_table, view_suggestion
+
+
+@app.cell
+def _(get_accepted, mo, source_terms, view_suggestion):
+    suggestions_table = mo.ui.table(
+        {
+            "Source term": source_terms,
+            "Suggestion": list(view_suggestion),
+            "Concept ID": [
+                mo.md(
+                    f"[{concept.concept_id}](https://athena.ohdsi.org/search-terms/terms/{concept.concept_id})"
+                )
+                if concept is not None
+                else ""
+                for concept in get_accepted().values()
+            ],
+            "Concept Name": [
+                mo.md(concept.concept_name) if concept is not None else ""
+                for concept in get_accepted().values()
+            ],
+            "Domain ID": [
+                mo.md(concept.domain_id) if concept is not None else ""
+                for concept in get_accepted().values()
+            ],
+            "Vocabulary ID": [
+                mo.md(concept.vocabulary_id) if concept is not None else ""
+                for concept in get_accepted().values()
+            ],
+            "Standard Concept": [
+                mo.md(concept.standard_concept) if concept is not None and concept.standard_concept is not None else ""
+                for concept in get_accepted().values()
+            ],
+            "Score": [
+                concept.score if concept is not None and concept.score is not None else ""
+                for concept in get_accepted().values()
+            ]
+        }
+    )
+    return (suggestions_table,)
+
+
+@app.cell
+def _(mo, search_table, suggestions_table):
+    mo.ui.tabs(
+        {
+            "Search concepts": search_table,
+            "View suggestions": suggestions_table
+        }
+    )
     return
 
 
