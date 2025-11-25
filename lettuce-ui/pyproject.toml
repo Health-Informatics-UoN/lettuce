@@ -16,3 +16,5 @@ dependencies = [
 [tool.uv.sources]
 lettuce = { workspace = true }
 
+[project.scripts]
+lettuce-ui = "cli:main"
