@@ -1,0 +1,11 @@
+source_term,search_term,domains,vocabs,search_standard_concept,valid_concept,search_mode,concept_id,concept_name,domain_id,vocabulary_id,standard_concept,score
+Memantine HCL,Memantine HCL,[],[],true,true,text-search,701322,memantine,Drug,RxNorm,S,0.0
+Ppaliperidone (3-month),,,,,,,,,,,,
+Trazidine,,,,,,,,,,,,
+Trazodone HCL,,,,,,,,,,,,
+Amitriptyline HCl,,,,,,,,,,,,
+Amitriptyline,,,,,,,,,,,,
+Ropiniroy,,,,,,,,,,,,
+LePax,,,,,,,,,,,,
+Mirtazapine Orodispersible,,,,,,,,,,,,
+Mirtazapine Soltab,,,,,,,,,,,,
