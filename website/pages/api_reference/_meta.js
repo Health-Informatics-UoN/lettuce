@@ -1,8 +1,8 @@
 export default {
   api: "API",
-  api_models: "API models",
-  assistant: "Assistant",
   cli: "CLI",
+  ui: "UI",
+  api_models: "API models",
   components: "Components",
   omop: "OMOP",
   options: "Options",
