@@ -56,7 +56,7 @@ def _(List, Literal, dataclass):
         domain_id: str
         vocabulary_id: str
         standard_concept: str
-        score: float = 0
+        score: float = 0.0
 
     @dataclass
     class SuggestionRecord:
@@ -81,7 +81,7 @@ def _(List, Literal, dataclass):
         domain_id: str
         vocabulary_id: str
         standard_concept: str
-        score: float = 0
+        score: float = 0.0
     return AcceptedSuggestion, ConceptSuggestion, SuggestionRecord
 
 
@@ -629,7 +629,7 @@ def _(mo, save_filename, save_suggestions):
 
 @app.cell
 def _(mo, save_button, save_filename):
-    mo.md(f"{save_filename}\t{save_button}")
+    mo.md(f"""{save_filename}\t{save_button}""")
     return
 
 
