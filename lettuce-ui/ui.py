@@ -12,7 +12,7 @@ def _(mo):
 
 @app.cell
 def _():
-    from typing import List
+    from typing import List, Literal
     from dataclasses import dataclass
     import marimo as mo
     import polars as pl
@@ -33,6 +33,7 @@ def _():
         Embeddings,
         LLMPipeline,
         List,
+        Literal,
         connect_to_ollama,
         dataclass,
         get_domains,
@@ -47,7 +48,7 @@ def _():
 
 
 @app.cell
-def _(dataclass):
+def _(List, Literal, dataclass):
     @dataclass
     class ConceptSuggestion:
         concept_id: int
@@ -56,7 +57,32 @@ def _(dataclass):
         vocabulary_id: str
         standard_concept: str
         score: float = 0
-    return (ConceptSuggestion,)
+
+    @dataclass
+    class SuggestionRecord:
+        search_term: str
+        domains: List[str]
+        vocabs: List[str]
+        standard_concept: bool
+        valid_concept: bool
+        search_mode: Literal["text-search", "vector-search", "ai-search"]
+        suggestion: ConceptSuggestion
+
+    @dataclass
+    class AcceptedSuggestion:
+        search_term: str
+        domains: List[str]
+        vocabs: List[str]
+        search_standard_concept: bool
+        valid_concept: bool
+        search_mode: Literal["text-search", "vector-search", "ai-search"]
+        concept_id: int
+        concept_name: str
+        domain_id: str
+        vocabulary_id: str
+        standard_concept: str
+        score: float = 0
+    return AcceptedSuggestion, ConceptSuggestion, SuggestionRecord
 
 
 @app.cell
@@ -287,7 +313,24 @@ def _(mo, pl, source_file):
 
 
 @app.cell
+def _(domains, mo):
+    default_domains = mo.ui.multiselect(domains, label="Default domains to search")
+    default_domains
+    return (default_domains,)
+
+
+@app.cell
+def _(mo, vocabs):
+    default_vocabs = mo.ui.multiselect(vocabs, label="Default vocabularies to search")
+    default_vocabs
+    return (default_vocabs,)
+
+
+@app.cell
 def _(
+    SuggestionRecord,
+    default_domains,
+    default_vocabs,
     domains,
     mo,
     search,
@@ -300,11 +343,14 @@ def _(
     source_terms = source_df[source_term_column.value].to_list()
     get_preferences, set_preferences = mo.state(
         {
+            "search_terms": mo.ui.array(
+                [mo.ui.text(value=source_term) for source_term in source_terms]
+            ),
             "domain_dropdowns": mo.ui.array(
-                [mo.ui.multiselect(domains) for _ in range(len(source_terms))]
+                [mo.ui.multiselect(domains, value=default_domains.value) for _ in range(len(source_terms))]
             ),
             "vocabularies_dropdowns": mo.ui.array(
-                [mo.ui.multiselect(vocabs) for _ in range(len(source_terms))]
+                [mo.ui.multiselect(vocabs, value=default_vocabs.value) for _ in range(len(source_terms))]
             ),
             "standard_concept_checkboxes": mo.ui.array(
                 [mo.ui.checkbox(value=True) for _ in range(len(source_terms))]
@@ -325,7 +371,15 @@ def _(
     )
 
     get_results, set_results = mo.state(
-        {i: search(v) for i, v in enumerate(source_terms)}
+        {i: SuggestionRecord(
+            search_term=v,
+            domains=[],
+            vocabs=[],
+            standard_concept=True,
+            valid_concept=True,
+            search_mode="text-search",
+            suggestion=search(v)
+        ) for i, v in enumerate(source_terms)}
     )
 
     get_accepted, set_accepted = mo.state(
@@ -342,10 +396,10 @@ def _(
 
 
 @app.cell
-def _(get_results, search, set_results):
+def _(SuggestionRecord, get_results, search, set_results):
     def search_and_store(
         i,
-        source_term,
+        search_term,
         domain,
         vocabulary,
         standard_concept,
@@ -357,7 +411,7 @@ def _(get_results, search, set_results):
         if vocabulary == []:
             vocabulary = None
         results = search(
-            search_term=source_term,
+            search_term=search_term,
             domain=domain,
             vocabulary=vocabulary,
             standard_concept=standard_concept,
@@ -365,16 +419,41 @@ def _(get_results, search, set_results):
             search_mode=search_mode,
         )
         current_results = get_results()
-        current_results[i] = results
+        current_results[i] = SuggestionRecord(
+            search_term=search_term,
+            domains=domain,
+            vocabs=vocabulary,
+            standard_concept=standard_concept,
+            valid_concept=valid_concept,
+            search_mode=search_mode,
+            suggestion=results
+        )
         set_results(current_results)
     return (search_and_store,)
 
 
 @app.cell
-def _(get_accepted, set_accepted):
+def _(AcceptedSuggestion, get_accepted, get_results, set_accepted):
     def choose_result(source_term_index, chosen_result):
+        # More and more I want to refactor this.
+        # I might have reached the limits of not encapsulating this properly
         current_accepted = get_accepted()
-        current_accepted[source_term_index] = chosen_result
+        current_suggestions = get_results()
+        suggestion = current_suggestions[source_term_index]
+        current_accepted[source_term_index] = AcceptedSuggestion(
+            search_term=suggestion.search_term,
+            domains=suggestion.domains,
+            vocabs=suggestion.vocabs,
+            search_standard_concept=suggestion.standard_concept,
+            valid_concept=suggestion.valid_concept,
+            search_mode=suggestion.search_mode,
+            concept_id=chosen_result.concept_id,
+            concept_name=chosen_result.concept_name,
+            domain_id=chosen_result.domain_id,
+            vocabulary_id=chosen_result.vocabulary_id,
+            standard_concept=chosen_result.standard_concept,
+            score=chosen_result.score,
+        )
         set_accepted(current_accepted)
     return (choose_result,)
 
@@ -395,7 +474,7 @@ def _(
                 label="Submit",
                 on_change=lambda v, i=i: search_and_store(
                     i,
-                    source_terms[i],
+                    get_preferences()["search_terms"][i].value,
                     get_preferences()["domain_dropdowns"][i].value,
                     get_preferences()["vocabularies_dropdowns"][i].value,
                     get_preferences()["standard_concept_checkboxes"][i].value,
@@ -412,7 +491,7 @@ def _(
             mo.ui.dropdown(
                 options={
                     result.concept_name: result
-                    for result in get_results().get(i, [])
+                    for result in get_results().get(i, []).suggestion
                 }
                 if get_results().get(i)
                 else {},
@@ -424,7 +503,7 @@ def _(
     # Create the table
     search_table = mo.ui.table(
         {
-            "Source term": source_terms,
+            "Source term": list(get_preferences()["search_terms"]),
             "Domain": list(get_preferences()["domain_dropdowns"]),
             "Vocabulary": list(get_preferences()["vocabularies_dropdowns"]),
             "Standard\nConcept": list(
@@ -494,6 +573,38 @@ def _(mo, search_table, suggestions_table):
             "View suggestions": suggestions_table
         }
     )
+    return
+
+
+@app.cell
+def _(get_accepted, pl):
+    def save_suggestions(filename: str):
+        accepted = pl.DataFrame(get_accepted().values())
+        print(accepted)
+    return (save_suggestions,)
+
+
+@app.cell
+def _(mo):
+    save_filename = mo.ui.text(label="Filename for results", value="search-results.csv")
+    return (save_filename,)
+
+
+@app.cell
+def _(mo, save_filename, save_suggestions):
+    save_button = mo.ui.button(label="Save results", on_click=save_suggestions(save_filename.value))
+    return (save_button,)
+
+
+@app.cell
+def _(save_button):
+    save_button
+    return
+
+
+@app.cell
+def _(get_accepted, pl):
+    pl.DataFrame([v for k,v in get_accepted().items()])
     return
 
 
