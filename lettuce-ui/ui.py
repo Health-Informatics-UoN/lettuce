@@ -577,10 +577,41 @@ def _(mo, search_table, suggestions_table):
 
 
 @app.cell
-def _(get_accepted, pl):
+def _(get_accepted, pl, source_terms):
     def save_suggestions(filename: str):
-        accepted = pl.DataFrame(get_accepted().values())
-        print(accepted)
+        accepted = [v for v in get_accepted().values()]
+        save_dict = {
+            "source_term": [],
+            "search_term": [None for _ in range(len(source_terms))],
+            "domains": [None for _ in range(len(source_terms))],
+            "vocabs": [None for _ in range(len(source_terms))],
+            "search_standard_concept": [None for _ in range(len(source_terms))],
+            "valid_concept": [None for _ in range(len(source_terms))],
+            "search_mode": [None for _ in range(len(source_terms))],
+            "concept_id": [None for _ in range(len(source_terms))],
+            "concept_name": [None for _ in range(len(source_terms))],
+            "domain_id": [None for _ in range(len(source_terms))],
+            "vocabulary_id": [None for _ in range(len(source_terms))],
+            "standard_concept": [None for _ in range(len(source_terms))],
+            "score": [None for _ in range(len(source_terms))],
+        }
+        for i in range(len(source_terms)):
+            save_dict["source_term"].append(source_terms[i])
+            if accepted[i] is not None:
+                save_dict["search_term"][i] = accepted[i].search_term
+                save_dict["domains"][i] = str(accepted[i].domains)
+                save_dict["vocabs"][i] = str(accepted[i].vocabs)
+                save_dict["search_standard_concept"][i] = accepted[i].search_standard_concept
+                save_dict["valid_concept"][i] = accepted[i].valid_concept
+                save_dict["search_mode"][i] = accepted[i].search_mode
+                save_dict["concept_id"][i] = accepted[i].concept_id
+                save_dict["concept_name"][i] = accepted[i].concept_name
+                save_dict["domain_id"][i] = accepted[i].domain_id
+                save_dict["vocabulary_id"][i] = accepted[i].vocabulary_id
+                save_dict["standard_concept"][i] = accepted[i].standard_concept
+                save_dict["score"][i] = accepted[i].score
+
+        pl.DataFrame(save_dict).write_csv(filename)
     return (save_suggestions,)
 
 
@@ -597,14 +628,8 @@ def _(mo, save_filename, save_suggestions):
 
 
 @app.cell
-def _(save_button):
-    save_button
-    return
-
-
-@app.cell
-def _(get_accepted, pl):
-    pl.DataFrame([v for k,v in get_accepted().items()])
+def _(mo, save_button, save_filename):
+    mo.md(f"{save_filename}\t{save_button}")
     return
 
 
