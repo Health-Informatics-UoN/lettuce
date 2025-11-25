@@ -18,6 +18,28 @@ Build a query to count the total number of distinct concepts in the database.
 
 SQLAlchemy Select object that returns the count of distinct concept_ids in the Concept table.
 
+### `get_domains`
+```python
+def get_domains() -> Select:
+```
+Build a query to retrieve the domain IDs from the concepts in your OMOP-CDM database in order of the number of concepts in that domain.
+
+#### Returns
+`Select`
+
+SQLAlchemy Select object that returns the distinct domain_ids in the concept table
+
+### `get_domains`
+```python
+def get_vocabs() -> Select:
+```
+Build a query to retrieve the vocabulary IDs from the concepts in your OMOP-CDM database in order of the number of concepts in that vocabulary.
+
+#### Returns
+`Select`
+
+SQLAlchemy Select object that returns the distinct vocabulary_id in the concept table
+
 ### `ts_rank_query`
 ```python
 def ts_rank_query(

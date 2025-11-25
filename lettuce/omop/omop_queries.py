@@ -42,7 +42,7 @@ def get_domains() -> Select:
 def get_vocabs() -> Select:
     """
     Build a query to retrieve the vocabulary IDs from the concepts in your OMOP-CDM
-    database in order of the number of concepts in that domain
+    database in order of the number of concepts in that vocabulary
 
     Returns
     -------

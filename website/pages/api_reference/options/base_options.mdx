@@ -94,6 +94,18 @@ db_password: password
 -------------- End ---------------
 ```
 
+##### `hf_hub_config`
+```python
+def hf_hub_config(self) -> dict[str,str]:
+```
+
+Returns a dictionary containing `repo_id` and `filename` for downloading from huggingface.
+
+###### Returns
+`dict`
+  A dictionary containing the details for downloading a model from huggingface.
+
+
 ## Environment Variables
 
 The `BaseOptions` class automatically loads configuration from environment variables and `.env` files. Environment variables should be prefixed with the field name in uppercase:

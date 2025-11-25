@@ -8,8 +8,13 @@ The `pipeline_options.py` module contains the `LLMModel` enum and `PipelineOptio
 class LLMModel()
 ```
 
-This enum holds the names of the different models the assistant can use.
-Details of the models implemented can be found [here](/api_reference/components/models). 
+This enum holds the names and details of the different models the assistant can use.
+Each variant is a tuple containing
+
+- `name`: The string used to define the variant in the environment
+- `ollama_spec`: The string used to call the model in Ollama
+- `repo_id`: The repository ID in huggingface
+- `filename`: The filename in the huggingface repository
 
 ### Methods
 
@@ -78,3 +83,28 @@ can take these as input in the API request.
 
 `max_separation_ancestor: int`
     The maximum separation to search for concept ancestors
+
+## Implemented models
+
+| Model name | Summary |
+|:-----------|--------:|
+|[llama-3.1-8b](https://huggingface.co/MaziyarPanahi/Meta-Llama-3.1-8B-Instruct-GGUF)| **Recommended** Meta's Llama 3.1 with 8 billion parameters, quantized to 4 bits|
+|[llama-2-7b-chat](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF)| Meta's Llama 2 with 7 billion parameters, quantized to 4 bits |
+|[llama-3-8b](https://huggingface.co/QuantFactory/Meta-Llama-3-8B-GGUF-v2)| Meta's Llama 3 with 8 billion parameters, quantized to 4 bits |
+|[llama-3-70b](https://huggingface.co/QuantFactory/Meta-Llama-3-70B-Instruct-GGUF-v2)| Meta's Llama 3 with 70 billion parameters, quantized to 4 bits| 
+|[gemma-7b](https://huggingface.co/MaziyarPanahi/gemma-7b-GGUF)| Google's Gemma with 7 billion parameters, quantized to 4 bits |
+|[llama-3.2-3b](https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF)| Meta's Llama 3.2 with 3 billion parameters, quantized to 6 bits|
+|[mistral-7b](https://huggingface.co/TheBloke/Mistral-7B-GGUF)| Mistral at 7 billion parameters, quantized to 4 bits |
+|[kuchiki-l2-7b](https://huggingface.co/TheBloke/Kuchiki-L2-7B-GGUF)| A merge of several models at 7 billion parameters, quantized to 4 bits|
+|[tinyllama-1.1b-chat](https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v0.3-GGUF)| Llama 2 extensively pre-trained, with 1.1 billion parameters, quantized to 4 bits|
+|[biomistral-7b](https://huggingface.co/MaziyarPanahi/BioMistral-7B-GGUF)| Mistral at 7 billion parameters, pre-trained on biomedical data, quantized to 4 bits|
+|[qwen2.5-3b-instruct](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF)| Alibaba's Qwen 2.5 at 3 billion parameters, quantized to 5 bits |
+|[airoboros-3b](https://huggingface.co/afrideva/airoboros-3b-3p0-GGUF)| Llama 2 pre-trained on the airoboros 3.0 dataset at 3 billion parameters, quantized to 4 bits |
+|[medicine-chat](https://huggingface.co/TheBloke/medicine-chat-GGUF)| Llama 2 pre-trained on medical data, quantized to 4 bits |
+|[medicine-llm-13b](https://huggingface.co/TheBloke/medicine-LLM-13B-GGUF)| Llama pre-trained on medical data at 13 billion parameters, quantized to 3 bits|
+|[med-llama-3-8b-v1](https://huggingface.co/bartowski/JSL-MedLlama-3-8B-v1.0-GGUF)| Llama 3 at 8 billion parameters, pre-trained on medical data, quantized to 5 bits |
+|[med-llama-3-8b-v2](https://huggingface.co/bartowski/JSL-MedLlama-3-8B-v1.0-GGUF)| Llama 3 at 8 billion parameters, pre-trained on medical data, quantized to 4 bits |
+|[med-llama-3-8b-v3](https://huggingface.co/bartowski/JSL-MedLlama-3-8B-v1.0-GGUF)| Llama 3 at 8 billion parameters, pre-trained on medical data, quantized to 3 bits |
+|[med-llama-3-8b-v4](https://huggingface.co/bartowski/JSL-MedLlama-3-8B-v1.0-GGUF)| Llama 3 at 8 billion parameters, pre-trained on medical data, quantized to 3 bits |
+
+If you would like to add a model, [raise an issue](https://github.com/Health-Informatics-UoN/lettuce/issues)
