@@ -2,15 +2,15 @@ import time
 from typing import List, Optional
 from typing_extensions import Annotated
 
-from components.embeddings import Embeddings, EmbeddingModelName
+from components.embeddings import Embeddings
 from components.pipeline import LLMPipeline
 from components.result import LettuceResult
 from options.base_options import BaseOptions
-from options.pipeline_options import LLMModel
 from omop.omop_match import OMOPMatcher
 from utils.logging_utils import logger
 
 import typer
+from rich import print
 
 app = typer.Typer()
 
@@ -100,8 +100,9 @@ def search(
     for query, result in zip(results, db_results):
         query.add_matches(result, search_threshold)
 
+    print("----- Results -------")
     print([result.to_dict() for result in results])
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    typer.run(search)
