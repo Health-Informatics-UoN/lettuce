@@ -18,6 +18,7 @@ ENV PATH="/src/.venv/bin:$PATH"
 ENV INFERENCE_TYPE="llama-cpp-python"
 WORKDIR /src
 COPY --from=builder /src/.venv /src/.venv
+RUN echo $(ls -l /src/.venv)
 
 LABEL org.opencontainers.image.title=Lettuce
 LABEL org.opencontainers.image.description=lettuce-dev-base 
