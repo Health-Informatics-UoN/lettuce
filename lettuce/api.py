@@ -4,7 +4,7 @@ from typing import Set
 from fastapi import FastAPI, Depends, HTTPException, status  
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials 
-from routers import pipeline_routes, search_routes
+from routers import search_routes
 from options.base_options import BaseOptions
 
 settings = BaseOptions()
@@ -68,12 +68,6 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
-
-app.include_router(
-    router=pipeline_routes.router,
-    prefix="/pipeline",
-    dependencies=[Depends(verify_api_key)]  
 )
 
 app.include_router(

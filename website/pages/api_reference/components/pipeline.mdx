@@ -14,7 +14,7 @@ This may or may not include `LlamaCppGenerator`, depending on your configuration
 This class generates pipelines that connect LLMs with prompts and optionally vector search capabilities.
 ```python
 class LLMPipeline(
-    llm_model: LLMModel,
+    llm_model: Generator,
     temperature: float,
     logger: Logger,
     embed_vocab: list[str] | None = None,
