@@ -3,6 +3,24 @@ from typing import List, Literal
 
 @dataclass
 class ConceptSuggestion:
+    """
+    A dataclass to hold a suggested concept
+
+    Attributes
+    ----------
+    concept_id: int
+        The concept_id from the concept table
+    concept_name: str
+        The concept_name from the concept table
+    domain_id: str
+        The domain_id from the concept table
+    vocabulary_id: str
+        The vocabulary_id from the concept table
+    standard_concept: str
+        The standard_concept from the concept table
+    score: float
+        If the concept has been retrieved with a score, this is it, else 0.0
+    """
     concept_id: int
     concept_name: str
     domain_id: str
@@ -12,6 +30,36 @@ class ConceptSuggestion:
 
 @dataclass
 class AcceptedSuggestion:
+    """
+    A dataclass to hold a suggestion accepted by a user
+
+    Attributes
+    ----------
+    search_term: str
+        The search term used to find the accepted concept
+    domains: List[str]
+        The domains used to find the accepted concept
+    vocabs: List[str]
+        The vocabularies used to find the accepted concept
+    search_standard_concept: bool
+        Whether only standard concepts were included in search
+    valid_concept: bool
+        Whether only valid concepts were included in search
+    search_mode: Literal["text-search", "vector-search", "ai-search"]
+        The search mode used to find the concept
+    concept_id: int
+        The concept_id from the concept table
+    concept_name: str
+        The concept_name from the concept table
+    domain_id: str
+        The domain_id from the concept table
+    vocabulary_id: str
+        The vocabulary_id from the concept table
+    standard_concept: str
+        The standard_concept from the concept table
+    score: float
+        If the concept has been retrieved with a score, this is it, else 0.0
+    """
     search_term: str
     domains: List[str]
     vocabs: List[str]
@@ -27,6 +75,26 @@ class AcceptedSuggestion:
     
 @dataclass
 class SuggestionRecord:
+    """
+    A dataclass to hold the concepts retrieved by a search
+
+    Attributes
+    ----------
+    search_term: str
+        The search term used in search
+    domains: List[str]
+        The domains included in search
+    vocabs: List[str]
+        The vocabularies included in search
+    standard_concept: bool
+        Whether only standard concepts were included in search 
+    valid_concept: bool
+        Whether only valid concepts were included in search
+    search_mode: Literal["text-search", "vector-search", "ai-search"]
+        The search mode used to find concepts
+    suggestion: List[ConceptSuggestion]
+        Details of the concepts in search results
+    """
     search_term: str
     domains: List[str]
     vocabs: List[str]
