@@ -17,4 +17,4 @@ dependencies = [
 lettuce = { workspace = true }
 
 [project.scripts]
-lettuce-ui = "cli:main"
+lettuce-ui = "ui_launcher:main"
