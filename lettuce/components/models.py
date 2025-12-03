@@ -84,8 +84,10 @@ if settings.inference_type == InferenceType.LLAMA_CPP:
     
         Parameters
         ----------
-        model_name: str
-            The name of a model with repository details in the local_models dictionary
+        filename: str
+            The filename within a huggingface hub repository to download
+        repo_id: str
+            The ID of a huggingface hub repository to fetch the filename from
         temperature: float
             The temperature for model generation
         logger : logging.Logger

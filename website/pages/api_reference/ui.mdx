@@ -4,13 +4,13 @@ import { Steps, Callout } from 'nextra/components'
 
 [source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce-ui/ui.py)
 
-The Lettuce user interface (UI) lets you use the same lettuce functionality as the API, but interactively.
+The Lettuce user interface (UI) lets you use the same Lettuce functionality as the API, but interactively.
 
 ## Usage
 <Steps>
 ### Configure your environment
 Some of the options for Lettuce can be configured through the UI.
-Some, like database credentials are still configured through the environment.
+Others, like database credentials are still configured through the environment.
 If you have changes to the defaults that work for the [quickstart](/quickstart), then copy your `.env` file over.
 
 ### Navigate to the `/lettuce-ui` directory
@@ -25,9 +25,9 @@ This will start the user interface in your browser
 
 ### Configure your UI
 
-To use the UI, you have to do a little setup.
+To use the UI, some set-up is required.
 
-First, you have to choose what kinds of search you're going to enable.
+First, you have to choose which search types to enable.
 There's a sidebar in the app that allows you to enable different pipelines.
 
 ![Example image of the sidebar](/sidebar.png)
@@ -40,24 +40,24 @@ This lets you choose:
 4. An Ollama URL if your environment is configured to use Ollama (default)
 5. The model name to request from Ollama
 
-### Upload a csv file
-The UI assumes you have a csv file with your source terms held in a column. 
+### Upload a CSV file
+The UI assumes you have a CSV file with your source terms held in a column. 
 
 ![Example image of the upload and options menu](/ui-upload.png)
 
-There's a file upload button which will open a file picker, which you can use to upload your csv.
+There's a file upload button which will open a file picker, which you can use to upload your CSV.
 
-Then, you can choose which column of the csv contains source terms.
+Then, you can choose which column of the CSV contains source terms.
 Once you've selected this, the UI automatically runs keyword search on your source terms to suggest concepts.
 
-### (Optional) select default domains and vocabularies
+### (Optional) Select default domains and vocabularies
 
 If you have pre-defined domains and vocabularies that you want to map all or most of your source terms to, you can set defaults in this top menu.
 You can choose nothing to search all domains and vocabularies by default.
 
 ### Get suggestions
 
-Once you have chosen a column of your csv for your source terms, a table below the options will populate.
+Once you have chosen a column of your CSV for your source terms, a table below the options will populate.
 
 ![Example image of the search table](/ui-search-table.png)
 
@@ -91,7 +91,7 @@ If you click "View suggestions", you are shown more details about the concepts s
 ![Example image of the save button](/ui-save-button.png)
 
 Once you've chosen suggestions you're happy with, you can save them.
-You choose a filename and click save to create a csv file with the following fields
+You choose a filename and click save to create a CSV file with the following fields
 
 **Search parameters**
 
