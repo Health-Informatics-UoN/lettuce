@@ -35,33 +35,35 @@ class SuggestionRecord:
     search_mode: Literal["text-search", "vector-search", "ai-search"]
     suggestion: List[ConceptSuggestion]
 
-    def accept_suggestion(self, index: int) -> AcceptedSuggestion:
-        """
-        Select one of the suggestions and make an AcceptedSuggestion out of it 
+def accept_suggestion(suggestions: SuggestionRecord, accepted: ConceptSuggestion) -> AcceptedSuggestion:
+    """
+    Select one of the suggestions and make an AcceptedSuggestion out of it 
 
-        Parameters
-        ----------
-        index: int
-            The index of the accepted suggestion
+    Parameters
+    ----------
+    index: int
+        The index of the accepted suggestion
 
-        Returns
-        -------
-        AcceptedSuggestion
-            An AcceptedSuggestion with the details of this record and the chosen suggestion
-        """
-
+    Returns
+    -------
+    AcceptedSuggestion
+        An AcceptedSuggestion with the details of this record and the chosen suggestion
+    """
+    if accepted in suggestions.suggestion:
         return AcceptedSuggestion(
-                search_term=self.search_term,
-                domains=self.domains,
-                vocabs=self.vocabs,
-                search_standard_concept=self.standard_concept,
-                valid_concept=self.valid_concept,
-                search_mode=self.search_mode,
-                concept_id=self.suggestion[index].concept_id,
-                concept_name=self.suggestion[index].concept_name,
-                domain_id=self.suggestion[index].domain_id,
-                vocabulary_id=self.suggestion[index].vocabulary_id,
-                standard_concept=self.suggestion[index].standard_concept,
-                score=self.suggestion[index].score,
+                search_term=suggestions.search_term,
+                domains=suggestions.domains,
+                vocabs=suggestions.vocabs,
+                search_standard_concept=suggestions.standard_concept,
+                valid_concept=suggestions.valid_concept,
+                search_mode=suggestions.search_mode,
+                concept_id=accepted.concept_id,
+                concept_name=accepted.concept_name,
+                domain_id=accepted.domain_id,
+                vocabulary_id=accepted.vocabulary_id,
+                standard_concept=accepted.standard_concept,
+                score=accepted.score,
                 )
+    else:
+        raise KeyError
 
