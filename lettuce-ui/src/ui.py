@@ -12,8 +12,6 @@ def _(mo):
 
 @app.cell
 def _():
-    from typing import List, Literal
-    from dataclasses import dataclass
     import marimo as mo
     import polars as pl
 
@@ -21,209 +19,29 @@ def _():
     from omop.omop_queries import (
         get_domains,
         get_vocabs,
-        ts_rank_query,
-        query_vector,
-        query_ids_matching_name,
     )
-    from components.models import connect_to_ollama
-    from components.pipeline import LLMPipeline
-    from components.embeddings import EmbeddingModel, Embeddings
     from utils.logging_utils import logger
+    from suggestions import SuggestionRecord, AcceptedSuggestion
+    from search import search, search_and_store
+    from ui_utils import choose_result, save_suggestions
     return (
-        Embeddings,
-        LLMPipeline,
-        List,
-        Literal,
-        connect_to_ollama,
-        dataclass,
+        AcceptedSuggestion,
+        SuggestionRecord,
+        choose_result,
         get_domains,
         get_session,
         get_vocabs,
         logger,
         mo,
         pl,
-        query_ids_matching_name,
-        ts_rank_query,
+        save_suggestions,
+        search,
+        search_and_store,
     )
 
 
 @app.cell
-def _(List, Literal, dataclass):
-    @dataclass
-    class ConceptSuggestion:
-        concept_id: int
-        concept_name: str
-        domain_id: str
-        vocabulary_id: str
-        standard_concept: str
-        score: float = 0.0
-
-    @dataclass
-    class SuggestionRecord:
-        search_term: str
-        domains: List[str]
-        vocabs: List[str]
-        standard_concept: bool
-        valid_concept: bool
-        search_mode: Literal["text-search", "vector-search", "ai-search"]
-        suggestion: ConceptSuggestion
-
-    @dataclass
-    class AcceptedSuggestion:
-        search_term: str
-        domains: List[str]
-        vocabs: List[str]
-        search_standard_concept: bool
-        valid_concept: bool
-        search_mode: Literal["text-search", "vector-search", "ai-search"]
-        concept_id: int
-        concept_name: str
-        domain_id: str
-        vocabulary_id: str
-        standard_concept: str
-        score: float = 0.0
-    return AcceptedSuggestion, ConceptSuggestion, SuggestionRecord
-
-
-@app.cell
-def _(
-    ConceptSuggestion,
-    Embeddings,
-    LLMPipeline,
-    List,
-    connect_to_ollama,
-    embeddings_model_name,
-    get_session,
-    llm_name,
-    llm_url,
-    logger,
-    query_ids_matching_name,
-    top_k,
-    ts_rank_query,
-):
-    def search(
-        search_term: str,
-        domain: List[str] | None = None,
-        vocabulary: List[str] | None = None,
-        standard_concept: bool = True,
-        valid_concept: bool = True,
-        search_mode: str = "text-search",
-    ) -> List[ConceptSuggestion]:
-        if search_mode == "text-search":
-            query = ts_rank_query(
-                search_term=search_term,
-                domain_id=domain,
-                vocabulary_id=vocabulary,
-                standard_concept=standard_concept,
-                valid_concept=valid_concept,
-                top_k=10,
-            )
-            with get_session() as session:
-                results = session.execute(query).fetchall()
-            return [
-                ConceptSuggestion(
-                    concept_id=r.concept_id,
-                    concept_name=r.concept_name,
-                    domain_id=r.domain_id,
-                    vocabulary_id=r.vocabulary_id,
-                    standard_concept=r.standard_concept,
-                )
-                for r in results
-            ]
-        elif search_mode == "vector-search":
-            embedding_handler = Embeddings(
-                model_name=embeddings_model_name.value,
-                embed_vocab=vocabulary,
-                domain_id=domain,
-                standard_concept=standard_concept,
-                valid_concept=valid_concept,
-                top_k=10,
-            )
-            embedder = embedding_handler.get_embedder()
-            embedding = embedder.run(search_term)
-            retriever = embedding_handler.get_retriever()
-            results = retriever.run(embedding["embedding"], describe_concept=True)
-            print(results)
-            return [
-                ConceptSuggestion(
-                    concept_id=r.Concept.concept_id,
-                    concept_name=r.Concept.concept_name,
-                    domain_id=r.Concept.domain_id,
-                    vocabulary_id=r.Concept.vocabulary_id,
-                    standard_concept=r.Concept.standard_concept,
-                    score=r.score,
-                )
-                for r in results
-            ]
-        else:
-            llm = connect_to_ollama(
-                model_name=llm_name.value,
-                url=llm_url.value,
-                temperature=0.7,
-                logger=logger,
-            )
-            assistant = LLMPipeline(
-                llm=llm,
-                temperature=0,
-                logger=logger,
-                embed_vocab=vocabulary,
-                standard_concept=standard_concept,
-            ).get_rag_assistant()
-            answer = assistant.run(
-                {
-                    "prompt": {"informal_name": search_term, "domain": domain},
-                    "query_embedder": {"text": search_term},
-                },
-            )
-            reply = answer["llm"]["replies"][0].strip()
-            query = query_ids_matching_name(
-                query_concept=reply, vocabulary_ids=vocabulary, full_concept=True
-            )
-            with get_session() as session:
-                results = session.execute(query).fetchall()
-                return [
-                    ConceptSuggestion(
-                        concept_id=r[1],
-                        concept_name=r[0],
-                        domain_id=r[3],
-                        vocabulary_id=r[4],
-                        standard_concept=r[6],
-                    )
-                    for r in results
-                ]
-            if len(results) == 0:
-                ts_query = ts_rank_query(
-                    search_term=reply,
-                    vocabulary_id=vocabulary,
-                    domain_id=domain,
-                    standard_concept=standard_concept,
-                    valid_concept=valid_concept,
-                    top_k=top_k,
-                )
-                with get_session() as session:
-                    results = session.execute(ts_query).fetchall()
-                return [
-                    ConceptSuggestion(
-                        concept_id=r.Concept.concept_id,
-                        concept_name=r.Concept.concept_name,
-                        domain_id=r.Concept.domain_id,
-                        vocabulary_id=r.Concept.vocabulary_id,
-                        standard_concept=r.Concept.standard_concept,
-                    )
-                    for r in results
-                ]
-    return (search,)
-
-
-@app.cell
 def _(mo):
-    def update_search_options(search_options):
-        if embeddings_enabled.value:
-            search_options.add("vector-search")
-        elif "vector-search" in search_options:
-            search_options.remove("vector-search")
-
-
     embeddings_model_name = mo.ui.text(value="BGESMALL")
     embeddings_enabled = mo.ui.checkbox(value=False)
 
@@ -243,8 +61,6 @@ def _(mo):
 @app.cell
 def _(embeddings_enabled, llm_enabled):
     if embeddings_enabled.value:
-        from sentence_transformers import SentenceTransformer
-
         if llm_enabled.value:
             search_options = ["text-search", "vector-search", "ai-search"]
         else:
@@ -321,7 +137,9 @@ def _(domains, mo):
 
 @app.cell
 def _(mo, vocabs):
-    default_vocabs = mo.ui.multiselect(vocabs, label="Default vocabularies to search")
+    default_vocabs = mo.ui.multiselect(
+        vocabs, label="Default vocabularies to search"
+    )
     default_vocabs
     return (default_vocabs,)
 
@@ -332,6 +150,10 @@ def _(
     default_domains,
     default_vocabs,
     domains,
+    embeddings_model_name,
+    llm_name,
+    llm_url,
+    logger,
     mo,
     search,
     search_options,
@@ -347,10 +169,16 @@ def _(
                 [mo.ui.text(value=source_term) for source_term in source_terms]
             ),
             "domain_dropdowns": mo.ui.array(
-                [mo.ui.multiselect(domains, value=default_domains.value) for _ in range(len(source_terms))]
+                [
+                    mo.ui.multiselect(domains, value=default_domains.value)
+                    for _ in range(len(source_terms))
+                ]
             ),
             "vocabularies_dropdowns": mo.ui.array(
-                [mo.ui.multiselect(vocabs, value=default_vocabs.value) for _ in range(len(source_terms))]
+                [
+                    mo.ui.multiselect(vocabs, value=default_vocabs.value)
+                    for _ in range(len(source_terms))
+                ]
             ),
             "standard_concept_checkboxes": mo.ui.array(
                 [mo.ui.checkbox(value=True) for _ in range(len(source_terms))]
@@ -371,15 +199,30 @@ def _(
     )
 
     get_results, set_results = mo.state(
-        {i: SuggestionRecord(
-            search_term=v,
-            domains=[],
-            vocabs=[],
-            standard_concept=True,
-            valid_concept=True,
-            search_mode="text-search",
-            suggestion=search(v)
-        ) for i, v in enumerate(source_terms)}
+        {
+            i: SuggestionRecord(
+                search_term=v,
+                domains=[],
+                vocabs=[],
+                standard_concept=True,
+                valid_concept=True,
+                search_mode="text-search",
+                suggestion=search(
+                    search_term=v,
+                    domain=None,
+                    vocabulary=None,
+                    standard_concept=True,
+                    valid_concept=True,
+                    top_k=10,
+                    search_mode="text-search",
+                    embeddings_model_name=embeddings_model_name.value,
+                    llm_name=llm_name.value,
+                    llm_url=llm_url.value,
+                    logger=logger,
+                ),
+            )
+            for i, v in enumerate(source_terms)
+        }
     )
 
     get_accepted, set_accepted = mo.state(
@@ -396,90 +239,88 @@ def _(
 
 
 @app.cell
-def _(SuggestionRecord, get_results, search, set_results):
-    def search_and_store(
-        i,
-        search_term,
-        domain,
-        vocabulary,
-        standard_concept,
-        valid_concept,
-        search_mode,
-    ):
-        if domain == []:
-            domain = None
-        if vocabulary == []:
-            vocabulary = None
-        results = search(
-            search_term=search_term,
-            domain=domain,
-            vocabulary=vocabulary,
-            standard_concept=standard_concept,
-            valid_concept=valid_concept,
-            search_mode=search_mode,
-        )
+def _(SuggestionRecord, get_results, set_results):
+    def update_results(result: SuggestionRecord, index: int) -> None:
+        """
+        Update the result at an index with the suggestions provided
+
+        Parameters
+        ----------
+        result: SuggestionRecord
+            The suggestions to store
+        index: int
+            The index of the results in which to store the suggestions
+        """
         current_results = get_results()
-        current_results[i] = SuggestionRecord(
-            search_term=search_term,
-            domains=domain,
-            vocabs=vocabulary,
-            standard_concept=standard_concept,
-            valid_concept=valid_concept,
-            search_mode=search_mode,
-            suggestion=results
-        )
+        current_results[index] = result
         set_results(current_results)
-    return (search_and_store,)
+    return (update_results,)
 
 
 @app.cell
-def _(AcceptedSuggestion, get_accepted, get_results, set_accepted):
-    def choose_result(source_term_index, chosen_result):
-        # More and more I want to refactor this.
-        # I might have reached the limits of not encapsulating this properly
+def _(AcceptedSuggestion, get_accepted, set_accepted):
+    def update_accepted(
+        index: int, accepted_suggestion: AcceptedSuggestion
+    ) -> None:
+        """
+        Put an accepted suggestion into the accepted state
+
+        Parameters
+        ----------
+        index: int
+            The index of the accepted state to update
+        accepted_suggestion: AcceptedSuggestion
+            The AcceptedSuggestion to place at the provided index
+
+        Returns
+        -------
+        None
+        """
         current_accepted = get_accepted()
-        current_suggestions = get_results()
-        suggestion = current_suggestions[source_term_index]
-        current_accepted[source_term_index] = AcceptedSuggestion(
-            search_term=suggestion.search_term,
-            domains=suggestion.domains,
-            vocabs=suggestion.vocabs,
-            search_standard_concept=suggestion.standard_concept,
-            valid_concept=suggestion.valid_concept,
-            search_mode=suggestion.search_mode,
-            concept_id=chosen_result.concept_id,
-            concept_name=chosen_result.concept_name,
-            domain_id=chosen_result.domain_id,
-            vocabulary_id=chosen_result.vocabulary_id,
-            standard_concept=chosen_result.standard_concept,
-            score=chosen_result.score,
-        )
+        current_accepted[index] = accepted_suggestion
         set_accepted(current_accepted)
-    return (choose_result,)
+    return (update_accepted,)
 
 
 @app.cell
 def _(
     choose_result,
+    embeddings_model_name,
     get_accepted,
     get_preferences,
     get_results,
+    llm_name,
+    llm_url,
+    logger,
     mo,
     search_and_store,
     source_terms,
+    update_accepted,
+    update_results,
 ):
     submit_buttons = mo.ui.array(
         [
             mo.ui.button(
                 label="Submit",
                 on_change=lambda v, i=i: search_and_store(
-                    i,
-                    get_preferences()["search_terms"][i].value,
-                    get_preferences()["domain_dropdowns"][i].value,
-                    get_preferences()["vocabularies_dropdowns"][i].value,
-                    get_preferences()["standard_concept_checkboxes"][i].value,
-                    get_preferences()["valid_concept_checkboxes"][i].value,
-                    get_preferences()["search_modes"][i].value,
+                    search_term=get_preferences()["search_terms"][i].value,
+                    domain=get_preferences()["domain_dropdowns"][i].value,
+                    vocabulary=get_preferences()["vocabularies_dropdowns"][
+                        i
+                    ].value,
+                    standard_concept=get_preferences()[
+                        "standard_concept_checkboxes"
+                    ][i].value,
+                    valid_concept=get_preferences()["valid_concept_checkboxes"][
+                        i
+                    ].value,
+                    search_mode=get_preferences()["search_modes"][i].value,
+                    embeddings_model_name=embeddings_model_name.value,
+                    llm_name=llm_name.value,
+                    llm_url=llm_url.value,
+                    logger=logger,
+                    top_k=10,
+                    result_storer=lambda res: update_results(res, i),
                 ),
             )
             for i in range(len(source_terms))
@@ -495,7 +336,12 @@ def _(
                 }
                 if get_results().get(i)
                 else {},
-                on_change=lambda v, i=i: choose_result(i, v),
+                on_change=lambda v, i=i: choose_result(
+                    source_term_index=i,
+                    choice=v,
+                    suggestion_fetcher=lambda _: get_results()[i],
+                    accepted_updater=update_accepted,
+                ),
             )
             for i in range(len(source_terms))
         ]
@@ -553,13 +399,17 @@ def _(get_accepted, mo, source_terms, view_suggestion):
                 for concept in get_accepted().values()
             ],
             "Standard Concept": [
-                mo.md(concept.standard_concept) if concept is not None and concept.standard_concept is not None else ""
+                mo.md(concept.standard_concept)
+                if concept is not None and concept.standard_concept is not None
+                else ""
                 for concept in get_accepted().values()
             ],
             "Score": [
-                concept.score if concept is not None and concept.score is not None else ""
+                concept.score
+                if concept is not None and concept.score is not None
+                else ""
                 for concept in get_accepted().values()
-            ]
+            ],
         }
     )
     return (suggestions_table,)
@@ -568,62 +418,29 @@ def _(get_accepted, mo, source_terms, view_suggestion):
 @app.cell
 def _(mo, search_table, suggestions_table):
     mo.ui.tabs(
-        {
-            "Search concepts": search_table,
-            "View suggestions": suggestions_table
-        }
+        {"Search concepts": search_table, "View suggestions": suggestions_table}
     )
     return
 
 
 @app.cell
-def _(get_accepted, pl, source_terms):
-    def save_suggestions(filename: str):
-        accepted = [v for v in get_accepted().values()]
-        save_dict = {
-            "source_term": [],
-            "search_term": [None for _ in range(len(source_terms))],
-            "domains": [None for _ in range(len(source_terms))],
-            "vocabs": [None for _ in range(len(source_terms))],
-            "search_standard_concept": [None for _ in range(len(source_terms))],
-            "valid_concept": [None for _ in range(len(source_terms))],
-            "search_mode": [None for _ in range(len(source_terms))],
-            "concept_id": [None for _ in range(len(source_terms))],
-            "concept_name": [None for _ in range(len(source_terms))],
-            "domain_id": [None for _ in range(len(source_terms))],
-            "vocabulary_id": [None for _ in range(len(source_terms))],
-            "standard_concept": [None for _ in range(len(source_terms))],
-            "score": [None for _ in range(len(source_terms))],
-        }
-        for i in range(len(source_terms)):
-            save_dict["source_term"].append(source_terms[i])
-            if accepted[i] is not None:
-                save_dict["search_term"][i] = accepted[i].search_term
-                save_dict["domains"][i] = str(accepted[i].domains)
-                save_dict["vocabs"][i] = str(accepted[i].vocabs)
-                save_dict["search_standard_concept"][i] = accepted[i].search_standard_concept
-                save_dict["valid_concept"][i] = accepted[i].valid_concept
-                save_dict["search_mode"][i] = accepted[i].search_mode
-                save_dict["concept_id"][i] = accepted[i].concept_id
-                save_dict["concept_name"][i] = accepted[i].concept_name
-                save_dict["domain_id"][i] = accepted[i].domain_id
-                save_dict["vocabulary_id"][i] = accepted[i].vocabulary_id
-                save_dict["standard_concept"][i] = accepted[i].standard_concept
-                save_dict["score"][i] = accepted[i].score
-
-        pl.DataFrame(save_dict).write_csv(filename)
-    return (save_suggestions,)
-
-
-@app.cell
 def _(mo):
-    save_filename = mo.ui.text(label="Filename for results", value="search-results.csv")
+    save_filename = mo.ui.text(
+        label="Filename for results", value="search-results.csv"
+    )
     return (save_filename,)
 
 
 @app.cell
-def _(mo, save_filename, save_suggestions):
-    save_button = mo.ui.button(label="Save results", on_click=save_suggestions(save_filename.value))
+def _(get_accepted, mo, save_filename, save_suggestions, source_terms):
+    save_button = mo.ui.button(
+        label="Save results",
+        on_click=save_suggestions(
+            filename=save_filename.value,
+            accepted_suggestion_fetcher=get_accepted,
+            source_terms=source_terms,
+        ),
+    )
     return (save_button,)
 
 
