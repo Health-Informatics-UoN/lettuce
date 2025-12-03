@@ -1,7 +1,7 @@
 from typing import List
 from collections.abc import Callable
 import polars as pl
-from suggestions import AcceptedSuggestion, SuggestionRecord
+from suggestions import AcceptedSuggestion, ConceptSuggestion, SuggestionRecord, accept_suggestion
 
 def save_suggestions(
         filename: str,
@@ -60,7 +60,7 @@ def save_suggestions(
 
 def choose_result(
         source_term_index: int,
-        choice_index: int,
+        choice: ConceptSuggestion,
         suggestion_fetcher: Callable[[int], SuggestionRecord],
         accepted_updater: Callable[[int, AcceptedSuggestion], None],
         ) -> None:
@@ -83,5 +83,5 @@ def choose_result(
     None
     """
     suggestion = suggestion_fetcher(source_term_index)
-    accepted_suggestion = suggestion.accept_suggestion(choice_index)
+    accepted_suggestion = accept_suggestion(suggestion, choice)
     accepted_updater(source_term_index, accepted_suggestion)
