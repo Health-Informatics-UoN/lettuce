@@ -1,6 +1,7 @@
 from logging import Logger
 from typing import List, Literal
-from suggestions import ConceptSuggestion
+from collections.abc import Callable
+from suggestions import ConceptSuggestion, SuggestionRecord
 from omop.omop_queries import ts_rank_query, query_ids_matching_name
 from omop.db_manager import get_session
 from components.embeddings import Embeddings
@@ -18,7 +19,7 @@ def _text_search(
     top_k: int,
     ) -> List[ConceptSuggestion]:
     """
-    Run a lexical search for a search term with specified paramters
+    Run a lexical search for a search term with specified parameters
 
     Parameters
     ----------
@@ -71,7 +72,7 @@ def _vector_search(
          top_k: int,
          ) -> List[ConceptSuggestion]:
     """
-    Run a vector search for a search term with specified paramters
+    Run a vector search for a search term with specified parameters
 
     Parameters
     ----------
@@ -134,7 +135,7 @@ def _ai_search(
         logger: Logger,
         ) -> List[ConceptSuggestion]:
     """
-    Run an LLM-powered search for a search term with specified paramters
+    Run an LLM-powered search for a search term with specified parameters
 
     Parameters
     ----------
@@ -162,7 +163,7 @@ def _ai_search(
     Returns
     -------
     List[ConceptSuggestion]
-        The top_k results from the vector search
+        The top_k results from the LLM-powered search
    """
     llm = connect_to_ollama(
             model_name=llm_name,
@@ -223,23 +224,21 @@ def _ai_search(
             for r in results
         ]
 
-    
-
 def search(
-    search_term: str,
-    domain: List[str] | None,
-    vocabulary: List[str] | None,
-    standard_concept: bool,
-    valid_concept: bool,
-    top_k: int,
-    search_mode: Literal["text-search", "vector-search", "ai-search"],
-    embeddings_model_name: str,
-    llm_name: str,
-    llm_url: str,
-    logger: Logger,
-    ) -> List[ConceptSuggestion]:
+        search_term: str,
+        domain: List[str] | None,
+        vocabulary: List[str] | None,
+        standard_concept: bool,
+        valid_concept: bool,
+        top_k: int,
+        search_mode: Literal["text-search", "vector-search", "ai-search"],
+        embeddings_model_name: str,
+        llm_name: str,
+        llm_url: str,
+        logger: Logger,
+        ) -> List[ConceptSuggestion]:
     """
-    Run an LLM-powered search for a search term with specified paramters
+    Run search for a search term with specified parameters
 
     Parameters
     ----------
@@ -265,8 +264,8 @@ def search(
     Returns
     -------
     List[ConceptSuggestion]
-        The top_k results from the vector search
-   """
+        The top_k results from the search
+    """
     if search_mode == "text-search":
         return _text_search(
                 search_term=search_term,
@@ -277,7 +276,7 @@ def search(
                 top_k=top_k,
                 )
     elif search_mode == "vector-search":
-        return _vector_search(
+        return  _vector_search(
                 search_term=search_term,
                 domain=domain,
                 vocabulary=vocabulary,
@@ -299,3 +298,84 @@ def search(
                 llm_url=llm_url,
                 logger=logger,
                 )
+
+def search_and_store(
+        search_term: str,
+        domain: List[str],
+        vocabulary: List[str],
+        standard_concept: bool,
+        valid_concept: bool,
+        top_k: int,
+        search_mode: Literal["text-search", "vector-search", "ai-search"],
+        embeddings_model_name: str,
+        llm_name: str,
+        llm_url: str,
+        logger: Logger,
+        result_storer: Callable,
+    ) -> None:
+    """
+    Run a search for a search term with the provided parameters, then store the result
+
+    Parameters
+    ----------
+    search_term: str
+        The string to search for
+    domain: List[str] | None
+        A list of domains to include in results. If None, then all domains are searched
+    vocabulary: List[str] | None = None
+        A list of vocabularies to include in results. If None, then all vocabularies are searched
+    standard_concept: bool = True,
+        If true, only standard concepts returned. Otherwise, non-standard concepts will be included.
+    valid_concept: bool = True
+        If true, only concepts without invalid_reason returned. Otherwise, all concepts will be included.
+    embeddings_model_name: str,
+        The short name for an embeddings model to match on the EmbeddingModelName enum
+    llm_name: str
+        The short name for an LLM to match either a recognised name on a server or the locally saved models
+    llm_url: str
+        The URL for an LLM server
+    logger: Logger
+        log your problems
+    result_storer: Callable
+        A function to store results
+
+    Returns
+    -------
+    None
+    """
+    if domain == []:
+       search_domain = None
+    else:
+        search_domain = domain
+    if vocabulary == []:
+        search_vocab = None
+    else:
+        search_vocab = vocabulary
+    
+    results = search(
+            search_term=search_term,
+            domain=search_domain,
+            vocabulary=search_vocab,
+            standard_concept=standard_concept,
+            valid_concept=valid_concept,
+            top_k=top_k,
+            search_mode=search_mode,
+            embeddings_model_name=embeddings_model_name,
+            llm_name=llm_name,
+            llm_url=llm_url,
+            logger=logger,
+            )
+
+    result_storer(
+            SuggestionRecord(
+                search_term=search_term,
+                domains=domain,
+                vocabs=vocabulary,
+                standard_concept=standard_concept,
+                valid_concept=valid_concept,
+                search_mode=search_mode,
+                suggestion=results
+                )
+            )
+
+
