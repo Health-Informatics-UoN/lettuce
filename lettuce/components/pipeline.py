@@ -3,15 +3,26 @@ import time
 from typing import List, Dict
 
 from haystack import Pipeline
+from haystack.components.generators import OpenAIGenerator
 from haystack.components.routers import ConditionalRouter
+from haystack_integrations.components.generators.ollama import OllamaGenerator
 
 from components.embeddings import Embeddings, EmbeddingModelName
-from components.models import get_model
 from components.prompt import Prompts
-from options.pipeline_options import LLMModel
+from options.pipeline_options import InferenceType
 from options.base_options import BaseOptions
 
 settings = BaseOptions()
+
+if settings.inference_type == InferenceType.LLAMA_CPP:
+    try:
+        from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
+    except ImportError:
+        raise ImportError("To use a Llama.cpp generator you have to install one of the optional dependency groups. Consult the documentation for details.")
+    type Generator = LlamaCppGenerator|OpenAIGenerator|OllamaGenerator
+else:
+    type Generator = OpenAIGenerator|OllamaGenerator
+
 
 class LLMPipeline:
     """
@@ -20,9 +31,11 @@ class LLMPipeline:
 
     def __init__(
         self,
-        llm_model: LLMModel,
+        llm: Generator,
         temperature: float,
         logger: Logger,
+        inference_type: InferenceType = settings.inference_type,
+        inference_url: str | None = settings.ollama_url,
         embed_vocab: list[str] | None = None,
         standard_concept: bool = False,
         embedding_model: EmbeddingModelName = settings.embedding_model,
@@ -34,8 +47,8 @@ class LLMPipeline:
 
         Parameters
         ----------
-        llm_model: LLMModel
-            The choice of LLM to run the pipeline
+        llm_model: Generator
+            A haystack generator connecting to an LLM
 
         temperature: float
             The temperature the LLM uses for generation
@@ -58,7 +71,9 @@ class LLMPipeline:
         verbose_llm: bool
             Whether the LLM should report on its running or not
         """
-        self._model = llm_model
+        self._model = llm
+        self._inference_type = inference_type
+        self._url = inference_url
         self._logger = logger
         self._temperature = temperature
         self._embed_vocab = embed_vocab
@@ -67,21 +82,10 @@ class LLMPipeline:
         self._top_k=top_k
         self._verbose_llm=verbose_llm
 
-    @property
-    def llm_model(self): 
-        return self._model 
-
-    @llm_model.setter
-    def llm_model(self, value): 
-        self._model = value 
 
     @property
-    def llm_model(self): 
+    def llm(self): 
         return self._model 
-
-    @llm_model.setter
-    def llm_model(self, value): 
-        self._model = value 
 
     def get_simple_assistant(self) -> Pipeline:
         """
@@ -99,21 +103,12 @@ class LLMPipeline:
 
         pipeline.add_component(
             "prompt",
-            Prompts(model=self._model).get_prompt(),
+            Prompts().get_prompt(),
         )
         self._logger.info(f"Prompt added to pipeline in {time.time()-start} seconds")
         start = time.time()
 
-        llm = get_model(
-            model=self._model,
-            inference_type=settings.inference_type,
-            temperature=self._temperature,
-            url=settings.ollama_url,
-            logger=self._logger,
-            path_to_local_weights=settings.local_llm,
-            verbose=self._verbose_llm,
-        )
-        pipeline.add_component("llm", llm)
+        pipeline.add_component("llm", self._model)
         self._logger.info(f"LLM added to pipeline in {time.time()-start} seconds")
         start = time.time()
 
@@ -166,27 +161,16 @@ class LLMPipeline:
             ]
         )
 
-        llm = get_model(
-            model=self._model,
-            inference_type=settings.inference_type,
-            url=settings.ollama_url,
-            temperature=self._temperature,
-            logger=self._logger,
-            path_to_local_weights=settings.local_llm,
-            verbose=self._verbose_llm,
-        )
-
         pipeline.add_component("query_embedder", vec_embedder)
         pipeline.add_component("retriever", vec_retriever)
         pipeline.add_component("router", router)
         pipeline.add_component(
             "prompt",
             Prompts(
-                model=self._model,
                 prompt_type="top_n_RAG",
             ).get_prompt(),
         )
-        pipeline.add_component("llm", llm)
+        pipeline.add_component("llm", self._model)
 
         pipeline.connect("query_embedder.embedding", "retriever.query_embedding")
         pipeline.connect("retriever.documents", "router.vec_results")

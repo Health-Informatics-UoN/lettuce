@@ -1,8 +1,9 @@
 from typing import Annotated, List
-from components.embeddings import EmbeddingModelName, Embeddings
+from components.embeddings import Embeddings
 from fastapi import APIRouter, Query
 
 from api_models.responses import ConceptSuggestionResponse, Suggestion, SuggestionsMetaData
+from components.models import get_model
 from components.pipeline import LLMPipeline
 from omop.db_manager import get_session
 from omop.omop_queries import count_concepts, query_ids_matching_name, ts_rank_query
@@ -72,7 +73,7 @@ async def vector_search(
         top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)]=5,
         ) -> ConceptSuggestionResponse:
     embedding_handler = Embeddings(
-            model_name=EmbeddingModelName.BGESMALL,
+            model_name=settings.embedding_model,
             embed_vocab=vocabulary,
             domain_id=domain,
             standard_concept=standard_concept,
@@ -112,8 +113,15 @@ async def ai_search(
         valid_concept: bool=False,
         top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)]=5,
         ) -> ConceptSuggestionResponse:
+    llm = get_model(
+                model=settings.llm_model,
+                logger=logger,
+                inference_type=settings.inference_type,
+                url=settings.ollama_url,
+                temperature=settings.temperature,
+                )
     assistant = LLMPipeline(
-            llm_model=settings.llm_model,
+            llm=llm,
             temperature=0,
             logger=logger,
             embed_vocab=vocabulary,

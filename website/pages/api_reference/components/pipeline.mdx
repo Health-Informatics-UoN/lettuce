@@ -6,11 +6,15 @@ It supports both simple LLM-based and Retrieval-Augmented Generation (RAG) pipel
 
 [source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/components/pipeline.py)
 
+## `Generator`
+This type is a wrapper for various Haystack generators.
+This may or may not include `LlamaCppGenerator`, depending on your configuration.
+
 ## `llm_pipeline`
 This class generates pipelines that connect LLMs with prompts and optionally vector search capabilities.
 ```python
 class LLMPipeline(
-    llm_model: LLMModel,
+    llm_model: Generator,
     temperature: float,
     logger: Logger,
     embed_vocab: list[str] | None = None,
@@ -22,9 +26,11 @@ class LLMPipeline(
 ### Parameters 
 | Parameter         | Type                        | Description |
 |------------------|-----------------------------|-------------|
-| `llm_model`       | `LLMModel`                  | The LLM model to use for inference. Must be one of the values from the `LLMModel` enum. |
+| `llm_model`       | `Generator`                  | An LLM generator |
 | `temperature`     | `float`                     | Controls the randomness of LLM output generation. Lower values (e.g., `0.0`) produce more deterministic output. |
 | `logger`          | `logging.Logger`            | Logger instance for recording pipeline operations. |
+| `inference_type` | `InferenceType` | The engine to use for inference, taken from [pipeline options](/api_reference/options/pipeline_options) |
+| `inference_url` | `str` or `None` | A URL to use for inference, if you're using an external server. Defaults to the `ollama_url` from the environment |
 | `embed_vocab`     | `list[str] \| None`         | Optional list of OMOP vocabulary IDs to filter RAG results (e.g., `["RxNorm", "SNOMED"]`). |
 | `standard_concept`| `bool`                      | If `True`, restricts RAG results to standard concepts only. |
 | `embedding_model` | `EmbeddingModelName`        | The model used to create embeddings for vector search. Default is `BGESMALL`. |

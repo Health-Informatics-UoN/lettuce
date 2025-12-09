@@ -6,7 +6,6 @@ from components.models import (
     download_model_from_huggingface, 
     connect_to_openai, 
     get_model, 
-    local_models
 )
 from options.pipeline_options import LLMModel 
 from options.base_options import InferenceType
@@ -21,6 +20,8 @@ def mock_llm_model():
     """Fixture to provide a mock LLMModel object."""
     mock_model = MagicMock(spec=LLMModel) 
     mock_model.value = "llama-2-7b-chat"
+    mock_model.filename = "llama-2-7b-chat.Q4.0.gguf" 
+    mock_model.repo_id = "TheBloke/Llama-2-7B-Chat-GGUF"
     return mock_model
 
 
@@ -71,42 +72,25 @@ def test_download_model_from_huggingface_success(mock_download, mock_llama):
     mock_download.return_value = "/downloaded/fallback.gguf"
     mock_llm_instance = Mock()
     mock_llama.return_value = mock_llm_instance
-    model_name = "unknown-model"
+    repo_id="some_repo"
+    filename="fallback"
     temperature = 0.7
-    fallback_model = "llama-3.1-8b"
 
-    result = download_model_from_huggingface(model_name, temperature, logger, fallback_model=fallback_model, verbose=False)
+    result = download_model_from_huggingface(filename, repo_id, temperature, logger, verbose=False)
 
     assert result == mock_llm_instance
-    mock_download.assert_called_once_with(**local_models[fallback_model])
+    mock_download.assert_called_once_with(filename = "fallback", repo_id = "some_repo")
     mock_llama.assert_called_once()
-
-
-@patch("components.models.LlamaCppGenerator")
-@patch("components.models.hf_hub_download")
-def test_download_model_from_huggingface_fallback(mock_download, mock_llama):
-    mock_download.return_value = "/downloaded/fallback.gguf"
-    mock_llm_instance = Mock()
-    mock_llama.return_value = mock_llm_instance
-    model_name = "unknown-model"
-    temperature = 0.7
-    fallback_model = "llama-3.1-8b"
-
-    result = download_model_from_huggingface(model_name, temperature, logger, fallback_model=fallback_model, verbose=False)
-
-    assert result == mock_llm_instance
-    mock_download.assert_called_once_with(**local_models[fallback_model])
-    mock_llama.assert_called_once()
-
 
 @patch("components.models.hf_hub_download")
 def test_download_model_from_huggingface_download_error(mock_download):
     mock_download.side_effect = Exception("Download error")
-    model_name = "llama-2-7b-chat"
+    repo_id="some_repo"
+    filename="fallback"
     temperature = 0.7
 
     with pytest.raises(ValueError) as exc_info:
-        download_model_from_huggingface(model_name, temperature, logger, verbose=False)
+        download_model_from_huggingface(filename, repo_id, temperature, logger, verbose=False)
     assert "Failed to load model" in str(exc_info.value)
     mock_download.assert_called_once()
 
@@ -175,4 +159,4 @@ def test_get_model_huggingface(mock_hf_download, mock_llm_model):
             )
 
     assert result == mock_llm_instance
-    mock_hf_download.assert_called_once_with("llama-2-7b-chat", 0.7, logger, False)
+    mock_hf_download.assert_called_once_with("llama-2-7b-chat.Q4.0.gguf", "TheBloke/Llama-2-7B-Chat-GGUF", 0.7, logger, False)

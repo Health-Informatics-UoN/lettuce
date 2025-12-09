@@ -9,7 +9,6 @@ This module provides prompt generation functionality for lettuce, managing templ
 ### `Prompts`
 ```python
 class Prompts(
-    model: LLMModel,
     prompt_type: str = "simple"
 )
 ```
@@ -20,7 +19,6 @@ This class is used to generate prompts for the models. The Prompts class manages
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `model` | `LLMModel` | The LLM model enum containing model name and configuration details |
 | `prompt_type` | `str` | The type of prompt to generate. Defaults to "simple". Available options: "simple" (few-shot learning prompt without external data), "top_n_RAG" (retrieval-augmented generation prompt with related terms) |
 
 #### Methods
@@ -43,10 +41,6 @@ A configured Haystack PromptBuilder object with the selected template. The templ
 `KeyError`
 
 If the specified prompt_type is not found in the available templates. Prints an error message and continues execution.
-
-###### Notes
-
-The method automatically appends the model's end-of-turn token and a "Response:" prompt to guide the model's output formatting.
 
 ## Template Details 
 

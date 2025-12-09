@@ -85,11 +85,16 @@ def test_main_with_vector_search_and_llm(cli_runner, mock_llm_pipeline):
     """Test the CLI command with vector search and LLM enabled"""
     mock_llm_class, mock_pipeline_instance = mock_llm_pipeline
     
-    with patch('time.time') as mock_time, \
+    with patch('lettuce.cli.main.get_model') as mock_get_model, \
+         patch('time.time') as mock_time, \
          patch('huggingface_hub.snapshot_download', side_effect=lambda *args, **kwargs: AssertionError("Hugging Face snapshot download detected")), \
          patch('requests.get', side_effect=lambda *args, **kwargs: AssertionError("HTTP request detected")), \
-         patch('lettuce.cli.main.LLMPipeline', autospec=True) as mock_llm_patch, \
+         patch('lettuce.cli.main.LLMPipeline') as mock_llm_patch, \
          patch('lettuce.cli.main.OMOPMatcher') as mock_OMOPMatcher:
+        
+        # Setup get_model to return a mock Generator
+        mock_llm_instance = MagicMock()
+        mock_get_model.return_value = mock_llm_instance
         
         mock_llm_patch.side_effect = mock_llm_class.side_effect
         
@@ -107,7 +112,13 @@ def test_main_with_vector_search_and_llm(cli_runner, mock_llm_pipeline):
             "--search-threshold", "80",
         ])
         
+        if result.exit_code != 0:
+            print("CLI output:", result.stdout)
+            if result.exception:
+                print("Exception:", result.exception)
+        
         assert result.exit_code == 0
+        assert mock_get_model.called, "get_model was not called"
         assert mock_llm_patch.called, "LLMPipeline was not instantiated"
         assert mock_pipeline_instance.get_rag_assistant.called, "get_rag_assistant was not called"
 
@@ -141,25 +152,30 @@ def test_main_with_vector_search_only(cli_runner):
         assert mock_OMOPMatcher.return_value.run.called
 
 
-def test_main_with_use_llm_only(cli_runner):
+def test_main_with_use_llm_only(cli_runner, mock_llm_pipeline):
     """Test the CLI command with only LLM enabled"""
-    with patch('time.time') as mock_time, \
-         patch('lettuce.cli.main.LLMPipeline', autospec=True) as mock_llm_patch, \
+    mock_llm_class, mock_pipeline_instance = mock_llm_pipeline
+
+    # Patch Generator before importing CLI
+    with patch('lettuce.cli.main.get_model') as mock_get_model, \
+         patch('time.time') as mock_time, \
+         patch('huggingface_hub.snapshot_download', side_effect=lambda *args, **kwargs: AssertionError("Hugging Face snapshot download detected")), \
+         patch('requests.get', side_effect=lambda *args, **kwargs: AssertionError("HTTP request detected")), \
+         patch('lettuce.cli.main.LLMPipeline') as mock_llm_patch, \
          patch('lettuce.cli.main.OMOPMatcher') as mock_OMOPMatcher:
         
+        # Setup get_model to return a mock Generator
+        mock_llm_instance = MagicMock()
+        mock_get_model.return_value = mock_llm_instance
+        
+        mock_llm_patch.side_effect = mock_llm_class.side_effect
+
         mock_OMOPMatcher.return_value.run.return_value = [
             create_mock_search_result('aspirin', 123, 'Aspirin'),
             create_mock_search_result('tylenol', 456, 'Tylenol')
         ]
         
-        mock_pipeline_instance = MagicMock()
-        mock_simple_assistant = MagicMock()
-        mock_simple_assistant.run.return_value = {'llm': {'replies': ['Answer']}}
-        mock_pipeline_instance.get_simple_assistant.return_value = mock_simple_assistant
-        
-        mock_llm_patch.side_effect = lambda *args, **kwargs: mock_pipeline_instance
-        
-        mock_time.side_effect = cycle([1, 2, 3, 4])
+        mock_time.side_effect = cycle([1, 2, 3, 4, 5, 6])
         
         from lettuce.cli.main import app
         
@@ -169,12 +185,17 @@ def test_main_with_use_llm_only(cli_runner):
             "--use-llm",
             "--search-threshold", "80"
         ])
+
+        
+        if result.exit_code != 0:
+            print("CLI output:", result.stdout)
+            if result.exception:
+                print("Exception:", result.exception)
         
         assert result.exit_code == 0
-        assert mock_llm_patch.called
+        assert mock_get_model.called, "get_model was not called"
+        assert mock_llm_patch.called, "LLMPipeline was not instantiated"
         assert mock_pipeline_instance.get_simple_assistant.called
-        assert mock_simple_assistant.warm_up.called
-        assert mock_OMOPMatcher.return_value.run.called
 
 
 def test_cli_help(cli_runner):

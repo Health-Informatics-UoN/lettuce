@@ -1,0 +1,22 @@
+[project]
+name = "lettuce-tools"
+version = "0.1.0"
+description = "Tools for using LLMs for mapping OMOP concepts"
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "lettuce",
+  "lettuce-ui",
+]
+
+[tool.uv.sources]
+lettuce = { workspace = true }
+lettuce-ui = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+    "lettuce",
+    "lettuce-ui",
+]
+
