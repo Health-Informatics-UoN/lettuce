@@ -27,7 +27,7 @@ LABEL org.opencontainers.image.title=Lettuce \
       org.opencontainers.image.url=https://github.com/Health-Informatics-UoN/lettuce/pkgs/container/lettuce \
       org.opencontainers.image.documentation=https://health-informatics-uon.github.io/lettuce/ \
       org.opencontainers.image.source=https://github.com/Health-Informatics-UoN/lettuce \
-      org.opencontainers.image.licenses=MIT \
+      org.opencontainers.image.licenses=MIT
 
 COPY . .
 EXPOSE 8000
