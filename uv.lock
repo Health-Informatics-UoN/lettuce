@@ -33,6 +33,7 @@ conflicts = [[
 
 [manifest]
 members = [
+    "build-embeddings",
     "lettuce",
     "lettuce-tools",
     "lettuce-ui",
@@ -193,6 +194,23 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/47/d7/5bbeb12c44d7c4f2fb5b56abce497eb5ed9f34d85701de869acedd602619/backoff-2.2.1.tar.gz", hash = "sha256:03f829f5bb1923180821643f8753b0502c3b682293992485b0eef2807afa5cba", size = 17001, upload-time = "2022-10-05T19:19:32.061Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/df/73/b6e24bd22e6720ca8ee9a85a0c4a2971af8497d8f3193fa05390cbd46e09/backoff-2.2.1-py3-none-any.whl", hash = "sha256:63579f9a0628e06278f7e47b7d7d5b6ce20dc65c5e96a6f3ca99a6adca0396e8", size = 15148, upload-time = "2022-10-05T19:19:30.546Z" },
+]
+
+[[package]]
+name = "build-embeddings"
+version = "0.1.0"
+source = { virtual = "build-embeddings" }
+dependencies = [
+    { name = "psycopg" },
+    { name = "sentence-transformers" },
+    { name = "typer" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "psycopg", specifier = ">=3.3.2" },
+    { name = "sentence-transformers", specifier = ">=5.1.1" },
+    { name = "typer", specifier = ">=0.19.2" },
 ]
 
 [[package]]
@@ -2187,6 +2205,19 @@ wheels = [
 ]
 
 [[package]]
+name = "psycopg"
+version = "3.3.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions", marker = "python_full_version < '3.13' or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-cpu') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu121') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu121') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu123' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-gpu-cu123' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu124' and extra == 'extra-7-lettuce-llama-gpu-metal')" },
+    { name = "tzdata", marker = "sys_platform == 'win32' or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-cpu') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu121') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu121') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu123' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-gpu-cu123' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu124' and extra == 'extra-7-lettuce-llama-gpu-metal')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e0/1a/7d9ef4fdc13ef7f15b934c393edc97a35c281bb7d3c3329fbfcbe915a7c2/psycopg-3.3.2.tar.gz", hash = "sha256:707a67975ee214d200511177a6a80e56e654754c9afca06a7194ea6bbfde9ca7", size = 165630, upload-time = "2025-12-06T17:34:53.899Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8c/51/2779ccdf9305981a06b21a6b27e8547c948d85c41c76ff434192784a4c93/psycopg-3.3.2-py3-none-any.whl", hash = "sha256:3e94bc5f4690247d734599af56e51bae8e0db8e4311ea413f801fef82b14a99b", size = 212774, upload-time = "2025-12-06T17:31:41.414Z" },
+]
+
+[[package]]
 name = "psycopg2-binary"
 version = "2.9.11"
 source = { registry = "https://pypi.org/simple" }
@@ -3240,6 +3271,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/55/e3/70399cb7dd41c10ac53367ae42139cf4b1ca5f36bb3dc6c9d33acdb43655/typing_inspection-0.4.2.tar.gz", hash = "sha256:ba561c48a67c5958007083d386c3295464928b01faa735ab8547c5692e87f464", size = 75949, upload-time = "2025-10-01T02:14:41.687Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/dc/9b/47798a6c91d8bdb567fe2698fe81e0c6b7cb7ef4d13da4114b41d239f65d/typing_inspection-0.4.2-py3-none-any.whl", hash = "sha256:4ed1cacbdc298c220f1bd249ed5287caa16f34d44ef4e9c3d0cbad5b521545e7", size = 14611, upload-time = "2025-10-01T02:14:40.154Z" },
+]
+
+[[package]]
+name = "tzdata"
+version = "2025.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/95/32/1a225d6164441be760d75c2c42e2780dc0873fe382da3e98a2e1e48361e5/tzdata-2025.2.tar.gz", hash = "sha256:b60a638fcc0daffadf82fe0f57e53d06bdec2f36c4df66280ae79bce6bd6f2b9", size = 196380, upload-time = "2025-03-23T13:54:43.652Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5c/23/c7abc0ca0a1526a0774eca151daeb8de62ec457e77262b66b359c3c7679e/tzdata-2025.2-py2.py3-none-any.whl", hash = "sha256:1a403fada01ff9221ca8044d701868fa132215d84beb92242d9acd2147f667a8", size = 347839, upload-time = "2025-03-23T13:54:41.845Z" },
 ]
 
 [[package]]
