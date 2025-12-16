@@ -1,7 +1,6 @@
 from logging import Logger
 from pathlib import Path
 from jinja2 import Template
-import torch
 from torch import Tensor
 import psycopg as pg
 from psycopg import sql
@@ -45,7 +44,6 @@ class PostgresConceptEmbedder():
         self._logger: Logger = logger
         self._schema: str = db_schema
         self._embedding_model: SentenceTransformer = embedding_model
-        self._device = -1 if (torch.cuda.is_available() or torch.backends.mps.is_available()) else 0
         self._embed_batch_size = embed_batch_size
         self._fetch_batch_size = fetch_batch_size
         self._concept_query = sql.SQL("SELECT concept_id, concept_name, domain_id, vocabulary_id, concept_class_id FROM {}").format(sql.Identifier(db_schema, "concept"))
@@ -83,7 +81,7 @@ class PostgresConceptEmbedder():
 
     def embed_batch(self, concept_batch: list[Concept]) -> list[tuple[int, str, Tensor]]:
         concept_strings = [c.render_concept_as_template(self._template) for c in concept_batch]
-        concept_embeddings = self._embedding_model.encode([c[2] for c in concept_strings], convert_to_numpy=False)
+        concept_embeddings = self._embedding_model.encode([c[2] for c in concept_strings], convert_to_tensor=False, show_progress_bar=True).tolist()
         return list(zip([id for id,_,_ in concept_strings], [name for _, name,_ in concept_strings], concept_embeddings))
 
     def load_embeddings(self):
@@ -131,7 +129,11 @@ class PostgresConceptEmbedder():
                                 ]
                         embeddings = self.embed_batch(concepts)
                         dfs.append(
-                                pl.DataFrame(embeddings, schema=["concept_id", "concept_name", "embedding"], orient="row")
+                                pl.DataFrame(embeddings, schema={
+                                    "concept_id": pl.Int32(),
+                                    "concept_name": pl.String(),
+                                    "embedding": pl.Array(pl.Float64, self._embedding_model.get_sentence_embedding_dimension())}, orient="row"
+                                             )
                                 )
                     else:
                         break
@@ -159,14 +161,33 @@ class ConceptCsvEmbedder():
             self._concept_df = pl.read_csv(path, schema=self._table_schema, separator="\t")
 
     def embed_concepts(self):
-        self._concept_df = self._concept_df.with_columns(
-                (
-                    pl.struct(["concept_name", "domain_id", "vocabulary_id", "concept_class_id"]).map_elements(
-                        function=lambda x: self._embedding_model.encode(self._template.render(x)).tolist(),
-                        return_dtype=pl.List(pl.Float64)#, self._embedding_model.get_sentence_embedding_dimension())
-                        ).alias("embeddings")
-                    )
+        concept_strings = [
+        self._template.render({
+            "concept_name": row["concept_name"],
+            "domain": row["domain_id"],
+            "vocabulary": row["vocabulary_id"],
+            "concept_class": row["concept_class_id"]
+            }) for row in self._concept_df.select([
+                "concept_name", "domain_id", "vocabulary_id", "concept_class_id"
+                ]).iter_rows(named=True)
+            ]
+
+        embeddings = self._embedding_model.encode(
+                concept_strings,
+                convert_to_tensor=False,
+                show_progress_bar=True,
                 )
+
+        self._concept_df = self._concept_df.with_columns(
+        pl.Series(
+            "embeddings",
+            embeddings.tolist(),
+            dtype=pl.Array(
+                pl.Float64,
+                self._embedding_model.get_sentence_embedding_dimension()
+                )
+            )
+        )
     
     def save_embeddings_to_parquet(self, path: Path):
         self._concept_df.select(["concept_id", "concept_name", "embeddings"]).write_parquet(path)
