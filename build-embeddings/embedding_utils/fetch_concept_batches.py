@@ -161,16 +161,9 @@ class ConceptCsvEmbedder():
     def embed_concepts(self):
         self._concept_df = self._concept_df.with_columns(
                 (
-                    pl.struct(["concept_name", "domain_id", "vocabulary_id", "concept_class_id"]).map_batches(
-                        function=lambda x: self._embedding_model.encode(self._template.render(
-                            {
-                                "concept_name": x.struct.field("concept_name"),
-                                "domain": x.struct.field("domain_id"),
-                                "vocabulary": x.struct.field("vocabulary_id"),
-                                "concept_class": x.struct.field("concept_class_id")
-                                }
-                            )),
-                        return_dtype=pl.Array(pl.Float32, self._embedding_model.get_sentence_embedding_dimension())
+                    pl.struct(["concept_name", "domain_id", "vocabulary_id", "concept_class_id"]).map_elements(
+                        function=lambda x: self._embedding_model.encode(self._template.render(x)).tolist(),
+                        return_dtype=pl.List(pl.Float64)#, self._embedding_model.get_sentence_embedding_dimension())
                         ).alias("embeddings")
                     )
                 )

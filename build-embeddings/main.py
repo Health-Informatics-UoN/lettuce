@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Literal, Annotated
 from jinja2 import Environment
 from sentence_transformers import SentenceTransformer
+import torch
 import typer
 from options.base_options import BaseOptions
 
@@ -24,6 +25,8 @@ def embed_concepts(
         save_method: Annotated[Literal["load_to_database", "save_to_parquet"], typer.Option(help="Whether to save the embeddings to a file or load them into your database (only if loading from a database)")] = "save_to_parquet",
         output_path: Annotated[str, typer.Option(help="Path to save a parquet file")] = "embeddings.parquet",
         ):
+    device = 'cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else None
+    logger.info(f"Using device '{device}' for embeddings")
     template_env = Environment()
     concept_template = template_env.from_string(template)
     if concept_source == "postgres":
