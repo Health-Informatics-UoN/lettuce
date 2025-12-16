@@ -199,7 +199,7 @@ wheels = [
 [[package]]
 name = "build-embeddings"
 version = "0.1.0"
-source = { virtual = "build-embeddings" }
+source = { editable = "build-embeddings" }
 dependencies = [
     { name = "psycopg" },
     { name = "sentence-transformers" },
