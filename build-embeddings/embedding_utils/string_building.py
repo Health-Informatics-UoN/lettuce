@@ -8,5 +8,5 @@ class Concept(BaseModel):
     vocabulary: str
     concept_class: str
 
-def render_concept_as_template(template: Template, concept: Concept) -> tuple[int, str, str]:
-    return (concept.concept_id, concept.concept_name, template.render(concept.model_dump()))
+    def render_concept_as_template(self, template: Template) -> tuple[int, str, str]:
+        return (self.concept_id, self.concept_name, template.render(self.model_dump()))
