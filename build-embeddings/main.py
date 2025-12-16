@@ -1,4 +1,5 @@
 import logging
+import sys
 from pathlib import Path
 from typing import Literal, Annotated
 from jinja2 import Environment
@@ -11,6 +12,11 @@ from embedding_utils.fetch_concept_batches import ConceptCsvEmbedder, PostgresCo
 
 settings = BaseOptions()
 logger = logging.Logger("embedding logger")
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 app = typer.Typer()
 
 @app.command()

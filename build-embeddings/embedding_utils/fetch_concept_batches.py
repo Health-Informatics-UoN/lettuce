@@ -47,6 +47,7 @@ class PostgresConceptEmbedder():
         self._embed_batch_size = embed_batch_size
         self._fetch_batch_size = fetch_batch_size
         self._concept_query = sql.SQL("SELECT concept_id, concept_name, domain_id, vocabulary_id, concept_class_id FROM {}").format(sql.Identifier(db_schema, "concept"))
+        self._log_example = True
 
     def check_extension(self):
         with pg.connect(self._url) as conn:
@@ -81,6 +82,9 @@ class PostgresConceptEmbedder():
 
     def embed_batch(self, concept_batch: list[Concept]) -> list[tuple[int, str, Tensor]]:
         concept_strings = [c.render_concept_as_template(self._template) for c in concept_batch]
+        if self._log_example:
+            self._logger.info(f"Example concept string: {concept_strings [0]}")
+            self._log_example = False
         concept_embeddings = self._embedding_model.encode([c[2] for c in concept_strings], convert_to_tensor=False, show_progress_bar=True).tolist()
         return list(zip([id for id,_,_ in concept_strings], [name for _, name,_ in concept_strings], concept_embeddings))
 
@@ -171,6 +175,7 @@ class ConceptCsvEmbedder():
                 "concept_name", "domain_id", "vocabulary_id", "concept_class_id"
                 ]).iter_rows(named=True)
             ]
+        self._logger.info(f"Example concept string: {concept_strings[0]}")
 
         embeddings = self._embedding_model.encode(
                 concept_strings,
