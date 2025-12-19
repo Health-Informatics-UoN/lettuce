@@ -160,9 +160,9 @@ class ConceptCsvEmbedder():
 
     def load_concepts(self, path: Path) -> None:
         if hasattr(self, "_concept_df"):
-            self._concept_df.extend(pl.read_csv(path, schema=self._table_schema, separator="\t"))
+            self._concept_df.extend(pl.read_csv(path, schema=self._table_schema, separator="\t", quote_char=None))
         else:
-            self._concept_df = pl.read_csv(path, schema=self._table_schema, separator="\t")
+            self._concept_df = pl.read_csv(path, schema=self._table_schema, separator="\t", quote_char=None)
 
     def embed_concepts(self):
         concept_strings = [
@@ -184,15 +184,17 @@ class ConceptCsvEmbedder():
                 )
 
         self._concept_df = self._concept_df.with_columns(
-        pl.Series(
-            "embeddings",
-            embeddings.tolist(),
-            dtype=pl.Array(
-                pl.Float64,
-                self._embedding_model.get_sentence_embedding_dimension()
+            pl.Series(
+                "embeddings",
+                embeddings.tolist(),
+                dtype=pl.Array(
+                    pl.Float64,
+                    self._embedding_model.get_sentence_embedding_dimension()
+                    )
                 )
-            )
         )
+        self._logger.info(f"Embedded {len(self._concept_df)} concepts")
     
     def save_embeddings_to_parquet(self, path: Path):
         self._concept_df.select(["concept_id", "concept_name", "embeddings"]).write_parquet(path)
+        self._logger.info(f"Wrote embeddings to {path}")
