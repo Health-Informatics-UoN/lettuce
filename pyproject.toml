@@ -18,5 +18,6 @@ lettuce-ui = { workspace = true }
 members = [
     "lettuce",
     "lettuce-ui",
+    "build-embeddings",
 ]
 
