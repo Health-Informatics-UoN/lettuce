@@ -15,8 +15,6 @@ class PGConnector:
 
     _schema: str
         The schema 
-    _embedding_dimension: int
-        The length of vectors used for embeddings
     """
     def __init__(
             self,
@@ -27,12 +25,10 @@ class PGConnector:
             db_name: str,
             db_schema: str,
             logger: Logger,
-            embedding_dimension: int,
             ) -> None:
         self._url: str = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
         self._logger = logger
         self._schema = db_schema
-        self._embedding_dimension = embedding_dimension
 
     def check_extension(self):
         """
@@ -48,7 +44,7 @@ class PGConnector:
             except pg.Error as e:
                 raise e
 
-    def reset_embedding_table(self):
+    def reset_embedding_table(self, embedding_dimension: int) -> None:
         """
         Drop any existing embedding table, then create a new one with the right vector dimension
         """
@@ -60,13 +56,21 @@ class PGConnector:
                 DROP TABLE IF EXISTS {};
                 """).format(sql.Identifier(self._schema, "embeddings"))
                 )
-                self._logger.info(f"Creating a table for {self._embedding_dimension} dimensional vectors")
+                self._logger.info(f"Creating a table for {embedding_dimension} dimensional vectors")
                 table_manage_cursor.execute(
                         sql.SQL("""
                         CREATE TABLE {} (
                             concept_id  int,
                             embedding  vector({})
                         );
-                        """).format(sql.Identifier(self._schema, "embeddings"), self._embedding_dimension)
+                        """).format(sql.Identifier(self._schema, "embeddings"), embedding_dimension)
                         )
                 conn.commit()
+    
+    def get_connection(self) -> pg.Connection:
+        """
+        Return a configured connection
+        """
+        conn = pg.connect(self._url)
+        register_vector(conn)
+        return conn
