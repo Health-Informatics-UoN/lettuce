@@ -1,4 +1,5 @@
 from typing import Protocol
+from collections.abc import Generator
 from dataclasses import dataclass
 
 from embedding_utils.string_building import Concept
@@ -14,6 +15,9 @@ class EmbeddingStore(Protocol):
         ...
 
 class ConceptReader(Protocol):
+    def load_concept_batch(self, batch_size: int) -> Generator[list[Concept]]:
+        ...
+
     def load_concepts(self) -> list[Concept]:
         ...
 

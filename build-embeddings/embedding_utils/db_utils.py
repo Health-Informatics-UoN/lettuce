@@ -30,6 +30,10 @@ class PGConnector:
         self._logger = logger
         self._schema = db_schema
 
+    @property
+    def db_schema(self):
+        return self._schema
+
     def check_extension(self):
         """
         Check whether the connected database has the pgvector extension installed
