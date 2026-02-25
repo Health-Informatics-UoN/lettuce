@@ -1,3 +1,4 @@
+from collections.abc import Callable, Generator
 from logging import Logger
 from pathlib import Path
 from jinja2 import Template
@@ -8,21 +9,58 @@ import polars as pl
 from pgvector.psycopg import register_vector
 from sentence_transformers import SentenceTransformer
 
+from embedding_utils.protocols import ConceptEmbedder, ConceptReader, EmbeddedConcept, EmbeddingPipeline, EmbeddingStore
 from embedding_utils.string_building import Concept
 from embedding_utils.save_embedding import copy_to_postgres
 
-CONCEPT_SCHEMA = {
-        "concept_id": pl.Int32(),
-        "concept_name": pl.String(),
-        "domain_id": pl.String(),
-        "vocabulary_id": pl.String(),
-        "concept_class_id": pl.String(),
-        "standard_concept": pl.String(),
-        "concept_code": pl.String(),
-        "valid_start_date": pl.String(),
-        "valid_end_date": pl.String(),
-        "invalid_reason": pl.String(),
-        }
+class BatchEmbeddingPipeline(EmbeddingPipeline):
+    def __init__(
+            self,
+            reader: ConceptReader,
+            embedder: ConceptEmbedder,
+            store: EmbeddingStore
+            ) -> None:
+        self.reader = reader
+        self.embedder = embedder
+        self.store = store
+
+    def embed_batches(self, concept_generator: Generator[list[Concept]]) -> Generator[list[EmbeddedConcept]]:
+        return (self.embedder.embed_concepts(batch) for batch in concept_generator)
+
+    def run_pipeline(self) -> None:
+        ...
+
+class AllConceptEmbeddingPipeline(EmbeddingPipeline):
+    def __init__(
+            self,
+            reader: ConceptReader,
+            embedder: ConceptEmbedder,
+            store: EmbeddingStore
+            ) -> None:
+        self.reader = reader
+        self.embedder = embedder
+        self.store = store
+
+    def run_pipeline(self) -> None:
+        concepts = self.reader.load_concepts()
+        embeddings = self.embedder.embed_concepts(concepts)
+        self.store.save(embeddings)
+
+class EmbeddingPipelineFactory:
+    def __init__(self) -> None:
+        pass
+
+    def add_reader(self, reader: Callable[..., ConceptReader]) -> None:
+        self.get_concept_reader = reader
+
+    def add_embedder(self, embedder: Callable[..., ConceptEmbedder]) -> None:
+        self.get_concept_embedder = embedder
+
+    def add_store(self, store: Callable[..., EmbeddingStore]) -> None:
+        self.get_embedding_store = store
+
+    def create_pipeline(self) -> EmbeddingPipeline:
+        ...
 
 class PostgresConceptEmbedder():
     def __init__(
