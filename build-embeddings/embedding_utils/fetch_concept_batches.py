@@ -51,13 +51,13 @@ class EmbeddingPipelineFactory:
     def __init__(self) -> None:
         pass
 
-    def add_reader(self, reader: Callable[..., ConceptReader]) -> None:
+    def add_reader(self, reader: ConceptReader) -> None:
         self.get_concept_reader = reader
 
-    def add_embedder(self, embedder: Callable[..., ConceptEmbedder]) -> None:
+    def add_embedder(self, embedder: ConceptEmbedder) -> None:
         self.get_concept_embedder = embedder
 
-    def add_store(self, store: Callable[..., EmbeddingStore]) -> None:
+    def add_store(self, store: EmbeddingStore) -> None:
         self.get_embedding_store = store
 
     def create_pipeline(
@@ -66,13 +66,13 @@ class EmbeddingPipelineFactory:
             ) -> EmbeddingPipeline:
         if batch_pipeline:
             return BatchEmbeddingPipeline(
-                    reader=self.get_concept_reader(),
-                    embedder=self.get_concept_embedder(),
-                    store=self.get_embedding_store()
+                    reader=self.get_concept_reader,
+                    embedder=self.get_concept_embedder,
+                    store=self.get_embedding_store
                     )
         else:
             return AllConceptEmbeddingPipeline(
-                    reader=self.get_concept_reader(),
-                    embedder=self.get_concept_embedder(),
-                    store=self.get_embedding_store()
+                    reader=self.get_concept_reader,
+                    embedder=self.get_concept_embedder,
+                    store=self.get_embedding_store
                     )
