@@ -24,11 +24,12 @@ class BatchEmbeddingPipeline(EmbeddingPipeline):
         self.embedder = embedder
         self.store = store
 
-    def embed_batches(self, concept_generator: Generator[list[Concept]]) -> Generator[list[EmbeddedConcept]]:
-        return (self.embedder.embed_concepts(batch) for batch in concept_generator)
+    def embed_batches(self) -> Generator[list[EmbeddedConcept]]:
+        return (self.embedder.embed_concepts(batch) for batch in self.reader.load_concept_batch())
 
     def run_pipeline(self) -> None:
-        ...
+        for batch in self.embed_batches():
+            self.store.save(batch)
 
 class AllConceptEmbeddingPipeline(EmbeddingPipeline):
     def __init__(
