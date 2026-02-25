@@ -11,7 +11,7 @@ from options.base_options import BaseOptions
 from embedding_utils.concept_readers import CsvConceptExtractor, PostgresConceptExtractor
 from embedding_utils.db_utils import PGConnector
 from embedding_utils.embedder import BatchEmbedder
-from embedding_utils.fetch_concept_batches import EmbeddingPipelineFactory
+from embedding_utils.fetch_concept_batches import BatchEmbeddingPipeline
 from embedding_utils.save_embedding import ParquetWriter, PostgresWriter
 
 settings = BaseOptions()
@@ -39,7 +39,8 @@ def embed_concepts(
     logger.info(f"Using device '{device}' for embeddings")
     template_env = Environment()
     concept_template = template_env.from_string(template)
-    pipeline_factory = EmbeddingPipelineFactory()
+    reader = None
+    store = None
     if concept_source == "postgres" or save_method == "load_to_database":
         db_manager = PGConnector(
                 db_user=settings.db_user,
@@ -50,37 +51,41 @@ def embed_concepts(
                 db_schema=settings.db_schema,
                 logger=logger
                 )
+    else:
+        db_manager = None
     if concept_source == "postgres":
-        pipeline_factory.add_reader(
-                    PostgresConceptExtractor(
+        if db_manager is not None:
+            reader = PostgresConceptExtractor(
                     db_connector=db_manager,
                     batch_size=fetch_batch_size,
                     logger=logger
                     )
-                )
     else:
-        pipeline_factory.add_reader(
-                CsvConceptExtractor(
+        reader = CsvConceptExtractor(
                     path=Path(source_path),
                     batch_size=fetch_batch_size
                     )
-                )
-    pipeline_factory.add_embedder(BatchEmbedder(SentenceTransformer(embedding_model), template=concept_template))
+    embedder = BatchEmbedder(SentenceTransformer(embedding_model), template=concept_template)
     if save_method == "load_to_database":
-        pipeline_factory.add_store(
-                PostgresWriter(
+        if db_manager is not None:
+            store = PostgresWriter(
                     db_connector=db_manager
                     )
-                )
-        db_manager.check_extension()
-        if db_load_method == "replace":
-            db_manager.reset_embedding_table()
+            db_manager.check_extension()
+            if db_load_method == "replace":
+                db_manager.reset_embedding_table(embedding_dimension=embedder.dimension)
     else:
-        pipeline_factory.add_store(ParquetWriter(Path(output_path)))
+        store = ParquetWriter(Path(output_path))
+    if reader is not None and store is not None:
+        pipeline = BatchEmbeddingPipeline(
+                reader=reader,
+                embedder=embedder,
+                store=store
+                )
 
-    pipeline = pipeline_factory.create_pipeline(batch_pipeline=True)
-
-    pipeline.run_pipeline()
+        pipeline.run_pipeline()
+    else:
+        logger.error("Error building pipeline from specified parameters")
 
 if __name__ == "__main__":
     typer.run(embed_concepts)

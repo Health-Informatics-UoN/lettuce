@@ -35,33 +35,3 @@ class AllConceptEmbeddingPipeline(EmbeddingPipeline):
         concepts = self.reader.load_concepts()
         embeddings = self.embedder.embed_concepts(concepts)
         self.store.save(embeddings)
-
-class EmbeddingPipelineFactory:
-    def __init__(self) -> None:
-        pass
-
-    def add_reader(self, reader: ConceptReader) -> None:
-        self.get_concept_reader = reader
-
-    def add_embedder(self, embedder: ConceptEmbedder) -> None:
-        self.get_concept_embedder = embedder
-
-    def add_store(self, store: EmbeddingStore) -> None:
-        self.get_embedding_store = store
-
-    def create_pipeline(
-            self,
-            batch_pipeline: bool
-            ) -> EmbeddingPipeline:
-        if batch_pipeline:
-            return BatchEmbeddingPipeline(
-                    reader=self.get_concept_reader,
-                    embedder=self.get_concept_embedder,
-                    store=self.get_embedding_store
-                    )
-        else:
-            return AllConceptEmbeddingPipeline(
-                    reader=self.get_concept_reader,
-                    embedder=self.get_concept_embedder,
-                    store=self.get_embedding_store
-                    )
