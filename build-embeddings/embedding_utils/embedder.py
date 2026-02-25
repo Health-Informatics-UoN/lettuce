@@ -13,6 +13,10 @@ class BatchEmbedder(ConceptEmbedder):
         super().__init__()
         self._embedding_model = embedding_model
         self._template = template
+
+    @property
+    def dimension(self):
+        return self._embedding_model.get_sentence_embedding_dimension()
     
     def embed_concepts(self, concepts: list[Concept]) -> list[EmbeddedConcept]:
         concept_strings = [c.render_concept_as_template(self._template) for c in concepts]
