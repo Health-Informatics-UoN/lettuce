@@ -60,8 +60,22 @@ class EmbeddingPipelineFactory:
     def add_store(self, store: Callable[..., EmbeddingStore]) -> None:
         self.get_embedding_store = store
 
-    def create_pipeline(self) -> EmbeddingPipeline:
-        ...
+    def create_pipeline(
+            self,
+            batch_pipeline: bool
+            ) -> EmbeddingPipeline:
+        if batch_pipeline:
+            return BatchEmbeddingPipeline(
+                    reader=self.get_concept_reader(),
+                    embedder=self.get_concept_embedder(),
+                    store=self.get_embedding_store()
+                    )
+        else:
+            return AllConceptEmbeddingPipeline(
+                    reader=self.get_concept_reader(),
+                    embedder=self.get_concept_embedder(),
+                    store=self.get_embedding_store()
+                    )
 
 class PostgresConceptEmbedder():
     def __init__(
