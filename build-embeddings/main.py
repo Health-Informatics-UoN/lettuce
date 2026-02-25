@@ -11,6 +11,8 @@ from options.base_options import BaseOptions
 from embedding_utils.concept_readers import CsvConceptExtractor, PostgresConceptExtractor
 from embedding_utils.db_utils import PGConnector
 from embedding_utils.embedder import BatchEmbedder
+from embedding_utils.fetch_concept_batches import EmbeddingPipelineFactory
+from embedding_utils.save_embedding import ParquetWriter, PostgresWriter
 
 settings = BaseOptions()
 logger = logging.Logger("embedding logger")
@@ -37,7 +39,8 @@ def embed_concepts(
     logger.info(f"Using device '{device}' for embeddings")
     template_env = Environment()
     concept_template = template_env.from_string(template)
-    if concept_source == "postgres":
+    pipeline_factory = EmbeddingPipelineFactory()
+    if concept_source == "postgres" or save_method == "load_to_database":
         db_manager = PGConnector(
                 db_user=settings.db_user,
                 db_password=settings.db_password,
@@ -47,52 +50,37 @@ def embed_concepts(
                 db_schema=settings.db_schema,
                 logger=logger
                 )
-        concept_reader = PostgresConceptExtractor(
-                db_connector=db_manager,
-                batch_size=fetch_batch_size,
-                logger=logger
+    if concept_source == "postgres":
+        pipeline_factory.add_reader(
+                    PostgresConceptExtractor(
+                    db_connector=db_manager,
+                    batch_size=fetch_batch_size,
+                    logger=logger
+                    )
                 )
     else:
-        concept_reader = CsvConceptExtractor(
-                path=Path(source_path),
-                batch_size=fetch_batch_size
+        pipeline_factory.add_reader(
+                CsvConceptExtractor(
+                    path=Path(source_path),
+                    batch_size=fetch_batch_size
+                    )
                 )
-    embedder = BatchEmbedder(SentenceTransformer(embedding_model))
+    pipeline_factory.add_embedder(BatchEmbedder(SentenceTransformer(embedding_model), template=concept_template))
     if save_method == "load_to_database":
-        embedding_store = 
-    # if concept_source == "postgres":
-    #     embedder = PostgresConceptEmbedder(
-    #             db_user=settings.db_user,
-    #             db_password=settings.db_password,
-    #             db_host=settings.db_host,
-    #             db_port=settings.db_port,
-    #             db_name=settings.db_name,
-    #             db_schema=settings.db_schema,
-    #             template=concept_template,
-    #             embedding_model=SentenceTransformer(embedding_model),
-    #             logger=logger,
-    #             fetch_batch_size=fetch_batch_size,
-    #             embed_batch_size=embed_batch_size,
-    #             )
-    #     embedder.check_extension()
-    #     if db_load_method == "replace":
-    #         embedder.reset_embedding_table()
-    #     if save_method == "load_to_database":
-    #         embedder.load_embeddings()
-    #     elif save_method == "save_to_parquet":
-    #         save_path = Path(output_path)
-    #         embedder.save_embeddings_to_parquet(save_path)
-    # elif concept_source == "csv":
-    #     embedder = ConceptCsvEmbedder(
-    #             embedding_model = SentenceTransformer(embedding_model),
-    #             template=concept_template,
-    #             logger=logger,
-    #             )
-    #     embedder.load_concepts(Path(source_path))
-    #     embedder.embed_concepts()
-    #     embedder.save_embeddings_to_parquet(Path(output_path))
+        pipeline_factory.add_store(
+                PostgresWriter(
+                    db_connector=db_manager
+                    )
+                )
+        db_manager.check_extension()
+        if db_load_method == "replace":
+            db_manager.reset_embedding_table()
+    else:
+        pipeline_factory.add_store(ParquetWriter(Path(output_path)))
 
+    pipeline = pipeline_factory.create_pipeline(batch_pipeline=True)
 
+    pipeline.run_pipeline()
 
 if __name__ == "__main__":
     typer.run(embed_concepts)
