@@ -15,7 +15,9 @@ class EmbeddingStore(Protocol):
         ...
 
 class ConceptReader(Protocol):
-    def load_concept_batch(self, batch_size: int) -> Generator[list[Concept]]:
+    _batch_size: int
+
+    def load_concept_batch(self) -> Generator[list[Concept]]:
         ...
 
     def load_concepts(self) -> list[Concept]:

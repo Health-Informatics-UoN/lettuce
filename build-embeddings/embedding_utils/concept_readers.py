@@ -2,6 +2,7 @@ from collections.abc import Generator
 from logging import Logger
 from pathlib import Path
 
+from click.core import batch
 from psycopg import sql
 import polars as pl
 
@@ -36,13 +37,15 @@ class PostgresConceptExtractor(ConceptReader):
     def __init__(
             self,
             db_connector: PGConnector,
+            batch_size: int,
             logger: Logger
             ) -> None:
         self.db_connector = db_connector
         self.logger = logger
         self._concept_query = sql.SQL("SELECT concept_id, concept_name, domain_id, vocabulary_id, concept_class_id FROM {}").format(sql.Identifier(self.db_connector.db_schema, "concept"))
+        self._batch_size = batch_size
         
-    def load_concept_batch(self, batch_size: int) -> Generator[list[Concept]]:
+    def load_concept_batch(self) -> Generator[list[Concept]]:
         """
         Returns a Generator for batches of Concepts from the database
 
@@ -60,7 +63,7 @@ class PostgresConceptExtractor(ConceptReader):
             with conn.cursor("concept cursor") as concept_cursor:
                 while True:
                     concept_cursor.execute(self._concept_query)
-                    rows = concept_cursor.fetchmany(batch_size)
+                    rows = concept_cursor.fetchmany(self._batch_size)
                     if len(rows) > 0:
                         yield [
                                 Concept(
@@ -111,14 +114,16 @@ class CsvConceptExtractor(ConceptReader):
     def __init__(
             self,
             path: Path,
-            table_schema: dict[str, pl.DataType] = CONCEPT_SCHEMA
+            batch_size: int,
+            table_schema: dict[str, pl.DataType] = CONCEPT_SCHEMA,
             ) -> None:
         self._path = path
         self._table_schema = table_schema
+        self._batch_size = batch_size
 
-    def load_concept_batch(self, batch_size: int) -> Generator[list[Concept]]:
+    def load_concept_batch(self) -> Generator[list[Concept]]:
         concept_df = pl.scan_csv(self._path, schema=self._table_schema, separator='\t', quote_char=None)
-        for batch in concept_df.collect_batches(chunk_size=batch_size):
+        for batch in concept_df.collect_batches(chunk_size=self._batch_size):
             yield [
                     Concept(
                         concept_id=r["concept_id"],
