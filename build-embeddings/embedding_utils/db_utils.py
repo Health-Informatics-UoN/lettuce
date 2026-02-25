@@ -25,14 +25,20 @@ class PGConnector:
             db_name: str,
             db_schema: str,
             logger: Logger,
+            embeddings_table_name: str = "embeddings",
             ) -> None:
         self._url: str = f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
         self._logger = logger
         self._schema = db_schema
+        self._embeddings_table_name = embeddings_table_name
 
     @property
     def db_schema(self):
         return self._schema
+
+    @property
+    def embeddings_table_name(self):
+        return self._embeddings_table_name
 
     def check_extension(self):
         """
@@ -67,7 +73,12 @@ class PGConnector:
                             concept_id  int,
                             embedding  vector({})
                         );
-                        """).format(sql.Identifier(self._schema, "embeddings"), embedding_dimension)
+                        """).format(
+                            sql.Identifier(
+                                self._schema,
+                                self._embeddings_table_name
+                                ),
+                                    embedding_dimension)
                         )
                 conn.commit()
     
