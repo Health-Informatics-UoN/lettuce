@@ -2,7 +2,6 @@ from collections.abc import Generator
 from logging import Logger
 from pathlib import Path
 
-from click.core import batch
 from psycopg import sql
 import polars as pl
 
