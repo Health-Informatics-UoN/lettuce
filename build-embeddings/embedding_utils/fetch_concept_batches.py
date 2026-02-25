@@ -1,17 +1,6 @@
-from collections.abc import Callable, Generator
-from logging import Logger
-from pathlib import Path
-from jinja2 import Template
-from torch import Tensor
-import psycopg as pg
-from psycopg import sql
-import polars as pl
-from pgvector.psycopg import register_vector
-from sentence_transformers import SentenceTransformer
+from collections.abc import Generator
 
 from embedding_utils.protocols import ConceptEmbedder, ConceptReader, EmbeddedConcept, EmbeddingPipeline, EmbeddingStore
-from embedding_utils.string_building import Concept
-from embedding_utils.save_embedding import copy_to_postgres
 
 class BatchEmbeddingPipeline(EmbeddingPipeline):
     def __init__(
