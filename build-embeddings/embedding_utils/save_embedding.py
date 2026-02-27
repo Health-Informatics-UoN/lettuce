@@ -1,21 +1,10 @@
 import polars as pl
 from pathlib import Path
-from torch import Tensor
-import psycopg as pg
 from psycopg import sql
 import time
 
 from embedding_utils.db_utils import PGConnector
 from embedding_utils.protocols import EmbeddedConcept, EmbeddingStore
-
-def save_parquet(path: Path, concepts: list[tuple[int, str, Tensor]]):
-    pl.DataFrame(
-            {
-                "concept_id": [c[0] for c in concepts],
-                "concept_name": [c[1] for c in concepts],
-                "embeddings": [c[2] for c in concepts],
-                }
-            ).write_parquet(path)
 
 
 class ParquetWriter(EmbeddingStore):
