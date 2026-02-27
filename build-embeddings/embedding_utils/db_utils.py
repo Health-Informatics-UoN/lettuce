@@ -40,7 +40,7 @@ class PGConnector:
     def embeddings_table_name(self):
         return self._embeddings_table_name
 
-    def check_extension(self):
+    def check_extension(self) -> None:
         """
         Check whether the connected database has the pgvector extension installed
         """
