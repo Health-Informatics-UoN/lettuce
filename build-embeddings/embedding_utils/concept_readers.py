@@ -23,6 +23,29 @@ CONCEPT_SCHEMA = {
         "invalid_reason": pl.String(),
         }
 
+def parse_rows(rows: list[tuple[int, str, str, str, str]]) -> list[Concept]:
+    """
+    Take rows from the concept table and build a list of Concepts for them
+
+    Parameters
+    ----------
+    rows: list
+        A list of rows from the database
+
+    Returns
+    -------
+    list[Concept]
+    """
+    return [
+              Concept(
+                  concept_id=r[0],
+                  concept_name=r[1],
+                  domain=r[2],
+                  vocabulary=r[3],
+                  concept_class=r[4]
+                  ) for r in rows
+            ]
+
 class PostgresConceptExtractor(ConceptReader):
     """
     A ConceptReader that connects to a postgres database and reads the concepts.
@@ -64,15 +87,7 @@ class PostgresConceptExtractor(ConceptReader):
                     concept_cursor.execute(self._concept_query)
                     rows = concept_cursor.fetchmany(self._batch_size)
                     if len(rows) > 0:
-                        yield [
-                                Concept(
-                                    concept_id=r[0],
-                                    concept_name=r[1],
-                                    domain=r[2],
-                                    vocabulary=r[3],
-                                    concept_class=r[4]
-                                    ) for r in rows
-                                ]
+                        yield parse_rows(rows)
 
     def load_concepts(self) -> list[Concept]:
         """
@@ -89,15 +104,7 @@ class PostgresConceptExtractor(ConceptReader):
                     concept_cursor.execute(self._concept_query)
                     rows = concept_cursor.fetchall()
                     if len(rows) > 0:
-                        return [
-                                Concept(
-                                    concept_id=r[0],
-                                    concept_name=r[1],
-                                    domain=r[2],
-                                    vocabulary=r[3],
-                                    concept_class=r[4]
-                                    ) for r in rows
-                                ]
+                        return parse_rows(rows)
 
 class CsvConceptExtractor(ConceptReader):
     """
