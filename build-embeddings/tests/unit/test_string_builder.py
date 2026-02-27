@@ -1,7 +1,7 @@
 import pytest
 from jinja2.environment import Environment, Template
 
-from embedding_utils.string_building import Concept
+from embedding_utils.string_building import Concept, RenderedConcept
 
 @pytest.fixture
 def concepts() -> list[Concept]:
@@ -28,5 +28,15 @@ def template() -> Template:
 
 def test_strings_render(concepts, template):
     concept_strings = [c.render_concept_as_template(template) for c in concepts]
-    assert(concept_strings[0] == (4323688, "Cough at rest", "Cough at rest, a Clinical Finding Condition"))
-    assert(concept_strings[1] == (4280520, "Pulse taking", "Pulse taking, a Procedure Measurement"))
+    first_rendered = RenderedConcept(
+            concept_id=4323688,
+            concept_name="Cough at rest",
+            concept_string="Cough at rest, a Clinical Finding Condition"
+            )
+    second_rendered = RenderedConcept(
+            concept_id=4280520,
+            concept_name="Pulse taking",
+            concept_string="Pulse taking, a Procedure Measurement"
+            )
+    assert(concept_strings[0] == first_rendered)
+    assert(concept_strings[1] == second_rendered)
