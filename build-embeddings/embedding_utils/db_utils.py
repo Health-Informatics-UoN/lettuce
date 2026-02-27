@@ -63,6 +63,11 @@ class PGConnector:
     def reset_embedding_table(self, embedding_dimension: int) -> None:
         """
         Drop any existing embedding table, then create a new one with the right vector dimension
+
+        Parameters
+        ----------
+        embedding_dimension: int
+            The table needs a specified dimension for the embeddings
         """
         with pg.connect(self._url) as conn:
             register_vector(conn)

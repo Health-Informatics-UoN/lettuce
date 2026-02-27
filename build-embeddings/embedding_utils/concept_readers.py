@@ -133,6 +133,19 @@ class CsvConceptExtractor(ConceptReader):
         self._batch_size = batch_size
 
     def load_concept_batch(self) -> Generator[list[Concept]]:
+        """
+        Returns a Generator for batches of Concepts from the concept CSV
+
+        Parameters
+        ----------
+        batch_size: int
+            The number of concepts to fetch from the database
+
+        Yields
+        ------
+        Generator[list[Concept]]
+            batch_size concepts from the database
+        """
         concept_df = pl.scan_csv(
             self._path, schema=self._table_schema, separator="\t", quote_char=None
         )
@@ -149,6 +162,14 @@ class CsvConceptExtractor(ConceptReader):
             ]
 
     def load_concepts(self) -> list[Concept]:
+        """
+        Returns the concepts from the concept CSV.
+        This could be several million.
+
+        Returns
+        -------
+        list[Concept]
+        """
         concept_df = pl.read_csv(
             self._path, schema=self._table_schema, separator="\t", quote_char=None
         )

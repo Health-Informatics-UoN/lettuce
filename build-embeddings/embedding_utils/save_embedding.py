@@ -60,6 +60,14 @@ class PostgresWriter(EmbeddingStore):
         self._db_connector = db_connector
 
     def save(self, embeddings: list[EmbeddedConcept]) -> None:
+        """
+        Saves batches of embeddings to the configured database
+        
+        Parameters
+        ---------
+        embeddings: list[EmbeddedConcept]
+            A list of concepts with embeddings
+        """
         with self._db_connector.get_connection().cursor("embed cursor") as embed_cursor:
             with embed_cursor.copy(
                 sql.SQL(

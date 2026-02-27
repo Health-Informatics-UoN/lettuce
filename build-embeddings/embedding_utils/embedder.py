@@ -6,6 +6,16 @@ from embedding_utils.string_building import Concept
 
 
 class BatchEmbedder(ConceptEmbedder):
+    """
+    A ConceptEmbedder that can take a template and an embeddings model to produce concepts and their embeddings.
+
+    Attributes
+    ----------
+    embedding_model: SentenceTransformer
+        The SentenceTransformer used to produce embeddings
+    template: Template
+        A jinja2 template to render strings for the embedding model to encode
+    """
     def __init__(
         self,
         embedding_model: SentenceTransformer,
@@ -20,6 +30,17 @@ class BatchEmbedder(ConceptEmbedder):
         return self._embedding_model.get_sentence_embedding_dimension()
 
     def embed_concepts(self, concepts: list[Concept]) -> list[EmbeddedConcept]:
+        """
+        Render the strings, encode the strings
+
+        Parameters
+        ----------
+        concepts: list[Concept]
+
+        Returns
+        -------
+        list[EmbeddedConcepts]
+        """
         concept_strings = [
             c.render_concept_as_template(self._template) for c in concepts
         ]
