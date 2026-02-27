@@ -68,17 +68,21 @@ class PostgresWriter(EmbeddingStore):
         embeddings: list[EmbeddedConcept]
             A list of concepts with embeddings
         """
-        with self._db_connector.get_connection().cursor("embed cursor") as embed_cursor:
-            with embed_cursor.copy(
-                sql.SQL(
-                    "COPY {} (concept_id, embedding) FROM STDIN WITH (FORMAT BINARY)"
-                ).format(
-                    sql.Identifier(
-                        self._db_connector.db_schema,
-                        self._db_connector.embeddings_table_name,
+        with self._db_connector.get_connection() as conn:
+            with conn.cursor("embed cursor") as embed_cursor:
+                with embed_cursor.copy(
+                    sql.SQL(
+                        "COPY {} (concept_id, embedding) FROM STDIN WITH (FORMAT BINARY)"
+                    ).format(
+                        sql.Identifier(
+                            self._db_connector.db_schema,
+                            self._db_connector.embeddings_table_name,
+                        )
                     )
-                )
-            ) as copy:
-                copy.set_types(["int4", "vector"])
-                for entry in embeddings:
-                    copy.write_row((entry.concept_id, entry.embedding))
+                ) as copy:
+                    copy.set_types(["int4", "vector"])
+                    for entry in embeddings:
+                        copy.write_row((entry.concept_id, entry.embedding))
+                    self._db_connector._logger.info(f"Written batch of {len(embeddings)} concepts")
+            conn.commit()
+            

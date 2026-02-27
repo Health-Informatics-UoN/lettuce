@@ -86,11 +86,13 @@ class PostgresConceptExtractor(ConceptReader):
         """
         with self.db_connector.get_connection() as conn:
             with conn.cursor("concept cursor") as concept_cursor:
+                concept_cursor.execute(self._concept_query)
                 while True:
-                    concept_cursor.execute(self._concept_query)
                     rows = concept_cursor.fetchmany(self._batch_size)
                     if len(rows) > 0:
                         yield parse_rows(rows)
+                    else:
+                        break
 
     def load_concepts(self) -> list[Concept]:
         """
@@ -103,11 +105,9 @@ class PostgresConceptExtractor(ConceptReader):
         """
         with self.db_connector.get_connection() as conn:
             with conn.cursor("concept cursor") as concept_cursor:
-                while True:
-                    concept_cursor.execute(self._concept_query)
-                    rows = concept_cursor.fetchall()
-                    if len(rows) > 0:
-                        return parse_rows(rows)
+               concept_cursor.execute(self._concept_query)
+               rows = concept_cursor.fetchall()
+               return parse_rows(rows)
 
 
 class CsvConceptExtractor(ConceptReader):
