@@ -134,7 +134,7 @@ class CsvConceptExtractor(ConceptReader):
                     Concept(
                         concept_id=r["concept_id"],
                         concept_name=r["concept_name"],
-                        domain=r["domain"],
+                        domain=r["domain_id"],
                         vocabulary=r["vocabulary_id"],
                         concept_class=r["concept_class_id"]
                         ) for r in batch.iter_rows(named=True)
@@ -146,7 +146,7 @@ class CsvConceptExtractor(ConceptReader):
                 Concept(
                     concept_id=r["concept_id"],
                     concept_name=r["concept_name"],
-                    domain=r["domain"],
+                    domain=r["domain_id"],
                     vocabulary=r["vocabulary_id"],
                     concept_class=r["concept_class_id"]
                     ) for r in concept_df.iter_rows(named=True)
