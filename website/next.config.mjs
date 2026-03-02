@@ -1,8 +1,7 @@
-import nextra from 'nextra'
+import nextra from 'nextra';
  
-/**
- * @type {import('next').NextConfig}
- */
+/** @tyep (import('next').NextConfig) */
+
 const nextConfig = {
   basePath: "/lettuce",
   assetPrefix: "/lettuce",
