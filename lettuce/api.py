@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials 
 from routers import search_routes
 from options.base_options import BaseOptions
+import importlib.metadata
 
 settings = BaseOptions()
 
@@ -75,6 +76,21 @@ app.include_router(
     prefix="/search",
     dependencies=[Depends(verify_api_key)]  
 )
+
+@app.get("/health")
+def healthcheck() -> dict[str, str]:
+    """
+    A healthcheck endpoint for monitoring
+
+    Returns
+    -------
+    dict[str, str]
+        Reports healthy status and the version of lettuce running
+    """
+    return {
+            'status': 'healthy',
+            'version': importlib.metadata.version('lettuce')
+            }
 
 
 def main():
