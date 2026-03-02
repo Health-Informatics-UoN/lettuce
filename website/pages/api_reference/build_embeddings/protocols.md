@@ -49,3 +49,42 @@ Return a Generator to iterate through loaded concepts in batches.
 ```python
 load_concepts() -> list[Concept]
 ```
+
+### `ConceptEmbedder`
+```python
+class ConceptEmbedder(Protocol)
+```
+
+Protocol for a thing that can take concepts and produce embeddings
+
+#### Methods
+##### `embed_concepts`
+```python
+embed_concepts(concepts: list[Concept]) -> list[EmbeddedConcept]
+```
+Take a list of concepts and encode them into embeddings
+
+### `EmbeddingStore`
+```python
+class EmbeddingStore(Protocol)
+```
+
+Protocol for taking embeddings and storing them somewhere
+
+#### Methods
+##### `save`
+```python
+save(embeddings: list[EmbeddedConcept]) -> None
+```
+
+Take a list of embeddings and save them somewhere.
+
+### `EmbeddedConcept`
+```python
+class EmbeddedConcept:
+concept_id: int
+concept_name: str 
+embedding: list[float]
+```
+
+Dataclass to hold identifiers for a concept and its embedding
