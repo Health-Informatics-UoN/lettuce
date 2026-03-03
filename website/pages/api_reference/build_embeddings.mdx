@@ -46,6 +46,8 @@ To write a parquet file from a vocabulary csv:
 uv run build-embeddings --concept-source csv --source-path VOCABULARY.csv --output-path embeddings.parquet
 ```
 
+The best overview of how this module works is in [the protocols description](./build_embeddings/protocols)
+
 <Callout type="warning" emoji="⚠️">
   If you run the tests with `uv run pytest` for the embeddings building code, there is a test that will overwrite the embeddings table in your attached OMOP-CDM database. Use the environment variable `SKIP_DATABASE_TESTS=true` to skip this test.
 </Callout>
