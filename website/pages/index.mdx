@@ -7,48 +7,28 @@ import { Callout } from 'nextra/components'
       >
   ![](/lettuce-logo.svg)
 </div>
-**Lettuce** is an application for medical researchers that matches the informal medicine names supplied by the user to concepts in the [Observational Health Data Sciences and Informatics](https://www.ohdsi.org) (OMOP) [standardised vocabularies](https://github.com/OHDSI/Vocabulary-v5.0/wiki).
+**Lettuce** is an application for medical researchers that matches the source terms supplied by the user to concepts in the [Observational Health Data Sciences and Informatics](https://www.ohdsi.org) (OMOP) [standardised vocabularies](https://github.com/OHDSI/Vocabulary-v5.0/wiki).
 
-The application can be used as an API, or run with a command-line interface (CLI).
+The application can be used as an [HTTP API](/deployment), a [CLI](/api_reference/cli), or run with a [graphical user interface (GUI)](/api_reference/ui).
+
+
 
 <Callout type="warning" emoji="⚠️">
    This project is under active development
 </Callout>
 
 ## Overview
-The project uses a Large Language Model to suggest formal drug names to match the informal name supplied by the user. Suggested formal drug names are then fed into parameterised SQL queries against the OMOP database to fetch the relevant concepts. Any returned concepts are then ranked by how well they match the supplied query and provided to the user.
 
-This is the rough process that the Lettuce API follows. Subject to change
+Lettuce uses vector search, a large language model, and text search features to help find the matching concept for a source term.
+A full pipeline uses the vector search results for retrieval-augmented generation, then the answer provided by an LLM to run text search against a configured OMOP-CDM database.
+Users can use the full pipeline, or only components of it, depending on requirements.
 
-```mermaid
-  graph TD
-    usr[User submits source term]
-    subgraph Lettuce
-      lettuce(Lettuce API/CLI)
-      embed(Embedding model)
-      lettuce --> embed
+<div align="center">
+  ![](/Lettuce_Architecture.png)
+</div>
 
-      subgraph LLM
-        prompt --> llm(LLM)
-      end
+## Installation
 
-      LLM --> output
+To use Lettuce, follow [the quickstart](https://health-informatics-uon.github.io/lettuce/quickstart)
 
-      text_search(Text search query)
-      llm --> text_search
-    end
 
-    subgraph Database
-        cdm[(OMOP-CDM)]
-        embed_table(Embedding Table)
-    end
-
-    embed_table -.-> output(Output)
-    cdm --> output
-    text_search --> cdm
-    embed --> embed_table
-    embed_table -.-> prompt(Prompt Template)
-    cdm --> embed_table
-    usr --> lettuce
-    output --> json(JSON response)
-```
