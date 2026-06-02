@@ -30,6 +30,7 @@ class LLMModel(str, Enum):
     LLAMA_3_8B = "llama-3-8b", "", "QuantFactory/Meta-Llama-3-8B-GGUF-v2", "Meta-Llama-3-8B.Q4_K_M.gguf",
     LLAMA_3_70B = "llama-3-70b", "","QuantFactory/Meta-Llama-3-70B-Instruct-GGUF-v2", "Meta-Llama-3-70B-Instruct-v2.Q4_K_M.gguf",
     GEMMA_7B = "gemma-7b", "", "MaziyarPanahi/gemma-7b-GGUF", "gemma-7b.Q4_K_M.gguf",
+    LLAMA_3_1_8B = "llama-3.1-8b", "", "MaziyarPanahi/Meta-Llama-3.1-8B-Instruct-GGUF","Meta-Llama-3.1-8B-Instruct.Q4_K_M.gguf",
     LLAMA_3_2_3B = "llama-3.2-3b", "", "bartowski/Llama-3.2-3B-Instruct-GGUF", "Llama-3.2-3B-Instruct-Q6_K.gguf",
     MISTRAL_7B = "mistral-7b", "", "TheBloke/Mistral-7B-GGUF", "mistral-7b.Q4_K_M.gguf",
     KUCHIKI_L2_7B = "kuchiki-l2-7b", "", "TheBloke/Kuchiki-L2-7B-GGUF", "kuchiki-l2-7b.Q4_K_M.gguf",
