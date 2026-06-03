@@ -26,8 +26,8 @@ jobs:
   publish-container:
     uses: health-informatics-uon/workflows/.github/workflows/publish-container.yml@1.4.6
     with:
-      image-name: omop-lite
-      image-description: "OMOP Lite container image"
+      image-name: lettuce
+      image-description: "Lettuce container image"
       registry: ghcr.io
       context: .
       dockerfile: Dockerfile
@@ -39,7 +39,7 @@ jobs:
     needs: [release, publish-container]
     if: needs.release.outputs.release-created == 'true'
     with:
-      image-name: omop-lite
+      image-name: lettuce
       registry: ghcr.io
       tag: ${{ needs.release.outputs.release-tag }}
       tag-latest: true
