@@ -29,8 +29,8 @@ jobs:
       image-name: lettuce
       image-description: "Lettuce container image"
       registry: ghcr.io
-      context: .
-      dockerfile: Dockerfile
+      context: ./lettuce
+      dockerfile: ./lettuce/Dockerfile
       platforms: linux/amd64,linux/arm64
     secrets: inherit
 
