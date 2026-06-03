@@ -1095,8 +1095,7 @@ provides-extras = ["test", "llama-cpp", "llama-cpu", "llama-gpu-cu121", "llama-g
 
 [[package]]
 name = "lettuce-tools"
-version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "lettuce" },
     { name = "lettuce-ui" },

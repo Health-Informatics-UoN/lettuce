@@ -1,0 +1,46 @@
+# This workflow is used to release the project.
+# It is triggered by a push to the main branch.
+# It will publish an edge container image
+# And run semantic release
+
+name: Release
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  packages: write
+  id-token: write
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    uses: health-informatics-uon/workflows/.github/workflows/semantic-release.yml@1.4.6
+    with:
+      node-version: "24"
+    secrets: inherit
+
+  publish-container:
+    uses: health-informatics-uon/workflows/.github/workflows/publish-container.yml@1.4.6
+    with:
+      image-name: omop-lite
+      image-description: "OMOP Lite container image"
+      registry: ghcr.io
+      context: .
+      dockerfile: Dockerfile
+      platforms: linux/amd64,linux/arm64
+    secrets: inherit
+
+  semver-container:
+    uses: health-informatics-uon/workflows/.github/workflows/semver-container.yml@1.4.6
+    needs: [release, publish-container]
+    if: needs.release.outputs.release-created == 'true'
+    with:
+      image-name: omop-lite
+      registry: ghcr.io
+      tag: ${{ needs.release.outputs.release-tag }}
+      tag-latest: true
+    secrets: inherit

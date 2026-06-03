@@ -27,3 +27,6 @@ members = [
 
 [tool.hatch.version]
 source = "vcs"
+
+[tool.hatch.build.targets.wheel]
+packages = ["lettuce", "build-embeddings", "lettuce-ui"]
