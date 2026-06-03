@@ -2,7 +2,7 @@ module.exports = {
     "branches": ["main"],
     "tagFormat": "${version}",
     "preset": "angular",
-    "repositoryUrl": "https://github.com/Health-Informatics-UoN/<YOUR_REPO_NAME>.git",
+    "repositoryUrl": "https://github.com/Health-Informatics-UoN/lettuce.git",
     plugins: [
       '@semantic-release/commit-analyzer',
       '@semantic-release/release-notes-generator',
