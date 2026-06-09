@@ -1420,6 +1420,11 @@ test = [
     { name = "pytest-mock" },
 ]
 
+[package.dev-dependencies]
+azure = [
+    { name = "azure-monitor-opentelemetry" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "aiohttp", specifier = ">=3.12" },
@@ -1467,6 +1472,9 @@ requires-dist = [
 ]
 provides-extras = ["test", "llama-cpp", "llama-cpu", "llama-gpu-cu121", "llama-gpu-cu122", "llama-gpu-cu123", "llama-gpu-cu124", "llama-gpu-metal"]
 
+[package.metadata.requires-dev]
+azure = [{ name = "azure-monitor-opentelemetry", specifier = ">=1.8.8" }]
+
 [[package]]
 name = "lettuce-tools"
 source = { editable = "." }
@@ -1475,19 +1483,11 @@ dependencies = [
     { name = "lettuce-ui" },
 ]
 
-[package.dev-dependencies]
-azure = [
-    { name = "azure-monitor-opentelemetry" },
-]
-
 [package.metadata]
 requires-dist = [
     { name = "lettuce", editable = "lettuce" },
     { name = "lettuce-ui", editable = "lettuce-ui" },
 ]
-
-[package.metadata.requires-dev]
-azure = [{ name = "azure-monitor-opentelemetry", specifier = ">=1.8.8" }]
 
 [[package]]
 name = "lettuce-ui"
