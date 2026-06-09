@@ -20,6 +20,8 @@ dependencies = [
     "typer>=0.16.0",
     "ollama-haystack>=4.1.0",
     "rapidfuzz>=3.14.1",
+    "opentelemetry-api>=1.40.0",
+    "opentelemetry-sdk>=1.40.0",
 ]
 
 [project.optional-dependencies]

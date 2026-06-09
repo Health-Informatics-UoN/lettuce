@@ -21,3 +21,8 @@ members = [
     "build-embeddings",
 ]
 
+[dependency-groups]
+azure = [
+    "azure-monitor-opentelemetry>=1.8.8",
+]
+
