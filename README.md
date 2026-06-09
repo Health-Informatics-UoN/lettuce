@@ -1,7 +1,6 @@
-
 <p align="center">
   <picture>
-    <img alt="Lettuce Logo" src="/website/public/logo/lettuce-primary.png" width="280"/>
+    <img alt="Lettuce Logo" src="/website/public/lettuce-logo.svg" width="280"/>
   </picture>
   </a>
 </p>
@@ -12,36 +11,21 @@
   </strong>
 </div>
 
-Lettuce is an application for medical researchers that matches the informal medicine names supplied by the user to concepts in the [Observational Health Data Sciences and Informatics](https://www.ohdsi.org) (OMOP) [standardised vocabularies](https://github.com/OHDSI/Vocabulary-v5.0/wiki)
+Lettuce is an application for medical researchers that matches the source terms supplied by the user to concepts in the [Observational Health Data Sciences and Informatics](https://www.ohdsi.org) (OMOP) [standardised vocabularies](https://github.com/OHDSI/Vocabulary-v5.0/wiki)
 
-The application can be used as an API, or run with a graphical user interface (GUI).
-
-   This project is under active development
+The application can be used as an [HTTP API](https://health-informatics-uon.github.io/lettuce/deployment), a [CLI](https://health-informatics-uon.github.io/lettuce/api_reference/cli), or run with a [graphical user interface (GUI)](https://health-informatics-uon.github.io/lettuce/api_reference/ui).
 
 ## Overview
 
-The project uses a Large Language Model to suggest formal drug names to match the informal name supplied by the user. Suggested formal drug names are then fed into parameterised SQL queries against the OMOP database to fetch the relevant concepts. Any returned concepts are then ranked by how well they match the supplied query and provided to the user.
+Lettuce uses vector search, a large language model, and text search features to help find the matching concept for a source term.
+A full pipeline uses the vector search results for retrieval-augmented generation, then the answer provided by an LLM to run text search against a configured OMOP-CDM database.
+Users can use the full pipeline, or only components of it, depending on requirements.
 
-This is the rough process that the Lettuce API follows. Subject to change
-
-```mermaid
-flowchart TD
-    usr[User]
-    api_in(API)
-    api_out(API)
-    llm(Large Language Model)
-    strpr[[String pre-processing]]
-    omop[(OMOP database)]
-    fuzz[[Fuzzy matching]]
-    usr -- User sends an informal name to the API --> api_in
-    api_out -- API responds with concept\ninformation as JSON --> usr
-    api_in -- LLM sent informal name --> llm
-    llm -- LLM responds with possible formal name --> strpr
-    strpr --> omop
-    omop --> fuzz
-    fuzz -- Matches meeting threshold --> api_out
-
-```
+<div align="center">
+    <picture>
+        <img alt="Lettuce workflow" src="/website/public/Lettuce_Architecture.png" />
+    </picture>
+</div>
 
 ## Installation
 
@@ -50,62 +34,6 @@ To use Lettuce, follow [the quickstart](https://health-informatics-uon.github.io
 ### Connecting to a database
 
 Lettuce works by querying a database with the OMOP schema, so you should have access to one. Your database access credentials should be kept in `.env`. An example of the format can be found in `/Lettuce/.env.example`
-
-### Running the API
-
-The simplest way to get a formal name from an informal name is to use the API and the GUI. To start a Lettuce server:
-
-```
-$ uv run python app.py
-```
-The GUI makes calls to the API equivalent to the curl request below.
-
-### Run pipeline
-
-To get a response without the GUI, a request can be made using curl, e.g. for Betnovate scalp application and Panadol
-
-```
-$ curl -X POST "http://127.0.0.1:8000/pipeline/" -H "Content-Type: application/json" -d '{"names": ["Betnovate Scalp Application", "Panadol"]}'
-```
-
-The API endpoint is `/pipeline/`, and uses a `POST` method
-
-The request body should have the format
-
-```
-   {
-    "name": <Drug informal name>,
-    "pipeline_options": {
-      <options>
-    }
-   }
-```
-
-Refer to the [API reference](https://health-informatics-uon.github.io/lettuce/api_reference/options/pipeline_options) for the available pipeline options.
-
-The response will be provided in the format
-
-```
-   {
-    "event": "llm_output",
-    "data": {
-       "reply": formal_name: str,
-       "meta": LLM metadata: List,
-     }
-   }
-
-   {
-    "event": "omop_output",
-    "data": [
-       {
-         "search_term": search_term: str,
-         "CONCEPT": [concept_data: Dict]
-       }
-     ]
-   }
-```
-
-The response will be streamed asynchronously so the llm_output will arrive before any omop_output
 
 ## Published Images
 Development Docker images for the Lettuce project are available on GitHub Container Registry (GHCR):
@@ -124,4 +52,4 @@ See [GitHub Packages](https://github.com/Health-Informatics-UoN/lettuce/pkgs/con
 
 ## Contact
 
-If there are any bugs, please [email us](mailto:james.mitchell-white1@nottingham.ac.uk)
+If there are any bugs, please raise an issue or [email us.](mailto:james.mitchell-white1@nottingham.ac.uk)
