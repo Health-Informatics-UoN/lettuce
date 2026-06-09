@@ -1,5 +1,13 @@
 version: 2
 updates:
+  - package-ecosystem: "npm"
+    directory: "/lettuce/website"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: "uv"
     directory: "/"
     schedule:
