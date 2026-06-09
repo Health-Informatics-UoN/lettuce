@@ -9,7 +9,6 @@ dependencies = [
     "aiohttp>=3.12",
     "haystack-ai>=2.7.0",
     "fastembed-haystack>=1.2.0",
-    "numpy<2; platform_system == 'Darwin' and platform_machine == 'x86_64'",
     "fastapi>=0.112.2",
     "uvicorn>=0.30.6",
     "sse-starlette>=2.1.3",
