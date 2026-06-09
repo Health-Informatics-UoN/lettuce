@@ -5,7 +5,7 @@ from components.prompt_templates import templates
 class Prompts:
     """
     This class is used to generate prompts for the models.
-
+    
     The Prompts class manages template selection and prompt building for different LLM models,
     automatically handling model-specific formatting requirements such as end-of-turn tokens.
     It supports multiple prompt types including simple few-shot learning and retrieval-augmented

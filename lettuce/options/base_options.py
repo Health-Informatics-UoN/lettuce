@@ -2,24 +2,23 @@ from options.pipeline_options import LLMModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from .pipeline_options import EmbeddingModelName, InferenceType
 
-
 class BaseOptions(BaseSettings):
     """
     Configuration settings class for the lettuce pipeline.
-
+    
     This class manages all configuration options for the lettuce system, including
     database connections, LLM model settings, embedding configurations, and inference
     parameters. It uses Pydantic BaseSettings to handle environment variable loading
     and configuration validation.
-
+    
     The class automatically loads settings from environment variables and .env files,
     providing sensible defaults for all configuration options.
-
+    
     Attributes
     ----------
     db_host : str
         Database host address. Defaults to "localhost".
-    db_user : str
+    db_user : str  
         Database username. Defaults to "postgres".
     db_password : str
         Database password. Defaults to "password".
@@ -52,12 +51,12 @@ class BaseOptions(BaseSettings):
     auth_api_key : str | None
         API key for authentication. Defaults to None.
     """
-
+    
     model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-    )
-
+            env_file=".env",
+env_file_encoding="utf-8",
+            )
+    
     # Database configuration
     db_host: str = "localhost"
     db_user: str = "postgres"
@@ -67,11 +66,11 @@ class BaseOptions(BaseSettings):
     db_schema: str = "cdm"
     db_vectable: str = "embeddings"
     # have a branch where this comes from database - hard to integrate,#TODO
-    db_vecsize: int = 384
+    db_vecsize: int = 384 
 
     # Inference configuration
     inference_type: InferenceType = InferenceType.OLLAMA
-    ollama_url: str = "http://localhost:11434"
+    ollama_url: str = "http://localhost:11434"    
 
     # LLM model configuration
     llm_model: LLMModel = LLMModel.LLAMA_3_2_3B
@@ -82,23 +81,23 @@ class BaseOptions(BaseSettings):
     # Embedding configuration
     embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL
     embedding_top_k: int = 5
-
+    
     # Authentication
     auth_api_key: str | None = None
 
     def connection_url(self) -> str:
         """
         Generate a PostgreSQL connection URL from the database configuration.
-
+        
         Constructs a connection string in the format required by SQLAlchemy
         and other database libraries using the configured database parameters.
-
+        
         Returns
         -------
         str
             PostgreSQL connection URL in the format:
             "postgresql://user:password@host:port/database"
-
+            
         Examples
         --------
         >>> settings = BaseOptions()
@@ -110,10 +109,10 @@ class BaseOptions(BaseSettings):
     def print(self) -> None:
         """
         Print all configuration settings in a formatted display.
-
+        
         Outputs all current configuration values in a readable format,
         useful for debugging and verification of loaded settings.
-
+        
         Examples
         --------
         >>> options = BaseOptions()
@@ -132,6 +131,7 @@ class BaseOptions(BaseSettings):
 
     def hf_hub_config(self) -> dict[str, str]:
         return {
-            "repo_id": self.llm_model.repo_id,
-            "filename": self.llm_model.filename,
-        }
+                "repo_id": self.llm_model.repo_id,
+                "filename": self.llm_model.filename,
+                }
+        

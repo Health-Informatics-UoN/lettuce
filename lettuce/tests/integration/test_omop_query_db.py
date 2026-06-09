@@ -9,16 +9,14 @@ from omop.omop_queries import (
     query_descendants_by_name,
     query_ids_matching_name,
     query_related_by_name,
-    query_ancestors_and_descendants_by_id,
-    query_related_by_id,
-    text_search_query,
+    query_ancestors_and_descendants_by_id, 
+    query_related_by_id, 
+    text_search_query 
 )
-from omop.preprocess import preprocess_search_term
+from omop.preprocess import preprocess_search_term 
 
 
-pytestmark = pytest.mark.skipif(
-    os.getenv("SKIP_DATABASE_TESTS") == "true", reason="Skipping database tests"
-)
+pytestmark = pytest.mark.skipif(os.getenv('SKIP_DATABASE_TESTS') == 'true', reason="Skipping database tests")
 
 settings = BaseOptions()
 
@@ -85,7 +83,7 @@ def test_fetch_ancestor_concepts_by_name_with_separation_bounds(db_connection):
     )
     results = session.execute(query).fetchall()
     session.close()
-
+    
     assert len(results) >= 1
 
     names = [result[0].concept_name for result in results]
@@ -123,7 +121,7 @@ def test_fetch_descendant_concepts_by_name_with_separation_bounds(db_connection)
     assert "Painaid BRF Oral Product" in names
 
 
-def test_query_descendants_and_ancestors_by_id(db_connection):
+def test_query_descendants_and_ancestors_by_id(db_connection): 
     concept_id = 1125315  # Acetaminophen
 
     Session = sessionmaker(db_connection)
@@ -132,16 +130,16 @@ def test_query_descendants_and_ancestors_by_id(db_connection):
     query = query_ancestors_and_descendants_by_id(concept_id)
     results = session.execute(query).fetchall()
     session.close()
-
+  
     assert len(results) > 1
-
+    
     # Extract data without pandas
     names = [row[4] for row in results]  # concept_name is at index 4
     relationship_types = {row[0] for row in results}  # relationship_type is at index 0
 
     assert relationship_types == {"Ancestor", "Descendant"}
     assert "Painaid BRF Oral Product" in names
-    assert "homatropine methylbromide; systemic" in names
+    assert "homatropine methylbromide; systemic" in names 
 
 
 def test_query_related_by_id(db_connection):
@@ -163,20 +161,23 @@ def test_query_related_by_id(db_connection):
 def test_full_text_query(db_connection):
     search_term = preprocess_search_term("Nervous System")
     query = text_search_query(
-        search_term, vocabulary_id=None, standard_concept=True, concept_synonym=False
+        search_term, 
+        vocabulary_id=None, 
+        standard_concept=True, 
+        concept_synonym=False 
     )
     Session = sessionmaker(db_connection)
     session = Session()
     results = session.execute(query).fetchall()
     session.close()
-
+  
     assert len(results) > 1
 
-    expected_entry = (4134440, "Visual system disorder", "SNOMED", "128127008", None)
-    assert expected_entry in results
+    expected_entry = (4134440, 'Visual system disorder', 'SNOMED', '128127008', None)
+    assert expected_entry in results 
 
 
-def test_regression_query_descendants_and_ancestors(db_connection):
+def test_regression_query_descendants_and_ancestors(db_connection): 
     query = f"""
             (
                 SELECT
@@ -227,18 +228,18 @@ def test_regression_query_descendants_and_ancestors(db_connection):
     max_separation_descendant = 1
 
     params = {
-        "concept_id": concept_id,
-        "min_separation_ancestor": min_separation_ancestor,
-        "max_separation_ancestor": max_separation_ancestor,
-        "min_separation_descendant": min_separation_descendant,
-        "max_separation_descendant": max_separation_descendant,
+            "concept_id": concept_id,
+            "min_separation_ancestor": min_separation_ancestor,
+            "max_separation_ancestor": max_separation_ancestor,
+            "min_separation_descendant": min_separation_descendant,
+            "max_separation_descendant": max_separation_descendant,
     }
-
+    
     # Execute original query
     Session = sessionmaker(db_connection)
     session = Session()
     results_original_raw = session.execute(sql.text(query), params).fetchall()
-
+    
     # Remove duplicates and filter out self-references
     seen = set()
     results_original = []
@@ -247,21 +248,21 @@ def test_regression_query_descendants_and_ancestors(db_connection):
         if row_tuple not in seen and row[1] != concept_id:  # concept_id is at index 1
             seen.add(row_tuple)
             results_original.append(row_tuple)
-
+    
     # New query using SQLAlchemy
     query_new = query_ancestors_and_descendants_by_id(
         concept_id,
-        min_separation_ancestor=1,
-        min_separation_descendant=1,
-        max_separation_ancestor=1,
-        max_separation_descendant=1,
+        min_separation_ancestor=1, 
+        min_separation_descendant=1, 
+        max_separation_ancestor=1, 
+        max_separation_descendant=1 
     )
     results_refactor = session.execute(query_new).fetchall()
     session.close()
-
+    
     # Convert to comparable format
     results_refactor = [tuple(row) for row in results_refactor]
-
+    
     # Sort both for comparison
     results_original_sorted = sorted(results_original)
     results_refactor_sorted = sorted(results_refactor)
@@ -269,7 +270,7 @@ def test_regression_query_descendants_and_ancestors(db_connection):
     assert results_original_sorted == results_refactor_sorted
 
 
-def test_regression_query_related_by_id(db_connection):
+def test_regression_query_related_by_id(db_connection): 
     concept_id = 1125315
     query = f"""
         SELECT
@@ -288,14 +289,12 @@ def test_regression_query_related_by_id(db_connection):
             cr.concept_id_1 = :concept_id AND
             cr.valid_end_date > NOW()
     """
-
+    
     # Execute original query
     Session = sessionmaker(db_connection)
     session = Session()
-    results_original_raw = session.execute(
-        sql.text(query), {"concept_id": concept_id}
-    ).fetchall()
-
+    results_original_raw = session.execute(sql.text(query), {"concept_id": concept_id}).fetchall()
+    
     # Process original results - remove duplicates and filter out self-references
     seen = set()
     results_original = []
@@ -304,7 +303,7 @@ def test_regression_query_related_by_id(db_connection):
         if row_tuple not in seen and row[0] != concept_id:  # concept_id is at index 0
             seen.add(row_tuple)
             results_original.append(row_tuple)
-
+    
     # New query using SQLAlchemy
     query_new = query_related_by_id(concept_id)
     results_refactor = session.execute(query_new).fetchall()
@@ -312,7 +311,7 @@ def test_regression_query_related_by_id(db_connection):
 
     # Convert to comparable format
     results_refactor = [tuple(row) for row in results_refactor]
-
+    
     # Sort both for comparison
     results_original_sorted = sorted(results_original)
     results_refactor_sorted = sorted(results_refactor)

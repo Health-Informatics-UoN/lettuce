@@ -1,7 +1,6 @@
 from typing import Optional, List
 from pydantic import BaseModel
 
-
 class ConceptSuggestionRequest(BaseModel):
     """
     A model describing API requests for concept suggestions
@@ -29,7 +28,6 @@ class ConceptSuggestionRequest(BaseModel):
     top_k: int
         The number of suggestions to make
     """
-
     source_term: str
     vocabulary_id: Optional[List[str]] = None
     domain_id: Optional[List[str]] = None

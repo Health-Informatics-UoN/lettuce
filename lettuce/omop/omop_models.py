@@ -9,7 +9,6 @@ settings = BaseOptions()
 
 Base = declarative_base()
 
-
 class Concept(Base):
     """
     This class represents an ORM mapping to the OMOP concept table
@@ -85,7 +84,6 @@ class ConceptAncestor(Base):
     max_levels_of_separation = Column(Integer)
 
     dummy_primary = Column(Integer, primary_key=True)
-
 
 class Embedding(Base):
     """

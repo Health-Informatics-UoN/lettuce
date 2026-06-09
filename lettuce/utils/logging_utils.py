@@ -92,7 +92,7 @@ class Logger(object):
         # logging configuration
         log_dir = Path(self._log_dir)
         log_dir.mkdir(parents=True, exist_ok=True)
-        file_name = log_dir.joinpath(f"{time.strftime('%Y%m%d')}.log")
+        file_name = log_dir.joinpath(f'{time.strftime("%Y%m%d")}.log')
 
         # Create a custom logger
         # if self.multi_module:

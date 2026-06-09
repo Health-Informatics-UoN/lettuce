@@ -15,39 +15,17 @@ from rich import print
 
 app = typer.Typer()
 
-
 @app.command()
 def search(
-    informal_names: Annotated[
-        List[str], typer.Argument(help="Source term to search for")
-    ],
-    vector_search: Annotated[
-        bool, typer.Option(help="Whether to enable vector search in your pipeline")
-    ] = True,
-    use_llm: Annotated[
-        bool, typer.Option(help="Whether to enable the LLM step in your pipeline")
-    ] = True,
-    vocabulary_id: Annotated[
-        Optional[List[str]],
-        typer.Option(help="Which vocabularies to return OMOP concepts from"),
-    ] = None,
-    embed_vocab: Annotated[
-        Optional[List[str]],
-        typer.Option(help="Which vocabularies to use for semantic search"),
-    ] = None,
-    standard_concept: Annotated[
-        bool, typer.Option(help="Whether to search through only standard concepts")
-    ] = True,
-    search_threshold: Annotated[
-        int, typer.Option(help="What fuzzy matching threshold to limit responses to")
-    ] = 80,
-    verbose_llm: Annotated[
-        bool,
-        typer.Option(
-            help="Whether the LLM should report on its state while initializing"
-        ),
-    ] = False,
-):
+        informal_names: Annotated[List[str], typer.Argument(help="Source term to search for")],
+        vector_search: Annotated[bool, typer.Option(help="Whether to enable vector search in your pipeline")] = True,
+        use_llm: Annotated[bool, typer.Option(help="Whether to enable the LLM step in your pipeline")] = True,
+        vocabulary_id: Annotated[Optional[List[str]], typer.Option(help="Which vocabularies to return OMOP concepts from")] = None,
+        embed_vocab: Annotated[Optional[List[str]], typer.Option(help="Which vocabularies to use for semantic search")] = None,
+        standard_concept: Annotated[bool, typer.Option(help="Whether to search through only standard concepts")] = True,
+        search_threshold: Annotated[int, typer.Option(help="What fuzzy matching threshold to limit responses to")] = 80,
+        verbose_llm: Annotated[bool, typer.Option(help="Whether the LLM should report on its state while initializing")] = False
+        ):
     """
     Start a Lettuce search pipeline
     """
@@ -58,13 +36,13 @@ def search(
     if use_llm:
         start = time.time()
         llm = get_model(
-            model=settings.llm_model,
-            logger=logger,
-            inference_type=settings.inference_type,
-            url=settings.ollama_url,
-            temperature=settings.temperature,
-            verbose=verbose_llm,
-        )
+                model=settings.llm_model,
+                logger=logger,
+                inference_type=settings.inference_type,
+                url=settings.ollama_url,
+                temperature=settings.temperature,
+                verbose=verbose_llm
+                )
         if vector_search:
             pl = LLMPipeline(
                 llm=llm,
@@ -96,7 +74,7 @@ def search(
                 )
                 if "llm" in rag.keys():
                     query.add_llm_answer(rag["llm"]["replies"][0].strip())
-            logger.info(f"Total RAG inference time: {time.time() - run_start}")
+            logger.info(f"Total RAG inference time: {time.time()-run_start}")
         else:
             pl = LLMPipeline(
                 llm=llm,
@@ -121,7 +99,7 @@ def search(
             embed_vocab=embed_vocab,
             standard_concept=standard_concept,
             top_k=settings.embedding_top_k,
-        )
+       )
         embed_results = embeddings.search(informal_names)
         for query, result in zip(results, embed_results):
             query.add_vector_search_results(result)
@@ -129,7 +107,9 @@ def search(
     db_queries = [query.get_query() for query in results]
 
     db_results = OMOPMatcher(
-        logger, vocabulary_id=vocabulary_id, search_threshold=search_threshold
+        logger, 
+        vocabulary_id= vocabulary_id,
+        search_threshold=search_threshold
     ).run(search_terms=db_queries)
 
     for query, result in zip(results, db_results):

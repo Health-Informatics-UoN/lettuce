@@ -53,14 +53,10 @@ def test_no_domain_provided(llama_3_1_rag_prompt_builder):
     result = llama_3_1_rag_prompt_builder.run()["prompt"]
     assert "source term, along" in result
 
-
 def test_single_domain(llama_3_1_rag_prompt_builder):
-    result = llama_3_1_rag_prompt_builder.run(domain=["Drug"])["prompt"]
+    result = llama_3_1_rag_prompt_builder.run(domain = ["Drug"])["prompt"]
     assert "Drug, along" in result
 
-
 def test_multiple_domains(llama_3_1_rag_prompt_builder):
-    result = llama_3_1_rag_prompt_builder.run(
-        domain=["Drug", "Condition", "Observation"]
-    )["prompt"]
+    result = llama_3_1_rag_prompt_builder.run(domain = ["Drug", "Condition", "Observation"])["prompt"]
     assert "Drug, Condition, or Observation, along" in result
