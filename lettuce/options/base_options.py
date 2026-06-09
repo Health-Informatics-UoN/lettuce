@@ -73,7 +73,7 @@ env_file_encoding="utf-8",
     ollama_url: str = "http://localhost:11434"    
 
     # LLM model configuration
-    llm_model: LLMModel = LLMModel.LLAMA_3_1_8B
+    llm_model: LLMModel = LLMModel.LLAMA_3_2_3B
     temperature: float = 0.0
     local_llm: str | None = None
     debug_prompt: bool = False

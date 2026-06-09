@@ -1,0 +1,15 @@
+name: "Check PR title"
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
+
+jobs:
+  main:
+    uses: health-informatics-uon/workflows/.github/workflows/pr-title.yml@516f21a9bacf0fff92a0d8b48f6a75fca85db0fc # v 1.4.7
+    permissions:
+      pull-requests: read

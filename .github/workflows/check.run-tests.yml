@@ -28,14 +28,14 @@ jobs:
 
     steps:
       - name: Checkout omop-lite repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: Health-Informatics-UoN/omop-lite  
           path: omop-lite
           ref: 31d6280947de78acd8a41928ef2a3da04b93cf43
 
       - name: Checkout lettuce repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: lettuce 
           ref: ${{ github.head_ref }}  
@@ -62,7 +62,7 @@ jobs:
           docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -q)
       
       - name: Setup uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v7
         with:
           version: "0.8.15"
           enable-cache: true
@@ -74,7 +74,7 @@ jobs:
           sudo ln -s /usr/lib/x86_64-linux-musl/libc.so /lib/libc.musl-x86_64.so.1
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version-file: "lettuce/lettuce/.python-version" 
 
@@ -98,7 +98,7 @@ jobs:
           docker network rm omop-ts_default || true
 
       - name: Pytest coverage comment
-        uses: MishaKav/pytest-coverage-comment@81882822c5b22af01f91bd3eacb1cefb6ad73dc2
+        uses: MishaKav/pytest-coverage-comment@dd5b80bde6d16941f336518e92929e89069d8451
         with:
           pytest-coverage-path: pytest-coverage.txt
           junitxml-path: pytest.xml
