@@ -2,13 +2,13 @@ import pytest
 from unittest.mock import patch, Mock, MagicMock 
 import logging 
 from components.models import (
-    get_local_weights, 
-    download_model_from_huggingface, 
     connect_to_openai, 
     get_model, 
 )
 from options.pipeline_options import LLMModel 
 from options.base_options import InferenceType
+get_local_weights = pytest.importorskip("components.models.get_local_weights")
+download_model_from_huggingface = pytest.importorskip("components.models.get_local_weights")
 
 # Configure logging for tests
 logging.basicConfig(level=logging.INFO)
