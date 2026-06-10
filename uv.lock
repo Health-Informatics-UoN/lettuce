@@ -1370,13 +1370,15 @@ dependencies = [
     { name = "pydantic-settings" },
     { name = "rapidfuzz" },
     { name = "sqlalchemy" },
-    { name = "sse-starlette" },
     { name = "sseclient-py" },
     { name = "typer" },
     { name = "uvicorn" },
 ]
 
 [package.optional-dependencies]
+azure = [
+    { name = "azure-monitor-opentelemetry" },
+]
 llama-cpp = [
     { name = "llama-cpp-haystack" },
     { name = "llama-cpp-python", version = "0.3.28", source = { registry = "https://pypi.org/simple" } },
@@ -1420,16 +1422,12 @@ test = [
     { name = "pytest-mock" },
 ]
 
-[package.dev-dependencies]
-azure = [
-    { name = "azure-monitor-opentelemetry" },
-]
-
 [package.metadata]
 requires-dist = [
     { name = "aiohttp", specifier = ">=3.12" },
+    { name = "azure-monitor-opentelemetry", marker = "extra == 'azure'", specifier = ">=1.8.8" },
     { name = "coverage", marker = "extra == 'test'", specifier = ">=7.6.12" },
-    { name = "fastapi", specifier = ">=0.112.2" },
+    { name = "fastapi", specifier = ">=0.136.0" },
     { name = "fastembed-haystack", specifier = ">=1.2.0" },
     { name = "haystack-ai", specifier = ">=2.7.0" },
     { name = "llama-cpp-haystack", marker = "extra == 'llama-cpp'", specifier = ">=1.1" },
@@ -1458,7 +1456,6 @@ requires-dist = [
     { name = "pytest-mock", marker = "extra == 'test'", specifier = ">=3.12.0" },
     { name = "rapidfuzz", specifier = ">=3.14.1" },
     { name = "sqlalchemy", specifier = ">=2.0.32" },
-    { name = "sse-starlette", specifier = ">=2.1.3" },
     { name = "sseclient-py", specifier = ">=1.8.0" },
     { name = "torch", marker = "extra == 'llama-cpp'", specifier = ">=2.7" },
     { name = "torch", marker = "extra == 'llama-cpu'", specifier = ">=2.7" },
@@ -1470,10 +1467,7 @@ requires-dist = [
     { name = "typer", specifier = ">=0.16.0" },
     { name = "uvicorn", specifier = ">=0.30.6" },
 ]
-provides-extras = ["test", "llama-cpp", "llama-cpu", "llama-gpu-cu121", "llama-gpu-cu122", "llama-gpu-cu123", "llama-gpu-cu124", "llama-gpu-metal"]
-
-[package.metadata.requires-dev]
-azure = [{ name = "azure-monitor-opentelemetry", specifier = ">=1.8.8" }]
+provides-extras = ["test", "azure", "llama-cpp", "llama-cpu", "llama-gpu-cu121", "llama-gpu-cu122", "llama-gpu-cu123", "llama-gpu-cu124", "llama-gpu-metal"]
 
 [[package]]
 name = "lettuce-tools"
@@ -4042,19 +4036,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/f2/e3/5aa06f167559f8c0bdae487e297d23ba548150ab016a3418265d617a4985/sqlalchemy-2.0.50-cp314-cp314t-win32.whl", hash = "sha256:1fbd55a969d7ac44a98e3dec75016074f809fa08f871585ace58dde110d1bf3e", size = 2150823, upload-time = "2026-05-24T20:08:58.644Z" },
     { url = "https://files.pythonhosted.org/packages/65/9b/112fb8f977582d7489d036e409e3723948bcf5320b3ac465f3c481bbe8f9/sqlalchemy-2.0.50-cp314-cp314t-win_amd64.whl", hash = "sha256:c5c3cdb753a9004183e1ccb634b41611654c989e61bc68617ce878e46d6f1e51", size = 2185794, upload-time = "2026-05-24T20:09:00.319Z" },
     { url = "https://files.pythonhosted.org/packages/d0/10/f7220e9b784d295d241c86ed99aeb537f92afcd469a64861f2717e9bb077/sqlalchemy-2.0.50-py3-none-any.whl", hash = "sha256:92064363517a3ff8212b5a93b8c62876579d8dfd1ca5b561335f30152d884fa9", size = 1943861, upload-time = "2026-05-24T19:59:01.119Z" },
-]
-
-[[package]]
-name = "sse-starlette"
-version = "3.4.4"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "anyio" },
-    { name = "starlette" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/f7/2b/58abc2d1fd397e7dde08e947e05c884d8ef2f78d5e2588c17a12d42d6994/sse_starlette-3.4.4.tar.gz", hash = "sha256:07e0fa0460138baf25cdd5fb28683472c3995dc1642225191b3832d62526bcb0", size = 31819, upload-time = "2026-05-12T17:37:17.019Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/dc/67/805710444ea8cc75fbf70b920ed431a560c4bf9c57f7d5a3117213189399/sse_starlette-3.4.4-py3-none-any.whl", hash = "sha256:3f4dd50d8aed2771a091f3a83000323fc3844541c16b4fe585ae2420cc6df973", size = 16514, upload-time = "2026-05-12T17:37:15.601Z" },
 ]
 
 [[package]]
