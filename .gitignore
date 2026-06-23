@@ -43,3 +43,4 @@ junit.xml
 # Project-Specific 
 /lettuce/tests/log
 /lettuce/log
+lettuce-ui/search-results.csv

@@ -1,19 +1,18 @@
 import pytest 
 from unittest.mock import patch, Mock, MagicMock 
 import logging 
-from components.models import (
-    connect_to_openai, 
-    get_model, 
-)
+from components.models.connect import connect_to_openai, get_model
 from options.pipeline_options import LLMModel 
-from options.base_options import InferenceType
-get_local_weights = pytest.importorskip("components.models.get_local_weights")
-download_model_from_huggingface = pytest.importorskip("components.models.get_local_weights")
+from options.base_options import InferenceType, BaseOptions
+local_models = pytest.importorskip("components.models.local_models")
 
 # Configure logging for tests
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+settings = BaseOptions()
+
+not_using_local_weights = settings.inference_type != InferenceType.LLAMA_CPP
 
 @pytest.fixture
 def mock_llm_model(): 
@@ -33,16 +32,17 @@ def mock_file_exists(tmp_path):
     return str(file_path)
  
 
-@patch("components.models.LlamaCppGenerator")
-@patch("components.models.os.path.isfile")
-@patch("components.models.torch.cuda.is_available")
+@patch("components.models.local_models.LlamaCppGenerator")
+@patch("components.models.local_models.os.path.isfile")
+@patch("components.models.local_models.torch.cuda.is_available")
+@pytest.mark.skipif(not_using_local_weights, reason="Not using local weights")
 def test_local_weights_success(mock_cuda, mock_isfile, mock_llama, mock_file_exists):
     mock_isfile.return_value = True 
     mock_llm_instance = Mock() 
     mock_llama.return_value = mock_llm_instance 
     temperature = 0.7 
 
-    result = get_local_weights(mock_file_exists, temperature, logger, verbose=False)
+    result = local_models.get_local_weights(mock_file_exists, temperature, logger, verbose=False)
 
     assert result == mock_llm_instance 
     mock_isfile.assert_called_once_with(mock_file_exists)
@@ -54,20 +54,21 @@ def test_local_weights_success(mock_cuda, mock_isfile, mock_llama, mock_file_exi
     mock_cuda.assert_called_once()
 
 
-@patch("components.models.os.path.isfile")
+@patch("components.models.local_models.os.path.isfile")
 def test_get_local_weights_file_not_found(mock_isfile): 
     mock_isfile.return_value = False 
     path = "/fake/path/model.gguf"
     temperature = 0.7 
 
     with pytest.raises(FileNotFoundError) as exc_info: 
-        get_local_weights(path, temperature, logger, verbose=False)
+        local_models.get_local_weights(path, temperature, logger, verbose=False)
     assert str(exc_info.value) == f"Model weights file not found at {path}"
     mock_isfile.assert_called_once_with(path) 
 
 
-@patch("components.models.LlamaCppGenerator")
-@patch("components.models.hf_hub_download")
+@patch("components.models.local_models.LlamaCppGenerator")
+@patch("components.models.local_models.hf_hub_download")
+@pytest.mark.skipif(not_using_local_weights, reason="Not using local weights")
 def test_download_model_from_huggingface_success(mock_download, mock_llama): 
     mock_download.return_value = "/downloaded/fallback.gguf"
     mock_llm_instance = Mock()
@@ -76,13 +77,13 @@ def test_download_model_from_huggingface_success(mock_download, mock_llama):
     filename="fallback"
     temperature = 0.7
 
-    result = download_model_from_huggingface(filename, repo_id, temperature, logger, verbose=False)
+    result = local_models.download_model_from_huggingface(filename, repo_id, temperature, logger, verbose=False)
 
     assert result == mock_llm_instance
     mock_download.assert_called_once_with(filename = "fallback", repo_id = "some_repo")
     mock_llama.assert_called_once()
 
-@patch("components.models.hf_hub_download")
+@patch("components.models.local_models.hf_hub_download")
 def test_download_model_from_huggingface_download_error(mock_download):
     mock_download.side_effect = Exception("Download error")
     repo_id="some_repo"
@@ -90,12 +91,12 @@ def test_download_model_from_huggingface_download_error(mock_download):
     temperature = 0.7
 
     with pytest.raises(ValueError) as exc_info:
-        download_model_from_huggingface(filename, repo_id, temperature, logger, verbose=False)
+        local_models.download_model_from_huggingface(filename, repo_id, temperature, logger, verbose=False)
     assert "Failed to load model" in str(exc_info.value)
     mock_download.assert_called_once()
 
 
-@patch("components.models.OpenAIGenerator")
+@patch("components.models.connect.OpenAIGenerator")
 def test_connect_to_openai_success(mock_openai): 
     mock_llm_instance = Mock()
     mock_openai.return_value = mock_llm_instance 
@@ -111,7 +112,8 @@ def test_connect_to_openai_success(mock_openai):
     )
 
 
-@patch("components.models.get_local_weights")
+@patch("components.models.local_models.get_local_weights")
+@pytest.mark.skipif(not_using_local_weights, reason="Not using local weights")
 def test_get_model_local_weights(mock_get_local, mock_llm_model): 
     fake_path_to_local_weights = "/fake/path/model.gguf"
     mock_llm_instance = Mock()
@@ -129,7 +131,7 @@ def test_get_model_local_weights(mock_get_local, mock_llm_model):
     mock_get_local.assert_called_once_with(fake_path_to_local_weights, 0.7, logger, False)
 
 
-@patch("components.models.connect_to_openai")
+@patch("components.models.connect.connect_to_openai")
 def test_get_model_openai(mock_openai_download, mock_llm_model): 
     mock_llm_instance = Mock()
     mock_openai_download.return_value = mock_llm_instance
@@ -146,7 +148,8 @@ def test_get_model_openai(mock_openai_download, mock_llm_model):
     mock_openai_download.assert_called_once_with("gpt-3.5-turbo", 0.7, logger)
 
 
-@patch("components.models.download_model_from_huggingface")
+@patch("components.models.local_models.download_model_from_huggingface")
+@pytest.mark.skipif(not_using_local_weights, reason="Not using local weights")
 def test_get_model_huggingface(mock_hf_download, mock_llm_model):
     mock_llm_instance = Mock()
     mock_hf_download.return_value = mock_llm_instance
