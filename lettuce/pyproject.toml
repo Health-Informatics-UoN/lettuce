@@ -9,9 +9,8 @@ dependencies = [
     "aiohttp>=3.12",
     "haystack-ai>=2.7.0",
     "fastembed-haystack>=1.2.0",
-    "fastapi>=0.112.2",
+    "fastapi>=0.136.0",
     "uvicorn>=0.30.6",
-    "sse-starlette>=2.1.3",
     "psycopg2-binary>=2.9.9",
     "SQLAlchemy>=2.0.32",
     "sseclient-py>=1.8.0",
@@ -20,6 +19,9 @@ dependencies = [
     "typer>=0.16.0",
     "ollama-haystack>=4.1.0",
     "rapidfuzz>=3.14.1",
+    "opentelemetry-api>=1.40.0",
+    "opentelemetry-sdk>=1.40.0",
+    "opentelemetry-instrumentation-fastapi>=0.61b0",
 ]
 
 [project.optional-dependencies]
@@ -28,6 +30,9 @@ test = [
     "coverage>=7.6.12", 
     "pytest-cov>=6.0.0",
     "pytest-mock>=3.12.0"
+]
+azure = [
+    "azure-monitor-opentelemetry>=1.8.8",
 ]
 llama-cpp = [
   "llama-cpp-python>=0.2.89",

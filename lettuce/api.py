@@ -1,9 +1,13 @@
+import os
 import secrets 
 import hashlib 
 from typing import Set 
+
 from fastapi import FastAPI, Depends, HTTPException, status  
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials 
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
 from routers import search_routes
 from options.base_options import BaseOptions
 import importlib.metadata
@@ -12,6 +16,9 @@ settings = BaseOptions()
 
 security = HTTPBearer()
 
+if os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"):
+    from azure.monitor.opentelemetry import configure_azure_monitor
+    configure_azure_monitor()
 
 def hash_api_key(api_key: str): 
     """Hash an API key for secure storage comparison."""
@@ -76,6 +83,8 @@ app.include_router(
     prefix="/search",
     dependencies=[Depends(verify_api_key)]  
 )
+
+FastAPIInstrumentor.instrument_app(app)
 
 @app.get("/health")
 def healthcheck() -> dict[str, str]:

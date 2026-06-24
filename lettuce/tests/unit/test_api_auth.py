@@ -51,7 +51,7 @@ class TestAuthentication:
             headers=headers
         )
         
-        assert response.status_code == 403
+        assert response.status_code == 401
 
     @patch.dict(os.environ, {"AUTH_API_KEY": "test_key_123"}) 
     def test_invalid_api_key(self, mock_text_search):
