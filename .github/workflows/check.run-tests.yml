@@ -28,14 +28,14 @@ jobs:
 
     steps:
       - name: Checkout omop-lite repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: Health-Informatics-UoN/omop-lite  
           path: omop-lite
           ref: 31d6280947de78acd8a41928ef2a3da04b93cf43
 
       - name: Checkout lettuce repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: lettuce 
           ref: ${{ github.head_ref }}  
@@ -98,7 +98,7 @@ jobs:
           docker network rm omop-ts_default || true
 
       - name: Pytest coverage comment
-        uses: MishaKav/pytest-coverage-comment@dd5b80bde6d16941f336518e92929e89069d8451
+        uses: MishaKav/pytest-coverage-comment@e48ae95fa406cefacc7fbdd79949122795569961
         with:
           pytest-coverage-path: pytest-coverage.txt
           junitxml-path: pytest.xml
