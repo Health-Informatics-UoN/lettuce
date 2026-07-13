@@ -4,7 +4,7 @@ import logging
 from components.models.connect import connect_to_openai, get_model
 from options.pipeline_options import LLMModel 
 from options.base_options import InferenceType, BaseOptions
-local_models = pytest.importorskip("components.models.local_models")
+local_models = pytest.importorskip("components.models.local_models", exc_type=ImportError)
 
 # Configure logging for tests
 logging.basicConfig(level=logging.INFO)
