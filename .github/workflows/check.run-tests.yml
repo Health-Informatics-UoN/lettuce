@@ -98,7 +98,7 @@ jobs:
           docker network rm omop-ts_default || true
 
       - name: Pytest coverage comment
-        uses: MishaKav/pytest-coverage-comment@e48ae95fa406cefacc7fbdd79949122795569961
+        uses: MishaKav/pytest-coverage-comment@fd9adbdca9fdfbe2b9bfa44a7340e6a83346ce6c
         with:
           pytest-coverage-path: pytest-coverage.txt
           junitxml-path: pytest.xml
