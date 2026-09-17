@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials 
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
-from routers import search_routes
+from routers import graph_routes, search_routes
 from options.base_options import BaseOptions
 import importlib.metadata
 
@@ -83,6 +83,12 @@ app.include_router(
     prefix="/search",
     dependencies=[Depends(verify_api_key)]  
 )
+
+app.include_router(
+        router=graph_routes.router,
+        prefix="/graph",
+        dependencies=[Depends(verify_api_key)]
+        )
 
 FastAPIInstrumentor.instrument_app(app)
 
