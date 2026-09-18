@@ -44,3 +44,4 @@ junit.xml
 /lettuce/tests/log
 /lettuce/log
 lettuce-ui/search-results.csv
+search-results.csv

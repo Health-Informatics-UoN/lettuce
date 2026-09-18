@@ -1,4 +1,4 @@
-import os 
+import os
 import logging
 from huggingface_hub import hf_hub_download
 from options.base_options import BaseOptions
@@ -9,13 +9,16 @@ try:
     from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
     import torch
 except ImportError:
-    raise ImportError("To use a Llama.cpp generator you have to install one of the optional dependency groups. Consult the documentation for details.")
+    raise ImportError(
+        "To use a Llama.cpp generator you have to install one of the optional dependency groups. Consult the documentation for details."
+    )
+
 
 def get_local_weights(
-    path_to_weights: os.PathLike | str | None, 
-    temperature: float, 
+    path_to_weights: os.PathLike | str | None,
+    temperature: float,
     logger: logging.Logger,
-    verbose: bool
+    verbose: bool,
 ):
     """
     Load a local GGUF model weights file and return a LlamaCppGenerator object.
@@ -44,36 +47,38 @@ def get_local_weights(
     if not os.path.isfile(path_to_weights):
         logger.error(f"Model weights not found at {path_to_weights}")
         raise FileNotFoundError(f"Model weights file not found at {path_to_weights}")
-   
+
     logger.info(f"Loading local model weights from {path_to_weights}")
-    device = -1 if (torch.cuda.is_available() or torch.backends.mps.is_available()) else 0
+    device = (
+        -1 if (torch.cuda.is_available() or torch.backends.mps.is_available()) else 0
+    )
     logger.info(f"Using {device} GPU layers")
 
-    # Load the model using llama 
+    # Load the model using llama
     llm = LlamaCppGenerator(
-        model=path_to_weights, 
+        model=path_to_weights,
         model_kwargs={
             "n_ctx": 1024,
             "n_batch": 32,
             "n_gpu_layers": device,
-            "verbose": verbose
-        }, 
-        generation_kwargs={"max_tokens": 128, "temperature": temperature}
+            "verbose": verbose,
+        },
+        generation_kwargs={"max_tokens": 128, "temperature": temperature},
     )
     logger.info(f"Succesfully loaded LlamaCppGenerator from {path_to_weights}")
-    return llm 
+    return llm
 
 
 def download_model_from_huggingface(
     filename: str,
     repo_id: str,
-    temperature: float, 
-    logger: logging.Logger, 
+    temperature: float,
+    logger: logging.Logger,
     verbose: bool,
     n_ctx: int = 1024,
     n_batch: int = 32,
-    max_tokens: int = 128 
-): 
+    max_tokens: int = 128,
+):
     """
     Load GGUF model weights from a hugging face repository.
 
@@ -107,29 +112,30 @@ def download_model_from_huggingface(
         If the model fails to download or initialize.
     """
     logger.info(f"Loading local model: {filename}")
-    device = -1 if (torch.cuda.is_available() or torch.backends.mps.is_available()) else 0
+    device = (
+        -1 if (torch.cuda.is_available() or torch.backends.mps.is_available()) else 0
+    )
     logger.info(f"Using {device} GPU layers")
 
-    try: 
-        model_path = hf_hub_download(repo_id=repo_id, filename=filename) 
-    except Exception as e: 
+    try:
+        model_path = hf_hub_download(repo_id=repo_id, filename=filename)
+    except Exception as e:
         logger.error(f"Failed to download model {filename}: {str(e)}")
         raise ValueError(f"Failed to load model {filename}: {str(e)}")
-    
-    try: 
+
+    try:
         llm = LlamaCppGenerator(
-            model=model_path, 
+            model=model_path,
             model_kwargs={
                 "n_ctx": n_ctx,
                 "n_batch": n_batch,
                 "n_gpu_layers": device,
                 "verbose": verbose,
             },
-            generation_kwargs={"max_tokens": max_tokens, "temperature": temperature}
+            generation_kwargs={"max_tokens": max_tokens, "temperature": temperature},
         )
-    except Exception as e: 
+    except Exception as e:
         logger.error(f"Failed to initialize LlamaCppGenerator for {filename}: {str(e)}")
         raise ValueError(f"Failed to initialize local model {filename}: {str(e)}")
 
-    return llm 
-
+    return llm

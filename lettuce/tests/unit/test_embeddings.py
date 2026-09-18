@@ -87,7 +87,7 @@ class TestPGVectorQuery:
         for k in [1, 3, 5]:
             # Mock the results to return only k items
             mock_execute.mappings.return_value.all.return_value = mock_results[:k]
-            
+
             query_component = PGVectorQuery(connection=mock_session, top_k=k)
             result = query_component.run(query_embedding=query_embedding)
             assert len(result["documents"]) == k

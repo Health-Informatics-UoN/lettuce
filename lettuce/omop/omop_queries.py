@@ -26,6 +26,7 @@ def count_concepts() -> Select:
     """
     return select(sa.func.count(distinct(Concept.concept_id)))
 
+
 def get_domains() -> Select:
     """
     Build a query to retrieve the domain IDs from the concepts in your OMOP-CDM
@@ -37,7 +38,12 @@ def get_domains() -> Select:
         SQLAlchemy Select object that returns the distinct domain_ids in the
         concept table
     """
-    return select(Concept.domain_id).group_by(Concept.domain_id).order_by(sa.func.count(distinct(Concept.concept_id)))
+    return (
+        select(Concept.domain_id)
+        .group_by(Concept.domain_id)
+        .order_by(sa.func.count(distinct(Concept.concept_id)))
+    )
+
 
 def get_vocabs() -> Select:
     """
@@ -50,16 +56,21 @@ def get_vocabs() -> Select:
         SQLAlchemy Select object that returns the distinct vocabulary_ids in the
         concept table
     """
-    return select(Concept.vocabulary_id).group_by(Concept.vocabulary_id).order_by(sa.func.count(distinct(Concept.concept_id)))
+    return (
+        select(Concept.vocabulary_id)
+        .group_by(Concept.vocabulary_id)
+        .order_by(sa.func.count(distinct(Concept.concept_id)))
+    )
+
 
 def ts_rank_query(
-        search_term: str,
-        vocabulary_id: Optional[List[str]],
-        domain_id: Optional[List[str]],
-        standard_concept: bool,
-        valid_concept: bool,
-        top_k: int,
-        ) -> Select:
+    search_term: str,
+    vocabulary_id: Optional[List[str]],
+    domain_id: Optional[List[str]],
+    standard_concept: bool,
+    valid_concept: bool,
+    top_k: int,
+) -> Select:
     """
     Build a full-text search query using PostgreSQL's ts_rank functionality.
 
@@ -90,18 +101,20 @@ def ts_rank_query(
     """
     pp_search = preprocess_search_term(search_term)
     ts_query = sa.func.to_tsquery("english", pp_search)
-    ts_rank_col = sa.func.ts_rank(Concept.concept_name_tsv, ts_query, 16).label("ts_rank")
+    ts_rank_col = sa.func.ts_rank(Concept.concept_name_tsv, ts_query, 16).label(
+        "ts_rank"
+    )
     query = select(
-            Concept.concept_name,
-            Concept.concept_id,
-            Concept.concept_code,
-            Concept.domain_id,
-            Concept.vocabulary_id,
-            Concept.concept_class_id,
-            Concept.standard_concept,
-            Concept.invalid_reason,
-            ts_rank_col,
-            )
+        Concept.concept_name,
+        Concept.concept_id,
+        Concept.concept_code,
+        Concept.domain_id,
+        Concept.vocabulary_id,
+        Concept.concept_class_id,
+        Concept.standard_concept,
+        Concept.invalid_reason,
+        ts_rank_col,
+    )
     if vocabulary_id is not None:
         query = query.where(Concept.vocabulary_id.in_(vocabulary_id))
     if domain_id is not None:
@@ -111,15 +124,18 @@ def ts_rank_query(
     if valid_concept:
         query = query.where(Concept.invalid_reason == None)
 
-    return  query.where(
-                Concept.concept_name_tsv.bool_op("@@")(ts_query)
-            ).order_by(
-                ts_rank_col.desc()
-            ).limit(top_k)
+    return (
+        query.where(Concept.concept_name_tsv.bool_op("@@")(ts_query))
+        .order_by(ts_rank_col.desc())
+        .limit(top_k)
+    )
 
 
 def text_search_query(
-        search_term: str, vocabulary_id: list[str] | None, standard_concept:bool, concept_synonym: bool
+    search_term: str,
+    vocabulary_id: list[str] | None,
+    standard_concept: bool,
+    concept_synonym: bool,
 ) -> Select:
     """
     Builds an OMOP query to search for concepts using full-text search.
@@ -133,7 +149,7 @@ def text_search_query(
     search_term : str
         The term to use when searching the relevant tables for concepts
     vocabulary_id : list[str] | None
-        A list of vocabulary_ids in the concepts table. The returned concepts 
+        A list of vocabulary_ids in the concepts table. The returned concepts
         will have one of these vocabulary_ids, or None for all vocabularies
     standard_concept : bool
         If True, only return standard concepts (standard_concept = 'S')
@@ -159,7 +175,7 @@ def text_search_query(
         Concept.vocabulary_id,
         Concept.concept_code,
     )
-    
+
     if standard_concept:
         query = query.where(Concept.standard_concept == "S")
 
@@ -217,10 +233,8 @@ def get_all_vocabs() -> Select:
 
 
 def query_ids_matching_name(
-        query_concept,
-        vocabulary_ids: list[str] | None,
-        full_concept: bool = False
-        ) -> Select:
+    query_concept, vocabulary_ids: list[str] | None, full_concept: bool = False
+) -> Select:
     """
     Build a query to retrieve concept IDs that match a specified concept name.
 
@@ -252,10 +266,12 @@ def query_ids_matching_name(
             Concept.concept_class_id,
             Concept.standard_concept,
             Concept.invalid_reason,
-            )
+        )
     else:
         base_query = select(Concept.concept_id)
-    base_query = base_query.where(func.lower(Concept.concept_name) == query_concept.lower())
+    base_query = base_query.where(
+        func.lower(Concept.concept_name) == query_concept.lower()
+    )
     if vocabulary_ids:
         return base_query.where(Concept.vocabulary_id.in_(vocabulary_ids))
     else:
@@ -365,16 +381,16 @@ def query_ancestors_and_descendants_by_id(
     min_separation_ancestor: int = 1,
     max_separation_ancestor: int | None = 1,
     min_separation_descendant: int = 1,
-    max_separation_descendant: int | None = 1
-) -> CompoundSelect: 
+    max_separation_descendant: int | None = 1,
+) -> CompoundSelect:
     """
     Build a query to find both ancestors and descendants of a concept.
 
     This function creates a union query that retrieves both ancestor and descendant
-    concepts within specified hierarchical distances. If max_separation values are 
-    None, they default to 1000 (essentially unlimited). The query returns a 
+    concepts within specified hierarchical distances. If max_separation values are
+    None, they default to 1000 (essentially unlimited). The query returns a
     relationship type ('Ancestor' or 'Descendant') to distinguish the results.
-    
+
     Parameters
     ----------
     concept_id : int
@@ -387,7 +403,7 @@ def query_ancestors_and_descendants_by_id(
         Minimum levels of separation for descendants. Defaults to 1.
     max_separation_descendant : int | None, optional
         Maximum levels of separation for descendants. Defaults to 1.
-        
+
     Returns
     -------
     CompoundSelect
@@ -395,54 +411,48 @@ def query_ancestors_and_descendants_by_id(
     """
     if max_separation_ancestor is None:
         max_separation_ancestor = 1000
-    if max_separation_descendant is None: 
-        max_separation_descendant = 1000 
+    if max_separation_descendant is None:
+        max_separation_descendant = 1000
 
     ancestors = (
         select(
-            literal('Ancestor').label('relationship_type'),
-            ConceptAncestor.ancestor_concept_id.label('concept_id'),
+            literal("Ancestor").label("relationship_type"),
+            ConceptAncestor.ancestor_concept_id.label("concept_id"),
             ConceptAncestor.ancestor_concept_id,
             ConceptAncestor.descendant_concept_id,
             Concept.concept_name,
             Concept.vocabulary_id,
             Concept.concept_code,
             ConceptAncestor.min_levels_of_separation,
-            ConceptAncestor.max_levels_of_separation
+            ConceptAncestor.max_levels_of_separation,
         )
         .select_from(ConceptAncestor)
-        .join(
-            Concept, 
-            ConceptAncestor.ancestor_concept_id == Concept.concept_id
-        )
+        .join(Concept, ConceptAncestor.ancestor_concept_id == Concept.concept_id)
         .where(
             ConceptAncestor.descendant_concept_id == concept_id,
             ConceptAncestor.min_levels_of_separation >= min_separation_ancestor,
-            ConceptAncestor.max_levels_of_separation <= max_separation_ancestor
+            ConceptAncestor.max_levels_of_separation <= max_separation_ancestor,
         )
     )
 
     descendants = (
         select(
-            literal('Descendant').label('relationship_type'),
-            ConceptAncestor.descendant_concept_id.label('concept_id'),
+            literal("Descendant").label("relationship_type"),
+            ConceptAncestor.descendant_concept_id.label("concept_id"),
             ConceptAncestor.ancestor_concept_id,
             ConceptAncestor.descendant_concept_id,
             Concept.concept_name,
             Concept.vocabulary_id,
             Concept.concept_code,
             ConceptAncestor.min_levels_of_separation,
-            ConceptAncestor.max_levels_of_separation
+            ConceptAncestor.max_levels_of_separation,
         )
         .select_from(ConceptAncestor)
-        .join(
-            Concept, 
-            ConceptAncestor.descendant_concept_id == Concept.concept_id
-        )
+        .join(Concept, ConceptAncestor.descendant_concept_id == Concept.concept_id)
         .where(
             ConceptAncestor.ancestor_concept_id == concept_id,
             ConceptAncestor.min_levels_of_separation >= min_separation_descendant,
-            ConceptAncestor.max_levels_of_separation <= max_separation_descendant
+            ConceptAncestor.max_levels_of_separation <= max_separation_descendant,
         )
     )
 
@@ -456,7 +466,7 @@ def query_related_by_name(
     Build a query to find concepts related to concepts matching a specified name.
 
     This function searches for concepts whose names match the provided query string,
-    then returns concepts that are related to the matching concepts through 
+    then returns concepts that are related to the matching concepts through
     ConceptRelationship entries.
 
     Parameters
@@ -487,62 +497,59 @@ def query_related_by_name(
 def query_related_by_id(concept_id: int) -> Select:
     """
     Build a query to find all concepts related to a given concept ID.
-    
+
     This function creates a SQLAlchemy query that retrieves related concepts
     from the concept_relationship table of the OMOP database. It finds all
     active relationships where the given concept_id is the source concept.
     Only returns active relationships (where valid_end_date is in the future)
     and excludes self-relationships.
-    
+
     Parameters
     ----------
     concept_id : int
         The source concept ID for which to find related concepts
-        
+
     Returns
     -------
-    Select 
+    Select
         SQLAlchemy Select object representing the query with detailed information
         about both the relationship and the related concept.
     """
     related = (
         select(
-            ConceptRelationship.concept_id_2.label("concept_id"), 
-            ConceptRelationship.concept_id_1, 
-            ConceptRelationship.relationship_id, 
-            ConceptRelationship.concept_id_2, 
+            ConceptRelationship.concept_id_2.label("concept_id"),
+            ConceptRelationship.concept_id_1,
+            ConceptRelationship.relationship_id,
+            ConceptRelationship.concept_id_2,
             Concept.concept_name,
             Concept.vocabulary_id,
-            Concept.concept_code
+            Concept.concept_code,
         )
         .select_from(ConceptRelationship)
-        .join(
-            Concept, 
-            ConceptRelationship.concept_id_2 == Concept.concept_id 
-        )
+        .join(Concept, ConceptRelationship.concept_id_2 == Concept.concept_id)
         .where(
-            (ConceptRelationship.concept_id_1 == concept_id) &
-            (ConceptRelationship.valid_end_date > func.now()) & 
-            (ConceptRelationship.concept_id_2 != ConceptRelationship.concept_id_1) 
+            (ConceptRelationship.concept_id_1 == concept_id)
+            & (ConceptRelationship.valid_end_date > func.now())
+            & (ConceptRelationship.concept_id_2 != ConceptRelationship.concept_id_1)
         )
     )
-    return related 
+    return related
 
 
 def query_vector(
-        query_embedding,
-        embed_vocab: List[str] | None = None,
-        domain_id: List[str] | None = None,
-        standard_concept: bool = False,
-        valid_concept: bool = False,
-        n: int = 5,
-        describe_concept: bool = False,
-        ) -> Select:
+    query_embedding,
+    embed_vocab: List[str] | None = None,
+    domain_id: List[str] | None = None,
+    standard_concept: bool = False,
+    valid_concept: bool = False,
+    n: int = 5,
+    describe_concept: bool = False,
+) -> Select:
     """
     Build a query to find concepts with embeddings similar to the provided vector.
 
     Uses PostgreSQL vector operations for similarity calculation and orders results
-    by similarity score. The function allows filtering by vocabulary, domain, 
+    by similarity score. The function allows filtering by vocabulary, domain,
     standard concept status, and validity.
 
     Parameters
@@ -551,7 +558,7 @@ def query_vector(
         The vector embedding to compare against (from a pre-trained embeddings model)
     embed_vocab : List[str] | None, optional
         Optional list of vocabulary IDs to filter by. Defaults to None.
-    domain_id : List[str] | None, optional  
+    domain_id : List[str] | None, optional
         Optional list of domain IDs to filter by. Defaults to None.
     standard_concept : bool, optional
         If True, only include standard concepts (standard_concept = 'S'). Defaults to False.
@@ -560,7 +567,7 @@ def query_vector(
     n : int, optional
         Maximum number of results to return. Defaults to 5.
     describe_concept : bool, optional
-        If True, return full concept details; if False, return minimal concept info. 
+        If True, return full concept details; if False, return minimal concept info.
         Defaults to False.
 
     Returns
@@ -571,7 +578,9 @@ def query_vector(
     """
     filtered_concepts = select(Concept.concept_id)
     if embed_vocab is not None:
-        filtered_concepts = filtered_concepts.where(Concept.vocabulary_id.in_(embed_vocab))
+        filtered_concepts = filtered_concepts.where(
+            Concept.vocabulary_id.in_(embed_vocab)
+        )
     if domain_id is not None:
         filtered_concepts = filtered_concepts.where(Concept.domain_id.in_(domain_id))
     if standard_concept:
@@ -580,28 +589,24 @@ def query_vector(
         filtered_concepts = filtered_concepts.where(Concept.invalid_reason == None)
 
     score_expr = Embedding.score(query_embedding).label("score")
-    
+
     embedding_scores = (
-            select(Embedding.concept_id, score_expr)
-            .where(Embedding.concept_id.in_(filtered_concepts))
-            .order_by(score_expr)
-            .limit(n)
-            .cte("embedding_result")
-        )
+        select(Embedding.concept_id, score_expr)
+        .where(Embedding.concept_id.in_(filtered_concepts))
+        .order_by(score_expr)
+        .limit(n)
+        .cte("embedding_result")
+    )
 
     if describe_concept:
-        query = (
-            select(Concept, embedding_scores.c.score)
-            .join(Concept, Concept.concept_id == embedding_scores.c.concept_id)
+        query = select(Concept, embedding_scores.c.score).join(
+            Concept, Concept.concept_id == embedding_scores.c.concept_id
         )
     else:
-        query = (
-            select(
-                Concept.concept_id.label("id"),
-                Concept.concept_name.label("content"),
-                embedding_scores.c.score,
-            )
-            .join(Concept, Concept.concept_id == embedding_scores.c.concept_id)
-        )
-    
+        query = select(
+            Concept.concept_id.label("id"),
+            Concept.concept_name.label("content"),
+            embedding_scores.c.score,
+        ).join(Concept, Concept.concept_id == embedding_scores.c.concept_id)
+
     return query
