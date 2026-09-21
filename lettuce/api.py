@@ -22,7 +22,7 @@ if os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"):
 
 def hash_api_key(api_key: str): 
     """Hash an API key for secure storage comparison."""
-    return hashlib.sha256(api_key.encode()).hexdigest()
+    return hashlib.sha3_256(api_key.encode()).hexdigest()
 
 
 def load_valid_api_keys() -> Set[str]: 
