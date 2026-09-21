@@ -37,7 +37,6 @@ def test_llama_not_loaded_subprocess():
 
 @pytest.mark.skipif(not_using_local_weights, reason="Not using local weights")
 def test_llama_loaded():
-    from components.models import local_models
 
     llama_cpp_modules = [x for x in sys.modules if "llama_cpp" in x]
 

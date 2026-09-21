@@ -1,7 +1,6 @@
 import re
 from collections import defaultdict
 from logging import Logger
-from typing import Optional
 
 from pydantic import BaseModel, Field
 from rapidfuzz import fuzz

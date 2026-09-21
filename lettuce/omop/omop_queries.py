@@ -1,4 +1,3 @@
-from typing import Optional
 
 import sqlalchemy as sa
 from sqlalchemy import distinct, func, literal, or_, select
