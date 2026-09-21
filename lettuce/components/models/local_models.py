@@ -2,7 +2,11 @@ import logging
 import os
 
 from huggingface_hub import hf_hub_download
-from huggingface_hub.errors import RepositoryNotFoundError, RevisionNotFoundError, LocalEntryNotFoundError
+from huggingface_hub.errors import (
+    LocalEntryNotFoundError,
+    RepositoryNotFoundError,
+    RevisionNotFoundError,
+)
 
 from options.base_options import BaseOptions
 
@@ -124,13 +128,13 @@ def download_model_from_huggingface(
         model_path = hf_hub_download(repo_id=repo_id, filename=filename)
     except RepositoryNotFoundError as e:
         logger.error(f"Repository not found for model {filename}: {e!s}")
-        raise e
+        raise
     except RevisionNotFoundError as e:
         logger.error(f"Revision not found for model {filename}: {e!s}")
-        raise e
+        raise
     except LocalEntryNotFoundError as e:
         logger.error(f"Local entry not found for model {filename}: {e!s}")
-        raise e
+        raise
     except ValueError as e:
         logger.error(f"Failed to download model {filename}: {e!s}")
         raise ValueError(f"Failed to load model {filename}: {e!s}")
@@ -146,7 +150,7 @@ def download_model_from_huggingface(
             },
             generation_kwargs={"max_tokens": max_tokens, "temperature": temperature},
         )
-    except Exception as e:
+    except ValueError as e:
         logger.error(f"Failed to initialize LlamaCppGenerator for {filename}: {e!s}")
         raise ValueError(f"Failed to initialize local model {filename}: {e!s}")
 

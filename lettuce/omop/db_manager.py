@@ -11,10 +11,8 @@ settings = BaseOptions()
 def get_db_connection():
     """Get database connection parameters."""
     try:
-        connection_uri = settings.connection_url()
-
-        return {"uri": connection_uri, "schema": settings.db_schema}
-    except Exception as e:
+        return {"uri": settings.connection_url(), "schema": settings.db_schema}
+    except TypeError as e:
         raise ValueError(f"Database configuration error: {e}")
 
 

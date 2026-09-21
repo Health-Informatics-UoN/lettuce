@@ -25,12 +25,13 @@ def test_llama_not_loaded_subprocess():
         [
             sys.executable,
             "-c",
-            "from components.models import get_model; "
+            ("from components.models import get_model; "
             "import sys; "
-            "assert 'components.models.local_models' not in sys.modules",
+            "assert 'components.models.local_models' not in sys.modules"),
         ],
         capture_output=True,
         text=True,
+        check=False
     )
     assert result.returncode == 0, result.stderr
 

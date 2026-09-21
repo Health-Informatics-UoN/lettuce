@@ -259,7 +259,7 @@ class OMOPMatcher:
             grouped[row.concept_id].append(row)
 
         formatted_results = []
-        for _, rows in grouped.items():
+        for rows in grouped.values():
             # Use first row for base concept info
             first_row = rows[0]
 
@@ -421,6 +421,6 @@ class OMOPMatcher:
             )
             return overall_results
 
-        except Exception as e:
+        except ValueError as e:
             self.logger.error(f"Error in calculate_best_matches: {e}")
             raise ValueError(f"Error in calculate_best_OMOP_matches: {e}")

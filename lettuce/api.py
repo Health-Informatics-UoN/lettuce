@@ -2,7 +2,6 @@ import hashlib
 import importlib.metadata
 import os
 import secrets
-from typing import Set
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,7 +26,7 @@ def hash_api_key(api_key: str):
     return hashlib.sha256(api_key.encode()).hexdigest()
 
 
-def load_valid_api_keys() -> Set[str]:
+def load_valid_api_keys() -> set[str]:
     """Load and return hashed API key from the environment."""
     api_key = settings.auth_api_key
     if not api_key:

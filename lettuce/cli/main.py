@@ -1,8 +1,8 @@
 import time
+from typing import Annotated
 
 import typer
 from rich import print
-from typing_extensions import Annotated
 
 from components.embeddings import Embeddings
 from components.models import get_model

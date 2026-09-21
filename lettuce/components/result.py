@@ -53,7 +53,7 @@ class LettuceResult:
         self.omop_fuzzy_threshold = threshold
         self.omop_matches = omop_matches
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """
         Serialises the result as a dictionary
 
@@ -62,8 +62,7 @@ class LettuceResult:
         dict
             Pipeline results serialised
         """
-        out = dict()
-        out["query"] = self.search_term
+        out = {"query": self.search_term}
         if hasattr(self, "vector_search_results"):
             out["Vector Search Results"] = self.vector_search_results
         if hasattr(self, "llm_answer"):
