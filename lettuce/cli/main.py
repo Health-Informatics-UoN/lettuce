@@ -28,11 +28,11 @@ def search(
         bool, typer.Option(help="Whether to enable the LLM step in your pipeline")
     ] = True,
     vocabulary_id: Annotated[
-        Optional[list[str]],
+        list[str] | None,
         typer.Option(help="Which vocabularies to return OMOP concepts from"),
     ] = None,
     embed_vocab: Annotated[
-        Optional[list[str]],
+        list[str] | None,
         typer.Option(help="Which vocabularies to use for semantic search"),
     ] = None,
     standard_concept: Annotated[
@@ -94,7 +94,7 @@ def search(
                         for doc in rag["retriever"]["documents"]
                     ]
                 )
-                if "llm" in rag.keys():
+                if "llm" in rag:
                     query.add_llm_answer(rag["llm"]["replies"][0].strip())
             logger.info(f"Total RAG inference time: {time.time() - run_start}")
         else:

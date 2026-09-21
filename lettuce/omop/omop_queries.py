@@ -65,8 +65,8 @@ def get_vocabs() -> Select:
 
 def ts_rank_query(
     search_term: str,
-    vocabulary_id: Optional[list[str]],
-    domain_id: Optional[list[str]],
+    vocabulary_id: list[str] | None,
+    domain_id: list[str] | None,
     standard_concept: bool,
     valid_concept: bool,
     top_k: int,

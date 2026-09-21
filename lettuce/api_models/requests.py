@@ -32,8 +32,8 @@ class ConceptSuggestionRequest(BaseModel):
     """
 
     source_term: str
-    vocabulary_id: Optional[list[str]] = None
-    domain_id: Optional[list[str]] = None
+    vocabulary_id: list[str] | None = None
+    domain_id: list[str] | None = None
     standard_concept: bool = False
     valid_concept: bool = False
     top_k: int = 5

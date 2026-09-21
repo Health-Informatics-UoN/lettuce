@@ -77,7 +77,7 @@ class SearchResult(BaseModel):
     """Model for search term result"""
 
     search_term: str
-    concept: Optional[list[OMOPConcept]]
+    concept: list[OMOPConcept] | None
 
 
 class ConceptRow:

@@ -10,17 +10,17 @@ class Suggestion(BaseModel):
     domain: str
     vocabulary: str
     conceptClass: str
-    standard_concept: Optional[str]
-    invalid_reason: Optional[str]
-    ranks: Optional[dict[str, int]]
-    scores: Optional[dict[str, float]]
+    standard_concept: str | None
+    invalid_reason: str | None
+    ranks: dict[str, int] | None
+    scores: dict[str, float] | None
 
 
 class SuggestionsMetaData(BaseModel):
     assistant: str = "Lettuce"
     version: str = "0.1.0"
-    pipeline: Optional[str] = None
-    info: Optional[dict[str, Any]] = None
+    pipeline: str | None = None
+    info: dict[str, Any] | None = None
 
 
 class ConceptSuggestionResponse(BaseModel):
