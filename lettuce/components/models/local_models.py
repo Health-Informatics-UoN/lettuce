@@ -2,6 +2,7 @@ import logging
 import os
 
 from huggingface_hub import hf_hub_download
+from huggingface_hub.errors import RepositoryNotFoundError, RevisionNotFoundError, LocalEntryNotFoundError
 
 from options.base_options import BaseOptions
 
@@ -121,7 +122,16 @@ def download_model_from_huggingface(
 
     try:
         model_path = hf_hub_download(repo_id=repo_id, filename=filename)
-    except Exception as e:
+    except RepositoryNotFoundError as e:
+        logger.error(f"Repository not found for model {filename}: {e!s}")
+        raise e
+    except RevisionNotFoundError as e:
+        logger.error(f"Revision not found for model {filename}: {e!s}")
+        raise e
+    except LocalEntryNotFoundError as e:
+        logger.error(f"Local entry not found for model {filename}: {e!s}")
+        raise e
+    except ValueError as e:
         logger.error(f"Failed to download model {filename}: {e!s}")
         raise ValueError(f"Failed to load model {filename}: {e!s}")
 
