@@ -63,8 +63,8 @@ class TestCalculateSimilarityScore:
         raw_concept = "{1 (acetaminophen 325 MG / dextromethorphan hydrobromide 10 MG / doxylamine succinate 6.25 MG Oral Capsule) / 1 (acetaminophen 325 MG / dextromethorphan hydrobromide 10 MG / phenylephrine hydrochloride 5 MG Oral Capsule) } Pack"
         term = "acetaminophen"
         cleaned_concept = re.sub(r"\(.*?\)", "", raw_concept).strip()
-        raw_score = OMOPMatcher.calculate_similarity_score(raw_concept, term)
-        cleaned_score = OMOPMatcher.calculate_similarity_score(cleaned_concept, term)
+        _ = OMOPMatcher.calculate_similarity_score(raw_concept, term)
+        _ = OMOPMatcher.calculate_similarity_score(cleaned_concept, term)
 
     def test_empty_strings(self):
         score = OMOPMatcher.calculate_similarity_score("", "")

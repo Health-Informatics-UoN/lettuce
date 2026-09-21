@@ -16,7 +16,7 @@ def test_llama_not_loaded_subprocess():
     # Unfortunately, haystack pulls in llama_cpp stuff if it's installed,
     # whether you like it or not. Obviously this is a good design for them,
     # but it's inconvenient, as this test doesn't work
-    # llama_cpp_modules = [x for x in sys.modules.keys() if "llama_cpp" in x]
+    # llama_cpp_modules = [x for x in sys.modules if "llama_cpp" in x]
     # print(llama_cpp_modules)
     #
     # assert(len(llama_cpp_modules) == 0)
@@ -39,6 +39,6 @@ def test_llama_not_loaded_subprocess():
 def test_llama_loaded():
     from components.models import local_models
 
-    llama_cpp_modules = [x for x in sys.modules.keys() if "llama_cpp" in x]
+    llama_cpp_modules = [x for x in sys.modules if "llama_cpp" in x]
 
     assert len(llama_cpp_modules) > 0

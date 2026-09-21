@@ -3,7 +3,7 @@ import time
 from pathlib import Path
 
 
-class Logger(object):
+class Logger:
     """
     logger preparation
 
@@ -46,7 +46,7 @@ class Logger(object):
 
         """
         super().__init__()
-        self._log_dir = f"./log/"
+        self._log_dir = "./log/"
         self.console_logger = console_logger
         self.logging_level = logging_level.lower()
         self.multi_module = multi_module
