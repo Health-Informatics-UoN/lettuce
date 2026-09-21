@@ -101,7 +101,7 @@ def test_download_model_from_huggingface_success(mock_download, mock_llama):
 
 @patch("components.models.local_models.hf_hub_download")
 def test_download_model_from_huggingface_download_error(mock_download):
-    mock_download.side_effect = Exception("Download error")
+    mock_download.side_effect = ValueError("Download error")
     repo_id = "some_repo"
     filename = "fallback"
     temperature = 0.7
