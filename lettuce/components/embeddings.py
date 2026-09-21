@@ -66,7 +66,7 @@ class PGVectorQuery:
         try:
             query_results = self._connection.execute(query).mappings().all()
         except SQLAlchemyError as e:
-            raise SQLAlchemyError(f"Vector query execution failed: {str(e)}")
+            raise SQLAlchemyError(f"Vector query execution failed: {e!s}")
         if describe_concept:
             return query_results
         else:
@@ -82,7 +82,7 @@ class PGVectorQuery:
                     ]
                 }
             except KeyError as e:
-                raise KeyError(f"Missing required key in query results: {str(e)}")
+                raise KeyError(f"Missing required key in query results: {e!s}")
 
 
 def get_embedding_model(name: EmbeddingModelName) -> EmbeddingModel:
@@ -187,7 +187,7 @@ class Embeddings:
             )
         except AssertionError:
             raise AssertionError(
-                f"Embedder dimensions {str(self._model.info.dimensions)} not equal to vector store dimensions {str()}"
+                f"Embedder dimensions {self._model.info.dimensions!s} not equal to vector store dimensions {settings.db_vecsize!s}"
             )
 
     def search(self, query: list[str]) -> list[list[dict[str, Any]]]:

@@ -122,8 +122,8 @@ def download_model_from_huggingface(
     try:
         model_path = hf_hub_download(repo_id=repo_id, filename=filename)
     except Exception as e:
-        logger.error(f"Failed to download model {filename}: {str(e)}")
-        raise ValueError(f"Failed to load model {filename}: {str(e)}")
+        logger.error(f"Failed to download model {filename}: {e!s}")
+        raise ValueError(f"Failed to load model {filename}: {e!s}")
 
     try:
         llm = LlamaCppGenerator(
@@ -137,7 +137,7 @@ def download_model_from_huggingface(
             generation_kwargs={"max_tokens": max_tokens, "temperature": temperature},
         )
     except Exception as e:
-        logger.error(f"Failed to initialize LlamaCppGenerator for {filename}: {str(e)}")
-        raise ValueError(f"Failed to initialize local model {filename}: {str(e)}")
+        logger.error(f"Failed to initialize LlamaCppGenerator for {filename}: {e!s}")
+        raise ValueError(f"Failed to initialize local model {filename}: {e!s}")
 
     return llm

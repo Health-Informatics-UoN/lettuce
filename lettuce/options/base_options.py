@@ -129,7 +129,7 @@ class BaseOptions(BaseSettings):
         """
         print("------------ Options -------------")
         for k, v in self.model_dump().items():
-            print(f"{str(k)}: {str(v)}")
+            print(f"{k!s}: {v!s}")
         print("-------------- End ---------------")
 
     def hf_hub_config(self) -> dict[str, str]:

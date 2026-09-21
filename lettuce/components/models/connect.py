@@ -79,7 +79,7 @@ def connect_to_ollama(
         )
     except Exception as e:
         logger.error(
-            f"Couldn't communicate with an Ollama server: {str(e)} Is it running? Have you pulled {model_name} before?"
+            f"Couldn't communicate with an Ollama server: {e!s} Is it running? Have you pulled {model_name} before?"
         )
         raise
 
