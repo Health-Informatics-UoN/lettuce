@@ -3,7 +3,7 @@ from haystack_integrations.components.embedders.fastembed import (
 )
 from haystack import component
 from haystack.dataclasses import Document
-from typing import Any, List, Dict
+from typing import Any
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -33,8 +33,8 @@ class PGVectorQuery:
     def __init__(
         self,
         connection: Session,
-        embed_vocab: List[str] | None = None,
-        domain_id: List[str] | None = None,
+        embed_vocab: list[str] | None = None,
+        domain_id: list[str] | None = None,
         standard_concept: bool = False,
         valid_concept: bool = False,
         top_k: int = 5,
@@ -46,10 +46,10 @@ class PGVectorQuery:
         self._valid_concept = valid_concept
         self._top_k = top_k
 
-    @component.output_types(documents=List[Document])
+    @component.output_types(documents=list[Document])
     def run(
         self,
-        query_embedding: List[float],
+        query_embedding: list[float],
         describe_concept: bool = False,
     ):
         # only have cosine_similarity at the moment
@@ -119,8 +119,8 @@ class Embeddings:
     def __init__(
         self,
         model_name: EmbeddingModelName,
-        embed_vocab: List[str] | None = None,
-        domain_id: List[str] | None = None,
+        embed_vocab: list[str] | None = None,
+        domain_id: list[str] | None = None,
         standard_concept: bool = False,
         valid_concept: bool = False,
         top_k: int = 5,
@@ -138,7 +138,7 @@ class Embeddings:
         force_rebuild: bool
             If true, the embeddings database will be rebuilt.
 
-        embed_vocab: List[str]
+        embed_vocab: list[str]
             A list of OMOP vocabulary_ids. If the embeddings database is
             built, these will be the vocabularies used in the OMOP query.
 
@@ -190,18 +190,18 @@ class Embeddings:
                 f"Embedder dimensions {str(self._model.info.dimensions)} not equal to vector store dimensions {str()}"
             )
 
-    def search(self, query: List[str]) -> List[List[Dict[str, Any]]]:
+    def search(self, query: list[str]) -> list[list[dict[str, Any]]]:
         """
         Search the attached vector database with a list of informal medications
 
         Parameters
         ----------
-        query: List[str]
+        query: list[str]
             A list of informal medication names
 
         Returns
         -------
-        List[List[Dict[str, Any]]]
+        list[list[dict[str, Any]]]
             For each medication in the query, the result of searching the vector database
         """
         retriever = self.get_retriever()

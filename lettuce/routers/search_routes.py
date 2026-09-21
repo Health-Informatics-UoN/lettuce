@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import Annotated
 from components.embeddings import Embeddings
 from fastapi import APIRouter, Query
 
@@ -30,8 +30,8 @@ def check_db():
 @router.get("/text-search/{search_term}")
 async def text_search(
     search_term: str,
-    vocabulary: Annotated[List[str] | None, Query()] = None,
-    domain: Annotated[List[str] | None, Query()] = None,
+    vocabulary: Annotated[list[str] | None, Query()] = None,
+    domain: Annotated[list[str] | None, Query()] = None,
     standard_concept: bool = True,
     valid_concept: bool = True,
     top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)] = 5,
@@ -74,8 +74,8 @@ async def text_search(
 @router.get("/vector-search/{search_term}")
 async def vector_search(
     search_term: str,
-    vocabulary: Annotated[List[str] | None, Query()] = None,
-    domain: Annotated[List[str] | None, Query()] = None,
+    vocabulary: Annotated[list[str] | None, Query()] = None,
+    domain: Annotated[list[str] | None, Query()] = None,
     standard_concept: bool = True,
     valid_concept: bool = False,
     top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)] = 5,
@@ -115,8 +115,8 @@ async def vector_search(
 @router.get("/ai-search/{search_term}")
 async def ai_search(
     search_term: str,
-    vocabulary: Annotated[List[str] | None, Query()] = None,
-    domain: Annotated[List[str] | None, Query()] = None,
+    vocabulary: Annotated[list[str] | None, Query()] = None,
+    domain: Annotated[list[str] | None, Query()] = None,
     standard_concept: bool = True,
     valid_concept: bool = False,
     top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)] = 5,

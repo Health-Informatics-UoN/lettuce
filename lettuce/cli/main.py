@@ -1,5 +1,5 @@
 import time
-from typing import List, Optional
+from typing import Optional
 from typing_extensions import Annotated
 
 from components.embeddings import Embeddings
@@ -19,7 +19,7 @@ app = typer.Typer()
 @app.command()
 def search(
     informal_names: Annotated[
-        List[str], typer.Argument(help="Source term to search for")
+        list[str], typer.Argument(help="Source term to search for")
     ],
     vector_search: Annotated[
         bool, typer.Option(help="Whether to enable vector search in your pipeline")
@@ -28,11 +28,11 @@ def search(
         bool, typer.Option(help="Whether to enable the LLM step in your pipeline")
     ] = True,
     vocabulary_id: Annotated[
-        Optional[List[str]],
+        Optional[list[str]],
         typer.Option(help="Which vocabularies to return OMOP concepts from"),
     ] = None,
     embed_vocab: Annotated[
-        Optional[List[str]],
+        Optional[list[str]],
         typer.Option(help="Which vocabularies to use for semantic search"),
     ] = None,
     standard_concept: Annotated[

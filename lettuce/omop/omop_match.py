@@ -1,5 +1,5 @@
 import re
-from typing import List, Optional
+from typing import Optional
 from collections import defaultdict
 
 from pydantic import BaseModel, Field
@@ -68,16 +68,16 @@ class OMOPConcept(BaseModel):
     vocabulary_id: str
     concept_code: str
     concept_name_similarity_score: float
-    concept_synonym: List[ConceptSynonym] = Field(default_factory=list)
-    concept_ancestor: List[AncestorConcept] = Field(default_factory=list)
-    concept_relationship: List[RelatedConcept] = Field(default_factory=list)
+    concept_synonym: list[ConceptSynonym] = Field(default_factory=list)
+    concept_ancestor: list[AncestorConcept] = Field(default_factory=list)
+    concept_relationship: list[RelatedConcept] = Field(default_factory=list)
 
 
 class SearchResult(BaseModel):
     """Model for search term result"""
 
     search_term: str
-    concept: Optional[List[OMOPConcept]]
+    concept: Optional[list[OMOPConcept]]
 
 
 class ConceptRow:
@@ -178,7 +178,7 @@ class OMOPMatcher:
         score = fuzz.ratio(search_term.lower(), cleaned_concept_name.lower())
         return float(score)
 
-    def fetch_omop_concepts(self, search_term: str) -> List[OMOPConcept] | None:
+    def fetch_omop_concepts(self, search_term: str) -> list[OMOPConcept] | None:
         """
         Fetch OMOP concepts for a given search term
 
@@ -196,7 +196,7 @@ class OMOPMatcher:
 
         Returns
         -------
-        List[OMOPConcept] | None
+        list[OMOPConcept] | None
             A list of search results from the OMOP database if the query comes back with results, otherwise returns None.
         """
         query = text_search_query(
@@ -251,8 +251,8 @@ class OMOPMatcher:
         return self._format_concept_results(filtered_rows)
 
     def _format_concept_results(
-        self, concept_rows: List[ConceptRow]
-    ) -> List[OMOPConcept]:
+        self, concept_rows: list[ConceptRow]
+    ) -> list[OMOPConcept]:
         """Format concept rows into Pydantic models"""
         # Group by concept_id
         grouped = defaultdict(list)
@@ -303,7 +303,7 @@ class OMOPMatcher:
 
     def fetch_concept_ancestors_and_descendants(
         self, concept_id: int
-    ) -> List[AncestorConcept]:
+    ) -> list[AncestorConcept]:
         """
         Fetch concept ancestors and descendants for a given concept_id
 
@@ -317,7 +317,7 @@ class OMOPMatcher:
 
         Returns
         -------
-        List[AncestorConcept]
+        list[AncestorConcept]
             A list of retrieved concepts and their relationships to the provided concept_id
         """
         min_separation_ancestor = 1
@@ -351,7 +351,7 @@ class OMOPMatcher:
             for row in results
         ]
 
-    def fetch_concept_relationships(self, concept_id: int) -> List[RelatedConcept]:
+    def fetch_concept_relationships(self, concept_id: int) -> list[RelatedConcept]:
         """
         Fetch concept relationship for a given concept_id
 
@@ -364,7 +364,7 @@ class OMOPMatcher:
 
         Returns
         -------
-        List[RelatedConcept]
+        list[RelatedConcept]
             A list of related concepts from the OMOP database
         """
         with get_session() as session:
@@ -384,7 +384,7 @@ class OMOPMatcher:
             for row in results
         ]
 
-    def run(self, search_terms: List[str]) -> List[SearchResult]:
+    def run(self, search_terms: list[str]) -> list[SearchResult]:
         """
         Main method for the OMOPMatcherRunner class.
 
@@ -394,12 +394,12 @@ class OMOPMatcher:
 
         Parameters
         ----------
-        search_terms: List[str]
+        search_terms: list[str]
             The names of drugs to use in queries to the OMOP database
 
         Returns
         -------
-        List[SearchResult]
+        list[SearchResult]
             A list of OMOP concepts relating to the search term and relevant information
         """
         try:

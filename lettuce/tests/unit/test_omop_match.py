@@ -1,10 +1,9 @@
-from typing import List
 import re
 from collections import namedtuple
 from unittest.mock import Mock, MagicMock
 import pytest
 
-from omop.omop_match import OMOPMatcher, SearchResult, OMOPConcept
+from omop.omop_match import OMOPMatcher, OMOPConcept
 
 
 @pytest.fixture
@@ -98,6 +97,6 @@ def test_fetch_omop_concepts_basic_case(mock_omop_matcher, mock_session):
 
     result = mock_omop_matcher.fetch_omop_concepts(search_term="Hypertension")
 
-    assert isinstance(result, List)
+    assert isinstance(result, list)
     assert len(result) > 0
     assert isinstance(result[0], OMOPConcept)

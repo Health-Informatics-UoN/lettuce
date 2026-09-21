@@ -1,6 +1,5 @@
 from logging import Logger
 import time
-from typing import List, Dict
 
 from haystack import Pipeline
 from haystack.components.generators import OpenAIGenerator
@@ -60,7 +59,7 @@ class LLMPipeline:
         logger: logging.Logger|None
             Logger for the pipeline
 
-        embed_vocab: List[str] | None
+        embed_vocab: list[str] | None
             If a list of OMOP vocabulary_ids is provided, filters RAG results by those vocabularies.
 
         standard_concept: bool
@@ -149,7 +148,7 @@ class LLMPipeline:
                     "condition": "{{vec_results[0].score < 0.05}}",
                     "output": "{{vec_results}}",
                     "output_name": "exact_match",
-                    "output_type": List[Dict],
+                    "output_type": list[dict],
                 },
                 {
                     "condition": "{{vec_results[0].score >=0.05}}",
@@ -159,7 +158,7 @@ class LLMPipeline:
                     {% endfor %}
                     """,
                     "output_name": "no_exact_match",
-                    "output_type": List[Dict],
+                    "output_type": list[dict],
                 },
             ]
         )

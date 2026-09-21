@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import Any
 from omop.omop_match import SearchResult
 
 
@@ -15,7 +15,7 @@ class LettuceResult:
     def __init__(self, search_term: str) -> None:
         self.search_term = search_term
 
-    def add_vector_search_results(self, vector_search_results: List[Dict[str, Any]]):
+    def add_vector_search_results(self, vector_search_results: list[dict[str, Any]]):
         self.vector_search_results = vector_search_results
 
     def add_llm_answer(self, llm_answer: str):

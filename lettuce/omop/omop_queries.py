@@ -9,7 +9,7 @@ from omop.omop_models import (
 import sqlalchemy as sa
 from sqlalchemy import select, or_, func, literal, distinct
 from sqlalchemy.sql import Select, CompoundSelect, text, null
-from typing import List, Optional
+from typing import Optional
 
 from omop.preprocess import preprocess_search_term
 
@@ -65,8 +65,8 @@ def get_vocabs() -> Select:
 
 def ts_rank_query(
     search_term: str,
-    vocabulary_id: Optional[List[str]],
-    domain_id: Optional[List[str]],
+    vocabulary_id: Optional[list[str]],
+    domain_id: Optional[list[str]],
     standard_concept: bool,
     valid_concept: bool,
     top_k: int,
@@ -82,9 +82,9 @@ def ts_rank_query(
     ----------
     search_term : str
         The term to search for in concept names
-    vocabulary_id : List[str] | None
-        List of vocabulary IDs to filter by, or None for all vocabularies
-    domain_id : List[str] | None
+    vocabulary_id : list[str] | None
+        list of vocabulary IDs to filter by, or None for all vocabularies
+    domain_id : list[str] | None
         List of domain IDs to filter by, or None for all domains
     standard_concept : bool
         If True, only return standard concepts (standard_concept = 'S')
@@ -538,8 +538,8 @@ def query_related_by_id(concept_id: int) -> Select:
 
 def query_vector(
     query_embedding,
-    embed_vocab: List[str] | None = None,
-    domain_id: List[str] | None = None,
+    embed_vocab: list[str] | None = None,
+    domain_id: list[str] | None = None,
     standard_concept: bool = False,
     valid_concept: bool = False,
     n: int = 5,
@@ -556,9 +556,9 @@ def query_vector(
     ----------
     query_embedding : vector
         The vector embedding to compare against (from a pre-trained embeddings model)
-    embed_vocab : List[str] | None, optional
+    embed_vocab : list[str] | None, optional
         Optional list of vocabulary IDs to filter by. Defaults to None.
-    domain_id : List[str] | None, optional
+    domain_id : list[str] | None, optional
         Optional list of domain IDs to filter by. Defaults to None.
     standard_concept : bool, optional
         If True, only include standard concepts (standard_concept = 'S'). Defaults to False.
