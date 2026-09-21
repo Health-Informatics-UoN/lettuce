@@ -1,4 +1,5 @@
 import pytest
+
 from omop.preprocess import preprocess_search_term
 
 

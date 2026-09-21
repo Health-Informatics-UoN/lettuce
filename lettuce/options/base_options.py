@@ -1,5 +1,7 @@
-from options.pipeline_options import LLMModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from options.pipeline_options import LLMModel
+
 from .pipeline_options import EmbeddingModelName, InferenceType
 
 

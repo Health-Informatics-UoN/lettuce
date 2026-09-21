@@ -1,4 +1,5 @@
 from typing import Any
+
 from omop.omop_match import SearchResult
 
 

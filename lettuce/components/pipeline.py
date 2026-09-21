@@ -1,15 +1,15 @@
-from logging import Logger
 import time
+from logging import Logger
 
 from haystack import Pipeline
 from haystack.components.generators import OpenAIGenerator
 from haystack.components.routers import ConditionalRouter
 from haystack_integrations.components.generators.ollama import OllamaGenerator
 
-from components.embeddings import Embeddings, EmbeddingModelName
+from components.embeddings import EmbeddingModelName, Embeddings
 from components.prompt import Prompts
-from options.pipeline_options import InferenceType
 from options.base_options import BaseOptions
+from options.pipeline_options import InferenceType
 
 settings = BaseOptions()
 

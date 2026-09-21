@@ -1,9 +1,11 @@
-import pytest
-from unittest.mock import patch, Mock, MagicMock
 import logging
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
+
 from components.models.connect import connect_to_openai, get_model
+from options.base_options import BaseOptions, InferenceType
 from options.pipeline_options import LLMModel
-from options.base_options import InferenceType, BaseOptions
 
 local_models = pytest.importorskip(
     "components.models.local_models", exc_type=ImportError

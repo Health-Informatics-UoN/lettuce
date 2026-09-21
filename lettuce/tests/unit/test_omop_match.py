@@ -1,9 +1,10 @@
 import re
 from collections import namedtuple
-from unittest.mock import Mock, MagicMock
+from unittest.mock import MagicMock, Mock
+
 import pytest
 
-from omop.omop_match import OMOPMatcher, OMOPConcept
+from omop.omop_match import OMOPConcept, OMOPMatcher
 
 
 @pytest.fixture

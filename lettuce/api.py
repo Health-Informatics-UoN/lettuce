@@ -1,16 +1,16 @@
+import hashlib
+import importlib.metadata
 import os
 import secrets
-import hashlib
 from typing import Set
 
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
-from routers import search_routes
 from options.base_options import BaseOptions
-import importlib.metadata
+from routers import search_routes
 
 settings = BaseOptions()
 

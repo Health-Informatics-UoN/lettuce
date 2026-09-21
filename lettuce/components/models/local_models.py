@@ -1,13 +1,15 @@
-import os
 import logging
+import os
+
 from huggingface_hub import hf_hub_download
+
 from options.base_options import BaseOptions
 
 settings = BaseOptions()
 
 try:
-    from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
     import torch
+    from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
 except ImportError:
     raise ImportError(
         "To use a Llama.cpp generator you have to install one of the optional dependency groups. Consult the documentation for details."

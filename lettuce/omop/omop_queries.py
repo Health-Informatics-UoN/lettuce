@@ -1,16 +1,16 @@
-from omop.omop_models import (
-    Concept,
-    ConceptRelationship,
-    ConceptSynonym,
-    ConceptAncestor,
-    Embedding,
-)
-
-import sqlalchemy as sa
-from sqlalchemy import select, or_, func, literal, distinct
-from sqlalchemy.sql import Select, CompoundSelect, text, null
 from typing import Optional
 
+import sqlalchemy as sa
+from sqlalchemy import distinct, func, literal, or_, select
+from sqlalchemy.sql import CompoundSelect, Select, null, text
+
+from omop.omop_models import (
+    Concept,
+    ConceptAncestor,
+    ConceptRelationship,
+    ConceptSynonym,
+    Embedding,
+)
 from omop.preprocess import preprocess_search_term
 
 

@@ -1,20 +1,20 @@
+from typing import Any
+
+from haystack import component
+from haystack.dataclasses import Document
 from haystack_integrations.components.embedders.fastembed import (
     FastembedTextEmbedder,
 )
-from haystack import component
-from haystack.dataclasses import Document
-from typing import Any
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from omop.omop_queries import query_vector
 from omop.db_manager import db_session
-
+from omop.omop_queries import query_vector
 from options.base_options import BaseOptions
 from options.pipeline_options import (
-    EmbeddingModelName,
-    EmbeddingModel,
     EMBEDDING_MODELS,
+    EmbeddingModel,
+    EmbeddingModelName,
 )
 
 settings = BaseOptions()

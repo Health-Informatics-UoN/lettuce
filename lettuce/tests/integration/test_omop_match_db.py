@@ -1,4 +1,5 @@
 import os
+
 import pytest
 
 from omop.omop_match import OMOPConcept, OMOPMatcher, SearchResult

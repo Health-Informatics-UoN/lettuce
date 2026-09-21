@@ -1,16 +1,15 @@
 import os
+from unittest.mock import patch
 
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch
-from api_models.responses import (
-    Suggestion,
-    SuggestionsMetaData,
-    ConceptSuggestionResponse,
-)
 
 from api import app
-
+from api_models.responses import (
+    ConceptSuggestionResponse,
+    Suggestion,
+    SuggestionsMetaData,
+)
 
 client = TestClient(app)
 

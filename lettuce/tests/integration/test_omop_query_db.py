@@ -1,20 +1,20 @@
 import os
-from options.base_options import BaseOptions
+
 import pytest
 from sqlalchemy import create_engine, sql
 from sqlalchemy.orm import sessionmaker
 
 from omop.omop_queries import (
+    query_ancestors_and_descendants_by_id,
     query_ancestors_by_name,
     query_descendants_by_name,
     query_ids_matching_name,
-    query_related_by_name,
-    query_ancestors_and_descendants_by_id,
     query_related_by_id,
+    query_related_by_name,
     text_search_query,
 )
 from omop.preprocess import preprocess_search_term
-
+from options.base_options import BaseOptions
 
 pytestmark = pytest.mark.skipif(
     os.getenv("SKIP_DATABASE_TESTS") == "true", reason="Skipping database tests"

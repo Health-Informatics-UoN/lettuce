@@ -1,4 +1,5 @@
 import pytest
+
 from components.prompt import Prompts
 
 

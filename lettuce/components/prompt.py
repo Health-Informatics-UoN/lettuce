@@ -1,4 +1,5 @@
 from haystack.components.builders import PromptBuilder
+
 from components.prompt_templates import templates
 
 

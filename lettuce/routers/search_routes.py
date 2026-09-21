@@ -1,5 +1,5 @@
 from typing import Annotated
-from components.embeddings import Embeddings
+
 from fastapi import APIRouter, Query
 
 from api_models.responses import (
@@ -7,12 +7,13 @@ from api_models.responses import (
     Suggestion,
     SuggestionsMetaData,
 )
+from components.embeddings import Embeddings
 from components.models import get_model
 from components.pipeline import LLMPipeline
 from omop.db_manager import get_session
 from omop.omop_queries import count_concepts, query_ids_matching_name, ts_rank_query
-from utils.logging_utils import logger
 from options.base_options import BaseOptions
+from utils.logging_utils import logger
 
 settings = BaseOptions()
 

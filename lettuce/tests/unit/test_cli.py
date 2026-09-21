@@ -1,9 +1,10 @@
+import os
 from itertools import cycle
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session as SQLAlchemySession
-import os
 from typer.testing import CliRunner
 
 
@@ -69,7 +70,7 @@ def mock_llm_pipeline():
 
 def create_mock_search_result(search_term, concept_id, concept_name):
     """Helper function to create mock SearchResult objects"""
-    from lettuce.omop.omop_match import SearchResult, OMOPConcept
+    from lettuce.omop.omop_match import OMOPConcept, SearchResult
 
     concept = OMOPConcept(
         concept_id=concept_id,

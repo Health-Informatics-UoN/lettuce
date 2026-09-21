@@ -1,8 +1,9 @@
-import sys
 import subprocess
+import sys
+
 import pytest
 
-from options.base_options import InferenceType, BaseOptions
+from options.base_options import BaseOptions, InferenceType
 
 settings = BaseOptions()
 

@@ -4,6 +4,7 @@ from unittest.mock import Mock
 import pytest
 from haystack.dataclasses import Document
 from sqlalchemy.orm import Session
+
 from components.embeddings import PGVectorQuery
 
 pytestmark = pytest.mark.skipif(

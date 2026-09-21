@@ -1,17 +1,17 @@
 import time
 from typing import Optional
+
+import typer
+from rich import print
 from typing_extensions import Annotated
 
 from components.embeddings import Embeddings
 from components.models import get_model
 from components.pipeline import LLMPipeline
 from components.result import LettuceResult
-from options.base_options import BaseOptions
 from omop.omop_match import OMOPMatcher
+from options.base_options import BaseOptions
 from utils.logging_utils import logger
-
-import typer
-from rich import print
 
 app = typer.Typer()
 

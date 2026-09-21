@@ -1,17 +1,17 @@
 import re
-from typing import Optional
 from collections import defaultdict
+from logging import Logger
+from typing import Optional
 
 from pydantic import BaseModel, Field
 from rapidfuzz import fuzz
 
-from logging import Logger
+from omop.db_manager import get_session
 from omop.omop_queries import (
-    text_search_query,
     query_ancestors_and_descendants_by_id,
     query_related_by_id,
+    text_search_query,
 )
-from omop.db_manager import get_session
 from omop.preprocess import preprocess_search_term
 
 

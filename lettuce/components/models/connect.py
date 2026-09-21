@@ -1,8 +1,10 @@
-import os
 import logging
+import os
 from typing import Any
+
 from haystack.components.generators import OpenAIGenerator
 from haystack_integrations.components.generators.ollama import OllamaGenerator
+
 from options.pipeline_options import InferenceType, LLMModel
 
 
@@ -125,7 +127,7 @@ def get_model(
         case InferenceType.OLLAMA:
             llm = connect_to_ollama(model.ollama_spec, url, temperature, logger)
         case InferenceType.LLAMA_CPP:
-            from .local_models import get_local_weights, download_model_from_huggingface
+            from .local_models import download_model_from_huggingface, get_local_weights
 
             if path_to_local_weights:
                 llm = get_local_weights(
