@@ -28,34 +28,29 @@ class PGVectorQuery:
     def __init__(
             self,
             connection: Session,
-            embed_vocab: List[str] | None = None,
-            domain_id: List[str] | None = None,
-            standard_concept:bool = False,
-            valid_concept:bool = False,
-            top_k: int = 5,
             ) -> None:
         self._connection = connection
-        self._embed_vocab = embed_vocab
-        self._domain_id = domain_id
-        self._standard_concept = standard_concept
-        self._valid_concept = valid_concept
-        self._top_k = top_k
 
     @component.output_types(documents=List[Document])
     def run(
             self,
             query_embedding: List[float],
             describe_concept: bool = False,
+            embed_vocab: List[str] | None = None,
+            domain_id: List[str] | None = None,
+            standard_concept:bool = False,
+            valid_concept:bool = False,
+            top_k: int = 5,
             ):
         # only have cosine_similarity at the moment
         #TODO add selection of distance metric to query_vector
         query = query_vector(
                 query_embedding=query_embedding,
-                embed_vocab=self._embed_vocab,
-                domain_id=self._domain_id,
-                standard_concept=self._standard_concept,
-                valid_concept=self._valid_concept,
-                n = self._top_k,
+                embed_vocab=embed_vocab,
+                domain_id=domain_id,
+                standard_concept=standard_concept,
+                valid_concept=valid_concept,
+                n = top_k,
                 describe_concept=describe_concept,
                 ) 
         try:
@@ -151,11 +146,6 @@ class Embeddings:
 
     def get_retriever(
             self,
-            embed_vocab: List[str] | None=None,
-            domain_id: List[str] | None = None,
-            standard_concept: bool=False,
-            valid_concept: bool = False,
-            top_k: int=5,
         ) -> PGVectorQuery:
         """
         Get a retriever for LLM pipelines
@@ -168,11 +158,6 @@ class Embeddings:
             assert(self._model.info.dimensions == settings.db_vecsize)
             return PGVectorQuery(
                     db_session(),
-                    embed_vocab=embed_vocab,
-                    domain_id=domain_id,
-                    standard_concept=standard_concept,
-                    valid_concept=valid_concept,
-                    top_k=top_k,
                     )
         except AssertionError:
             raise AssertionError(f"Embedder dimensions {str(self._model.info.dimensions)} not equal to vector store dimensions {str()}")

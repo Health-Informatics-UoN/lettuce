@@ -7,7 +7,7 @@ from haystack.components.generators import OpenAIGenerator
 from haystack.components.routers import ConditionalRouter
 from haystack_integrations.components.generators.ollama import OllamaGenerator
 
-from components.embeddings import Embeddings, EmbeddingModelName
+from components.embeddings import Embeddings
 from components.prompt import Prompts
 from options.pipeline_options import InferenceType
 from options.base_options import BaseOptions
@@ -36,10 +36,6 @@ class LLMPipeline:
         logger: Logger,
         inference_type: InferenceType = settings.inference_type,
         inference_url: str | None = settings.ollama_url,
-        embed_vocab: list[str] | None = None,
-        standard_concept: bool = False,
-        embedding_model: EmbeddingModelName = settings.embedding_model,
-        top_k: int=5,
         verbose_llm: bool = False,
     ) -> None:
         """
@@ -76,9 +72,6 @@ class LLMPipeline:
         self._url = inference_url
         self._logger = logger
         self._temperature = temperature
-        self._embed_vocab = embed_vocab
-        self._standard_concept = standard_concept
-        self._top_k=top_k
         self._verbose_llm=verbose_llm
 
 
@@ -134,11 +127,7 @@ class LLMPipeline:
         start = time.time()
 
         vec_embedder = embedding_model.get_embedder()
-        vec_retriever = embedding_model.get_retriever(
-                embed_vocab=self._embed_vocab,
-                standard_concept=self._standard_concept,
-                top_k=self._top_k
-                )
+        vec_retriever = embedding_model.get_retriever()
         router = ConditionalRouter(
             routes=[
                 {

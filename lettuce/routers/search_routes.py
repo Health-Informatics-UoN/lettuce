@@ -2,6 +2,7 @@ from functools import lru_cache
 from typing import Annotated, List
 from components.embeddings import Embeddings
 from fastapi import APIRouter, Depends, Query
+from haystack import Pipeline
 
 from api_models.responses import (
     ConceptSuggestionResponse,
@@ -9,7 +10,7 @@ from api_models.responses import (
     SuggestionsMetaData,
 )
 from components.models import get_model
-from components.pipeline import Generator, LLMPipeline
+from components.pipeline import LLMPipeline
 from omop.db_manager import get_session
 from omop.omop_queries import count_concepts, query_ids_matching_name, ts_rank_query
 from utils.logging_utils import logger
@@ -21,21 +22,28 @@ router = APIRouter()
 
 
 @lru_cache
-def load_llm() -> Generator:
-    return get_model(
+def load_embeddings_model() -> Embeddings:
+    return Embeddings(
+        model_name=settings.embedding_model,
+    )
+    
+@lru_cache
+def load_assistant(embedding_model: Embeddings= Depends(load_embeddings_model)) -> Pipeline:
+    llm = get_model(
         model=settings.llm_model,
         logger=logger,
         inference_type=settings.inference_type,
         url=settings.ollama_url,
         temperature=settings.temperature,
     )
+    return LLMPipeline(
+        llm=llm,
+        temperature=0,
+        logger=logger,
+    ).get_rag_assistant(
+            embedding_model=embedding_model
+            )
 
-@lru_cache
-def load_embeddings_model() -> Embeddings:
-    return Embeddings(
-        model_name=settings.embedding_model,
-    )
-    
 @router.get("/")
 def check_db():
     with get_session() as session:
@@ -101,13 +109,14 @@ async def vector_search(
     embedder = embedding_handler.get_embedder()
     embedding = embedder.run(search_term)
     retriever = embedding_handler.get_retriever(
+            )
+    result = retriever.run(embedding["embedding"], describe_concept=True,
             embed_vocab=vocabulary,
             domain_id=domain,
             standard_concept=standard_concept,
             valid_concept=valid_concept,
             top_k=top_k
-            )
-    result = retriever.run(embedding["embedding"], describe_concept=True)
+                           )
     return ConceptSuggestionResponse(
         items=[
             Suggestion(
@@ -137,24 +146,20 @@ async def ai_search(
     standard_concept: bool = True,
     valid_concept: bool = False,
     top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)] = 5,
-    llm: Generator=Depends(load_llm),
-    embedding_model: Embeddings=Depends(load_embeddings_model)
+    assistant: Pipeline=Depends(load_assistant),
 ) -> ConceptSuggestionResponse:
-    assistant = LLMPipeline(
-        llm=llm,
-        temperature=0,
-        logger=logger,
-        embed_vocab=vocabulary,
-        standard_concept=standard_concept,
-    ).get_rag_assistant(
-            embedding_model=embedding_model
-            )
     answer = assistant.run(
         {
             "prompt": {"informal_name": search_term, "domain": domain},
             "query_embedder": {"text": search_term},
+            "retriever": {
+                "embed_vocab": vocabulary,
+                "domain_id": domain,
+                "standard_concept": standard_concept,
+                "top_k": top_k
+                }
         },
-        include_outputs_from="prompt",
+        include_outputs_from={"prompt"},
     )
     reply = answer["llm"]["replies"][0].strip()
     meta = answer["llm"]["meta"]
