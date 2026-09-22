@@ -78,7 +78,6 @@ class LLMPipeline:
         self._temperature = temperature
         self._embed_vocab = embed_vocab
         self._standard_concept = standard_concept
-        self._embedding_model = embedding_model
         self._top_k=top_k
         self._verbose_llm=verbose_llm
 
@@ -117,7 +116,10 @@ class LLMPipeline:
 
         return pipeline
 
-    def get_rag_assistant(self) -> Pipeline:
+    def get_rag_assistant(
+            self,
+            embedding_model: Embeddings
+            ) -> Pipeline:
         """
         Get an assistant that uses vector search to populate a prompt for an LLM
 
@@ -131,15 +133,12 @@ class LLMPipeline:
         self._logger.info(f"Pipeline initialized in {time.time()-start} seconds")
         start = time.time()
 
-        vec_search = Embeddings(
-            embed_vocab=self._embed_vocab,
-            standard_concept=self._standard_concept,
-            model_name=self._embedding_model,
-            top_k=self._top_k,
-        )
-
-        vec_embedder = vec_search.get_embedder()
-        vec_retriever = vec_search.get_retriever()
+        vec_embedder = embedding_model.get_embedder()
+        vec_retriever = embedding_model.get_retriever(
+                embed_vocab=self._embed_vocab,
+                standard_concept=self._standard_concept,
+                top_k=self._top_k
+                )
         router = ConditionalRouter(
             routes=[
                 {

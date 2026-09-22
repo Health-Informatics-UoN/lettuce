@@ -110,11 +110,6 @@ class Embeddings:
     def __init__(
         self,
         model_name: EmbeddingModelName,
-        embed_vocab: List[str] | None=None,
-        domain_id: List[str] | None = None,
-        standard_concept: bool=False,
-        valid_concept: bool = False,
-        top_k: int=5,
     ) -> None:
         """
         Initialises the connection to an embeddings database
@@ -140,11 +135,6 @@ class Embeddings:
             kwargs for vector search.
         """
         self._model = get_embedding_model(model_name)
-        self._embed_vocab = embed_vocab
-        self._domain_id = domain_id
-        self._standard_concept = standard_concept
-        self._valid_concept = valid_concept
-        self._top_k = top_k
 
 
     def get_embedder(self) -> FastembedTextEmbedder:
@@ -159,7 +149,14 @@ class Embeddings:
         query_embedder.warm_up()
         return query_embedder
 
-    def get_retriever(self) -> PGVectorQuery:
+    def get_retriever(
+            self,
+            embed_vocab: List[str] | None=None,
+            domain_id: List[str] | None = None,
+            standard_concept: bool=False,
+            valid_concept: bool = False,
+            top_k: int=5,
+        ) -> PGVectorQuery:
         """
         Get a retriever for LLM pipelines
 
@@ -171,11 +168,11 @@ class Embeddings:
             assert(self._model.info.dimensions == settings.db_vecsize)
             return PGVectorQuery(
                     db_session(),
-                    embed_vocab=self._embed_vocab,
-                    domain_id=self._domain_id,
-                    standard_concept=self._standard_concept,
-                    valid_concept=self._valid_concept,
-                    top_k=self._top_k,
+                    embed_vocab=embed_vocab,
+                    domain_id=domain_id,
+                    standard_concept=standard_concept,
+                    valid_concept=valid_concept,
+                    top_k=top_k,
                     )
         except AssertionError:
             raise AssertionError(f"Embedder dimensions {str(self._model.info.dimensions)} not equal to vector store dimensions {str()}")
