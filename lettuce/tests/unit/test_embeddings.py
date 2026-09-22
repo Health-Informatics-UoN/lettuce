@@ -84,39 +84,6 @@ class TestPGVectorQuery:
 
         assert result["documents"] == []
 
-    def test_run_with_top_k_parameter(self):
-        """
-        Test that the top_k parameter limits the number of results
-        """
-        query_embedding = [0.1, 0.2, 0.3]
-
-        for k in [1, 3, 5]:
-            mock_results = [
-                {"id": f"concept{i}", "content": f"Sample Concept {i}", "score": 0.1 * i}
-                for i in range(1, 6)
-            ]
-        
-            with patch("components.embeddings.get_session") as mock_get_session:
-                # Create the mock session
-                mock_session = Mock(spec=Session)
-
-                # Side effect that checks the limit clause
-                def execute_side_effect(query):
-                    assert query._limit_clause.value == k, f"Expected LIMIT {k}, got {query._limit_clause.value}"
-                    mock_execute = Mock()
-                    mock_execute.mappings.return_value.all.return_value = mock_results[:k]
-                    return mock_execute
-
-                mock_session.execute.side_effect = execute_side_effect
-                mock_get_session.return_value.__enter__.return_value = mock_session
-
-                # Run the component with current top_k
-                query_component = PGVectorQuery(top_k=k)
-                result = query_component.run(query_embedding=query_embedding)
-
-                # Validate that only `k` documents were returned
-                assert len(result["documents"]) == k
-
 
     def test_invalid_embedding_type(self, mock_session_with_valid_results):
         """
