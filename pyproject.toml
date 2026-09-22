@@ -1,0 +1,32 @@
+[project]
+name = "lettuce-tools"
+dynamic = ["version"]
+description = "Tools for using LLMs for mapping OMOP concepts"
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "lettuce",
+  "lettuce-ui",
+]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.uv.sources]
+lettuce = { workspace = true }
+lettuce-ui = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+    "lettuce",
+    "lettuce-ui",
+    "build-embeddings",
+]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.wheel]
+packages = ["lettuce", "build-embeddings", "lettuce-ui"]

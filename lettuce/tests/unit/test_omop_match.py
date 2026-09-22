@@ -1,13 +1,10 @@
-import os
+from typing import List
 import re 
 from collections import namedtuple
 from unittest.mock import Mock, MagicMock
 import pytest
-import pandas as pd 
-from haystack.dataclasses import Document
-from sqlalchemy.orm import Session
 
-from omop.omop_match import OMOPMatcher 
+from omop.omop_match import OMOPMatcher, SearchResult, OMOPConcept
 
 
 @pytest.fixture 
@@ -92,8 +89,6 @@ def test_fetch_omop_concepts_basic_case(mock_omop_matcher, mock_session):
 
     result = mock_omop_matcher.fetch_omop_concepts(search_term="Hypertension")
 
-    assert isinstance(result, list)
+    assert isinstance(result, List)
     assert len(result) > 0
-    assert result[0]["concept_id"] == "123"
-    assert "CONCEPT_ANCESTOR" in result[0]
-    assert "CONCEPT_RELATIONSHIP" in result[0]
+    assert isinstance(result[0], OMOPConcept)

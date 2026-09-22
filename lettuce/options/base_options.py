@@ -1,206 +1,137 @@
-import argparse
-from typing import Dict
-from components.embeddings import EmbeddingModelName
 from options.pipeline_options import LLMModel
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from .pipeline_options import EmbeddingModelName, InferenceType
 
-
-class BaseOptions:
+class BaseOptions(BaseSettings):
     """
-    This class defines options used during all types of experiments.
-    It also implements several helper functions such as parsing, printing, and saving the options.
+    Configuration settings class for the lettuce pipeline.
+    
+    This class manages all configuration options for the lettuce system, including
+    database connections, LLM model settings, embedding configurations, and inference
+    parameters. It uses Pydantic BaseSettings to handle environment variable loading
+    and configuration validation.
+    
+    The class automatically loads settings from environment variables and .env files,
+    providing sensible defaults for all configuration options.
+    
+    Attributes
+    ----------
+    db_host : str
+        Database host address. Defaults to "localhost".
+    db_user : str  
+        Database username. Defaults to "postgres".
+    db_password : str
+        Database password. Defaults to "password".
+    db_name : str
+        Database name. Defaults to "omop".
+    db_port : int
+        Database port. Defaults to 5432.
+    db_schema : str
+        Database schema name. Defaults to "cdm".
+    db_vectable : str
+        Name of the vector embeddings table. Defaults to "embeddings".
+    db_vecsize : int
+        Dimension size of embedding vectors. Defaults to 384.
+    inference_type : InferenceType
+        Type of inference backend to use. Defaults to InferenceType.OLLAMA.
+    ollama_url : str
+        URL for Ollama server. Defaults to "http://localhost:11434".
+    llm_model : LLMModel
+        LLM model to use for inference. Defaults to LLMModel.LLAMA_3_1_8B.
+    temperature : float
+        Sampling temperature for LLM generation. Defaults to 0.0.
+    local_llm : str | None
+        Path to local LLM weights file. Defaults to None.
+    debug_prompt : bool
+        Enable prompt debugging output. Defaults to False.
+    embedding_model : EmbeddingModelName
+        Embedding model to use. Defaults to EmbeddingModelName.BGESMALL.
+    embedding_top_k : int
+        Number of top embeddings to retrieve. Defaults to 5.
+    auth_api_key : str | None
+        API key for authentication. Defaults to None.
     """
+    
+    model_config = SettingsConfigDict(
+            env_file=".env",
+env_file_encoding="utf-8",
+            )
+    
+    # Database configuration
+    db_host: str = "localhost"
+    db_user: str = "postgres"
+    db_password: str = "password"
+    db_name: str = "omop"
+    db_port: int = 5432
+    db_schema: str = "cdm"
+    db_vectable: str = "embeddings"
+    # have a branch where this comes from database - hard to integrate,#TODO
+    db_vecsize: int = 384 
 
-    def __init__(self) -> None:
+    # Inference configuration
+    inference_type: InferenceType = InferenceType.OLLAMA
+    ollama_url: str = "http://localhost:11434"    
+
+    # LLM model configuration
+    llm_model: LLMModel = LLMModel.LLAMA_3_2_3B
+    temperature: float = 0.0
+    local_llm: str | None = None
+    debug_prompt: bool = False
+
+    # Embedding configuration
+    embedding_model: EmbeddingModelName = EmbeddingModelName.BGESMALL
+    embedding_top_k: int = 5
+    
+    # Authentication
+    auth_api_key: str | None = None
+
+    def connection_url(self) -> str:
         """
-        Initializes the BaseOptions class
-
-        Parameters
-        ----------
-        None
-
+        Generate a PostgreSQL connection URL from the database configuration.
+        
+        Constructs a connection string in the format required by SQLAlchemy
+        and other database libraries using the configured database parameters.
+        
         Returns
         -------
-        None
+        str
+            PostgreSQL connection URL in the format:
+            "postgresql://user:password@host:port/database"
+            
+        Examples
+        --------
+        >>> settings = BaseOptions()
+        >>> settings.connection_url()
+        'postgresql://postgres:password@localhost:5432/omop'
         """
-        self._parser = argparse.ArgumentParser()
-        self._initialized = False
+        return f"postgresql://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
 
-    def initialize(self) -> None:
+    def print(self) -> None:
         """
-        Initializes the BaseOptions class
-
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        None
-        """
-        self._parser.add_argument(
-            "--llm_model",
-            type=str,
-            required=False,
-            default="LLAMA_3_1_8B",
-            choices=[llm.name for llm in LLMModel],
-        )
-
-        self._parser.add_argument(
-            "--embedding_model",
-            type=lambda s: EmbeddingModelName[s],
-            required=False,
-            default="BGESMALL",
-            choices=[model.name for model in EmbeddingModelName],
-        )
-
-        self._parser.add_argument(
-            "--embed-vocab",
-            type=lambda s: s.split(",") if s else None,
-            default=None,
-            required=False,
-            help="Vocabulary IDs for embedding filtering. If multiple vocabularies, supply a comma-separated list"
-        )
-
-        self._parser.add_argument(
-                "--standard-concept",
-                type=bool,
-                default=False,
-                required=False,
-                help="Whether to filter output by the standard_concept field of the concept table"
-        )
-
-        self._parser.add_argument(
-            "--temperature",
-            type=float,
-            required=False,
-            default=0.0,
-            help="temperature to control LLM output randomness",
-        )
-
-        self._parser.add_argument(
-            "--informal_names",
-            type=str,
-            nargs="+",
-            required=True,
-            help="informal medication names",
-        )
-
-        self._parser.add_argument(
-            "--vocabulary_id",
-            type=lambda s: s.split(",") if s else None,
-            required=False,
-            default=None,
-            help="Vocabulary IDs to be queried. If you want multiple"
-            "vocabularies to be used, supply a comma separated list",
-        )
-
-        self._parser.add_argument(
-            "--concept_ancestor",
-            action=argparse.BooleanOptionalAction,
-            required=False,
-            help="concept ancestor",
-        )
-
-        self._parser.add_argument(
-            "--concept_relationship",
-            action=argparse.BooleanOptionalAction,
-            required=False,
-            help="concept relationship",
-        )
-
-        self._parser.add_argument(
-            "--concept_synonym",
-            action=argparse.BooleanOptionalAction,
-            required=False,
-            help="concept synonym",
-        )
-
-        self._parser.add_argument(
-            "--search_threshold",
-            type=int,
-            required=False,
-            default=80,
-            help="search threshold",
-        )
-
-        self._parser.add_argument(
-            "--max_separation_descendants",
-            type=int,
-            required=False,
-            default=1,
-            help="max separation descendants",
-        )
-
-        self._parser.add_argument(
-            "--max_separation_ancestor",
-            type=int,
-            required=False,
-            default=1,
-            help="max separation ancestor",
-        )
-
-        self._parser.add_argument(
-            "--vector_search",
-            action=argparse.BooleanOptionalAction,
-            required=False,
-            default=True,
-            help="Try vector search before LLM?",
-        )
-
-        self._parser.add_argument(
-            "--use_llm",
-            action=argparse.BooleanOptionalAction,
-            required=False,
-            default=True,
-            help="Use LLM?",
-        )
-
-        self._parser.add_argument(
-                "--embedding-top-k",
-                type=int,
-                required=False,
-                default=5,
-                help="Number of suggestions to return from vector search for RAG."
-         )
-
-        self._initialized = True
-
-    def parse(self) -> argparse.Namespace:
-        """
-        Parses the arguments passed to the script
-
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        opt: argparse.Namespace
-            The parsed arguments
-        """
-        if not self._initialized:
-            self.initialize()
-        self._opt, _ = self._parser.parse_known_args()
-
-        args = vars(self._opt)
-        self._print(args)
-
-        return self._opt
-
-    def _print(self, args: Dict) -> None:
-        """
-        Prints the arguments passed to the script
-
-        Parameters
-        ----------
-        args: dict
-            The arguments to print
-
-        Returns
-        -------
-        None
+        Print all configuration settings in a formatted display.
+        
+        Outputs all current configuration values in a readable format,
+        useful for debugging and verification of loaded settings.
+        
+        Examples
+        --------
+        >>> options = BaseOptions()
+        >>> options.print()
+        ------------ Options -------------
+        db_host: localhost
+        db_user: postgres
+        db_password: password
+        ...
+        -------------- End ---------------
         """
         print("------------ Options -------------")
-        for k, v in args.items():
+        for k, v in self.model_dump().items():
             print(f"{str(k)}: {str(v)}")
         print("-------------- End ---------------")
+
+    def hf_hub_config(self) -> dict[str, str]:
+        return {
+                "repo_id": self.llm_model.repo_id,
+                "filename": self.llm_model.filename,
+                }
+        

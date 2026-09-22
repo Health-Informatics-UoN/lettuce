@@ -4,12 +4,11 @@ from unittest.mock import Mock, patch
 import pytest
 from haystack.dataclasses import Document
 from sqlalchemy.orm import Session
+from components.embeddings import PGVectorQuery
 
 pytestmark = pytest.mark.skipif(
     os.getenv("SKIP_DATABASE_TESTS") == "true", reason="Skipping database tests"
 )
-
-from components.embeddings import PGVectorQuery
 
 
 def mock_session(mock_results): 

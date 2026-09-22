@@ -1,0 +1,178 @@
+import { Steps, Callout } from 'nextra/components'
+
+# Command Line Interface
+
+[source](https://github.com/Health-Informatics-UoN/lettuce/tree/main/lettuce/cli/main.py)
+
+The `lettuce` CLI provides command-line access to all `lettuce` components, allowing you to convert informal drug names to standardized OMOP concepts through a simple terminal interface.
+
+
+## Usage
+
+<Steps>
+
+### Navigate to the `/lettuce` directory
+
+### Run the CLI with `uv`
+You can always check the CLI commands with 
+
+```sh
+uv run lettuce-cli --help
+```
+
+which should show something like
+
+```sh
+╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ *    informal_names      INFORMAL_NAMES...  Source term to search for [default: None] [required]                                                     │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --vector-search         --no-vector-search                Whether to enable vector search in your pipeline [default: vector-search]                  │
+│ --use-llm               --no-use-llm                      Whether to enable the LLM step in your pipeline [default: use-llm]                         │
+│ --vocabulary-id                                  TEXT     Which vocabularies to return OMOP concepts from [default: None]                            │
+│ --embed-vocab                                    TEXT     Which vocabularies to use for semantic search [default: None]                              │
+│ --standard-concept      --no-standard-concept             Whether to search through only standard concepts [default: standard-concept]               │
+│ --search-threshold                               INTEGER  What fuzzy matching threshold to limit responses to [default: 80]                          │
+│ --verbose-llm           --no-verbose-llm                  Whether the LLM should report on its state while initializing [default: no-verbose-llm]    │
+│ --install-completion                                      Install completion for the current shell.                                                  │
+│ --show-completion                                         Show completion for the current shell, to copy it or customize the installation.           │
+│ --help                                                    Show this message and exit.                                                                │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+
+</Steps>
+
+## Examples
+
+<Callout type="info">
+  The following examples demonstrate common usage patterns for the Lettuce CLI.
+</Callout>
+
+### Multiple informal names
+```sh
+uv run lettuce-cli "betnovate scalp application" "metformin 500mg"
+```
+
+### Using a specific medical LLM
+```bash
+LLM_MODEL='MED_LLAMA_3_8B_V4' uv run lettuce-cli\ 
+  "betnovate scalp application" 
+```
+## Arguments
+### `* informal_names` (Required)
+Provide one or more strings for Lettuce to infer concepts for.
+You can supply multiple names in a single command:
+
+### `--vector-search`, `--no-vector-search` 
+Default: `--vector-search` (enabled)
+
+Choose whether to perform vector search on supplied informal names.
+
+### `--use-llm`, `--no-use-llm`
+Default: `--use_llm` (enabled)
+
+Choose whether to have an LLM infer an OMOP concept for supplied informal names.
+
+<Callout type="warning">
+  If using llama.cpp LLM usage will download the model weights, which requires ~5 GB disk space.
+</Callout>
+
+### `--vocabulary-id`
+Default: `None`
+
+The OMOP vocabularies to query in the OMOP-CDM database.
+If you don't specify a vocabulary_id, all the vocabularies will be used.
+To specify multiple vocabularies, you can add more than one like this:
+
+```sh
+--vocabulary-id "RxNorm" --vocabulary-id "RxNorm Extension"
+```
+
+### `--embed-vocab`
+Default: `None`
+
+Which vocabularies to use for vector search.
+This is a distinct option from `--vocabulary-id` in case you want to allow RAG to take context from more vocabularies than the final result should come from, for example.
+
+```sh
+--embed-vocab "RxNorm" --embed-vocab "SNOMED"
+```
+
+### `--standard-concept`
+Default: `False`
+
+Whether to filter output by the `standard_concept` field of the concept table.
+If `True`, then only concepts with non-null values in the `standard_concept` field will be returned.
+
+### `--search_threshold`
+Default: `80` (equivalent to 0.8)
+
+The fuzzy match threshold to use when filtering OMOP concept names. Values range from 0 to 100, where 100 requires an exact match.
+
+## Output Format
+
+The CLI prints results to the console in a structured JSON format (*under revision*). Each query produces a comprehensive result object with vector search results, LLM matching, and OMOP concept data:
+
+```json
+[
+  {
+    "query": "acetaminophen",
+    "Vector Search Results": [
+      {"content": "Acetaminophen", "score": 5.960464815046862e-07},
+      // Additional vector search results omitted for brevity
+    ],
+    "llm_answer": "Acetaminophen",
+    "OMOP fuzzy threshold": 80,
+    "OMOP matches": {
+      "search_term": "Acetaminophen",
+      "CONCEPT": [
+        {
+          "concept_name": "acetaminophen",
+          "concept_id": 1125315,
+          "vocabulary_id": "RxNorm",
+          "concept_code": "161",
+          "concept_name_similarity_score": 100.0,
+          "CONCEPT_SYNONYM": [],
+          "CONCEPT_ANCESTOR": [],
+          "CONCEPT_RELATIONSHIP": []
+        },
+        {
+          "concept_name": "Acetaminophen Jr",
+          "concept_id": 19052416,
+          "vocabulary_id": "RxNorm", 
+          "concept_code": "214962",
+          "concept_name_similarity_score": 89.65,
+          "CONCEPT_SYNONYM": [],
+          "CONCEPT_ANCESTOR": [],
+          "CONCEPT_RELATIONSHIP": []
+        }
+        // Additional concept matches omitted for brevity
+      ]
+    }
+  },
+  {
+    "query": "codeine",
+    "Vector Search Results": [
+      {"content": "Codeine", "score": 4.76837158203125e-07},
+      // Additional vector search results omitted for brevity
+    ],
+    "llm_answer": "Codeine",
+    "OMOP fuzzy threshold": 80,
+    "OMOP matches": {
+      "search_term": "Codeine",
+      "CONCEPT": [
+        {
+          "concept_name": "codeine",
+          "concept_id": 1201620,
+          "vocabulary_id": "RxNorm",
+          "concept_code": "2670",
+          "concept_name_similarity_score": 100.0,
+          "CONCEPT_SYNONYM": [],
+          "CONCEPT_ANCESTOR": [],
+          "CONCEPT_RELATIONSHIP": []
+        }
+      ]
+    }
+  }
+]
+```

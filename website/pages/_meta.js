@@ -3,5 +3,6 @@ export default {
   quickstart: "Lettuce Quickstart",
   omop_ts_quickstart: "Database Quickstart", 
   deployment: "Deploying Lettuce",
-  api_reference: "Lettuce API Reference"
+  api_reference: "Lettuce API Reference",
+  branding: "Branding"
 }

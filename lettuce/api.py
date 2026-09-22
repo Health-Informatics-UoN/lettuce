@@ -1,6 +1,64 @@
-from fastapi import FastAPI
+import os
+import secrets 
+import hashlib 
+from typing import Set 
+
+from fastapi import FastAPI, Depends, HTTPException, status  
 from fastapi.middleware.cors import CORSMiddleware
-from routers import pipeline_routes, search_routes
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials 
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
+from routers import search_routes
+from options.base_options import BaseOptions
+import importlib.metadata
+
+settings = BaseOptions()
+
+security = HTTPBearer()
+
+if os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"):
+    from azure.monitor.opentelemetry import configure_azure_monitor
+    configure_azure_monitor()
+
+def hash_api_key(api_key: str): 
+    """Hash an API key for secure storage comparison."""
+    return hashlib.sha256(api_key.encode()).hexdigest()
+
+
+def load_valid_api_keys() -> Set[str]: 
+    """Load and return hashed API key from the environment."""
+    api_key = settings.auth_api_key
+    if not api_key:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Server configuration error: API_KEY not set"
+        )
+    
+    valid_key = {hash_api_key(api_key)}  # can include logic for handling additional keys
+
+    return valid_key
+
+
+def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    valid_api_keys = load_valid_api_keys()
+
+    # Hash the provided API key
+    provided_key_hash = hash_api_key(credentials.credentials)
+
+    # Use constant-time comparison to prevent timing attacks
+    is_valid = any(
+        secrets.compare_digest(provided_key_hash, valid_key)
+        for valid_key in valid_api_keys
+    )
+      
+    if not is_valid:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid API key"
+        )
+
+    return credentials.credentials
+
 
 app = FastAPI(
     title="OMOP concept Assistant",
@@ -21,14 +79,27 @@ app.add_middleware(
 )
 
 app.include_router(
-    router=pipeline_routes.router,
-    prefix="/pipeline",
+    router=search_routes.router,
+    prefix="/search",
+    dependencies=[Depends(verify_api_key)]  
 )
 
-app.include_router(
-        router=search_routes.router,
-        prefix="/search",
-        )
+FastAPIInstrumentor.instrument_app(app)
+
+@app.get("/health")
+def healthcheck() -> dict[str, str]:
+    """
+    A healthcheck endpoint for monitoring
+
+    Returns
+    -------
+    dict[str, str]
+        Reports healthy status and the version of lettuce running
+    """
+    return {
+            'status': 'healthy',
+            'version': importlib.metadata.version('lettuce')
+            }
 
 
 def main():

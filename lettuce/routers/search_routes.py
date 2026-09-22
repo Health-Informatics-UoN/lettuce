@@ -1,13 +1,16 @@
 from typing import Annotated, List
-from components.embeddings import EmbeddingModelName, Embeddings
+from components.embeddings import Embeddings
 from fastapi import APIRouter, Query
 
 from api_models.responses import ConceptSuggestionResponse, Suggestion, SuggestionsMetaData
+from components.models import get_model
 from components.pipeline import LLMPipeline
 from omop.db_manager import get_session
 from omop.omop_queries import count_concepts, query_ids_matching_name, ts_rank_query
-from options.pipeline_options import LLMModel
 from utils.logging_utils import logger
+from options.base_options import BaseOptions
+
+settings = BaseOptions()
 
 router = APIRouter()
 
@@ -42,7 +45,7 @@ async def text_search(
 
     metadata = SuggestionsMetaData(pipeline="Full-text search")
     response = ConceptSuggestionResponse(
-            recommendations=[
+            items=[
                 Suggestion(
                     conceptName=r.concept_name,
                     conceptId=r.concept_id,
@@ -70,7 +73,7 @@ async def vector_search(
         top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)]=5,
         ) -> ConceptSuggestionResponse:
     embedding_handler = Embeddings(
-            model_name=EmbeddingModelName.BGESMALL,
+            model_name=settings.embedding_model,
             embed_vocab=vocabulary,
             domain_id=domain,
             standard_concept=standard_concept,
@@ -82,7 +85,7 @@ async def vector_search(
     retriever = embedding_handler.get_retriever()
     result = retriever.run(embedding["embedding"], describe_concept=True)
     return ConceptSuggestionResponse(
-            recommendations=[
+            items=[
                 Suggestion(
                     conceptName=r.Concept.concept_name,
                     conceptId=r.Concept.concept_id,
@@ -110,14 +113,27 @@ async def ai_search(
         valid_concept: bool=False,
         top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)]=5,
         ) -> ConceptSuggestionResponse:
+    llm = get_model(
+                model=settings.llm_model,
+                logger=logger,
+                inference_type=settings.inference_type,
+                url=settings.ollama_url,
+                temperature=settings.temperature,
+                )
     assistant = LLMPipeline(
-            llm_model=LLMModel.LLAMA_3_1_8B,
+            llm=llm,
             temperature=0,
             logger=logger,
             embed_vocab=vocabulary,
             standard_concept=standard_concept,
             ).get_rag_assistant()
-    answer = assistant.run({"prompt": {"informal_name": search_term}, "query_embedder": {"text": search_term}})
+    answer = assistant.run(
+            {
+                "prompt": {"informal_name": search_term, "domain": domain},
+                "query_embedder": {"text": search_term}
+                },
+            include_outputs_from="prompt"
+            )
     reply = answer["llm"]["replies"][0].strip()
     meta = answer["llm"]["meta"]
     logger.info(f"Reply: {reply}")
@@ -127,12 +143,17 @@ async def ai_search(
             vocabulary_ids=vocabulary,
             full_concept=True
             )
-    metadata = SuggestionsMetaData(
-            pipeline="LLM RAG pipeline",
-            info={
-                "LLM": "Llama 3.1 8b (quantised to 4-bit)",
+    suggestion_info = {
+                "LLM": settings.llm_model.value,
                 "LLM reply": reply,
                 }
+
+    if settings.debug_prompt:
+        suggestion_info["prompt"] = answer["prompt"]
+
+    metadata = SuggestionsMetaData(
+            pipeline="LLM RAG pipeline",
+            info=suggestion_info
             )
     with get_session() as session:
         results = session.execute(query).fetchall()
@@ -148,7 +169,7 @@ async def ai_search(
         with get_session() as session:
             results = session.execute(ts_query).fetchall()
         response = ConceptSuggestionResponse(
-            recommendations=[
+            items=[
                 Suggestion(
                     conceptName=r.concept_name,
                     conceptId=r.concept_id,
@@ -166,7 +187,7 @@ async def ai_search(
             )
     else:
         response = ConceptSuggestionResponse(
-            recommendations=[
+            items=[
                 Suggestion(
                     conceptName=r.concept_name,
                     conceptId=r.concept_id,

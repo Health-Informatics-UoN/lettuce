@@ -1,0 +1,1527 @@
+concept_id	concept_name	domain_id	vocabulary_id	concept_class_id	standard_concept	concept_code	valid_start_date	valid_end_date	invalid_reason
+0	No matching concept	Metadata	None	Undefined		No matching concept	1970-01-01	2099-12-31	
+8507	MALE	Gender	Gender	Gender	S	M	1970-01-01	2099-12-31	
+8515	Asian	Race	Race	Race	S	2	1970-01-01	2099-12-31	
+8516	Black or African American	Race	Race	Race	S	3	1970-01-01	2099-12-31	
+8527	White	Race	Race	Race	S	5	1970-01-01	2099-12-31	
+8532	FEMALE	Gender	Gender	Gender	S	F	1970-01-01	2099-12-31	
+8557	Native Hawaiian or Other Pacific Islander	Race	Race	Race	S	4	1970-01-01	2099-12-31	
+8657	American Indian or Alaska Native	Race	Race	Race	S	1	1970-01-01	2099-12-31	
+24970	Chronic laryngitis	Condition	SNOMED	Disorder	S	29951006	2002-01-31	2099-12-31	
+25844	Ulcer of esophagus	Condition	SNOMED	Disorder	S	30811009	2002-01-31	2099-12-31	
+32809	Case Report Form	Type Concept	Type Concept	Type Concept	S	OMOP4976882	2020-08-20	2099-12-31	
+32812	Claim discharge record	Type Concept	Type Concept	Type Concept	S	OMOP4976885	2020-08-20	2099-12-31	
+32814	Cost record	Type Concept	Type Concept	Type Concept	S	OMOP4976887	2020-08-20	2099-12-31	
+32816	Dental claim	Type Concept	Type Concept	Type Concept	S	OMOP4976889	2020-08-20	2099-12-31	
+32818	EHR administration record	Type Concept	Type Concept	Type Concept	S	OMOP4976891	2020-08-20	2099-12-31	
+32819	EHR admission note	Type Concept	Type Concept	Type Concept	S	OMOP4976892	2020-08-20	2099-12-31	
+32822	EHR chief complaint	Type Concept	Type Concept	Type Concept	S	OMOP4976895	2020-08-20	2099-12-31	
+32826	EHR emergency room note	Type Concept	Type Concept	Type Concept	S	OMOP4976899	2020-08-20	2099-12-31	
+32827	EHR encounter record	Type Concept	Type Concept	Type Concept	S	OMOP4976900	2020-08-20	2099-12-31	
+32829	EHR inpatient note	Type Concept	Type Concept	Type Concept	S	OMOP4976902	2020-08-20	2099-12-31	
+32830	EHR medication list	Type Concept	Type Concept	Type Concept	S	OMOP4976903	2020-08-20	2099-12-31	
+32832	EHR nursing report	Type Concept	Type Concept	Type Concept	S	OMOP4976905	2020-08-20	2099-12-31	
+32833	EHR order	Type Concept	Type Concept	Type Concept	S	OMOP4976906	2020-08-20	2099-12-31	
+32834	EHR outpatient note	Type Concept	Type Concept	Type Concept	S	OMOP4976907	2020-08-20	2099-12-31	
+32835	EHR Pathology report	Type Concept	Type Concept	Type Concept	S	OMOP4976908	2020-08-20	2099-12-31	
+32836	EHR physical examination	Type Concept	Type Concept	Type Concept	S	OMOP4976909	2020-08-20	2099-12-31	
+32838	EHR prescription	Type Concept	Type Concept	Type Concept	S	OMOP4976911	2020-08-20	2099-12-31	
+32839	EHR prescription issue record	Type Concept	Type Concept	Type Concept	S	OMOP4976912	2020-08-20	2099-12-31	
+32842	EHR referral record	Type Concept	Type Concept	Type Concept	S	OMOP4976915	2020-08-20	2099-12-31	
+32843	External CDM instance	Type Concept	Type Concept	Type Concept	S	OMOP4976916	2020-08-20	2099-12-31	
+32845	Facility claim detail	Type Concept	Type Concept	Type Concept	S	OMOP4976918	2020-08-20	2099-12-31	
+32847	Geographic isolation record	Type Concept	Type Concept	Type Concept	S	OMOP4976920	2020-08-20	2099-12-31	
+32850	Health Risk Assessment	Type Concept	Type Concept	Type Concept	S	OMOP4976923	2020-08-20	2099-12-31	
+32852	Hospital cost	Type Concept	Type Concept	Type Concept	S	OMOP4976925	2020-08-20	2099-12-31	
+32854	Inpatient claim detail	Type Concept	Type Concept	Type Concept	S	OMOP4976927	2020-08-20	2099-12-31	
+32856	Lab	Type Concept	Type Concept	Type Concept	S	OMOP4976929	2020-08-20	2099-12-31	
+32857	Mail order record	Type Concept	Type Concept	Type Concept	S	OMOP4976930	2020-08-20	2099-12-31	
+32858	NLP	Type Concept	Type Concept	Type Concept	S	OMOP4976931	2020-08-20	2099-12-31	
+32859	Outpatient claim	Type Concept	Type Concept	Type Concept	S	OMOP4976932	2020-08-20	2099-12-31	
+32861	Outpatient claim header	Type Concept	Type Concept	Type Concept	S	OMOP4976934	2020-08-20	2099-12-31	
+32862	Patient filled survey	Type Concept	Type Concept	Type Concept	S	OMOP4976935	2020-08-20	2099-12-31	
+32863	Patient or payer paid record	Type Concept	Type Concept	Type Concept	S	OMOP4976936	2020-08-20	2099-12-31	
+32864	Patient reported cost	Type Concept	Type Concept	Type Concept	S	OMOP4976937	2020-08-20	2099-12-31	
+32865	Patient self-report	Type Concept	Type Concept	Type Concept	S	OMOP4976938	2020-08-20	2099-12-31	
+32866	Payer system record (paid premium)	Type Concept	Type Concept	Type Concept	S	OMOP4976939	2020-08-20	2099-12-31	
+32868	Payer system record (secondary payer)	Type Concept	Type Concept	Type Concept	S	OMOP4976941	2020-08-20	2099-12-31	
+32870	Pre-qualification time period	Type Concept	Type Concept	Type Concept	S	OMOP4976943	2020-08-20	2099-12-31	
+32871	Professional claim	Type Concept	Type Concept	Type Concept	S	OMOP4976944	2020-08-20	2099-12-31	
+32873	Professional claim header	Type Concept	Type Concept	Type Concept	S	OMOP4976946	2020-08-20	2099-12-31	
+32874	Provider charge list price	Type Concept	Type Concept	Type Concept	S	OMOP4976947	2020-08-20	2099-12-31	
+32875	Provider financial system	Type Concept	Type Concept	Type Concept	S	OMOP4976948	2020-08-20	2099-12-31	
+32877	Randomization record	Type Concept	Type Concept	Type Concept	S	OMOP4976950	2020-08-20	2099-12-31	
+32878	Reference lab	Type Concept	Type Concept	Type Concept	S	OMOP4976951	2020-08-20	2099-12-31	
+32879	Registry	Type Concept	Type Concept	Type Concept	S	OMOP4976952	2020-08-20	2099-12-31	
+32881	Standard algorithm from claims	Type Concept	Type Concept	Type Concept	S	OMOP4976954	2020-08-20	2099-12-31	
+32882	Standard algorithm from EHR	Type Concept	Type Concept	Type Concept	S	OMOP4976955	2020-08-20	2099-12-31	
+32884	Urgent lab	Type Concept	Type Concept	Type Concept	S	OMOP4976957	2020-08-20	2099-12-31	
+32885	US Social Security Death Master File	Type Concept	Type Concept	Type Concept	S	OMOP4976958	2020-08-20	2099-12-31	
+32886	Vision claim	Type Concept	Type Concept	Type Concept	S	OMOP4976959	2020-08-20	2099-12-31	
+75608	Shoulder dystocia with antenatal problem	Condition	SNOMED	Disorder	S	199784005	2002-01-31	2099-12-31	
+78633	Heat cramp	Condition	SNOMED	Clinical Finding	S	87108006	2002-01-31	2099-12-31	
+78771	Labyrinthine dysfunction	Condition	SNOMED	Disorder	S	5239005	2002-01-31	2099-12-31	
+135934	Abdominal rigidity of periumbilical region	Condition	SNOMED	Clinical Finding	S	438512007	2009-01-31	2099-12-31	
+137005	Tracheostomy complication	Condition	SNOMED	Disorder	S	68033004	2002-01-31	2099-12-31	
+139200	Crushing injury of forearm	Condition	SNOMED	Disorder	S	111693009	2002-01-31	2099-12-31	
+194088	Hypertrophic elongation of cervix	Condition	SNOMED	Disorder	S	198353000	2002-01-31	2099-12-31	
+195064	Perinatal jaundice due to hepatocellular damage	Condition	SNOMED	Clinical Finding	S	10877007	2002-01-31	2099-12-31	
+197050	Abnormality of organs AND/OR soft tissues of pelvis affecting pregnancy	Condition	SNOMED	Disorder	S	1639007	2002-01-31	2099-12-31	
+197381	Epigastric pain	Condition	SNOMED	Clinical Finding	S	79922009	2002-01-31	2099-12-31	
+197494	Viral hepatitis C	Condition	SNOMED	Disorder	S	50711007	2002-01-31	2099-12-31	
+197654	Congenital cystic disease of liver	Condition	SNOMED	Disorder	S	72925005	2002-01-31	2099-12-31	
+199891	Rhesus isoimmunization affecting pregnancy	Condition	SNOMED	Disorder	S	44795003	2002-01-31	2099-12-31	
+200450	Disorder of urethra	Condition	SNOMED	Disorder	S	4985009	2002-01-31	2099-12-31	
+201345	Fistula of urinary bladder	Condition	SNOMED	Disorder	S	68666001	2002-01-31	2099-12-31	
+260245	Traumatic hemothorax with open wound into thorax	Condition	SNOMED	Disorder	S	33072005	2002-01-31	2099-12-31	
+372642	Corneal staphyloma	Condition	SNOMED	Disorder	S	52476003	2002-01-31	2099-12-31	
+432632	Secondary noninfectious iridocyclitis	Condition	SNOMED	Disorder	S	46916006	2002-01-31	2099-12-31	
+433000	Patellar tendonitis	Condition	SNOMED	Disorder	S	37785001	2002-01-31	2099-12-31	
+433578	Acquired cavovarus deformity of foot	Condition	SNOMED	Disorder	S	65362007	2002-01-31	2099-12-31	
+434592	B-cell lymphoma (clinical)	Condition	SNOMED	Disorder	S	109979007	2002-01-31	2099-12-31	
+435808	Diffuse secondary choroid atrophy	Condition	SNOMED	Disorder	S	193463006	2002-01-31	2099-12-31	
+436384	Subchronic disorganized schizophrenia with acute exacerbations	Condition	SNOMED	Disorder	S	14291003	2002-01-31	2099-12-31	
+437200	Injury of unknown intent by hunting rifle	Condition	SNOMED	Disorder	S	219337003	2002-01-31	2099-12-31	
+438310	Victim motorcycle rider in vehicular AND/OR traffic accident	Observation	SNOMED	Clinical Finding	S	10298002	2002-01-31	2099-12-31	
+438390	Benign neoplasm of vulva	Condition	SNOMED	Disorder	S	92486005	2002-01-31	2099-12-31	
+438527	Juvenile osteochondrosis of lower extremity excluding foot	Condition	SNOMED	Disorder	S	354223006	2002-01-31	2099-12-31	
+439262	Single manic episode severe with psychosis	Condition	SNOMED	Disorder	S	191586008	2002-01-31	2099-12-31	
+439395	Emotional abuse of child	Observation	SNOMED	Event	S	371775004	2002-07-31	2099-12-31	
+439534	Injury from voluntary parachute descent without accident to aircraft occupant of military aircraft injured	Condition	SNOMED	Disorder	S	216224000	2002-01-31	2099-12-31	
+439580	Burning caused by conflagration in theater	Observation	SNOMED	Event	S	217410006	2002-01-31	2099-12-31	
+439836	Atheromatous embolus of upper limb	Condition	SNOMED	Disorder	S	427567003	2007-07-31	2099-12-31	
+440539	Open fracture of alveolar border of body of mandible	Condition	SNOMED	Disorder	S	43337002	2002-01-31	2099-12-31	
+442427	Cervical post-laminectomy syndrome	Condition	SNOMED	Disorder	S	202723000	2002-01-31	2099-12-31	
+442574	Blister of foot with infection	Condition	SNOMED	Disorder	S	78561001	2002-01-31	2099-12-31	
+443340	Neuroleptic adverse reaction	Observation	SNOMED	Disorder	S	292371003	2002-01-31	2099-12-31	
+443441	Imaging finding	Observation	SNOMED	Clinical Finding	S	365853002	2002-01-31	2099-12-31	
+443533	Male epispadias	Condition	SNOMED	Disorder	S	406477003	2004-01-31	2099-12-31	
+507019	PARR-30 (Patients at Risk of Re-hospitalisation within 30 days of discharge) algorithm	Measurement	SNOMED	Staging / Scales	S	1057281000000109	2016-10-01	2099-12-31	
+507324	Referral for Early Help Assessment	Observation	SNOMED	Procedure	S	1060581000000100	2016-10-01	2099-12-31	
+507526	Dietetic Intervention for Adult Obesity TOM (Therapy Outcome Measure) carer wellbeing score	Measurement	SNOMED	Observable Entity	S	1063031000000101	2016-10-01	2099-12-31	
+581513	LITTLE REMEDIES NEW BABY ESSENTIALS - acetaminophen, simethicone, zinc oxide kit	Drug	SPL	OTC Drug	C	4b1b7294-aca6-45fa-a008-c1869131b2a3	2019-03-11	2099-12-31	
+601309	Trichopsylloides	Observation	SNOMED	Organism	S	4.63971E+14	2021-03-01	2099-12-31	
+601390	Amphipsylla	Observation	SNOMED	Organism	S	4.64971E+14	2021-03-01	2099-12-31	
+601446	Starmerella etchellsii	Observation	SNOMED	Organism	S	4.65761E+14	2021-03-01	2099-12-31	
+601613	Pollock	Observation	SNOMED	Substance	S	4.68171E+14	2021-09-01	2099-12-31	
+601658	Sorex macrodon	Observation	SNOMED	Organism	S	4.68741E+14	2021-09-01	2099-12-31	
+601888	Counseling for readiness to implement housing insecurity care plan	Observation	SNOMED	Procedure	S	4.72221E+14	2021-09-01	2099-12-31	
+602132	Primary transitional cell carcinoma of anterior wall of urinary bladder	Condition	SNOMED	Disorder	S	6.89771E+14	2021-07-31	2099-12-31	
+602589	Deep tissue pressure injury of right heel	Condition	SNOMED	Disorder	S	561885931000119106	2021-01-31	2099-12-31	
+602652	Bilateral localized swelling of forearms	Condition	SNOMED	Clinical Finding	S	10677991000119107	2021-01-31	2099-12-31	
+602706	Incarcerated intra-abdominal hernia	Condition	SNOMED	Disorder	S	1087291000119106	2021-01-31	2099-12-31	
+602707	Acute allergic otitis media of left middle ear	Condition	SNOMED	Disorder	S	1087981000119103	2021-01-31	2099-12-31	
+603256	SARS-CoV-2 (severe acute respiratory syndrome coronavirus 2) vaccination fifth dose declined	Observation	SNOMED	Context-dependent	S	1363851000000101	2021-09-01	2099-12-31	
+604387	Pseudomonas alkylphenolica	Observation	SNOMED	Organism	S	890454004	2021-01-31	2099-12-31	
+604429	Acute ST segment elevation myocardial infarction of apex of heart	Condition	SNOMED	Disorder	S	896696001	2021-01-31	2099-12-31	
+604956	Proximal deletion of chromosome 14	Condition	SNOMED	Disorder	S	1003934007	2021-01-31	2099-12-31	
+605112	Conductive hearing loss of left ear with normal hearing on right side	Condition	SNOMED	Disorder	S	1010439000	2021-01-31	2099-12-31	
+605340	Secondary syphilis of nervous system	Condition	SNOMED	Disorder	S	1052319006	2021-01-31	2099-12-31	
+605410	Arthritis of left hip caused by Streptococcus	Condition	SNOMED	Disorder	S	1073151000119107	2021-01-31	2099-12-31	
+606049	Anticlockwise cavotricuspid isthmus dependent macroreentry tachycardia	Condition	SNOMED	Disorder	S	1142057008	2021-07-31	2099-12-31	
+607299	AAP/EFP 2017 Classification of Periodontal and Peri‐implant Diseases and Conditions generalized periodontitis Stage 1 Grade C	Condition	SNOMED	Disorder	S	1149458009	2021-07-31	2099-12-31	
+607380	Pseudoxanthomatous nodular cutaneous mastocytosis	Condition	SNOMED	Disorder	S	1153344009	2021-07-31	2099-12-31	
+607395	Inflammatory pseudoneoplasm of spleen	Condition	SNOMED	Disorder	S	1153366002	2021-07-31	2099-12-31	
+607401	Monoarticular chronic primary gouty arthritis	Condition	SNOMED	Disorder	S	1153373007	2021-07-31	2099-12-31	
+607951	Assessment using Pocket Smell Test	Measurement	SNOMED	Procedure	S	1156395000	2021-07-31	2099-12-31	
+608795	Left accessory carpal bone of wrist	Condition	SNOMED	Disorder	S	15666721000119108	2021-07-31	2099-12-31	
+608869	Congenital torsion of left ovary	Condition	SNOMED	Disorder	S	15931821000119104	2021-01-31	2099-12-31	
+609025	Bilateral irregular astigmatism of eyes following operative procedure	Condition	SNOMED	Disorder	S	16054831000119109	2021-01-31	2099-12-31	
+609104	Moderate nonproliferative retinopathy of left eye due to diabetes mellitus type 2	Condition	SNOMED	Disorder	S	16746131000119105	2021-01-31	2099-12-31	
+609190	Complex sclerosing lesion of right breast	Condition	SNOMED	Disorder	S	16881941000119104	2021-01-31	2099-12-31	
+705183	Patient self-tested	Type Concept	Type Concept	Type Concept	S	OMOP5181830	2022-10-28	2099-12-31	
+738870	Stroop test: time of second subtask	Measurement	OMOP Extension	Staging / Scales	S	OMOP5117461	2021-07-27	2099-12-31	
+759912	Pain of left heel	Condition	SNOMED	Clinical Finding	S	1076811000119109	2016-09-01	2099-12-31	
+761374	Chronic osteomyelitis of left pelvis	Condition	SNOMED	Disorder	S	15696961000119103	2016-03-01	2099-12-31	
+761483	Chronic bucket handle tear of medial meniscus of right knee	Condition	SNOMED	Disorder	S	15719641000119108	2016-03-01	2099-12-31	
+761606	Infection of right eye	Condition	SNOMED	Disorder	S	15738681000119104	2016-03-01	2099-12-31	
+762304	Synovial plica syndrome of left knee	Condition	SNOMED	Disorder	S	3.17761E+14	2015-03-01	2099-12-31	
+762485	Hemodialysis session time	Measurement	SNOMED	Observable Entity	S	4.21E+11	2011-03-01	2099-12-31	
+763504	Pudding-thick liquid	Observation	SNOMED	Substance	S	4.41831E+14	2014-03-01	2099-12-31	
+764334	Referral for care coordination	Observation	SNOMED	Procedure	S	4.53651E+14	2017-03-01	2099-12-31	
+764917	Optic nerve and photoreceptor degeneration	Condition	SNOMED	Disorder	S	8.3231E+13	2013-09-01	2099-12-31	
+764986	Total perforation of bilateral tympanic membranes	Condition	SNOMED	Disorder	S	1084671000119101	2018-03-01	2099-12-31	
+765258	Bilateral arthritis of hip	Condition	SNOMED	Disorder	S	1074821000119107	2015-09-01	2099-12-31	
+765295	Open fracture of phalanx of ring finger of left hand	Condition	SNOMED	Disorder	S	10824011000119101	2015-03-01	2099-12-31	
+765774	Occlusion and stenosis of anterior cerebral artery without infarction	Condition	SNOMED	Disorder	S	4.30841E+14	2012-09-01	2099-12-31	
+765783	Ineffective medication administration routine at home	Observation	SNOMED	Clinical Finding	S	5.611E+12	2016-03-01	2099-12-31	
+715871	homatropine methylbromide; systemic	Drug	ATC	ATC 5th	C	A03BB06	1970-01-01	2099-12-31	
+915776	I intend to report the diabetic retinopathy measures group (Deprecated)	Observation	HCPCS	HCPCS	S	G9671	2016-01-01	2016-12-31	
+923645	omeprazole	Drug	RxNorm	Ingredient	S	7646	1970-01-01	2099-12-31  	
+953317	Leg pain was measured by the visual analog scale (vas) within three months preoperatively and at one year (9 to 15 months) postoperatively (Deprecated)	Observation	HCPCS	HCPCS	S	M1053	2019-01-01	2019-12-31	
+1001716	XR Middle phalanx of fifth finger Bone development stage	Measurement	LOINC	Clinical Observation	S	93141-0	2019-12-13	2099-12-31	
+1001904	Total score [Quality of Working Life Questionnaire for Cancer Survivors]	Observation	LOINC	Survey	S	93112-1	2019-12-13	2099-12-31	
+1001995	Left atrial End-systolic volume/Body surface area [Volume/Area] by US.2D.A4C+Calculated by single plane method of disks	Measurement	LOINC	Clinical Observation	S	93639-3	2019-12-13	2099-12-31	
+1125315	acetaminophen	Drug	RxNorm	Ingredient	S	161	1970-01-01	2099-12-31  	
+1201620	codeine	Drug	RxNorm	Ingredient	S	2670	1970-01-01	2099-12-31  	
+1242398	Qualitative distribution of primary malignant neoplasm of nasal cavity and/or nasal sinus in excised tissue specimen	Observation	SNOMED	Observable Entity	S	1287121008	2023-09-01	2099-12-31	
+1243734	Thermomyces lanuginosus	Observation	SNOMED	Organism	S	1300165001	2024-02-01	2099-12-31	
+1244250	Central cord syndrome of cervical spinal cord due to closed dislocation of cervical spine	Condition	SNOMED	Disorder	S	1269527001	2023-12-01	2099-12-31	
+1244368	Eruption of skin caused by Salmonella Paratyphi	Condition	SNOMED	Disorder	S	1287471003	2023-09-01	2099-12-31	
+1244591	Neuroendocrine neoplasm of large intestine	Condition	SNOMED	Disorder	S	1290088001	2024-02-01	2099-12-31	
+1244600	Growth hormone releasing factor-secreting tumor of pancreas	Condition	SNOMED	Disorder	S	1290115008	2024-02-01	2099-12-31	
+1244804	Biphasic synovial sarcoma	Condition	SNOMED	Disorder	S	1290890004	2023-11-01	2099-12-31	
+1245580	Recurrent dislocation of bilateral knee joints	Condition	SNOMED	Disorder	S	15708761000119105	2023-10-01	2099-12-31	
+1245658	Mass of bilateral hip joints	Condition	SNOMED	Clinical Finding	S	15744001000119109	2024-02-01	2099-12-31	
+1245730	Supernumerary eye muscle of left eye	Condition	SNOMED	Disorder	S	15983871000119106	2024-02-01	2099-12-31	
+1245822	Systemic onset juvenile idiopathic arthritis of right knee	Condition	SNOMED	Disorder	S	16041071000119102	2024-02-01	2099-12-31	
+1245831	Nasal step visual field defect of right eye	Condition	SNOMED	Clinical Finding	S	16059351000119106	2024-02-01	2099-12-31	
+1245857	Medial tibial stress syndrome of right lower leg	Condition	SNOMED	Disorder	S	16419611000119104	2024-02-01	2099-12-31	
+1246041	Neoplasm of uncertain behavior of smooth muscle	Condition	SNOMED	Disorder	S	284158251000119106	2023-10-01	2099-12-31	
+1246147	Osteitis deformans of left tibia and fibula	Condition	SNOMED	Disorder	S	3.15031E+14	2023-10-01	2099-12-31	
+1259595	We cannot trust scientists because they are biased in their perspectives	Observation	LOINC	Clinical Observation	S	103771-2	2024-02-27	2099-12-31	
+1259887	Borrelia recurrentis DNA [Presence] in Cerebral spinal fluid by NAA with probe detection	Measurement	LOINC	Lab Test	S	104354-6	2024-02-27	2099-12-31	
+1340376	Exacerbation of infection of skin	Condition	OMOP Extension	Disorder	S	OMOP5166031	2022-05-06	2099-12-31	
+1616898	Social contact panel [R-Outcomes]	Observation	LOINC	Survey	S	96939-4	2021-08-23	2099-12-31	
+1617253	Manage weight well	Observation	LOINC	Survey	S	97900-5	2021-08-23	2099-12-31	
+1617263	How often have you used illegal or recreational drugs in past 12 months	Observation	LOINC	Clinical Observation	S	96843-8	2021-08-23	2099-12-31	
+1801435	ERCC2 transcript: Substitution in position 934 of G replaced by A measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5076681	2024-02-26	2099-12-31	
+1802146	APC transcript: Substitution in position 423-16 of A replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5051640	2024-02-26	2099-12-31	
+1804220	ATP7B transcript: Substitution in position 2672 of G replaced by A measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5058474	2024-02-26	2099-12-31	
+1807005	STAT3 transcript: Substitution in position 1847 of A replaced by G measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5108562	2024-02-26	2099-12-31	
+1809364	MTOR transcript: Substitution in position 5662 of T replaced by C measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5092374	2024-02-26	2099-12-31	
+1812152	CDKN2A transcript: Substitution in position 6 of G replaced by A measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5067947	2024-02-26	2099-12-31	
+1813234	FAT4 transcript: Substitution in position 14935 of G replaced by A measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5078399	2024-02-26	2099-12-31	
+1815459	JAK2 on GRCh38 chr9: Substitution in position 5054679 of A replaced by G measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5083111	2024-02-26	2099-12-31	
+1988167	Axis II: Spatial aspects score [Mainz Pain Staging System]	Observation	LOINC	Survey	S	100031-4	2022-02-16	2099-12-31	
+2617724	CLINICIAN HAS NOT PROVIDED CARE FOR THE AGE-RELATED MACULAR DEGENERATION PATIENT FOR THE REQUIRED TIME FOR MACULAR EXAMINATION MEASUREMENT (Deprecated)	Observation	HCPCS	HCPCS	S	G8316	1970-01-01	2011-10-30	
+2617787	For patients with er or pr positive	Observation	HCPCS	HCPCS	S	G8380	1970-01-01	2014-11-11	
+2617921	CLINICIAN DOCUMENTED THAT PATIENT WAS NOT AN ELIGIBLE CANDIDATE FOR ANTIPLATELET THERAPY (Deprecated)	Observation	HCPCS	HCPCS	S	G8522	1970-01-01	2014-01-01	
+2900848	Sinutab	Drug	RxNorm Extension	Brand Name		OMOP5118241	2016-11-01	2099-12-31	
+3000276	Heart rate Peripheral artery by US.doppler	Measurement	LOINC	Clinical Observation	S	8892-2	1970-01-01	2099-12-31	
+3000874	Acetylene [Mass/volume] in Serum or Plasma	Measurement	LOINC	Lab Test	S	12899-1	1970-01-01	2099-12-31	
+3001372	Albumin/Globulin [Mass Ratio] in Semen	Measurement	LOINC	Lab Test	S	14436-0	1970-01-01	2099-12-31	
+3001610	Norepinephrine [Mass/volume] in Plasma --4 hours post XXX challenge	Measurement	LOINC	Lab Test	S	12528-6	1970-01-01	2099-12-31	
+3002016	Taurine/Creatinine [Molar ratio] in 24 hour Urine	Measurement	LOINC	Lab Test	S	25985-3	1970-01-01	2099-12-31	
+3002806	History of Kidney disorders	Observation	LOINC	Clinical Observation	S	32442-6	1970-01-01	2099-12-31	
+3003045	Thyroxine (T4) [Mass/volume] in Serum or Plasma --baseline	Measurement	LOINC	Lab Test	S	27891-1	1970-01-01	2099-12-31	
+3003188	Pulmonic valve Maximum regurgitant blood flow velocity during diastole by US.doppler	Measurement	LOINC	Clinical Observation	S	18165-1	1970-01-01	2099-12-31	
+3004641	Pneumocystis jiroveci Ag [Presence] in Throat	Measurement	LOINC	Lab Test	S	31941-8	1970-01-01	2099-12-31	
+3005545	Pesticides [Identifier] in Urine	Measurement	LOINC	Lab Test	S	13018-7	1970-01-01	2099-12-31	
+3005644	Hantavirus Ab [Units/volume] in Serum	Measurement	LOINC	Lab Test	S	5046-8	1970-01-01	2099-12-31	
+3006188	Chinchilla IgE Ab [Units/volume] in Serum	Measurement	LOINC	Lab Test	S	11165-8	1997-07-16	2099-12-31	
+3006369	Airway pressure --at zero inspiratory flow on ventilator	Measurement	LOINC	Clinical Observation	S	20060-0	1999-01-25	2099-12-31	
+3007085	hydrALAZINE [Presence] in Urine	Measurement	LOINC	Lab Test	S	16983-9	1970-01-01	2099-12-31	
+3007092	Glucose [Mass/volume] in Serum or Plasma --2 hours post 1.2 g/kg lactose PO	Measurement	LOINC	Lab Test	S	30345-3	2001-10-05	2099-12-31	
+3008023	Influenza virus A Mississippi Ab [Units/volume] in Serum by Hemagglutination inhibition	Measurement	LOINC	Lab Test	S	6641-5	1996-04-24	2099-12-31	
+3008519	ALPRAZolam [Mass/volume] in Vitreous fluid	Measurement	LOINC	Lab Test	S	26878-9	1970-01-01	2099-12-31	
+3009269	Right eye Argon laser coagulation treatment localization	Measurement	LOINC	Clinical Observation	S	29014-8	1970-01-01	2099-12-31	
+3009462	Sporothrix schenckii IgA Ab [Units/volume] in Serum	Measurement	LOINC	Lab Test	S	13243-1	1970-01-01	2099-12-31	
+3009466	Valproate [Moles/volume] in Serum or Plasma	Measurement	LOINC	Lab Test	S	14946-8	1970-01-01	2099-12-31	
+3009811	Nasogastric tube Vendor serial number	Measurement	LOINC	Clinical Observation	S	10306-9	1970-01-01	2099-12-31	
+3010646	Polarization.binocular Eye Phoropter	Measurement	LOINC	Clinical Observation	S	28746-6	1970-01-01	2099-12-31	
+3011356	Myelin associated glycoprotein/Sulfated glucuronic paragloboside IgM Ab [Units/volume] in Serum	Measurement	LOINC	Lab Test	S	23907-9	2000-01-20	2099-12-31	
+3013230	HIV 1 p24 Ab [Titer] in Serum by Immunoblot	Measurement	LOINC	Lab Test	S	21331-4	1970-01-01	2099-12-31	
+3014887	Endophyte identified in Plant	Measurement	LOINC	Lab Test	S	20796-9	1970-01-01	2099-12-31	
+3015806	Francisella tularensis DNA [Presence] in Tissue by NAA with probe detection	Measurement	LOINC	Lab Test	S	23130-8	1999-12-09	2099-12-31	
+3016056	18-Hydroxycorticosterone [Mass/time] in 24 hour Urine	Measurement	LOINC	Lab Test	S	9639-6	1970-01-01	2099-12-31	
+3016324	Minocycline [Susceptibility]	Measurement	LOINC	Lab Test	S	18948-0	1970-01-01	2099-12-31	
+3017601	Chlamydophila psittaci IgM Ab [Units/volume] in Cerebral spinal fluid	Measurement	LOINC	Lab Test	S	16588-6	1970-01-01	2099-12-31	
+3018212	Centromere IgG Ab [Titer] in Serum by Immunofluorescence	Measurement	LOINC	Lab Test	S	29966-9	2001-08-10	2099-12-31	
+3018781	Amoxapine [Presence] in Serum or Plasma	Measurement	LOINC	Lab Test	S	3340-7	1970-01-01	2099-12-31	
+3019772	Hydroxyalprazolam cutoff [Mass/volume] in Urine for Confirmatory method	Measurement	LOINC	Lab Test	S	19492-8	1970-01-01	2099-12-31	
+3019850	Tetrahydroaldosterone [Mass/time] in 24 hour Urine	Measurement	LOINC	Lab Test	S	13618-4	1970-01-01	2099-12-31	
+3021350	Disorientation [HIV-SSC]	Observation	LOINC	Survey	S	28381-2	1970-01-01	2099-12-31	
+3021677	Adipate/Creatinine [Mass Ratio] in Urine	Measurement	LOINC	Lab Test	S	13703-4	1970-01-01	2099-12-31	
+3022924	C little e Ab [Presence] in Serum or Plasma	Measurement	LOINC	Lab Test	S	951-4	1970-01-01	2099-12-31	
+3023755	Aldrin [Mass/volume] in Blood	Measurement	LOINC	Lab Test	S	16333-7	1970-01-01	2099-12-31	
+3023929	Glycine [Moles/volume] in Cerebral spinal fluid	Measurement	LOINC	Lab Test	S	22650-6	1999-11-16	2099-12-31	
+3023997	Hepatitis A virus Ab [Units/volume] in Serum by Radioimmunoassay (RIA)	Measurement	LOINC	Lab Test	S	5184-7	1970-01-01	2099-12-31	
+3024173	Equine arteritis virus Ab [Presence] in Serum by Immunofluorescence	Measurement	LOINC	Lab Test	S	23072-2	1999-12-09	2099-12-31	
+3024630	Xanthine [Mass/volume] in Urine	Measurement	LOINC	Lab Test	S	3132-8	1970-01-01	2099-12-31	
+3025233	Bacteria identified in Sputum by Aerobe culture	Measurement	LOINC	Lab Test	S	622-1	1970-01-01	2099-12-31	
+3025370	Medication prescribed	Observation	LOINC	Clinical Observation	S	29305-0	2001-02-26	2099-12-31	
+3026363	LORazepam [Mass/volume] in Urine	Measurement	LOINC	Lab Test	S	3725-9	1970-01-01	2099-12-31	
+3027238	Thyroperoxidase Ab [Units/volume] in Serum or Plasma	Measurement	LOINC	Lab Test	S	8099-4	1970-01-01	2099-12-31	
+3027490	Lormetazepam [Mass/volume] in Urine	Measurement	LOINC	Lab Test	S	3726-7	1970-01-01	2099-12-31	
+3027857	Right ventricular Stroke volume by US.doppler	Measurement	LOINC	Clinical Observation	S	8779-1	1970-01-01	2099-12-31	
+3027913	Serine [Moles/volume] in Cerebral spinal fluid	Measurement	LOINC	Lab Test	S	22644-9	1999-11-16	2099-12-31	
+3028722	HLA-B44(12) [Presence]	Measurement	LOINC	Lab Test	S	4833-0	1970-01-01	2099-12-31	
+3029680	Hepatitis E virus Ab [Units/volume] in Serum	Measurement	LOINC	Lab Test	S	51459-6	2007-11-14	2099-12-31	
+3030140	KCNQ2 gene mutations found [Identifier] in Blood or Tissue by Molecular genetics method Nominal	Measurement	LOINC	Lab Test	S	49707-3	2007-08-10	2099-12-31	
+3030785	Treponema pallidum Ab [Units/volume] in Cerebral spinal fluid	Measurement	LOINC	Lab Test	S	51474-5	2007-11-14	2099-12-31	
+3031159	Ultrasound date	Observation	LOINC	Clinical Observation	S	34970-4	2003-12-04	2099-12-31	
+3032310	Hip - right External rotation Active Range of Motion Quantitative	Measurement	LOINC	Clinical Observation	S	41341-9	1970-01-01	2099-12-31	
+3033413	Collection date of Stool	Observation	LOINC	Clinical Observation	S	41394-8	1970-01-01	2099-12-31	
+3034958	Type of Insulin delivery device	Measurement	LOINC	Clinical Observation	S	41936-6	2005-07-27	2099-12-31	
+3034990	Succinylacetone [Molar amount] in DBS	Measurement	LOINC	Lab Test	S	42677-5	2005-10-12	2099-12-31	
+3035527	CD5 cells/100 cells in Bone marrow	Measurement	LOINC	Lab Test	S	35640-2	1970-01-01	2099-12-31	
+3037036	Eastern equine encephalitis virus IgG and IgM panel - Specimen	Measurement	LOINC	Lab Test	S	35743-4	2004-04-12	2099-12-31	
+3037179	Right corrective lens Sphere far by Lensmeter	Measurement	LOINC	Clinical Observation	S	28780-5	1970-01-01	2099-12-31	
+3037414	Neisseria meningitidis serogroups A+C+w135+Y Ag [Presence] in Cerebral spinal fluid by Latex agglutination	Measurement	LOINC	Lab Test	S	19133-8	1998-11-25	2099-12-31	
+3037532	History source	Measurement	LOINC	Clinical Observation	S	8674-4	1996-09-06	2099-12-31	
+3037732	Ehrlichia chaffeensis IgM Ab [Presence] in Serum	Measurement	LOINC	Lab Test	S	7876-6	1996-08-15	2099-12-31	
+3037865	Lactobacillus sp IgG Ab [Units/volume] in Serum	Measurement	LOINC	Lab Test	S	27900-0	2000-11-06	2099-12-31	
+3039268	Whitefaced Hornet IgG4 Ab [Presence] in Serum	Measurement	LOINC	Lab Test	S	41193-4	2005-05-17	2099-12-31	
+3040276	Fibroblast growth factor 23.intact [Mass/volume] in Plasma by Immunoassay --5th specimen post XXX challenge	Measurement	LOINC	Lab Test	S	53423-0	2008-07-08	2099-12-31	
+3040478	Histiocytes [Presence] in Urine sediment by Light microscopy	Measurement	LOINC	Lab Test	S	38994-0	1970-01-01	2099-12-31	
+3040632	Protoporphyrin [Moles/volume] in Red Blood Cells	Measurement	LOINC	Lab Test	S	41017-5	2005-05-09	2099-12-31	
+3040783	Silver [Moles/volume] in Red Blood Cells	Measurement	LOINC	Lab Test	S	52896-8	2008-04-30	2099-12-31	
+3042106	Support surface attachment	Observation	LOINC	Clinical Observation	S	52061-9	2008-03-26	2099-12-31	
+3042793	Prostate specific Ag.protein bound [Mass/volume] in Serum or Plasma	Measurement	LOINC	Lab Test	S	33667-7	2003-01-28	2099-12-31	
+3042896	Prostatic acid phosphatase [Presence] in Serum	Measurement	LOINC	Lab Test	S	43718-6	2006-02-13	2099-12-31	
+3043103	Legionella pneumophila atypical Ab [Titer] in Serum	Measurement	LOINC	Lab Test	S	32695-9	2002-10-14	2099-12-31	
+3044803	Bolasterone [Presence] in Specimen	Measurement	LOINC	Lab Test	S	43859-8	2006-02-20	2099-12-31	
+3045250	Depression [Minimum Data Set]	Observation	LOINC	Survey	S	45666-5	1970-01-01	2099-12-31	
+3046736	Lymphocyte proliferation stimulated by 0.50 ug pokeweed mitogen in Blood	Measurement	LOINC	Lab Test	S	45362-1	2006-05-12	2099-12-31	
+3047463	Triethylamine [Mass/volume] in Air	Measurement	LOINC	Lab Test	S	38731-6	1970-01-01	2099-12-31	
+3048630	Crystals [type] in Amniotic fluid by Light microscopy	Measurement	LOINC	Lab Test	S	38397-6	1970-01-01	2099-12-31	
+3049748	THRB gene mutations found [Identifier] in Blood or Tissue by Molecular genetics method Nominal	Measurement	LOINC	Lab Test	S	47974-1	2006-12-12	2099-12-31	
+3050040	Carries out very short and simple instructions [RFC]	Observation	LOINC	Survey	S	46616-9	2006-08-18	2099-12-31	
+3050725	Nuclear Ab pattern [Interpretation] in Serum Narrative	Measurement	LOINC	Lab Test	S	49310-6	1970-01-01	2099-12-31	
+3051326	Unobserved pressure injury [OASIS]	Observation	LOINC	Survey	S	46540-1	1970-01-01	2099-12-31	
+3051921	Influenza virus A H5 Ab [Titer] in Serum	Measurement	LOINC	Lab Test	S	47454-4	1970-01-01	2099-12-31	
+3052371	DNA sequence variation display name [Text] Narrative	Observation	LOINC	Clinical Observation	S	47998-0	1970-01-01	2099-12-31	
+3655398	At moderate risk of ulcer of right foot due to diabetes mellitus	Observation	SNOMED	Clinical Finding	S	863885009	2020-07-31	2099-12-31	
+3655654	Myelitis caused by Plasmodium	Condition	SNOMED	Disorder	S	866127009	2020-07-31	2099-12-31	
+3656195	Non centrally involved macular edema due to diabetes mellitus	Condition	SNOMED	Disorder	S	871781003	2020-07-31	2099-12-31	
+3656996	Expulsive hemorrhage of choroid of left eye	Condition	SNOMED	Disorder	S	3.40811E+14	2020-07-31	2099-12-31	
+3657048	Bilateral cycloplegia of eyes	Condition	SNOMED	Disorder	S	3.44671E+14	2020-07-31	2099-12-31	
+3657060	Bilateral disseminated chorioretinitis of eyes	Condition	SNOMED	Disorder	S	3.46251E+14	2020-07-31	2099-12-31	
+3657524	Recently performed removal of nasal foreign body	Observation	SNOMED	Event	S	1322321000000104	2020-05-13	2099-12-31	
+3657610	Perinatal POEM (Patient rated Outcome and Experience Measure) score - Staff helped me to understand my illness/difficulties	Measurement	SNOMED	Observable Entity	S	1324121000000109	2020-09-30	2099-12-31	
+3661426	Closed volar dislocation	Observation	SNOMED	Morph Abnormality	S	830191001	2020-07-31	2099-12-31	
+3661463	Mucopurulent discharge	Observation	SNOMED	Morph Abnormality	S	836474000	2020-07-31	2099-12-31	
+3964921	History of Health informatics pioneer and the father of LOINC	Observation	LOINC	Clinical Observation	S	100000-9	2023-08-15	2099-12-31	
+3964972	Silver Birch recombinant (rBet v) 2 + 4 IgE Ab [Presence] in Serum by Radioallergosorbent test (RAST)	Measurement	LOINC	Lab Test	S	103019-6	2023-08-15	2099-12-31	
+3965559	ETV6 gene rearrangements in Tissue by FISH	Measurement	LOINC	Lab Test	S	101380-4	2023-08-15	2099-12-31	
+4001314	Paget's disease-lumbar spine	Condition	SNOMED	Disorder	S	203329006	2002-01-31	2099-12-31	
+4001686	Contaminated simple laceration of buccal mucosa	Condition	SNOMED	Disorder	S	110100007	2002-01-31	2099-12-31	
+4002809	Infective myositis of forearm	Condition	SNOMED	Disorder	S	203013006	2002-01-31	2099-12-31	
+4003633	Female hypospadias	Condition	SNOMED	Disorder	S	205027003	2002-01-31	2099-12-31	
+4003834	Malignant immunoproliferative disease (clinical)	Condition	SNOMED	Disorder	S	109980005	2002-01-31	2099-12-31	
+4006989	Cephalodiprosopus	Condition	SNOMED	Disorder	S	111341002	2002-01-31	2099-12-31	
+4010293	Helicopter co-pilot	Observation	SNOMED	Social Context	S	159251001	2002-01-31	2099-12-31	
+4010478	Uterine dysfunction	Observation	SNOMED	Clinical Finding	S	10260002	2002-01-31	2099-12-31	
+4010483	Pancreatic sign	Condition	SNOMED	Clinical Finding	S	102629008	2002-01-31	2099-12-31	
+4011795	Lymphocyte antigen CD107B	Observation	SNOMED	Substance	S	103163000	2002-01-31	2099-12-31	
+4011871	Muehrcke's lines	Condition	SNOMED	Disorder	S	1134001	2002-01-31	2099-12-31	
+4012603	Closed traumatic subluxation of elbow	Condition	SNOMED	Disorder	S	208803002	2002-01-31	2099-12-31	
+4012711	Human gammaherpesvirus 4 early antigen	Observation	SNOMED	Substance	S	103105009	2002-01-31	2099-12-31	
+4012729	Closed traumatic subluxation distal radioulnar joint	Condition	SNOMED	Disorder	S	208838000	2002-01-31	2099-12-31	
+4013004	Atypical cells of undetermined significance	Observation	SNOMED	Morph Abnormality	S	103635003	2002-01-31	2099-12-31	
+4014094	Sensory isolation	Observation	SNOMED	Clinical Finding	S	113156005	2002-01-31	2099-12-31	
+4014599	Child weight=3rd-9th centile	Observation	SNOMED	Clinical Finding	S	170007006	2002-01-31	2099-12-31	
+4014677	Helicobacter rodentium	Observation	SNOMED	Organism	S	113544003	2002-01-31	2099-12-31	
+4015143	Spontaneous rupture of fetal membranes	Condition	SNOMED	Clinical Finding	S	169734005	2002-01-31	2099-12-31	
+4016731	Salmonella II 1	Observation	SNOMED	Organism	S	114577009	2002-01-31	2099-12-31	
+4016799	Direct antiglobulin test polyspecific reagent	Measurement	SNOMED	Procedure	S	104062000	2002-01-31	2099-12-31	
+4016874	Fremitus	Observation	SNOMED	Clinical Finding	S	11421009	2002-01-31	2099-12-31	
+4017836	Salmonella II 56:z:z6	Observation	SNOMED	Organism	S	114961000	2002-01-31	2099-12-31	
+4018621	Complete tear dorsal radiocarpal ligament	Condition	SNOMED	Disorder	S	209592002	2002-01-31	2099-12-31	
+4018829	i-adult phenotype	Observation	SNOMED	Clinical Finding	S	115752000	2002-01-31	2099-12-31	
+4019889	Amycolatopsis	Observation	SNOMED	Organism	S	115149002	2002-01-31	2099-12-31	
+4021706	Kx blood group system	Observation	SNOMED	Qualifier Value	S	115687009	2002-01-31	2099-12-31	
+4022533	Water soluble vitamin requirement	Observation	SNOMED	Observable Entity	S	226273005	2002-01-31	2099-12-31	
+4025209	Teflon poisoning	Condition	SNOMED	Disorder	S	10608000	2002-01-31	2099-12-31	
+4025605	Grilled papadum	Observation	SNOMED	Substance	S	226578002	2002-01-31	2099-12-31	
+4026378	Teichoic acid antibody	Observation	SNOMED	Substance	S	120888001	2002-01-31	2099-12-31	
+4026619	Instant desert powder made with semi-skimmed milk	Observation	SNOMED	Substance	S	227719007	2002-01-31	2099-12-31	
+4026702	Family Pulicidae	Observation	SNOMED	Organism	S	106805002	2002-01-31	2099-12-31	
+4026863	Tobacco preparer	Observation	SNOMED	Social Context	S	106447007	2002-01-31	2099-12-31	
+4026999	Rum	Observation	SNOMED	Substance	S	226054000	2002-01-31	2099-12-31	
+4027377	Cell mediated lympholysis assay	Measurement	SNOMED	Procedure	S	12810006	2002-01-31	2099-12-31	
+4027439	Opisthocomidae	Observation	SNOMED	Organism	S	107065005	2002-01-31	2099-12-31	
+4028072	Disorder of cerebral cortex	Condition	SNOMED	Disorder	S	128128003	2002-01-31	2099-12-31	
+4028573	Cervidae	Observation	SNOMED	Organism	S	107003000	2002-01-31	2099-12-31	
+4028670	Salmonella Freetown	Observation	SNOMED	Organism	S	13411008	2002-01-31	2099-12-31	
+4029190	Fibroblastic liposarcoma	Observation	SNOMED	Morph Abnormality	S	128883006	2002-01-31	2099-12-31	
+4029278	Protein overload	Condition	SNOMED	Disorder	S	238137006	2002-01-31	2099-12-31	
+4029345	Cardiac catheterization bailout phase	Observation	SNOMED	Qualifier Value	S	128961006	2002-01-31	2099-12-31	
+4029623	Wattled false sunbird	Observation	SNOMED	Organism	S	13614006	2002-01-31	2099-12-31	
+4030054	Thyroid hormone resistance syndrome	Condition	SNOMED	Disorder	S	237559000	2002-01-31	2099-12-31	
+4030081	Poisoning by Lophyrotoma interrupta	Condition	SNOMED	Disorder	S	13497008	2002-01-31	2099-12-31	
+4030591	Tympanic plexus neuralgia syndrome	Condition	SNOMED	Disorder	S	129613007	2002-01-31	2099-12-31	
+4031756	Melanoma in situ of skin (clinical)	Condition	SNOMED	Disorder	S	109266006	2002-01-31	2099-12-31	
+4031861	Round shaped calcification	Observation	SNOMED	Clinical Finding	S	129756007	2002-01-31	2099-12-31	
+4032172	Boiler and pipe insulator	Observation	SNOMED	Social Context	S	14593001	2002-01-31	2099-12-31	
+4032711	Precocious exfoliation of teeth due to idiopathic root resorption	Condition	SNOMED	Disorder	S	109533006	2002-01-31	2099-12-31	
+4034222	Neisseria weaveri	Observation	SNOMED	Organism	S	113894007	2002-01-31	2099-12-31	
+4034561	Odontotrichomelic syndrome	Condition	SNOMED	Disorder	S	239028001	2002-01-31	2099-12-31	
+4034565	Ectodermal dysplasia with tooth-nail defects	Condition	SNOMED	Disorder	S	239040001	2002-01-31	2099-12-31	
+4035821	Abnormal epinephrine	Condition	SNOMED	Clinical Finding	S	131033001	2002-01-31	2099-12-31	
+4036029	Thrombin induced platelet aggregation	Observation	SNOMED	Observable Entity	S	117172001	2002-01-31	2099-12-31	
+4036606	Etcher (printing)	Observation	SNOMED	Social Context	S	160088003	2002-01-31	2099-12-31	
+4036916	Bean and lentil chili	Observation	SNOMED	Substance	S	227819002	2002-01-31	2099-12-31	
+4037115	Exercise aggravates symptom	Observation	SNOMED	Clinical Finding	S	162476000	2002-01-31	2099-12-31	
+4038803	Abnormal vanillylmandelic acid	Condition	SNOMED	Clinical Finding	S	131039002	2002-01-31	2099-12-31	
+4042033	Beverage whiteners	Observation	SNOMED	Substance	S	230051009	2002-01-31	2099-12-31	
+4042034	Savory food	Observation	SNOMED	Substance	S	230052002	2002-01-31	2099-12-31	
+4043513	Housework assisted	Observation	SNOMED	Clinical Finding	S	129051008	2002-01-31	2099-12-31	
+4043562	Excessive day and night-time sleepiness	Condition	SNOMED	Disorder	S	230490003	2002-01-31	2099-12-31	
+4043738	Hydrocephalus	Condition	SNOMED	Disorder	S	230745008	2002-01-31	2099-12-31	
+4044222	Hemiplegia-hemiconvulsion-epilepsy syndrome	Condition	SNOMED	Disorder	S	230407006	2002-01-31	2099-12-31	
+4044930	Meningitis in Lyme disease	Condition	SNOMED	Disorder	S	230150008	2002-01-31	2099-12-31	
+4045749	Cerebral amyloid angiopathy	Condition	SNOMED	Disorder	S	230724001	2002-01-31	2099-12-31	
+4045838	Intermittently raised pressure hydrocephalus	Condition	SNOMED	Disorder	S	230748005	2002-01-31	2099-12-31	
+4046336	Neuropathy in benign monoclonal gammopathy	Condition	SNOMED	Disorder	S	230590001	2002-01-31	2099-12-31	
+4046805	Normal non-fluency	Condition	SNOMED	Disorder	S	229625009	2002-01-31	2099-12-31	
+4046808	Borderline stuttering	Observation	SNOMED	Clinical Finding	S	229633005	2002-01-31	2099-12-31	
+4047293	Chick pea flour	Observation	SNOMED	Substance	S	229934002	2002-01-31	2099-12-31	
+4047628	Acute viral transverse myelitis	Condition	SNOMED	Disorder	S	230197009	2002-01-31	2099-12-31	
+4047787	Colles' fracture	Condition	SNOMED	Disorder	S	123971006	2002-01-31	2099-12-31	
+4047838	Bite to own tongue	Condition	SNOMED	Disorder	S	135874008	2002-01-31	2099-12-31	
+4048273	Clostridial intra-amniotic fetal infection	Condition	SNOMED	Disorder	S	206365006	2002-01-31	2099-12-31	
+4049440	Deficiency of NAD(P)H dehydrogenase (quinone)	Condition	SNOMED	Disorder	S	124192000	2002-01-31	2099-12-31	
+4049701	Deficiency of polyribonucleotide nucleotidyltransferase	Condition	SNOMED	Disorder	S	124351003	2002-01-31	2099-12-31	
+4049750	Phlebitis of basilar sinus	Condition	SNOMED	Disorder	S	15705007	2002-01-31	2099-12-31	
+4049965	Fungal pneumonia	Condition	SNOMED	Disorder	S	233613009	2002-01-31	2099-12-31	
+4050335	Tannery production worker	Observation	SNOMED	Social Context	S	159865009	2002-01-31	2099-12-31	
+4050511	Swimming pool attendant	Observation	SNOMED	Social Context	S	159764004	2002-01-31	2099-12-31	
+4050876	Obstructive bronchiectasis	Condition	SNOMED	Disorder	S	233630006	2002-01-31	2099-12-31	
+4052562	Psilocybe yungensis	Observation	SNOMED	Organism	S	23535001	2002-01-31	2099-12-31	
+4053480	Off-road land motor vehicle in collision with object	Observation	SNOMED	Event	S	242135005	2002-01-31	2099-12-31	
+4053792	Accidental ingestion of aflatoxin	Observation	SNOMED	Event	S	242300002	2002-01-31	2099-12-31	
+4054448	Fallopian tube injury with open wound into cavity	Condition	SNOMED	Disorder	S	210241007	2002-01-31	2099-12-31	
+4054592	Poisoned bite of blue ring octopus	Observation	SNOMED	Event	S	242601006	2002-01-31	2099-12-31	
+4055032	Accidentally caught in folding ladder	Observation	SNOMED	Event	S	242708007	2002-01-31	2099-12-31	
+4055130	Assault by poisoning with local irritant	Observation	SNOMED	Event	S	242858005	2002-01-31	2099-12-31	
+4056824	Postoperative monitoring	Observation	SNOMED	Procedure	S	182775008	2002-01-31	2099-12-31	
+4058256	Morbidity index low	Observation	SNOMED	Clinical Finding	S	161169000	2002-01-31	2099-12-31	
+4058818	Occlusion of gallbladder	Condition	SNOMED	Disorder	S	197416005	2002-01-31	2099-12-31	
+4059642	House rented from private landlord	Observation	SNOMED	Clinical Finding	S	160940004	2002-01-31	2099-12-31	
+4060159	Pseudoainhum	Observation	SNOMED	Morph Abnormality	S	19988008	2002-01-31	2099-12-31	
+4061528	Antenatal amniocentesis - not wanted	Observation	SNOMED	Context-dependent	S	169649009	2002-01-31	2099-12-31	
+4062242	Open injury superficial peroneal nerve	Condition	SNOMED	Disorder	S	212322001	2002-01-31	2099-12-31	
+4062253	Injury of multiple blood vessels at shoulder and upper arm level	Condition	SNOMED	Disorder	S	212365000	2002-01-31	2099-12-31	
+4062532	Phenacetin poisoning	Condition	SNOMED	Disorder	S	212597004	2002-01-31	2099-12-31	
+4063574	Leukoderma estivale	Condition	SNOMED	Disorder	S	201290009	2002-01-31	2099-12-31	
+4065627	Spinal and epidural anesthesia-induced headache during labor and delivery	Condition	SNOMED	Disorder	S	200076006	2002-01-31	2099-12-31	
+4066708	Pedilanthus	Observation	SNOMED	Organism	S	20207002	2002-01-31	2099-12-31	
+4066723	Impetigo neonatorum	Condition	SNOMED	Disorder	S	200706004	2002-01-31	2099-12-31	
+4067933	Avulsion of nerve of eyelid	Condition	SNOMED	Disorder	S	172276003	2002-01-31	2099-12-31	
+4068699	Congenital zonular cataract	Condition	SNOMED	Disorder	S	21590003	2002-01-31	2099-12-31	
+4069298	Cholecystenteric fistula	Condition	SNOMED	Disorder	S	20306009	2002-01-31	2099-12-31	
+4071701	Reticuloendothelial cell migration	Observation	SNOMED	Observable Entity	S	21723009	2002-01-31	2099-12-31	
+4072375	Tooth brushing education	Observation	SNOMED	Procedure	S	243086005	2002-01-31	2099-12-31	
+4073381	Insect iridescent virus 28	Observation	SNOMED	Organism	S	17763004	2002-01-31	2099-12-31	
+4074310	Countertransference	Observation	SNOMED	Clinical Finding	S	224980003	2002-01-31	2099-12-31	
+4074815	Inflammatory bowel disease	Condition	SNOMED	Disorder	S	24526004	2002-01-31	2099-12-31	
+4076648	Feeling empty	Observation	SNOMED	Clinical Finding	S	225014007	2002-01-31	2099-12-31	
+4079621	Pediatric emergency hospital admission	Observation	SNOMED	Procedure	S	183458009	2002-01-31	2099-12-31	
+4080432	Old World tick typhus	Condition	SNOMED	Disorder	S	240618002	2002-01-31	2099-12-31	
+4080621	Micropapular yaws	Condition	SNOMED	Disorder	S	240678008	2002-01-31	2099-12-31	
+4080677	Turning of head towards light source	Condition	SNOMED	Clinical Finding	S	246616007	2002-01-31	2099-12-31	
+4081466	Downward slant of palpebral fissure	Condition	SNOMED	Clinical Finding	S	246800008	2002-01-31	2099-12-31	
+4081488	Vascularization of cornea	Condition	SNOMED	Disorder	S	246925003	2002-01-31	2099-12-31	
+4081781	General surgery domiciliary visit requested	Observation	SNOMED	Clinical Finding	S	183724002	2002-01-31	2099-12-31	
+4082733	Excellent response to treatment	Observation	SNOMED	Context-dependent	S	182986003	2002-01-31	2099-12-31	
+4083614	Optic disc venous collaterals	Condition	SNOMED	Clinical Finding	S	247229007	2002-01-31	2099-12-31	
+4083921	Pseudo-clubbing	Condition	SNOMED	Clinical Finding	S	247519001	2002-01-31	2099-12-31	
+4083953	Dandy grade 4	Observation	SNOMED	Qualifier Value	S	281991003	2002-01-31	2099-12-31	
+4084273	Lumbarized first sacral vertebra	Condition	SNOMED	Disorder	S	281372009	2002-01-31	2099-12-31	
+4084677	Non-urgent neurology admission	Observation	SNOMED	Procedure	S	183501006	2002-01-31	2099-12-31	
+4086512	Excess subcutaneous fat	Condition	SNOMED	Clinical Finding	S	248302001	2002-01-31	2099-12-31	
+4087011	Smooth soft hands	Condition	SNOMED	Clinical Finding	S	248405000	2002-01-31	2099-12-31	
+4087464	Flushed complexion	Condition	SNOMED	Clinical Finding	S	248213001	2002-01-31	2099-12-31	
+4088094	Fixed constriction of pupil	Observation	SNOMED	Clinical Finding	S	247013009	2002-01-31	2099-12-31	
+4088609	Somatic syndrome absent	Observation	SNOMED	Clinical Finding	S	280430004	2002-01-31	2099-12-31	
+4088686	Low frequency background activity	Observation	SNOMED	Clinical Finding	S	251459003	2002-01-31	2099-12-31	
+4088893	Seen in lipid clinic	Observation	SNOMED	Clinical Finding	S	185177002	2002-01-31	2099-12-31	
+4090722	Change in quantity of liquor	Measurement	SNOMED	Clinical Finding	S	249132007	2002-01-31	2099-12-31	
+4091661	Intact membranes	Condition	SNOMED	Clinical Finding	S	249125003	2002-01-31	2099-12-31	
+4091687	Couvade	Condition	SNOMED	Disorder	S	280901000	2002-01-31	2099-12-31	
+4092264	Repetitive rubbing of body parts	Condition	SNOMED	Clinical Finding	S	247939009	2002-01-31	2099-12-31	
+4092499	Fluid output from wound drain	Measurement	SNOMED	Observable Entity	S	251845003	2002-01-31	2099-12-31	
+4092711	Weak down pressure of chin	Condition	SNOMED	Clinical Finding	S	249889008	2002-01-31	2099-12-31	
+4093148	Rubella deafness	Condition	SNOMED	Disorder	S	186570004	2002-01-31	2099-12-31	
+4094001	Fever defervescence	Condition	SNOMED	Clinical Finding	S	248447001	2002-01-31	2099-12-31	
+4094634	Protriptyline poisoning	Condition	SNOMED	Disorder	S	290849008	2002-01-31	2099-12-31	
+4094947	Accidental trimipramine poisoning	Condition	SNOMED	Disorder	S	290854004	2002-01-31	2099-12-31	
+4094951	Intentional iproniazid poisoning	Condition	SNOMED	Disorder	S	290866005	2002-01-31	2099-12-31	
+4095996	Contusion of sacral cord	Condition	SNOMED	Disorder	S	262700007	2002-01-31	2099-12-31	
+4096125	Disinfectants and cleansers adverse reaction	Observation	SNOMED	Disorder	S	292863008	2002-01-31	2099-12-31	
+4096130	Intentional chlorothiazide poisoning	Condition	SNOMED	Disorder	S	291964003	2002-01-31	2099-12-31	
+4096258	Effacement of cervix	Observation	SNOMED	Observable Entity	S	249021005	2002-01-31	2099-12-31	
+4097489	Sodium valproate adverse reaction	Observation	SNOMED	Disorder	S	292319006	2002-01-31	2099-12-31	
+4097505	Clozapine adverse reaction	Observation	SNOMED	Disorder	S	292374006	2002-01-31	2099-12-31	
+4097770	Lecithin detected in amniotic fluid	Measurement	SNOMED	Clinical Finding	S	250542003	2002-01-31	2099-12-31	
+4097782	Pheniramine adverse reaction	Observation	SNOMED	Disorder	S	292596001	2002-01-31	2099-12-31	
+4098265	Audito-oculogyric reflex	Observation	SNOMED	Observable Entity	S	27030002	2002-01-31	2099-12-31	
+4098753	Primary warm-type hemolytic anemia	Condition	SNOMED	Disorder	S	191211009	2002-01-31	2099-12-31	
+4099028	Corynosoma wegeneri	Observation	SNOMED	Organism	S	27224006	2002-01-31	2099-12-31	
+4099132	Procaine benzylpenicillin adverse reaction	Observation	SNOMED	Disorder	S	292960005	2002-01-31	2099-12-31	
+4099142	Latamoxef adverse reaction	Observation	SNOMED	Disorder	S	293001002	2002-01-31	2099-12-31	
+4099336	Autoimmune parathyroiditis	Condition	SNOMED	Disorder	S	190454008	2002-01-31	2099-12-31	
+4099544	Provocative outflow facility test	Measurement	SNOMED	Procedure	S	252838000	2002-01-31	2099-12-31	
+4099753	Blood group antigen Geslin	Observation	SNOMED	Substance	S	27417007	2002-01-31	2099-12-31	
+4100157	Thiouracil antithyroid agent adverse reaction	Observation	SNOMED	Disorder	S	293139008	2002-01-31	2099-12-31	
+4101035	Tricuspid annulus hypoplasia	Condition	SNOMED	Disorder	S	253376005	2002-01-31	2099-12-31	
+4101468	Gastroenteritis	Condition	SNOMED	Disorder	S	25374005	2002-01-31	2099-12-31	
+4101928	Tetrachlorodibenzodioxin poisoning	Condition	SNOMED	Disorder	S	25440005	2002-01-31	2099-12-31	
+4102620	Ascher's syndrome	Condition	SNOMED	Disorder	S	28599006	2002-01-31	2099-12-31	
+4102850	Gastrojejunocolic fistula	Condition	SNOMED	Disorder	S	25335003	2002-01-31	2099-12-31	
+4102913	Poisoning by actinomycin	Condition	SNOMED	Disorder	S	28563001	2002-01-31	2099-12-31	
+4103780	Grass and cereal seed mixture	Observation	SNOMED	Substance	S	256345008	2002-01-31	2099-12-31	
+4104308	Genitourinary tract problem	Condition	SNOMED	Clinical Finding	S	300562000	2002-01-31	2099-12-31	
+4104487	Weakness of foot	Condition	SNOMED	Clinical Finding	S	299471001	2002-01-31	2099-12-31	
+4105178	Cystoid macular edema	Condition	SNOMED	Disorder	S	193387007	2002-01-31	2099-12-31	
+4105385	Mechanisms	Observation	SNOMED	Qualifier Value	S	257544000	2002-01-31	2099-12-31	
+4106495	Scratch of pelvic region	Observation	SNOMED	Clinical Finding	S	283093005	2002-01-31	2099-12-31	
+4106807	DPB1*0402	Observation	SNOMED	Substance	S	257061007	2002-01-31	2099-12-31	
+4107213	Hemorrhage of thyroid	Condition	SNOMED	Disorder	S	3002002	2002-01-31	2099-12-31	
+4107862	Cruelty towards people	Observation	SNOMED	Clinical Finding	S	284619004	2002-01-31	2099-12-31	
+4109212	Does not retract tongue	Observation	SNOMED	Clinical Finding	S	285515009	2002-01-31	2099-12-31	
+4109678	Pitting edema	Condition	SNOMED	Clinical Finding	S	284521000	2002-01-31	2099-12-31	
+4110751	Difficulty managing appliance when undressing	Observation	SNOMED	Clinical Finding	S	285032000	2002-01-31	2099-12-31	
+4111384	Difficulty using scissor grip	Observation	SNOMED	Clinical Finding	S	284286009	2002-01-31	2099-12-31	
+4111475	Segmental neurofibromatosis	Condition	SNOMED	Disorder	S	254241004	2002-01-31	2099-12-31	
+4111789	Tumor of opening of auditory tube	Condition	SNOMED	Disorder	S	254490002	2002-01-31	2099-12-31	
+4113102	Amputated at hip	Observation	SNOMED	Clinical Finding	S	299646005	2002-01-31	2099-12-31	
+4113144	Kingdom Protozoa schizont	Observation	SNOMED	Organism	S	284701003	2002-01-31	2099-12-31	
+4113222	Asymmetry of pelvis	Observation	SNOMED	Clinical Finding	S	299661006	2002-01-31	2099-12-31	
+4113415	Stills in response to sound	Condition	SNOMED	Clinical Finding	S	300207008	2002-01-31	2099-12-31	
+4113701	Finding of urinary bladder neck competence	Observation	SNOMED	Clinical Finding	S	300465000	2002-01-31	2099-12-31	
+4114974	Triploidy and polyploidy	Condition	SNOMED	Disorder	S	254272000	2002-01-31	2099-12-31	
+4115275	Papilloma of bronchus	Condition	SNOMED	Disorder	S	254623003	2002-01-31	2099-12-31	
+4115394	Hand present	Condition	SNOMED	Clinical Finding	S	301319006	2002-01-31	2099-12-31	
+4115796	Unable to use language	Condition	SNOMED	Clinical Finding	S	286363002	2002-01-31	2099-12-31	
+4115807	Difficulty speaking intelligibly	Condition	SNOMED	Clinical Finding	S	286410009	2002-01-31	2099-12-31	
+4115982	Does prepare food for eating	Observation	SNOMED	Clinical Finding	S	286455002	2002-01-31	2099-12-31	
+4116251	Phobic avoidance - mental defense mechanism	Observation	SNOMED	Clinical Finding	S	286680009	2002-01-31	2099-12-31	
+4120241	Ability to prepare feed	Observation	SNOMED	Observable Entity	S	286494001	2002-01-31	2099-12-31	
+4120307	Extra-adrenal paraganglioma	Condition	SNOMED	Disorder	S	302834008	2002-01-31	2099-12-31	
+4120753	Unable to use non-verbal communication	Condition	SNOMED	Clinical Finding	S	288582004	2002-01-31	2099-12-31	
+4121680	Provision of day care	Observation	SNOMED	Procedure	S	304903009	2002-01-31	2099-12-31	
+4122162	Chlamydia trachomatis serotype L1 antibody	Observation	SNOMED	Substance	S	259821000	2002-01-31	2099-12-31	
+4123697	Unable to perform recreational use of conversation	Condition	SNOMED	Clinical Finding	S	288714007	2002-01-31	2099-12-31	
+4124357	Intrinsic staining of tooth - drug-induced	Condition	SNOMED	Disorder	S	234986004	2002-01-31	2099-12-31	
+4124482	Vagina moist	Observation	SNOMED	Clinical Finding	S	289598001	2002-01-31	2099-12-31	
+4124512	Asymmetry of mandible	Condition	SNOMED	Disorder	S	235082006	2002-01-31	2099-12-31	
+4124600	Lower true occlusal	Observation	SNOMED	Qualifier Value	S	260501004	2002-01-31	2099-12-31	
+4124620	Via splenic vein	Observation	SNOMED	Qualifier Value	S	260594004	2002-01-31	2099-12-31	
+4124838	Critical upper limb ischemia	Condition	SNOMED	Disorder	S	233960004	2002-01-31	2099-12-31	
+4125263	Unable to eat certain food	Observation	SNOMED	Clinical Finding	S	288890007	2002-01-31	2099-12-31	
+4125642	Contact factor deficiency	Condition	SNOMED	Disorder	S	234452003	2002-01-31	2099-12-31	
+4126204	Croton plant	Observation	SNOMED	Organism	S	261290001	2002-01-31	2099-12-31	
+4127425	Decreased range of thumb movement	Observation	SNOMED	Clinical Finding	S	304313006	2002-01-31	2099-12-31	
+4129402	Open wound of scapular region	Condition	SNOMED	Disorder	S	125646009	2002-01-31	2099-12-31	
+4129528	Idiopathic hyperprolactinemia	Condition	SNOMED	Disorder	S	237663000	2002-01-31	2099-12-31	
+4129843	Severe postnatal psychosis	Condition	SNOMED	Disorder	S	237352005	2002-01-31	2099-12-31	
+4130066	Hereditary hemoglobinopathy due to globin chain mutation	Condition	SNOMED	Disorder	S	127038008	2002-01-31	2099-12-31	
+4130336	Germ cell tumor of ovary	Condition	SNOMED	Disorder	S	237059008	2002-01-31	2099-12-31	
+4130683	Superficial lymphadenopathy	Condition	SNOMED	Disorder	S	127074004	2002-01-31	2099-12-31	
+4131013	Neoplasm of clitoris	Condition	SNOMED	Disorder	S	126925009	2002-01-31	2099-12-31	
+4132157	Salmonella IV 48:z36 z38:-	Observation	SNOMED	Organism	S	26621003	2002-01-31	2099-12-31	
+4134335	Bimalleolar fracture of ankle	Condition	SNOMED	Disorder	S	263244000	2002-01-31	2099-12-31	
+4134440	Visual system disorder	Condition	SNOMED	Disorder	S	128127008	2002-01-31	2099-12-31	
+4135630	Perforation of urinary conduit	Condition	SNOMED	Disorder	S	262906009	2002-01-31	2099-12-31	
+4135959	Sodium (24-Na) chloride	Observation	SNOMED	Substance	S	31527000	2002-01-31	2099-12-31	
+4138229	Papillary cystadenoma	Observation	SNOMED	Morph Abnormality	S	32140001	2002-01-31	2099-12-31	
+4139070	Under care of doctor	Observation	SNOMED	Clinical Finding	S	305450004	2002-01-31	2099-12-31	
+4139129	Candida	Observation	SNOMED	Organism	S	3265006	2002-01-31	2099-12-31	
+4139358	Erythroleukemia	Condition	SNOMED	Disorder	S	426642002	2007-07-31	2099-12-31	
+4139616	Lymphocyte antigen CD24	Observation	SNOMED	Substance	S	32943000	2002-01-31	2099-12-31	
+4140424	Medical attendants/orderlies	Observation	SNOMED	Social Context	S	265990001	2002-01-31	2099-12-31	
+4140452	Actinopolyspora	Observation	SNOMED	Organism	S	426973001	2007-07-31	2099-12-31	
+4141032	Continuous phencyclidine abuse	Condition	SNOMED	Disorder	S	425885002	2007-07-31	2099-12-31	
+4141076	Referral by occupational health physician	Observation	SNOMED	Procedure	S	305996002	2002-01-31	2099-12-31	
+4141545	Forces sickness on leave certification status	Observation	SNOMED	Clinical Finding	S	307906008	2002-01-31	2099-12-31	
+4141779	FH: Multiple pregnancy	Observation	SNOMED	Context-dependent	S	266906006	2002-01-31	2099-12-31	
+4142755	Referral to radiotherapist	Observation	SNOMED	Procedure	S	306256000	2002-01-31	2099-12-31	
+4143127	Referral to community-based podiatrist	Observation	SNOMED	Procedure	S	306351008	2002-01-31	2099-12-31	
+4143167	Autoimmune hemolytic anemia caused by immunoglobulin A plus complement	Condition	SNOMED	Disorder	S	33491002	2002-01-31	2099-12-31	
+4143616	Blood group antibody Ku	Observation	SNOMED	Substance	S	34161009	2002-01-31	2099-12-31	
+4143895	Rhesus isoimmunization due to anti-E	Condition	SNOMED	Disorder	S	307335006	2002-01-31	2099-12-31	
+4144029	Retraction of ileostomy	Condition	SNOMED	Disorder	S	307411002	2002-01-31	2099-12-31	
+4145277	HNSHA due to pyrimidine-5'-nucleotidase deficiency	Condition	SNOMED	Disorder	S	34194007	2002-01-31	2099-12-31	
+4145475	Rash of secondary syphilis	Condition	SNOMED	Disorder	S	266128007	2002-01-31	2099-12-31	
+4145811	Never been sexually active	Observation	SNOMED	Clinical Finding	S	267068004	2002-01-31	2099-12-31	
+4146106	Surgical implantation cyst of iris	Condition	SNOMED	Disorder	S	267622003	2002-01-31	2099-12-31	
+4146509	Skrjabinema ovis	Observation	SNOMED	Organism	S	34804001	2002-01-31	2099-12-31	
+4146550	Housing/planning inspector	Observation	SNOMED	Social Context	S	265915007	2002-01-31	2099-12-31	
+4146839	Frozen blood thawing and processing	Observation	SNOMED	Procedure	S	35382002	2002-01-31	2099-12-31	
+4148254	Multilobular portal cirrhosis	Condition	SNOMED	Disorder	S	266469006	2002-01-31	2099-12-31	
+4148420	Medical problems at work	Observation	SNOMED	Clinical Finding	S	266958000	2002-01-31	2099-12-31	
+4148876	Stasis dermatitis	Condition	SNOMED	Disorder	S	35498005	2002-01-31	2099-12-31	
+4149487	Gunshot wound entrance close shot	Observation	SNOMED	Morph Abnormality	S	35336005	2002-01-31	2099-12-31	
+4150360	Cynodon poisoning	Condition	SNOMED	Disorder	S	31272009	2002-01-31	2099-12-31	
+4151851	Does not reach	Observation	SNOMED	Clinical Finding	S	282680006	2002-01-31	2099-12-31	
+4152486	Candida inconspicua	Observation	SNOMED	Organism	S	283871001	2002-01-31	2099-12-31	
+4152617	Tactile memory	Observation	SNOMED	Observable Entity	S	283923002	2002-01-31	2099-12-31	
+4152619	Laceration of prostate	Condition	SNOMED	Disorder	S	283930008	2002-01-31	2099-12-31	
+4152651	Equipment monitoring	Observation	SNOMED	Procedure	S	284036006	2002-01-31	2099-12-31	
+4153066	Laceration of shin	Condition	SNOMED	Disorder	S	283388003	2002-01-31	2099-12-31	
+4153568	Infected umbilical granuloma	Condition	SNOMED	Disorder	S	268837000	2002-01-31	2099-12-31	
+4154342	Granulocyte percent differential count	Measurement	SNOMED	Procedure	S	271042003	2002-01-31	2099-12-31	
+4154902	Sorbic acid	Observation	SNOMED	Substance	S	28421003	2002-01-31	2099-12-31	
+4156505	Cross-standing	Observation	SNOMED	Clinical Finding	S	272532005	2002-01-31	2099-12-31	
+4157377	Eating disorders inventory	Measurement	SNOMED	Staging / Scales	S	273435004	2002-01-31	2099-12-31	
+4157706	Inclined standing in water away from rail	Observation	SNOMED	Clinical Finding	S	272540004	2002-01-31	2099-12-31	
+4159677	Accidental quinidine poisoning	Condition	SNOMED	Disorder	S	291948006	2002-01-31	2099-12-31	
+4160669	Intentional rifampin poisoning	Condition	SNOMED	Disorder	S	291677005	2002-01-31	2099-12-31	
+4161276	Egg white specific immunoglobulin G	Observation	SNOMED	Substance	S	399834008	2003-07-31	2099-12-31	
+4161515	Accelerated rejection of cardiac transplant	Condition	SNOMED	Disorder	S	431186002	2008-07-31	2099-12-31	
+4162008	Intentional risperidone poisoning	Condition	SNOMED	Disorder	S	291136007	2002-01-31	2099-12-31	
+4162067	Propionispora vibrioides	Observation	SNOMED	Organism	S	434541009	2008-07-31	2099-12-31	
+4162514	Halorhodospira halochloris	Observation	SNOMED	Organism	S	434324006	2008-07-31	2099-12-31	
+4162611	Accidental ampicillin poisoning	Condition	SNOMED	Disorder	S	291537005	2002-01-31	2099-12-31	
+4162626	Intentional cefaclor poisoning	Condition	SNOMED	Disorder	S	291583004	2002-01-31	2099-12-31	
+4162681	Familial type 3 hyperlipoproteinemia	Condition	SNOMED	Disorder	S	398796005	2003-07-31	2099-12-31	
+4163034	Chlorthalidone adverse reaction	Observation	SNOMED	Disorder	S	293487007	2002-01-31	2099-12-31	
+4164002	Tumor invades iris	Observation	SNOMED	Clinical Finding	S	399524008	2003-07-31	2099-12-31	
+4164126	Acute hyponatremia	Condition	SNOMED	Disorder	S	4575002	2002-01-31	2099-12-31	
+4164260	Piperazine estrone sulfate adverse reaction	Observation	SNOMED	Disorder	S	293248009	2002-01-31	2099-12-31	
+4164262	Fosfestrol adverse reaction	Observation	SNOMED	Disorder	S	293253004	2002-01-31	2099-12-31	
+4164386	Oxytocin adverse reaction	Observation	SNOMED	Disorder	S	293285001	2002-01-31	2099-12-31	
+4164462	pT category maxillary sinus	Observation	SNOMED	Observable Entity	S	399513006	2003-07-31	2099-12-31	
+4164621	Squamous cell carcinoma nonkeratinizing mixed differentiated and undifferentiated	Observation	SNOMED	Morph Abnormality	S	399694008	2003-07-31	2099-12-31	
+4164930	Open wound of groin with complication	Condition	SNOMED	Disorder	S	41087006	2002-01-31	2099-12-31	
+4166088	Closed traumatic subluxation distal interphalangeal joint of finger	Condition	SNOMED	Disorder	S	416143005	2005-07-31	2099-12-31	
+4167927	Submeatal urethral stricture	Condition	SNOMED	Disorder	S	275411007	2002-01-31	2099-12-31	
+4168416	Aclarubicin overdose	Condition	SNOMED	Disorder	S	295676009	2002-01-31	2099-12-31	
+4170092	Nuclear lens fragment in anterior chamber	Condition	SNOMED	Clinical Finding	S	418036006	2006-01-31	2099-12-31	
+4170525	Boselaphus tragocamelus	Observation	SNOMED	Organism	S	4912003	2002-01-31	2099-12-31	
+4171447	Looks after someone	Observation	SNOMED	Clinical Finding	S	276040005	2002-01-31	2099-12-31	
+4171836	Leptosphaeria senegalensis	Observation	SNOMED	Organism	S	48529007	2002-01-31	2099-12-31	
+4172352	Difficulty hearing high frequency sounds	Observation	SNOMED	Clinical Finding	S	423303001	2007-01-31	2099-12-31	
+4172651	Castellaniella denitrificans	Observation	SNOMED	Organism	S	423566008	2007-01-31	2099-12-31	
+4172695	Lover taken	Observation	SNOMED	Clinical Finding	S	276105007	2002-01-31	2099-12-31	
+4172822	Cardiac arrest due to cardiac disorder	Condition	SNOMED	Disorder	S	423191000	2007-01-31	2099-12-31	
+4173174	Chylous ascites of newborn	Condition	SNOMED	Disorder	S	276526002	2002-01-31	2099-12-31	
+4173666	Belching symptom	Condition	SNOMED	Clinical Finding	S	275299008	2002-01-31	2099-12-31	
+4173807	Foreign body in thumb	Condition	SNOMED	Disorder	S	275454002	2002-01-31	2099-12-31	
+4174036	Infection by Basidiobolus	Condition	SNOMED	Disorder	S	4921002	2002-01-31	2099-12-31	
+4175341	Linoleum maker	Observation	SNOMED	Social Context	S	42690004	2002-01-31	2099-12-31	
+4175477	No income	Observation	SNOMED	Clinical Finding	S	425111004	2007-01-31	2099-12-31	
+4176512	Intentional chloroquine overdose	Condition	SNOMED	Disorder	S	296559008	2002-01-31	2099-12-31	
+4176576	Calocera cornea	Observation	SNOMED	Organism	S	48970000	2002-01-31	2099-12-31	
+4177707	New left ventricular wall motion abnormality compared to prior study	Condition	SNOMED	Clinical Finding	S	429058004	2008-01-31	2099-12-31	
+4178099	Intentional doxycycline overdose	Condition	SNOMED	Disorder	S	296756003	2002-01-31	2099-12-31	
+4179153	Cervical spine laxity	Condition	SNOMED	Clinical Finding	S	298205001	2002-01-31	2099-12-31	
+4179295	Gowers sign absent	Observation	SNOMED	Context-dependent	S	298295006	2002-01-31	2099-12-31	
+4179625	Subglottic edema	Condition	SNOMED	Disorder	S	52379009	2002-01-31	2099-12-31	
+4180823	Bumetanide overdose	Condition	SNOMED	Disorder	S	297021002	2002-01-31	2099-12-31	
+4181153	Amidostomum acutum	Observation	SNOMED	Organism	S	42968001	2002-01-31	2099-12-31	
+4182705	Salmonella Nessziona	Observation	SNOMED	Organism	S	53285009	2002-01-31	2099-12-31	
+4183040	Posterior uveitis	Condition	SNOMED	Disorder	S	43363007	2002-01-31	2099-12-31	
+4183890	Normal weight	Observation	SNOMED	Clinical Finding	S	43664005	2002-01-31	2099-12-31	
+4185423	Chronic osteoarthritis	Condition	SNOMED	Disorder	S	43829003	2002-01-31	2099-12-31	
+4185729	Eimeria illinoisensis	Observation	SNOMED	Organism	S	44135008	2002-01-31	2099-12-31	
+4185833	Acute hyperkalemia	Condition	SNOMED	Disorder	S	5579000	2002-01-31	2099-12-31	
+4185958	Increased active range of finger abduction	Observation	SNOMED	Clinical Finding	S	299088000	2002-01-31	2099-12-31	
+4187611	Infection caused by Penicillium bacillosporum	Condition	SNOMED	Disorder	S	372942001	2002-07-31	2099-12-31	
+4189215	Genus Zaglossus	Observation	SNOMED	Organism	S	388880003	2003-01-31	2099-12-31	
+4189348	Trypanosoma caprae	Observation	SNOMED	Organism	S	61555007	2002-01-31	2099-12-31	
+4189591	Pyloric ulcer	Condition	SNOMED	Disorder	S	39204006	2002-01-31	2099-12-31	
+4192271	Postneonatal death	Observation	SNOMED	Event	S	391100008	2003-01-31	2099-12-31	
+4192937	Plasma troponin T measurement	Measurement	SNOMED	Procedure	S	314068007	2002-01-31	2099-12-31	
+4194088	Genus Plerotes	Observation	SNOMED	Organism	S	391912008	2003-01-31	2099-12-31	
+4195154	Spastic tetraplegia with rigidity syndrome	Condition	SNOMED	Disorder	S	44395000	2002-01-31	2099-12-31	
+4195197	Plasma tyrosine measurement	Measurement	SNOMED	Procedure	S	313754004	2002-01-31	2099-12-31	
+4195364	Echinostoma melis	Observation	SNOMED	Organism	S	68049002	2002-01-31	2099-12-31	
+4195627	Chilean plantcutter	Observation	SNOMED	Organism	S	44074004	2002-01-31	2099-12-31	
+4195692	Blood group antibody Lea	Observation	SNOMED	Substance	S	67774005	2002-01-31	2099-12-31	
+4196093	Gangrenous ergotism	Condition	SNOMED	Disorder	S	4418008	2002-01-31	2099-12-31	
+4196431	Recurrent cyst of breast	Condition	SNOMED	Disorder	S	315247007	2002-01-31	2099-12-31	
+4196908	Trypanosoma brucei rhodesiense	Observation	SNOMED	Organism	S	79513002	2002-01-31	2099-12-31	
+4197693	Bowiea volubilis	Observation	SNOMED	Organism	S	51754006	2002-01-31	2099-12-31	
+4198170	Holospora undulata	Observation	SNOMED	Organism	S	433983004	2008-07-31	2099-12-31	
+4200005	Hyphomonas johnsonii	Observation	SNOMED	Organism	S	434655006	2008-07-31	2099-12-31	
+4200140	Catellatospora citrea methionotrophica	Observation	SNOMED	Organism	S	434696009	2008-07-31	2099-12-31	
+4200638	Herbidospora cretacea	Observation	SNOMED	Organism	S	434313009	2008-07-31	2099-12-31	
+4200904	Methanotorris formicicus	Observation	SNOMED	Organism	S	434481000	2008-07-31	2099-12-31	
+4201288	Platelet secretory disorder	Condition	SNOMED	Disorder	S	51448009	2002-01-31	2099-12-31	
+4201519	Selenihalanaerobacter	Observation	SNOMED	Organism	S	437821004	2009-01-31	2099-12-31	
+4201966	Natroniella acetigena	Observation	SNOMED	Organism	S	434292002	2008-07-31	2099-12-31	
+4202111	Prochlorococcus marinus subspecies marinus	Observation	SNOMED	Organism	S	434799007	2008-07-31	2099-12-31	
+4203227	Pseudobutyrivibrio	Observation	SNOMED	Organism	S	438027001	2009-01-31	2099-12-31	
+4203519	Peptoniphilus asaccharolyticus	Observation	SNOMED	Organism	S	433440001	2008-07-31	2099-12-31	
+4204669	Referral to pediatric surgeon	Observation	SNOMED	Procedure	S	308483007	2002-01-31	2099-12-31	
+4205919	Silicibacter	Observation	SNOMED	Organism	S	439561001	2009-01-31	2099-12-31	
+4206238	Determination of pattern of resistance to antiviral agent not done	Observation	SNOMED	Context-dependent	S	439867009	2009-01-31	2099-12-31	
+4207075	Heterophil antibody	Observation	SNOMED	Substance	S	56410003	2002-01-31	2099-12-31	
+4209088	Varicose vein of lower limb with phlebitis	Condition	SNOMED	Disorder	S	313254003	2002-01-31	2099-12-31	
+4209418	Amplitude range exercises	Observation	SNOMED	Procedure	S	311692002	2002-01-31	2099-12-31	
+4209538	Advanced retinal disease due to diabetes mellitus	Condition	SNOMED	Disorder	S	311782002	2002-01-31	2099-12-31	
+4211231	Panic disorder without agoraphobia	Condition	SNOMED	Disorder	S	56576003	2002-01-31	2099-12-31	
+4211640	Chadwick's sign	Condition	SNOMED	Clinical Finding	S	413814005	2005-01-31	2099-12-31	
+4212450	Eubacteriales	Observation	SNOMED	Organism	S	414958003	2005-01-31	2099-12-31	
+4213115	Indoor soccer	Observation	SNOMED	Qualifier Value	S	414305000	2005-01-31	2099-12-31	
+4214576	Significance values	Observation	SNOMED	Qualifier Value	S	394652007	2003-01-31	2099-12-31	
+4214668	Neisseria subflava biovar perflava	Observation	SNOMED	Organism	S	414813008	2005-01-31	2099-12-31	
+4214673	Aspergillus multiplicatus	Observation	SNOMED	Organism	S	414836004	2005-01-31	2099-12-31	
+4214808	Referral to epidural anesthesia service	Observation	SNOMED	Procedure	S	417504006	2005-07-31	2099-12-31	
+4214946	Trichonympha corbula	Observation	SNOMED	Organism	S	41762005	2002-01-31	2099-12-31	
+4215121	Clinical genetics	Observation	SNOMED	Qualifier Value	S	394580004	2003-01-31	2099-12-31	
+4215941	Hypostasis	Condition	SNOMED	Disorder	S	72127003	2002-01-31	2099-12-31	
+4216118	Paracoccus denitrificans	Observation	SNOMED	Organism	S	415019004	2005-01-31	2099-12-31	
+4216153	General medicine	Observation	SNOMED	Qualifier Value	S	394802001	2003-01-31	2099-12-31	
+4216233	Clinostomus elongatus	Observation	SNOMED	Organism	S	72049006	2002-01-31	2099-12-31	
+4216242	Salmonella Belem	Observation	SNOMED	Organism	S	72072008	2002-01-31	2099-12-31	
+4217235	Acidimicrobiales	Observation	SNOMED	Organism	S	417462006	2005-07-31	2099-12-31	
+4218647	Blister of axilla with infection	Condition	SNOMED	Disorder	S	41804000	2002-01-31	2099-12-31	
+4218965	Babesia venatorum	Observation	SNOMED	Organism	S	415982002	2005-01-31	2099-12-31	
+4219328	Infection by Rhizopus	Condition	SNOMED	Disorder	S	39740009	2002-01-31	2099-12-31	
+4219465	Salmonella Uccle	Observation	SNOMED	Organism	S	82140000	2002-01-31	2099-12-31	
+4219489	Chlorodimethyl phenoxy ethanol	Observation	SNOMED	Substance	S	82332000	2002-01-31	2099-12-31	
+4221124	Eupatorium perfoliatum	Observation	SNOMED	Organism	S	82882003	2002-01-31	2099-12-31	
+4221348	Genus Tegenaria	Observation	SNOMED	Organism	S	420520004	2006-07-31	2099-12-31	
+4221622	Prionotus scitulus	Observation	SNOMED	Organism	S	41894008	2002-01-31	2099-12-31	
+4222227	Spizella arborea	Observation	SNOMED	Organism	S	421241003	2006-07-31	2099-12-31	
+4223288	Poisoning due to bite of bark scorpion	Condition	SNOMED	Disorder	S	420775008	2006-07-31	2099-12-31	
+4223600	Nerodia fasciata	Observation	SNOMED	Organism	S	421896001	2006-07-31	2099-12-31	
+4224789	Everglades virus disease	Condition	SNOMED	Disorder	S	84579002	2002-01-31	2099-12-31	
+4225900	Tracing of carotid pulse with ECG lead	Observation	SNOMED	Procedure	S	85038003	2002-01-31	2099-12-31	
+4226542	Congenital anomaly of macula	Condition	SNOMED	Disorder	S	4041005	2002-01-31	2099-12-31	
+4227878	Salmonella II 18:z4	Observation	SNOMED	Organism	S	404302007	2004-01-31	2099-12-31	
+4228167	Salmonella group O:50	Observation	SNOMED	Organism	S	404588009	2004-01-31	2099-12-31	
+4229427	Biofeedback	Observation	SNOMED	Procedure	S	88726004	2002-01-31	2099-12-31	
+4229602	Fibroblast growth factor	Observation	SNOMED	Substance	S	88919005	2002-01-31	2099-12-31	
+4229675	Sphaerotilus	Observation	SNOMED	Organism	S	438160001	2009-01-31	2099-12-31	
+4231711	Aquagenic urticaria	Condition	SNOMED	Disorder	S	89870006	2002-01-31	2099-12-31	
+4234127	Charcot's arthropathy	Condition	SNOMED	Disorder	S	359554008	2002-01-31	2099-12-31	
+4234337	Escherichia coli serogroup O83	Observation	SNOMED	Organism	S	407274001	2004-01-31	2099-12-31	
+4235125	Verbrycke's syndrome	Condition	SNOMED	Disorder	S	90549003	2002-01-31	2099-12-31	
+4235210	Rarobacteraceae	Observation	SNOMED	Organism	S	438422003	2009-01-31	2099-12-31	
+4236186	Demodex caprae	Observation	SNOMED	Organism	S	90627002	2002-01-31	2099-12-31	
+4236248	Moderate hereditary factor IX deficiency disease without inhibitor	Condition	SNOMED	Disorder	S	441191004	2009-01-31	2099-12-31	
+4237143	Diadochokinesia	Observation	SNOMED	Observable Entity	S	56939008	2002-01-31	2099-12-31	
+4237468	Breastfeeding support education	Observation	SNOMED	Procedure	S	408885009	2004-07-31	2099-12-31	
+4239874	Benign neoplasm of common bile duct	Condition	SNOMED	Disorder	S	92067007	2002-01-31	2099-12-31	
+4240472	Methyl red test	Measurement	SNOMED	Procedure	S	5894006	2002-01-31	2099-12-31	
+4240892	Congenital absence of supraoccipital bone	Condition	SNOMED	Disorder	S	91911004	2002-01-31	2099-12-31	
+4241707	Dipetalonema reconditum	Observation	SNOMED	Organism	S	58572007	2002-01-31	2099-12-31	
+4242230	Periodontal cyst	Condition	SNOMED	Disorder	S	3797007	2002-01-31	2099-12-31	
+4242245	Relaxation of sphincter of Oddi	Observation	SNOMED	Observable Entity	S	3806003	2002-01-31	2099-12-31	
+4242343	Benign neoplasm of glomus jugulare	Condition	SNOMED	Disorder	S	92121009	2002-01-31	2099-12-31	
+4242365	Benign neoplasm of muscle of perineum	Condition	SNOMED	Disorder	S	92232000	2002-01-31	2099-12-31	
+4243777	Peprilus alepidotus	Observation	SNOMED	Organism	S	37967004	2002-01-31	2099-12-31	
+4244879	Dengue virus type 1	Observation	SNOMED	Organism	S	60588009	2002-01-31	2099-12-31	
+4245602	Cacatua goffini	Observation	SNOMED	Organism	S	396744003	2003-07-31	2099-12-31	
+4245636	Congenital hypoplasia of aortic arch	Condition	SNOMED	Disorder	S	60787001	2002-01-31	2099-12-31	
+4247109	Renal disorder education	Observation	SNOMED	Procedure	S	408420007	2004-01-31	2099-12-31	
+4247354	Primary malignant neoplasm of skin of temporal region	Condition	SNOMED	Disorder	S	94040002	2002-01-31	2099-12-31	
+4249573	Compression of optic nerve	Condition	SNOMED	Disorder	S	72983001	2002-01-31	2099-12-31	
+4250606	Felt hood former	Observation	SNOMED	Social Context	S	40900000	2002-01-31	2099-12-31	
+4250626	Congenital absence of germinal epithelium of testes	Condition	SNOMED	Disorder	S	73465006	2002-01-31	2099-12-31	
+4251751	Mobility/transfers education guidance and counseling	Observation	SNOMED	Procedure	S	410267000	2004-07-31	2099-12-31	
+4252370	Public health dentistry	Observation	SNOMED	Qualifier Value	S	408473007	2004-01-31	2099-12-31	
+4253622	Postoperative infectious endophthalmitis	Condition	SNOMED	Disorder	S	410497005	2004-07-31	2099-12-31	
+4258479	Adult care	Observation	SNOMED	Procedure	S	408993005	2004-07-31	2099-12-31	
+4259285	Strongylus asini	Observation	SNOMED	Organism	S	44944005	2002-01-31	2099-12-31	
+4259504	Iritis with ulcerative colitis	Condition	SNOMED	Disorder	S	410484008	2004-07-31	2099-12-31	
+4260689	Anemia due to multiple mechanisms	Condition	SNOMED	Disorder	S	45098004	2002-01-31	2099-12-31	
+4261959	Pithecellobium bigeminum	Observation	SNOMED	Organism	S	35670003	2002-01-31	2099-12-31	
+4262001	Special diet education	Observation	SNOMED	Procedure	S	410177006	2004-07-31	2099-12-31	
+4262242	Fracture of eight OR more ribs	Condition	SNOMED	Disorder	S	46043003	2002-01-31	2099-12-31	
+4263571	Hunger contractions type I	Observation	SNOMED	Observable Entity	S	60460001	2002-01-31	2099-12-31	
+4263700	Egernia cunninghami	Observation	SNOMED	Organism	S	60691000	2002-01-31	2099-12-31	
+4263900	Low immunologic affinity	Observation	SNOMED	Clinical Finding	S	46879005	2002-01-31	2099-12-31	
+4264449	Post-transplant lymphoproliferative disorder polymorphic	Observation	SNOMED	Morph Abnormality	S	397351004	2003-07-31	2099-12-31	
+4264617	Foot-drop	Condition	SNOMED	Clinical Finding	S	6077001	2002-01-31	2099-12-31	
+4265433	Visual impairment	Condition	SNOMED	Disorder	S	397540003	2003-07-31	2099-12-31	
+4265534	Transposition of pulmonary veins	Condition	SNOMED	Disorder	S	36422005	2002-01-31	2099-12-31	
+4265742	Molluscum contagiosum blepharoconjunctivitis	Condition	SNOMED	Disorder	S	397515005	2003-07-31	2099-12-31	
+4266314	Finding related to ability to empty bath	Observation	SNOMED	Clinical Finding	S	365281003	2002-01-31	2099-12-31	
+4268094	Finding related to ability to use automatic language	Observation	SNOMED	Clinical Finding	S	365053003	2002-01-31	2099-12-31	
+4269872	Kimura's disease	Condition	SNOMED	Disorder	S	399894006	2003-07-31	2099-12-31	
+4270574	Size of hand - finding	Condition	SNOMED	Clinical Finding	S	366545009	2002-01-31	2099-12-31	
+4270870	Eosinophilic spongiosis (prebullous pemphigoid)	Condition	SNOMED	Disorder	S	402436004	2003-07-31	2099-12-31	
+4271268	Finding related to ability to put lid on container	Observation	SNOMED	Clinical Finding	S	365168004	2002-01-31	2099-12-31	
+4273300	Golden-rumped tinkerbird	Observation	SNOMED	Organism	S	3656005	2002-01-31	2099-12-31	
+4273868	Blood group antibody Schor	Observation	SNOMED	Substance	S	64070003	2002-01-31	2099-12-31	
+4277529	Passive range of wrist supination - finding	Observation	SNOMED	Clinical Finding	S	366539001	2002-01-31	2099-12-31	
+4278816	Alpha zero thalassemia	Condition	SNOMED	Disorder	S	66055002	2002-01-31	2099-12-31	
+4281548	Antimony-115	Observation	SNOMED	Substance	S	66756005	2002-01-31	2099-12-31	
+4282461	Icelinus fimbriatus	Observation	SNOMED	Organism	S	67083006	2002-01-31	2099-12-31	
+4283382	Besnoitia sauriana	Observation	SNOMED	Organism	S	67532003	2002-01-31	2099-12-31	
+4286483	Amniotic fluid lecithin/sphingomyelin ratio	Measurement	SNOMED	Procedure	S	68297005	2002-01-31	2099-12-31	
+4288677	Acute and chronic colitis	Condition	SNOMED	Disorder	S	396336000	2003-07-31	2099-12-31	
+4289476	Beaded hair	Condition	SNOMED	Disorder	S	69488000	2002-01-31	2099-12-31	
+4290067	Simulium ochraceum	Observation	SNOMED	Organism	S	70362006	2002-01-31	2099-12-31	
+4290440	Salmonella Uno	Observation	SNOMED	Organism	S	3708006	2002-01-31	2099-12-31	
+4290967	Myopericytoma	Observation	SNOMED	Morph Abnormality	S	400065005	2003-07-31	2099-12-31	
+4292213	Lichen simplex of vulva	Condition	SNOMED	Disorder	S	402243008	2003-07-31	2099-12-31	
+4292230	Early onset psoriasis type 1	Condition	SNOMED	Disorder	S	402329001	2003-07-31	2099-12-31	
+4293286	Actinomycetoma caused by Nocardia otitidis caviarum	Condition	SNOMED	Disorder	S	402987006	2003-07-31	2099-12-31	
+4296611	Chronic gastric ulcer without hemorrhage AND without perforation	Condition	SNOMED	Disorder	S	76796008	2002-01-31	2099-12-31	
+4296652	Ear nose and throat microscopy culture and sensitivities	Measurement	SNOMED	Procedure	S	401295002	2003-07-31	2099-12-31	
+4296900	Purple sunbird	Observation	SNOMED	Organism	S	76232008	2002-01-31	2099-12-31	
+4297161	Fistula of cul-de-sac	Condition	SNOMED	Disorder	S	76502001	2002-01-31	2099-12-31	
+4297663	Secondary xanthomatous infiltration of the skin	Condition	SNOMED	Disorder	S	402478005	2003-07-31	2099-12-31	
+4297799	Multiple benign melanocytic nevi	Condition	SNOMED	Disorder	S	402555001	2003-07-31	2099-12-31	
+4299012	Skin injury due to animal	Condition	SNOMED	Disorder	S	403166005	2003-07-31	2099-12-31	
+4300471	Intraepidermal squamous carcinoma of forehead	Condition	SNOMED	Disorder	S	403875005	2003-07-31	2099-12-31	
+4302123	Taxidea	Observation	SNOMED	Organism	S	388542005	2003-01-31	2099-12-31	
+4303436	Newborn monitoring	Observation	SNOMED	Procedure	S	386369002	2003-01-31	2099-12-31	
+4303527	Sarocladium	Observation	SNOMED	Organism	S	418905001	2006-01-31	2099-12-31	
+4304680	Artemisia filifolia	Observation	SNOMED	Organism	S	81744002	2002-01-31	2099-12-31	
+4305615	Electrocardiogram unchanged compared to prior study	Observation	SNOMED	Clinical Finding	S	142018005	2008-07-31	2099-12-31	
+4305661	Infestation by Acarapis	Condition	SNOMED	Disorder	S	82232002	2002-01-31	2099-12-31	
+4307805	Lymphocyte antigen CD37	Observation	SNOMED	Substance	S	83003003	2002-01-31	2099-12-31	
+4307966	Hesperoleucus symmetricus	Observation	SNOMED	Organism	S	83286004	2002-01-31	2099-12-31	
+4309356	Acute pneumothorax	Condition	SNOMED	Disorder	S	84437006	2002-01-31	2099-12-31	
+4309954	Enanthematous infectious disease	Condition	SNOMED	Disorder	S	85532005	2002-01-31	2099-12-31	
+4310136	Zonotrichia leucophrys	Observation	SNOMED	Organism	S	424853007	2007-01-31	2099-12-31	
+4311146	Acetonema	Observation	SNOMED	Organism	S	423591008	2007-01-31	2099-12-31	
+4312704	Necrobiosis lipoidica	Condition	SNOMED	Disorder	S	9418005	2002-01-31	2099-12-31	
+4313667	Burning due to contact with molten metal	Observation	SNOMED	Event	S	218133002	2002-01-31	2099-12-31	
+4314178	Bovine adenovirus C	Observation	SNOMED	Organism	S	425070009	2007-01-31	2099-12-31	
+4314426	HIV infection with acute lymphadenitis	Condition	SNOMED	Disorder	S	87117006	2002-01-31	2099-12-31	
+4316500	Neoplasm of uncertain behavior of lateral wall of oropharynx	Condition	SNOMED	Disorder	S	94902003	2002-01-31	2099-12-31	
+4316735	Neoplasm of uncertain behavior of temporal bone	Condition	SNOMED	Disorder	S	95125007	2002-01-31	2099-12-31	
+4317000	Neoplasm of uncertain behavior of short bone of upper limb	Condition	SNOMED	Disorder	S	95044002	2002-01-31	2099-12-31	
+4317952	Radiation retinopathy	Condition	SNOMED	Disorder	S	95221007	2002-01-31	2099-12-31	
+4321242	Salmonella Gelsenkirchen	Observation	SNOMED	Organism	S	71026007	2002-01-31	2099-12-31	
+4321594	Wet gangrene	Observation	SNOMED	Morph Abnormality	S	988002	2002-01-31	2099-12-31	
+4321846	Salmonella Potosi	Observation	SNOMED	Organism	S	70760001	2002-01-31	2099-12-31	
+4322407	Stab wound	Condition	SNOMED	Disorder	S	425322008	2007-01-31	2099-12-31	
+4324891	New Kadampa Tradition Buddhist follower of religion	Observation	SNOMED	Social Context	S	429527006	2008-01-31	2099-12-31	
+4325278	Superbine	Observation	SNOMED	Substance	S	71291000	2002-01-31	2099-12-31	
+4325705	Mycobacterium cosmeticum	Observation	SNOMED	Organism	S	430580007	2008-07-31	2099-12-31	
+4330020	Bottled propane gas	Observation	SNOMED	Substance	S	224761006	2002-01-31	2099-12-31	
+4330857	Setosphaeria rostrata	Observation	SNOMED	Organism	S	22545009	2002-01-31	2099-12-31	
+4331520	Hylemonella	Observation	SNOMED	Organism	S	432573002	2008-07-31	2099-12-31	
+4333984	Avulsion of eyelid	Condition	SNOMED	Disorder	S	231821009	2002-01-31	2099-12-31	
+4334262	Esotropia with nystagmus	Condition	SNOMED	Disorder	S	232095008	2002-01-31	2099-12-31	
+4334726	Thermal burn of eyelid	Condition	SNOMED	Disorder	S	231819004	2002-01-31	2099-12-31	
+4334744	Foreign body in sclera	Condition	SNOMED	Disorder	S	231882004	2002-01-31	2099-12-31	
+4335235	Family Frankiaceae	Observation	SNOMED	Organism	S	432174003	2008-07-31	2099-12-31	
+4336402	Lower respiratory fluid	Observation	SNOMED	Substance	S	87200008	2002-01-31	2099-12-31	
+4338882	Nonperforating wound of cornea	Condition	SNOMED	Disorder	S	231941003	2002-01-31	2099-12-31	
+4341231	Tracheo-esophageal fistula without atresia of esophagus	Condition	SNOMED	Disorder	S	235640006	2002-01-31	2099-12-31	
+4342905	Gastric anastomotic hemorrhage	Condition	SNOMED	Disorder	S	236094005	2002-01-31	2099-12-31	
+4344496	Calcification of ligament	Condition	SNOMED	Disorder	S	239950003	2002-01-31	2099-12-31	
+4345692	Viral food poisoning	Condition	SNOMED	Disorder	S	240338009	2002-01-31	2099-12-31	
+4346194	Erythrokeratoderma en cocardes	Condition	SNOMED	Disorder	S	239062001	2003-07-31	2099-12-31	
+4346279	Rhabdomyomatous mesenchymal hamartoma	Condition	SNOMED	Disorder	S	239146009	2002-01-31	2099-12-31	
+4347163	Ligamentous laxity of elbow region	Condition	SNOMED	Disorder	S	239970009	2002-01-31	2099-12-31	
+4348026	Trabulsiella guamensis	Observation	SNOMED	Organism	S	243309007	2002-01-31	2099-12-31	
+19477448	TBL1XR1 on GRCh38 chr3: Insertion in position 177051672 to 177051673 of AGGGTAGC measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5386572	2024-02-26	2099-12-31	
+19477979	NF1 on GRCh38 chr17: Deletion in position 31200552 to 31200553 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5387139	2024-02-26	2099-12-31	
+19478537	FLT3 on GRCh38 chr13: Substitution in position 28018491 of A replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5387721	2024-02-26	2099-12-31	
+19479359	CCNB1IP1 protein: Substitution in position 261 of E replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5388567	2024-02-26	2099-12-31	
+19479607	APC on GRCh38 chr5: Substitution in position 112840759 of A replaced by G measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5388818	2024-02-26	2099-12-31	
+19479961	ATRX on GRCh38 chrX: Substitution in position 77633684 of A replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5389183	2024-02-26	2099-12-31	
+19480255	MSH2 transcript: Substitution in position 1384 of C replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5389489	2024-02-26	2099-12-31	
+19482486	NF1 on GRCh38 chr17: Substitution in position 31200476 of C replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5391803	2024-02-26	2099-12-31	
+19482544	KMT2D transcript: Substitution in position 5263 of C replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5391861	2024-02-26	2099-12-31	
+19482953	ARID1B transcript: Deletion in position 1293 to 1317 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5392290	2024-02-26	2099-12-31	
+19484490	AXIN1 on GRCh38 chr16: Deletion in position 346239 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5393953	2024-02-26	2099-12-31	
+19484963	SMARCA4 protein: Frameshift substitution in position 1085 of L replaced by Q followed by a new reading frame extending for an uncertain number of amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5394410	2024-02-26	2099-12-31	
+19485069	RBM10 on GRCh38 chrX: Deletion in position 47182284 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5394515	2024-02-26	2099-12-31	
+19487223	CDH1 protein: Frameshift substitution in position 166 of N replaced by K followed by a new reading frame extending for 2 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5396730	2024-02-26	2099-12-31	
+19488227	CDH1 protein: Frameshift substitution in position 793 of S replaced by C followed by a new reading frame extending for 13 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5397771	2024-02-26	2099-12-31	
+19489047	BCOR protein: Frameshift substitution in position 1050 of D replaced by G followed by a new reading frame extending for 4 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5398628	2024-02-26	2099-12-31	
+19489070	KMT2D transcript: Substitution in position 4291 of G replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5398651	2024-02-26	2099-12-31	
+19489822	AKT1 on GRCh38 chr14: Substitution in position 104773991 of G replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5399427	2024-02-26	2099-12-31	
+19490013	ZMYM3 on GRCh38 chrX: Substitution in position 71250082 of G replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5399633	2024-02-26	2099-12-31	
+19490365	VHL on GRCh38 chr3: Insertion in position 10146546 to 10146547 of T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5400001	2024-02-26	2099-12-31	
+19490460	NOTCH1 transcript: Deletion in position 5353 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5400099	2024-02-26	2099-12-31	
+19490720	ATM on GRCh38 chr11: Substitution in position 108271372 of C replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5400361	2024-02-26	2099-12-31	
+19491864	RUNX1 transcript: Deletion in position 469 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5401547	2024-02-26	2099-12-31	
+19491946	ACVR2A transcript: Deletion in position 1327 to 1328 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5401628	2024-02-26	2099-12-31	
+19492202	LARP4B protein: Frameshift substitution in position 137 of L replaced by A followed by a new reading frame extending for 2 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5401889	2024-02-26	2099-12-31	
+19492238	CPEB3 protein: Substitution in position 183 of Q replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5401924	2024-02-26	2099-12-31	
+19492251	TET2 transcript: Substitution in position 5750 of G replaced by A measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5401939	2024-02-26	2099-12-31	
+19493057	NF1 protein: Substitution in position 82 of S replaced by F measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5402778	2024-02-26	2099-12-31	
+19493252	PTCH1 transcript: Substitution in position 384 of G replaced by A measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5402982	2024-02-26	2099-12-31	
+19493867	KMT2D on GRCh38 chr12: Substitution in position 49038613 of G replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5403614	2024-02-26	2099-12-31	
+19494666	MTOR protein: Substitution in position 273 of R replaced by Q measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5404435	2024-02-26	2099-12-31	
+19494845	MTOR on GRCh38 chr1: Substitution in position 11128108 of T replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5404619	2024-02-26	2099-12-31	
+19496339	SPEN protein: Frameshift substitution in position 1073 of S replaced by C followed by a new reading frame extending for 21 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5406155	2024-02-26	2099-12-31	
+19498024	FOXO3 protein: Frameshift substitution in position 505 of S replaced by L followed by a new reading frame extending for 10 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5407887	2024-02-26	2099-12-31	
+19498243	ZFHX3 transcript: Duplication of position 5044 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5408117	2024-02-26	2099-12-31	
+19498318	PTCH1 protein: Substitution in position 1163 of G replaced by V measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5408193	2024-02-26	2099-12-31	
+19499444	FAT1 protein: Frameshift substitution in position 2416 of D replaced by E followed by a new reading frame extending for 9 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5409377	2024-02-26	2099-12-31	
+19500008	PTCH1 transcript: Deletion in position 1581 to 1582 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5409950	2024-02-26	2099-12-31	
+19500970	PTPRC transcript: Duplication of position 2810 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5410943	2024-02-26	2099-12-31	
+19501779	ATRX protein: Frameshift substitution in position 274 of L replaced by F followed by a new reading frame extending for 8 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5411787	2024-02-26	2099-12-31	
+19504884	KMT2D protein: Substitution in position 2257 of V replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5414995	2024-02-26	2099-12-31	
+19505553	FAT1 on GRCh38 chr4: Substitution in position 186604390 of A replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5415692	2024-02-26	2099-12-31	
+19505559	EGFR transcript: [Deletion in position 2235 to 2243; 2245G=; 2248G=; Deletion in position 2250 to 2277 and insertion of AACATCTCCGAAAGCCAACAAGGAAATC]	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5415699	2024-02-26	2099-12-31	
+19505563	EWSR1 on GRCh38 chr22: Substitution in position 29287497 of T replaced by C measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5415704	2024-02-26	2099-12-31	
+19507082	ARID1A protein: Frameshift substitution in position 407 of P replaced by L followed by a new reading frame extending for 26 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5417273	2024-02-26	2099-12-31	
+19507429	ATM on GRCh38 chr11: Deletion in position 108235685 to 108235686 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5417627	2024-02-26	2099-12-31	
+19508096	POLD1 transcript: Substitution in position 1972 of C replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5418317	2024-02-26	2099-12-31	
+19509238	PDGFRB on GRCh38 chr5: Substitution in position 150121265 of A replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5419496	2024-02-26	2099-12-31	
+19509751	MAP3K1 transcript: Duplication of position 2210 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5420028	2024-02-26	2099-12-31	
+19511086	FOXO3 on GRCh38 chr6: Deletion in position 108664804 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5421399	2024-02-26	2099-12-31	
+19511395	CDH1 transcript: Deletion in position 1399 to 1400 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5421716	2024-02-26	2099-12-31	
+19513010	PMS2 protein: Substitution in position 160 of Q replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5423384	2024-02-26	2099-12-31	
+19513453	ACVR1B transcript: Duplication of position 829 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5424098	2024-02-26	2099-12-31	
+19514430	APC protein: Frameshift substitution in position 835 of S replaced by V followed by a new reading frame extending for 13 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5424850	2024-02-26	2099-12-31	
+19514719	TP53 protein: Frameshift substitution in position 136 of Q replaced by W followed by a new reading frame extending for an uncertain number of amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5425149	2024-02-26	2099-12-31	
+19515458	TGFBR2 protein: Frameshift substitution in position 128 of K replaced by A followed by a new reading frame extending for 3 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5425906	2024-02-26	2099-12-31	
+19515835	NOTCH2 transcript: Deletion in position 4810 to 4811 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5426294	2024-02-26	2099-12-31	
+19517185	PRDM1 protein: Frameshift substitution in position 248 of Y replaced by S followed by a new reading frame extending for 4 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5427694	2024-02-26	2099-12-31	
+19517478	BRAF protein: Substitution in position 621 of N replaced by T measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5427991	2024-02-26	2099-12-31	
+19517767	RB1 on GRCh38 chr13: Duplication of position 48304048 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5428292	2024-02-26	2099-12-31	
+19518087	CIC on GRCh38 chr19: Deletion in position 42287192 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5428969	2024-02-26	2099-12-31	
+19518093	KMT2C on GRCh38 chr7: Substitution in position 152154423 of G replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5428627	2024-02-26	2099-12-31	
+19519406	ARID2 on GRCh38 chr12: Substitution in position 45891865 of G replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5429983	2024-02-26	2099-12-31	
+19519664	KDM6A transcript: Insertion in position 2072 to 2073 of TA measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5430258	2024-02-26	2099-12-31	
+19519957	APC transcript: Substitution in position 8323 of G replaced by A measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5430555	2024-02-26	2099-12-31	
+19520949	CHEK2 transcript: Substitution in position 1129 of G replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5431581	2024-02-26	2099-12-31	
+19521017	CHEK2 protein: Substitution in position 175 of V replaced by A measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5431652	2024-02-26	2099-12-31	
+19521381	RNF43 transcript: Substitution in position 2178 of G replaced by A measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5432028	2024-02-26	2099-12-31	
+19522118	PTCH1 protein: Frameshift substitution in position 454 of C replaced by P followed by a new reading frame extending for 3 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5432782	2024-02-26	2099-12-31	
+19522120	EP300 on GRCh38 chr22: Deletion in position 41177513 to 41177514 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5432784	2024-02-26	2099-12-31	
+19524530	NBN transcript: Substitution in position 1982 of C replaced by A measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5435264	2024-02-26	2099-12-31	
+19524561	ZRSR2 on GRCh38 chrX: Deletion in position 15791007 to 15791008 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5435293	2024-02-26	2099-12-31	
+19525157	WNK2 on GRCh38 chr9: Substitution in position 93289438 of C replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5435909	2024-02-26	2099-12-31	
+19525350	FBXO11 protein: Frameshift substitution in position 772 of R replaced by N followed by a new reading frame extending for 3 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5436112	2024-02-26	2099-12-31	
+19527052	KDM6A protein: Frameshift substitution in position 1165 of V replaced by F followed by a new reading frame extending for 10 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5437872	2024-02-26	2099-12-31	
+19527706	TSC2 on GRCh38 chr16: Deletion in position 2079642 to 2079654 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5438547	2024-02-26	2099-12-31	
+19528617	APC on GRCh38 chr5: Deletion in position 112840089 to 112840092 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5439481	2024-02-26	2099-12-31	
+19529227	ZFHX3 on GRCh38 chr16: Duplication of position 72794391 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5440120	2024-02-26	2099-12-31	
+19529863	NOTCH1 protein: Frameshift substitution in position 2341 of S replaced by P followed by a new reading frame extending for 7 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5440773	2024-02-26	2099-12-31	
+19529866	BCOR transcript: Substitution in position 5161 of A replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5440776	2024-02-26	2099-12-31	
+19530248	BAP1 transcript: Deletion in position 1518 to 1522 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5441166	2024-02-26	2099-12-31	
+19530483	ATM on GRCh38 chr11: Deletion in position 108268564 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5441408	2024-02-26	2099-12-31	
+19530910	KDM6A protein: Frameshift substitution in position 648 of N replaced by I followed by a new reading frame extending for 3 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5441838	2024-02-26	2099-12-31	
+19531881	EP300 transcript: Substitution in position 1465 of A replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5442837	2024-02-26	2099-12-31	
+19533067	KDM5C protein: Frameshift substitution in position 1446 of H replaced by Q followed by a new reading frame extending for 26 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5444065	2024-02-26	2099-12-31	
+19533102	FAT1 on GRCh38 chr4: Substitution in position 186708918 of T replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5444103	2024-02-26	2099-12-31	
+19533787	TBX3 on GRCh38 chr12: Deletion in position 114682926 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5444818	2024-02-26	2099-12-31	
+19534785	KDM6A protein: Frameshift substitution in position 937 of M replaced by T followed by a new reading frame extending for 10 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5445849	2024-02-26	2099-12-31	
+19535070	APC protein: Substitution in position 658 of E replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5446141	2024-02-26	2099-12-31	
+19537072	PTPRD transcript: Substitution in position 1720 of G replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5448185	2024-02-26	2099-12-31	
+19539387	CDH1 protein: Substitution in position 298 of A replaced by T measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5450582	2024-02-26	2099-12-31	
+19539404	APC on GRCh38 chr5: Duplication of position 112815528 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5450600	2024-02-26	2099-12-31	
+19539459	TET2 protein: Frameshift substitution in position 535 of N replaced by K followed by a new reading frame extending for 6 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5450656	2024-02-26	2099-12-31	
+19540175	COL4A3 transcript: Substitution in position 680 of G replaced by A measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5451405	2024-02-26	2099-12-31	
+19540331	PDGFRB on GRCh38 chr5: Substitution in position 150136967 of G replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5451566	2024-02-26	2099-12-31	
+19541408	ACVR2A on GRCh38 chr2: Substitution in position 147899874 of C replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5452677	2024-02-26	2099-12-31	
+19542002	WNK2 transcript: Deletion in position 4620 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5453290	2024-02-26	2099-12-31	
+19543216	KDM6A on GRCh38 chrX: Substitution in position 44961323 of G replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5454550	2024-02-26	2099-12-31	
+19543685	NOTCH3 protein: Substitution in position 497 of S replaced by L measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5455035	2024-02-26	2099-12-31	
+19543937	APC protein: Frameshift substitution in position 1936 of S replaced by V followed by a new reading frame extending for 13 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5455294	2024-02-26	2099-12-31	
+19544471	CASP8 transcript: Deletion in position 1380 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5455847	2024-02-26	2099-12-31	
+19544714	PAX5 on GRCh38 chr9: Substitution in position 36966716 of C replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5456093	2024-02-26	2099-12-31	
+19544845	ATM transcript: Substitution in position 7777 of C replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5456221	2024-02-26	2099-12-31	
+19545556	KDM6A transcript: Substitution in position 3151 of G replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5456943	2024-02-26	2099-12-31	
+19545589	TP53 on GRCh38 chr17: Deletion in position 7674200 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5456977	2024-02-26	2099-12-31	
+19546236	ATM on GRCh38 chr11: Substitution in position 108331498 of G replaced by C measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5457646	2024-02-26	2099-12-31	
+19546496	TP53 transcript: Deletion in position 1140 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5457917	2024-02-26	2099-12-31	
+19547030	ATM transcript: Deletion in position 5118 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5458464	2024-02-26	2099-12-31	
+19547399	KDM6A on GRCh38 chrX: Deletion in position 45083510 to 45083511 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5458841	2024-02-26	2099-12-31	
+19547600	EWSR1 on GRCh38 chr22: Substitution in position 29297727 of G replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5459044	2024-02-26	2099-12-31	
+19549077	TP53 on GRCh38 chr17: Substitution in position 7675208 of C replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5460565	2024-02-26	2099-12-31	
+19550462	WT1 transcript: Substitution in position 1238 of T replaced by G measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5461998	2024-02-26	2099-12-31	
+19551279	TET2 transcript: Duplication of position 5844 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5462844	2024-02-26	2099-12-31	
+19551657	SETD2 transcript: Deletion in position 4168 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5463232	2024-02-26	2099-12-31	
+19552471	RB1 protein: Frameshift substitution in position 150 of R replaced by K followed by a new reading frame extending for 7 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5464076	2024-02-26	2099-12-31	
+19552692	CTNNB1 protein: Substitution in position 535 of R replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5464297	2024-02-26	2099-12-31	
+19552757	KMT2D transcript: Deletion in position 1720 to 1722 and Insertion of G measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5464362	2024-02-26	2099-12-31	
+19553089	MAP3K1 on GRCh38 chr5: Duplication of position 56872865 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5464709	2024-02-26	2099-12-31	
+19553412	EGFR on GRCh38 chr7: [Deletion in position 55174779 to 55174788; Deletion in position 55174790 to 55174794; Substitution in position 55174796 of G replaced by C]	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5465041	2024-02-26	2099-12-31	
+19553720	CDH1 on GRCh38 chr16: Deletion in position 68823433 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5465352	2024-02-26	2099-12-31	
+19553875	PTEN protein: Frameshift substitution in position 122 of I replaced by W followed by a new reading frame extending for an uncertain number of amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5465518	2024-02-26	2099-12-31	
+19555062	RB1 on GRCh38 chr13: Substitution in position 48459769 of G replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5466722	2024-02-26	2099-12-31	
+19555113	WT1 protein: Frameshift substitution in position 387 of A replaced by L followed by a new reading frame extending for 4 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5466776	2024-02-26	2099-12-31	
+19555511	SETD2 transcript: Substitution in position 844 of G replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5467185	2024-02-26	2099-12-31	
+19555817	STAG2 on GRCh38 chrX: Substitution in position 124083431 of G replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5467498	2024-02-26	2099-12-31	
+19556826	VHL on GRCh38 chr3: Deletion in position 10146580 to 10146581 and Insertion of G measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5468535	2024-02-26	2099-12-31	
+19557530	TNFAIP3 transcript: Deletion in position 2111 to 2112 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5469272	2024-02-26	2099-12-31	
+19558124	CDH1 protein: Frameshift substitution in position 110 of F replaced by V followed by a new reading frame extending for an uncertain number of amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5469884	2024-02-26	2099-12-31	
+19560161	STK11 on GRCh38 chr19: Deletion in position 1220594 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5471960	2024-02-26	2099-12-31	
+19560510	NF1 protein: Substitution in position 845 of C replaced by Y measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5472325	2024-02-26	2099-12-31	
+19560865	MAP1S protein: Substitution in position 440 of C replaced by Y measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5472685	2024-02-26	2099-12-31	
+19561617	TET2 on GRCh38 chr4: Substitution in position 105234922 of C replaced by G measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5473452	2024-02-26	2099-12-31	
+19561846	PTEN protein: Substitution in position 101 of I replaced by T measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5473692	2024-02-26	2099-12-31	
+19561990	SETD2 protein: Substitution in position 1805 of E replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5473838	2024-02-26	2099-12-31	
+19562373	KMT2D on GRCh38 chr12: Duplication of position 49049690 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5474223	2024-02-26	2099-12-31	
+19563201	CSMD3 protein: Substitution in position 1222 of C replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5475057	2024-02-26	2099-12-31	
+19563207	PTPN6 on GRCh38 chr12: Duplication of position 6956530 to 6956531 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5475063	2024-02-26	2099-12-31	
+19563800	ARID1A protein: Frameshift substitution in position 727 of R replaced by W followed by a new reading frame extending for an uncertain number of amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5475669	2024-02-26	2099-12-31	
+19564561	PTPN13 on GRCh38 chr4: Substitution in position 86758304 of G replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5476445	2024-02-26	2099-12-31	
+19565901	KMT2D transcript: Substitution in position 3760 of G replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5477807	2024-02-26	2099-12-31	
+19566015	VHL on GRCh38 chr3: Deletion in position 10142104 to 10142114 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5477924	2024-02-26	2099-12-31	
+19566422	KMT2C on GRCh38 chr7: Substitution in position 152176598 of G replaced by C measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5478337	2024-02-26	2099-12-31	
+19567629	CUX1 transcript: Substitution in position 2950 of C replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5479566	2024-02-26	2099-12-31	
+19567647	ATR transcript: Substitution in position 7435 of G replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5479589	2024-02-26	2099-12-31	
+19568952	CHEK2 protein: Substitution in position 394 of E replaced by K measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5480914	2024-02-26	2099-12-31	
+19572061	KMT2D transcript: Substitution in position 2434 of G replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5484106	2024-02-26	2099-12-31	
+19573995	GNAQ transcript: Substitution in position 627 of A replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5486078	2024-02-26	2099-12-31	
+19574689	TSC2 on GRCh38 chr16: Substitution in position 2084273 of G replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5486797	2024-02-26	2099-12-31	
+19575059	SETD1B transcript: Deletion in position 4082 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5487175	2024-02-26	2099-12-31	
+19576834	SETD2 protein: Frameshift substitution in position 2162 of H replaced by L followed by a new reading frame extending for an uncertain number of amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5489018	2024-02-26	2099-12-31	
+19577423	ATRX on GRCh38 chrX: Duplication of position 77654145 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5489631	2024-02-26	2099-12-31	
+19577563	FGFR3 on GRCh38 chr4: Substitution in position 1806548 of G replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5489774	2024-02-26	2099-12-31	
+19579420	FUS on GRCh38 chr16: Substitution in position 31190791 of A replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5491694	2024-02-26	2099-12-31	
+19579952	PDGFRB protein: Substitution in position 370 of R replaced by C measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5492242	2024-02-26	2099-12-31	
+19580085	SOS1 protein: Substitution in position 215 of Y replaced by H measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5492378	2024-02-26	2099-12-31	
+19581091	RANBP2 protein: Frameshift substitution in position 3068 of F replaced by L followed by a new reading frame extending for 10 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5493413	2024-02-26	2099-12-31	
+19585202	TET2 transcript: Deletion in position 2083 to 2084 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5497618	2024-02-26	2099-12-31	
+19585498	JAK1 protein: Frameshift substitution in position 246 of D replaced by I followed by a new reading frame extending for 3 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5497924	2024-02-26	2099-12-31	
+19585622	NOTCH2 on GRCh38 chr1: Deletion in position 119916317 to 119916318 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5498051	2024-02-26	2099-12-31	
+19585860	RAD21 on GRCh38 chr8: Insertion in position 116857312 to 116857313 of ACGAA measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5498299	2024-02-26	2099-12-31	
+19586108	TET2 transcript: Substitution in position 4624 of C replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5498560	2024-02-26	2099-12-31	
+19587551	KMT2D transcript: Insertion in position 5561 to 5562 of TCAGTGC measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5500040	2024-02-26	2099-12-31	
+19588246	ATR transcript: Substitution in position 4975 of G replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5500746	2024-02-26	2099-12-31	
+19590255	PIK3CA protein: Substitution in position 111 of K replaced by N measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5502833	2024-02-26	2099-12-31	
+19591245	MEN1 transcript: Deletion in position 1431 to 1440 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5503852	2024-02-26	2099-12-31	
+19591631	TMPRSS2 transcript: Deletion in position -57+3179 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5504247	2024-02-26	2099-12-31	
+19591793	TCF3 protein: Substitution in position 621 of R replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5504412	2024-02-26	2099-12-31	
+19592407	TET2 protein: Substitution in position 708 of S replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5505049	2024-02-26	2099-12-31	
+19592745	NF2 on GRCh38 chr22: Deletion in position 29673423 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5505391	2024-02-26	2099-12-31	
+19593200	ARID1A protein: Substitution in position 521 of Q replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5505850	2024-02-26	2099-12-31	
+19593336	APC transcript: Substitution in position 4217 of A replaced by G measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5505995	2024-02-26	2099-12-31	
+19593611	BAP1 protein: Substitution in position 200 of E replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5506277	2024-02-26	2099-12-31	
+19594047	CASP8 on GRCh38 chr2: Substitution in position 201284884 of C replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5506729	2024-02-26	2099-12-31	
+19594154	BRCA1 protein: Frameshift substitution in position 989 of F replaced by L followed by a new reading frame extending for 11 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5506839	2024-02-26	2099-12-31	
+19595061	LATS2 on GRCh38 chr13: Substitution in position 20981516 of G replaced by C measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5507771	2024-02-26	2099-12-31	
+19595299	WT1 protein: Frameshift substitution in position 268 of V replaced by T followed by a new reading frame extending for 32 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5508014	2024-02-26	2099-12-31	
+19595455	CSMD3 transcript: Substitution in position 4018 of G replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5508177	2024-02-26	2099-12-31	
+19597043	KNL1 transcript: Duplication of position 3199 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5509818	2024-02-26	2099-12-31	
+19597401	MTOR protein: Substitution in position 1888 of F replaced by L measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5510185	2024-02-26	2099-12-31	
+19597840	APC protein: Frameshift substitution in position 772 of T replaced by I followed by a new reading frame extending for 5 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5510640	2024-02-26	2099-12-31	
+19598021	MEN1 protein: Frameshift substitution in position 1 of M replaced by F followed by a new reading frame extending for an uncertain number of amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5510826	2024-02-26	2099-12-31	
+19598443	RANBP2 protein: Substitution in position 596 of R replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5511253	2024-02-26	2099-12-31	
+19599460	APC on GRCh38 chr5: Deletion in position 112840223 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5512294	2024-02-26	2099-12-31	
+19599659	CUX1 protein: Substitution in position 74 of E replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5512500	2024-02-26	2099-12-31	
+19600794	RBM10 on GRCh38 chrX: Deletion in position 47147494 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5513666	2024-02-26	2099-12-31	
+19601979	ATRX protein: Substitution in position 1656 of L replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5514886	2024-02-26	2099-12-31	
+19602215	ASXL2 on GRCh38 chr2: Duplication of position 25799410 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5515169	2024-02-26	2099-12-31	
+19602594	ASXL1 on GRCh38 chr20: Deletion in position 32434459 to 32434469 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5515514	2024-02-26	2099-12-31	
+19603253	APC transcript: Substitution in position 2938 of A replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5516196	2024-02-26	2099-12-31	
+19604351	MAP2K4 on GRCh38 chr17: Deletion in position 12020955 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5517324	2024-02-26	2099-12-31	
+19604541	BAP1 on GRCh38 chr3: Deletion in position 52403787 to 52403788 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5517519	2024-02-26	2099-12-31	
+19605136	MYC protein: Substitution in position 74 of P replaced by T measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5518137	2024-02-26	2099-12-31	
+19605630	TP53 transcript: Substitution in position 154 of C replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5518640	2024-02-26	2099-12-31	
+19605969	JAK1 on GRCh38 chr1: Substitution in position 64883373 of C replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5519033	2024-02-26	2099-12-31	
+19606898	NF2 on GRCh38 chr22: Deletion in position 29674928 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5520193	2024-02-26	2099-12-31	
+19607505	MAP3K1 transcript: Substitution in position 3595 of C replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5520555	2024-02-26	2099-12-31	
+19607580	FGFR2 on GRCh38 chr10: Deletion in position 121503765 to 121503766 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5520631	2024-02-26	2099-12-31	
+19607680	CDH1 transcript: Deletion in position 1254 to 1255 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5520734	2024-02-26	2099-12-31	
+19608078	NUDT15 transcript: Substitution in position 415 of C replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5521154	2024-02-26	2099-12-31	
+19608103	KMT2D transcript: Substitution in position 14644 of G replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5521179	2024-02-26	2099-12-31	
+19608347	TCF3 protein: Frameshift substitution in position 634 of Q replaced by R followed by a new reading frame extending for 11 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5521435	2024-02-26	2099-12-31	
+19608483	DDB2 protein: Frameshift substitution in position 79 of G replaced by P followed by a new reading frame extending for an uncertain number of amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5521576	2024-02-26	2099-12-31	
+19608606	DNMT3A protein: Frameshift substitution in position 808 of T replaced by L followed by a new reading frame extending for 2 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5521703	2024-02-26	2099-12-31	
+19609675	BRIP1 protein: Substitution in position 251 of R replaced by C measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5522807	2024-02-26	2099-12-31	
+19609873	TET2 protein: Frameshift substitution in position 1244 of L replaced by T followed by a new reading frame extending for 24 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5523008	2024-02-26	2099-12-31	
+19611123	PTEN on GRCh38 chr10: Substitution in position 87952134 of G replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5524292	2024-02-26	2099-12-31	
+19612377	CHEK2 protein: Substitution in position 57 of S replaced by F measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5525580	2024-02-26	2099-12-31	
+19612779	BRIP1 on GRCh38 chr17: Deletion in position 61684063 to 61684066 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5525996	2024-02-26	2099-12-31	
+19613456	RUNX1 transcript: Substitution in position 601 of C replaced by G measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5526686	2024-02-26	2099-12-31	
+19613891	APC transcript: Deletion in position 4359 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5527126	2024-02-26	2099-12-31	
+19614259	PTPRC on GRCh38 chr1: Substitution in position 198744111 of G replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5527507	2024-02-26	2099-12-31	
+19615635	VHL transcript: Deletion in position 303 to 321 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5528922	2024-02-26	2099-12-31	
+19617276	SMARCD1 on GRCh38 chr12: Deletion in position 50094499 to 50094500 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5530607	2024-02-26	2099-12-31	
+19617439	KDM6A transcript: Duplication of position 1704 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5530818	2024-02-26	2099-12-31	
+19617462	PTCH1 on GRCh38 chr9: Deletion in position 95458100 to 95458101 and Insertion of TT measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5530797	2024-02-26	2099-12-31	
+19617927	FBXW7 transcript: Insertion in position 1395 to 1396 of CCGATGCGGT measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5531272	2024-02-26	2099-12-31	
+19618137	ARID1A on GRCh38 chr1: Deletion in position 26696914 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5531482	2024-02-26	2099-12-31	
+19619380	TNFRSF14 transcript: Substitution in position 495 of C replaced by A measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5532748	2024-02-26	2099-12-31	
+19619392	APC on GRCh38 chr5: Substitution in position 112839636 of A replaced by G measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5532762	2024-02-26	2099-12-31	
+19619984	PIK3R1 transcript: Deletion in position 1393 to 1409 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5533369	2024-02-26	2099-12-31	
+19620714	MSH2 on GRCh38 chr2: Substitution in position 47480770 of A replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5534123	2024-02-26	2099-12-31	
+19620926	TSC1 transcript: Substitution in position 838 of C replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5534342	2024-02-26	2099-12-31	
+19621903	KDM5C protein: Frameshift substitution in position 1130 of T replaced by R followed by a new reading frame extending for an uncertain number of amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5535345	2024-02-26	2099-12-31	
+19622035	CDKN2A on GRCh38 chr9: Deletion in position 21974680 to 21974681 and Insertion of AT measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5535477	2024-02-26	2099-12-31	
+19622045	PTPRB protein: Frameshift substitution in position 2201 of N replaced by K followed by a new reading frame extending for an uncertain number of amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5535489	2024-02-26	2099-12-31	
+19622240	KDM6A on GRCh38 chrX: Deletion in position 45069641 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5535692	2024-02-26	2099-12-31	
+19622745	CBFA2T3 protein: Frameshift substitution in position 363 of R replaced by P followed by a new reading frame extending for 29 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5536208	2024-02-26	2099-12-31	
+19624906	CDH1 on GRCh38 chr16: Deletion in position 68801717 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5538434	2024-02-26	2099-12-31	
+19625618	PMS2 on GRCh38 chr7: Duplication of position 5995573 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5539164	2024-02-26	2099-12-31	
+19626685	TSC1 protein: Frameshift substitution in position 231 of P replaced by T followed by a new reading frame extending for 11 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5540265	2024-02-26	2099-12-31	
+19627228	TET1 protein: Frameshift substitution in position 1155 of S replaced by I followed by a new reading frame extending for 18 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5540817	2024-02-26	2099-12-31	
+19627541	LRP1B protein: Substitution in position 1045 of E replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5541140	2024-02-26	2099-12-31	
+19628131	ZNRF3 transcript: Substitution in position 631 of C replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5541739	2024-02-26	2099-12-31	
+19628961	PTCH1 transcript: Substitution in position 466 of C replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5542590	2024-02-26	2099-12-31	
+19629180	NOTCH1 transcript: Substitution in position 6969 of C replaced by G measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5542806	2024-02-26	2099-12-31	
+19629680	PMS2 transcript: Deletion in position 2192 to 2196 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5543325	2024-02-26	2099-12-31	
+19629822	WT1 transcript: Deletion in position 1151 to 1158 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5543480	2024-02-26	2099-12-31	
+19630348	TP63 protein: Substitution in position 511 of P replaced by T measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5544021	2024-02-26	2099-12-31	
+19630461	SETD2 transcript: Insertion in position 4361 to 4362 of AAAGC measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5544134	2024-02-26	2099-12-31	
+19630789	TP53 transcript: Deletion in position 121 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5544519	2024-02-26	2099-12-31	
+19631343	APC on GRCh38 chr5: Deletion in position 112835025 to 112835026 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5545035	2024-02-26	2099-12-31	
+19631707	ATM transcript: Deletion in position 8750 measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5545404	2024-02-26	2099-12-31	
+19632125	ARID2 on GRCh38 chr12: Substitution in position 45860936 of C replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5545832	2024-02-26	2099-12-31	
+19632169	NF2 on GRCh38 chr22: Deletion in position 29678223 to 29678227 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5545880	2024-02-26	2099-12-31	
+19632292	CDKN2A protein: Substitution in position 145 of I replaced by T measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5546009	2024-02-26	2099-12-31	
+19632655	PTEN protein: Frameshift substitution in position 264 of M replaced by C followed by a new reading frame extending for 2 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5546372	2024-02-26	2099-12-31	
+19633367	PIK3R1 protein: Frameshift substitution in position 478 of Q replaced by K followed by a new reading frame extending for 2 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5547096	2024-02-26	2099-12-31	
+19633504	PHF6 transcript: Substitution in position 565 of G replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5547239	2024-02-26	2099-12-31	
+19633901	CIC on GRCh38 chr19: Deletion in position 42295147 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5547638	2024-02-26	2099-12-31	
+19635039	FBXW7 on GRCh38 chr4: Substitution in position 152411674 of G replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5548803	2024-02-26	2099-12-31	
+19635217	ATRX protein: Frameshift substitution in position 479 of P replaced by Q followed by a new reading frame extending for an uncertain number of amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5548984	2024-02-26	2099-12-31	
+19635312	KMT2C protein: Frameshift substitution in position 218 of D replaced by V followed by a new reading frame extending for an uncertain number of amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5549082	2024-02-26	2099-12-31	
+19635620	CREBBP on GRCh38 chr16: Substitution in position 3769347 of G replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5549398	2024-02-26	2099-12-31	
+19637161	ARNT transcript: Insertion in position 1175 to 1176 of G measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5550965	2024-02-26	2099-12-31	
+19637200	CEBPA protein: Frameshift substitution in position 275 of K replaced by R followed by a new reading frame extending for an uncertain number of amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5551010	2024-02-26	2099-12-31	
+19637303	KMT2D protein: Substitution in position 2811 of Q replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5551111	2024-02-26	2099-12-31	
+19637351	ARHGAP35 protein: Substitution in position 993 of Y replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5551160	2024-02-26	2099-12-31	
+19637932	PIK3R1 protein: Substitution in position 348 of R replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5551758	2024-02-26	2099-12-31	
+19638315	GATA3 on GRCh38 chr10: Duplication of position 8063998 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5552142	2024-02-26	2099-12-31	
+19638404	RAD51C protein: Substitution in position 287 of T replaced by A measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5552235	2024-02-26	2099-12-31	
+19639224	KMT2C protein: Frameshift substitution in position 2700 of D replaced by M followed by a new reading frame extending for 13 amino acids measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5553073	2024-02-26	2099-12-31	
+19639766	KEAP1 protein: Substitution in position 542 of E replaced by an early stop codon measurement	Measurement	OMOP Genomic	Gene Protein Variant	S	OMOP5553617	2024-02-26	2099-12-31	
+19641325	dic(14;19)(p11;q13) measurement	Measurement	OMOP Genomic	Structural Variant	S	OMOP5430050	2024-02-26	2099-12-31	
+19641547	der(15;22)(q10;q10) measurement	Measurement	OMOP Genomic	Structural Variant	S	OMOP5502642	2024-02-26	2099-12-31	
+19641853	t(1;12)(p33;q15) measurement	Measurement	OMOP Genomic	Structural Variant	S	OMOP5503174	2024-02-26	2099-12-31	
+19642982	t(9;12)(p23;q15) measurement	Measurement	OMOP Genomic	Structural Variant	S	OMOP5432889	2024-02-26	2099-12-31	
+19643017	t(9;17)(q22;q11.2) measurement	Measurement	OMOP Genomic	Structural Variant	S	OMOP5490583	2024-02-26	2099-12-31	
+19643390	FGFR2 gene rearrangement measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5471238	2024-02-26	2099-12-31	
+19643611	ASXL1 exon 13 mutation measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5479290	2024-02-26	2099-12-31	
+19644264	KMT2A::BCL9L gene fusion measurement	Measurement	OMOP Genomic	Gene Variant	S	OMOP5517593	2024-02-26	2099-12-31	
+19644393	MKRN1::BRAF gene fusion measurement	Measurement	OMOP Genomic	Gene Variant	S	OMOP5534036	2024-02-26	2099-12-31	
+21490978	Salicylurate/Creatinine [Molar ratio] in Urine	Measurement	LOINC	Lab Test	S	79478-4	2016-06-24	2099-12-31	
+21492086	How much difficulty do you currently have playing cards or Bingo or other light recreational activities [PROMIS]	Observation	LOINC	Survey	S	79057-6	2016-06-24	2099-12-31	
+21492811	Staphylococcus aureus capsular polysaccharide enzyme cpe gene [Presence] in Nose by NAA with probe detection	Measurement	LOINC	Lab Test	S	79447-9	2016-06-24	2099-12-31	
+21492916	Near death thoughts and feelings to be shared [Reported]	Observation	LOINC	Survey	S	81359-2	2016-06-24	2099-12-31	
+21493046	Occupational Allergen Mix 5 (Isocyanate HDI+MDI+TDI+Phthalic anhydride) IgE Ab RAST class [Presence] in Serum by Multidisk	Measurement	LOINC	Lab Test	S	82093-6	2016-06-24	2099-12-31	
+21493601	My ability to concentrate has been good in past 7 days [PROMIS]	Observation	LOINC	Survey	S	81519-1	2016-06-24	2099-12-31	
+21494070	Birth year	Observation	LOINC	Survey	S	80904-6	2016-06-24	2099-12-31	
+21494542	Tricuspid valve Effective regurgitant orifice area by US.doppler+Calculated by PISA method	Measurement	LOINC	Clinical Observation	S	81093-7	2016-06-24	2099-12-31	
+21494575	Provider race OMB.1997	Observation	LOINC	Clinical Observation	S	81887-2	2016-06-24	2099-12-31	
+21494668	Xanthopterin/Creatinine [Molar ratio] in Urine	Measurement	LOINC	Lab Test	S	80185-2	2016-06-24	2099-12-31	
+35607956	Hypotrichosis	Condition	SNOMED	Disorder	S	763658004	2018-07-31	2099-12-31	
+35608091	Autosomal recessive spastic paraplegia type 43	Condition	SNOMED	Disorder	S	764736001	2018-07-31	2099-12-31	
+35609417	Swindon Foot and Ankle Questionnaire	Measurement	SNOMED	Staging / Scales	S	1081871000000108	2017-10-01	2099-12-31	
+35622344	KLHL9-related early-onset distal myopathy	Condition	SNOMED	Disorder	S	763776004	2018-07-31	2099-12-31	
+35622801	Myopathy with hexagonally cross-linked tubular arrays	Condition	SNOMED	Disorder	S	764994007	2018-07-31	2099-12-31	
+35623631	Acute myeloid leukemia and myelodysplastic syndrome related to topoisomerase type 2 inhibitor	Condition	SNOMED	Disorder	S	766046007	2018-07-31	2099-12-31	
+35623639	Adverse reaction to adrenochrome	Observation	SNOMED	Disorder	S	766054009	2018-07-31	2099-12-31	
+35625724	Bilateral iritis due to diabetes mellitus	Condition	SNOMED	Disorder	S	768799003	2018-07-31	2099-12-31	
+35810268	Frequency of tiredness / lethargy in last 2 weeks	Observation	UK Biobank	Question	S	2080	2012-01-05	2099-12-31	
+35810312	Had menopause	Observation	UK Biobank	Question	S	2724	2012-01-05	2099-12-31	
+35810736	Target heart rate achieved	Observation	UK Biobank	Variable	S	6034	2012-01-05	2099-12-31	
+35810807	Word associated with tiny	Observation	UK Biobank	Variable	S	6536	2017-06-07	2099-12-31	
+35810868	Variation in diet (pilot)	Observation	UK Biobank	Question	S	10912	2012-01-05	2099-12-31	
+35811020	Probable recurrent major depression (moderate)	Observation	UK Biobank	Variable	S	20124	2015-01-20	2099-12-31	
+35811249	Liking for baked/steamed fish	Observation	UK Biobank	Question	S	20608	2020-01-08	2099-12-31	
+35811561	Recent medication for asthma	Observation	UK Biobank	Question	S	22167	2015-07-10	2099-12-31	
+35814425	Calcium missing reason	Observation	UK Biobank	Variable	S	30685	2018-06-01	2099-12-31	
+35814870	Dessert consumers	Observation	UK Biobank	Question	S	102130	2012-09-14	2099-12-31	
+35814919	Low fat hard cheese intake	Observation	UK Biobank	Question	S	102810	2012-09-14	2099-12-31	
+35814927	Mozzarella intake	Observation	UK Biobank	Question	S	102890	2012-09-14	2099-12-31	
+35815006	Prune intake	Observation	UK Biobank	Question	S	104420	2012-09-14	2099-12-31	
+35815159	27	Observation	UK Biobank	Answer	S	100650-27	2012-01-05	2099-12-31	
+35815194	31	Observation	UK Biobank	Answer	S	100294-3	2012-01-05	2099-12-31	
+35815378	About once a week	Observation	UK Biobank	Answer	S	100662-3	2012-01-05	2099-12-31	
+35819524	Heart disease	Observation	UK Biobank	Answer	S	1010-1	2012-10-05	2099-12-31	
+35819583	Horse-shoe U	Observation	UK Biobank	Value	S	92-21	2012-01-05	2099-12-31	
+35820295	Less than 5 minutes	Observation	UK Biobank	Answer	S	100356-1	2012-01-05	2099-12-31	
+35821349	Never/rarely	Observation	UK Biobank	Answer	S	100536-1	2012-01-05	2099-12-31	
+35823239	rice/oat/vegetable milk	Observation	UK Biobank	Answer	S	100015-2108	2012-09-14	2099-12-31	
+35824405	Tomato ketchup	Observation	UK Biobank	Value	S	78-339	2012-09-26	2099-12-31	
+35824846	Very happy	Observation	UK Biobank	Answer	S	537-2	2016-10-25	2099-12-31	
+35826202	Hong Kong	Observation	UK Biobank	Value	S	89-211	2013-03-05	2099-12-31	
+35827137	Sri Lanka	Observation	UK Biobank	Value	S	89-241	2013-03-05	2099-12-31	
+35945754	CCDC136 (coiled-coil domain containing 136) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	22225	2007-05-02	2099-12-31	
+35946737	PTH (parathyroid hormone) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	9606	2001-06-22	2099-12-31	
+35947060	ZBTB7A (zinc finger and BTB domain containing 7A) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	18078	2004-01-16	2099-12-31	
+35947516	RASSF9 (Ras association domain family member 9) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	15739	2001-05-23	2099-12-31	
+35949222	BACH2 (BTB domain and CNC homolog 2) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	14078	2001-04-27	2099-12-31	
+35949243	TMEM163 (transmembrane protein 163) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	25380	2006-07-04	2099-12-31	
+35949434	CMTM5 (CKLF like MARVEL transmembrane domain containing 5) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	19176	2002-09-10	2099-12-31	
+35949917	ABCC4 (ATP binding cassette subfamily C member 4) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	55	1999-10-26	2099-12-31	
+35950449	ST8SIA3 (ST8 alpha-N-acetyl-neuraminide alpha-2	Measurement	OMOP Genomic	Genetic Variation	S	14269	2000-12-19	2099-12-31	
+35951271	ORC1 (origin recognition complex subunit 1) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	8487	1997-06-24	2099-12-31	
+35952010	RPL8 (ribosomal protein L8) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	10368	1994-05-16	2099-12-31	
+35952575	TMEM191B (transmembrane protein 191B) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	33600	2007-08-14	2099-12-31	
+35952711	SLC15A5 (solute carrier family 15 member 5) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	33455	2008-12-10	2099-12-31	
+35952952	ARL13A (ADP ribosylation factor like GTPase 13A) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	31709	2004-06-17	2099-12-31	
+35953792	P2RX3 (purinergic receptor P2X 3) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	8534	1997-10-09	2099-12-31	
+35954385	ZNF668 (zinc finger protein 668) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	25821	2005-03-18	2099-12-31	
+35954692	POTEA (POTE ankyrin domain family member A) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	33893	2007-11-21	2099-12-31	
+35957441	GSTT4 (glutathione S-transferase theta 4) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	26930	2007-08-17	2099-12-31	
+35957685	KLHDC9 (kelch domain containing 9) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	28489	2007-07-19	2099-12-31	
+35957839	B3GAT3 (beta-1	Measurement	OMOP Genomic	Genetic Variation	S	923	2000-01-07	2099-12-31	
+35958149	KRT38 (keratin 38) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	6456	1998-11-11	2099-12-31	
+35958645	KRT33B (keratin 33B) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	6451	1998-04-21	2099-12-31	
+35960582	HAUS6 (HAUS augmin like complex subunit 6) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	25948	2004-01-06	2099-12-31	
+35961254	HSD17B4 (hydroxysteroid 17-beta dehydrogenase 4) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	5213	1994-09-14	2099-12-31	
+35962480	UTP23 (UTP23 small subunit processome component) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	28224	2005-08-16	2099-12-31	
+35963245	TEX101 (testis expressed 101) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	30722	2004-11-03	2099-12-31	
+35963261	PKP4 (plakophilin 4) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	9026	1998-10-14	2099-12-31	
+35964153	FDFT1 (farnesyl-diphosphate farnesyltransferase 1) gene variant measurement	Measurement	OMOP Genomic	Genetic Variation	S	3629	1993-07-26	2099-12-31	
+35977783	FLT3 on GRCh38 chr13: Substitution in position 28018504 of T replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5080428	2024-02-26	2099-12-31	
+35978598	ERBB2 on GRCh38 chr17: Substitution in position 39724736 of T replaced by C measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5075627	2024-02-26	2099-12-31	
+35979281	DNMT3B on GRCh38 chr20: Substitution in position 32802416 of T replaced by G measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5072222	2024-02-26	2099-12-31	
+35979315	RUNX1 on GRCh38 chr21: Substitution in position 34886866 of T replaced by C measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5106760	2024-02-26	2099-12-31	
+35979836	MSH2 on GRCh38 chr2: Substitution in position 47416399 of C replaced by G measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5090226	2024-02-26	2099-12-31	
+35980091	FANCD2 on GRCh38 chr3: Substitution in position 10046659 of A replaced by G measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5077992	2024-02-26	2099-12-31	
+35981258	PIK3CG on GRCh38 chr7: Substitution in position 106869488 of A replaced by G measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5099139	2024-02-26	2099-12-31	
+35983761	ATM transcript: Substitution in position 743 of G replaced by A measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5057460	2024-02-26	2099-12-31	
+35984088	BAP1 transcript: Substitution in position 277 of A replaced by G measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5059286	2024-02-26	2099-12-31	
+35984192	BARD1 transcript: Substitution in position 1028 of C replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5059402	2024-02-26	2099-12-31	
+35986268	DDR2 transcript: Substitution in position 757 of G replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5071788	2024-02-26	2099-12-31	
+35987800	ETV6 transcript: Substitution in position 641 of C replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5077104	2024-02-26	2099-12-31	
+35989869	MED12 transcript: Substitution in position 3670 of C replaced by G measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5086372	2024-02-26	2099-12-31	
+35996524	TSC1 transcript: Substitution in position 658 of G replaced by T measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5111522	2024-02-26	2099-12-31	
+36018810	MLH1 on GRCh38 chr3: Substitution in position 37040199 of G replaced by T measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5088716	2024-02-26	2099-12-31	
+36031449	Date of most recent lab test for condition of interest	Observation	LOINC	Clinical Observation	S	96550-9	2020-12-15	2099-12-31	
+36203578	Enterococcus sp DNA [Presence] by NAA with non-probe detection in Positive blood culture	Measurement	LOINC	Lab Test	S	85775-5	2017-06-23	2099-12-31	
+36204502	1 step (curb) - functional ability during 3 day assessment period [CMS Assessment]	Observation	LOINC	Survey	S	83196-6	2017-06-23	2099-12-31	
+36246691	Painaid BRF Oral Product	Drug	RxNorm	Branded Dose Group	C	1359101	2016-08-01	2099-12-31	
+36304460	Acinetobacter sp rpsA gene [Presence] by Probe in Positive blood culture	Measurement	LOINC	Lab Test	S	88244-9	2018-06-15	2099-12-31	
+36304641	MDS v3.0 - RAI v1.16.1 - Health conditions - NP	Observation	LOINC	Survey	S	88959-2	2018-06-15	2099-12-31	
+36304674	Patient history and diagnoses - transfer or discharge from agency during assessment period [CMS Assessment]	Observation	LOINC	Survey	S	86256-5	2018-06-15	2099-12-31	
+36304830	During the last 7 days	Observation	LOINC	Survey	S	88400-7	2018-06-15	2099-12-31	
+36659922	UGT2B15 gene c.253G>T [Genotype] in Blood or Tissue by Molecular genetics method Nominal	Measurement	LOINC	Lab Test	S	94418-1	2020-06-17	2099-12-31	
+36660275	Dermatan sulfate and heparan sulfate and keratan sulfate panel - DBS	Measurement	LOINC	Lab Test	S	94586-5	2020-06-17	2099-12-31	
+36674550	Genus Actinotalea	Observation	SNOMED	Organism	S	781519004	2019-01-31	2099-12-31	
+36676841	Pain of right shoulder blade	Condition	SNOMED	Clinical Finding	S	774134007	2019-01-31	2099-12-31	
+36680577	Hypomyelination with brain stem and spinal cord involvement and leg spasticity	Condition	SNOMED	Disorder	S	777999008	2019-01-31	2099-12-31	
+36680578	3q26q27 microdeletion syndrome	Condition	SNOMED	Disorder	S	778000002	2019-01-31	2099-12-31	
+36680580	SCN2A encephalopathy	Condition	SNOMED	Disorder	S	778002005	2019-01-31	2099-12-31	
+36684080	Enostosis of left pelvis	Condition	SNOMED	Disorder	S	782165009	2019-01-31	2099-12-31	
+36685098	Labyrinthitis of bilateral inner ears	Condition	SNOMED	Disorder	S	1083951000119101	2019-01-31	2099-12-31	
+36685138	Central perforation of left tympanic membrane	Condition	SNOMED	Disorder	S	1088361000119107	2019-01-31	2099-12-31	
+36685194	Recurrent inflammation of vulva caused by human herpes simplex virus	Condition	SNOMED	Disorder	S	1090441000119102	2019-01-31	2099-12-31	
+36685699	Royal Signals personnel	Observation	SNOMED	Social Context	S	1100741000000107	2018-10-01	2099-12-31	
+36685774	Able to swallow soft and bite-sized food - IDDSI (International Dysphagia Diet Standardisation Initiative) level 6	Observation	SNOMED	Clinical Finding	S	1102511000000103	2018-10-01	2099-12-31	
+36685942	Abscess of left thigh	Condition	SNOMED	Disorder	S	10632431000119101	2019-01-31	2099-12-31	
+36685957	Cellulitis of right knee	Condition	SNOMED	Disorder	S	10633311000119108	2019-01-31	2099-12-31	
+36687181	Bilateral instability of both feet	Condition	SNOMED	Clinical Finding	S	16018271000119108	2019-01-31	2099-12-31	
+36712677	Bleeding requiring transfusion	Condition	SNOMED	Clinical Finding	S	1.0421E+13	2017-01-31	2099-12-31	
+36712858	Injury due to activity involving bicycle riding	Condition	SNOMED	Disorder	S	1.37301E+14	2017-01-31	2099-12-31	
+36713335	Partial thickness macular hole of left eye	Condition	SNOMED	Disorder	S	6.77921E+14	2017-01-31	2099-12-31	
+36714333	Autosomal dominant Charcot-Marie-Tooth disease type 2N	Condition	SNOMED	Disorder	S	719515001	2017-01-31	2099-12-31	
+36714860	Parainfluenza virus 4 IgG	Observation	SNOMED	Substance	S	720267007	2017-01-31	2099-12-31	
+36715190	Clostridium botulinum Group II	Observation	SNOMED	Organism	S	720709007	2017-01-31	2099-12-31	
+36715318	Yersinia enterocolitica serogroup O:433	Observation	SNOMED	Organism	S	720870002	2017-01-31	2099-12-31	
+36715430	Sepsis due to urinary tract infection	Condition	SNOMED	Disorder	S	721104000	2017-01-31	2099-12-31	
+36715486	Intramucosal venous dilatation of esophagus	Condition	SNOMED	Disorder	S	721178001	2017-01-31	2099-12-31	
+36715517	Familial developmental dysphasia	Condition	SNOMED	Disorder	S	721220004	2017-01-31	2099-12-31	
+36715673	Injury of brachial plexus trunk	Condition	SNOMED	Disorder	S	721409001	2017-01-31	2099-12-31	
+36715727	Posterior cord syndrome of thoracic spinal cord at T4 level	Condition	SNOMED	Disorder	S	721472006	2017-01-31	2099-12-31	
+36716558	Non-amnestic Alzheimer disease	Condition	SNOMED	Disorder	S	722600006	2017-01-31	2099-12-31	
+36716772	Familial Ménière disease	Condition	SNOMED	Disorder	S	722949001	2017-01-31	2099-12-31	
+36716848	Parastomal hernia with gangrene	Condition	SNOMED	Disorder	S	723065009	2017-01-31	2099-12-31	
+36716896	Primary progressive apraxia of speech	Condition	SNOMED	Disorder	S	723124007	2017-01-31	2099-12-31	
+36716937	Carcinosarcoma of uterine adnexa	Condition	SNOMED	Disorder	S	723173003	2017-01-31	2099-12-31	
+36717061	Bartonella callosciuri	Observation	SNOMED	Organism	S	718788002	2017-01-31	2099-12-31	
+36717506	Infection caused by Pseudallescheria	Condition	SNOMED	Disorder	S	721802003	2017-01-31	2099-12-31	
+36728420	BRCA2 transcript: Substitution in position 7506 of C replaced by G measurement	Measurement	OMOP Genomic	Gene RNA Variant	S	OMOP5063398	2024-02-26	2099-12-31	
+36739140	CIC on GRCh38 chr19: Substitution in position 42293039 of G replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5070754	2024-02-26	2099-12-31	
+36741227	CHEK2 on GRCh38 chr22: Deletion in position 28734445 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5069654	2024-02-26	2099-12-31	
+36746458	APC on GRCh38 chr5: Duplication of position 112839533 to 112839534 measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5053021	2024-02-26	2099-12-31	
+36749267	EGFR on GRCh38 chr7: Substitution in position 55174730 of G replaced by A measurement	Measurement	OMOP Genomic	Gene DNA Variant	S	OMOP5073739	2024-02-26	2099-12-31	
+37016891	Overlapping primary malignant neoplasm of bone and articular cartilage of upper limb	Condition	SNOMED	Disorder	S	713038003	2016-01-31	2099-12-31	
+37017453	Coccidiosis co-occurrent with human immunodeficiency virus infection	Condition	SNOMED	Disorder	S	713729005	2016-01-31	2099-12-31	
+37018450	Able to ride horse	Observation	SNOMED	Clinical Finding	S	715005009	2016-01-31	2099-12-31	
+37018505	Able to transfer from car to wheelchair	Observation	SNOMED	Clinical Finding	S	715078007	2016-01-31	2099-12-31	
+37018858	Priapism due to trauma	Condition	SNOMED	Disorder	S	3.68291E+14	2016-01-31	2099-12-31	
+37018972	Primary adenocarcinoma of fallopian tube	Condition	SNOMED	Disorder	S	9.9101E+13	2016-01-31	2099-12-31	
+37019472	Hy Ag inferred phenotype [Presence] in Blood or Tissue by Molecular genetics method	Measurement	LOINC	Lab Test	S	92503-2	2019-06-21	2099-12-31	
+37019476	PROMIS pediatric item bank - psychological stress experiences - version 1.0	Observation	LOINC	Survey	S	91324-4	2019-06-21	2099-12-31	
+37019537	How short of breath did you get walking up 20 stairs (2 flights) without stopping over past 7 days [PROMIS]	Observation	LOINC	Survey	S	92153-6	2019-06-21	2099-12-31	
+37019539	My child's appetite changed in past 7 days [PROMIS.PARENTPROXY]	Observation	LOINC	Survey	S	92074-4	2019-06-21	2099-12-31	
+37019668	MDS v3.0 - RAI v1.17.2 - Correction request during assessment period [CMS Assessment]	Observation	LOINC	Survey	S	90490-4	2019-06-21	2099-12-31	
+37019971	Volunteer Name	Observation	LOINC	Clinical Observation	S	91697-3	2019-06-21	2099-12-31	
+37020371	Reason for specimen rejection [Type]	Measurement	LOINC	Lab Test	S	93048-7	2019-06-21	2099-12-31	
+37020858	Are you able to push an empty refrigerator forward 1 yard (1 m) [PROMIS]	Observation	LOINC	Survey	S	91731-0	2019-06-21	2099-12-31	
+37021096	Thinking about your child's life	Observation	LOINC	Survey	S	92120-5	2019-06-21	2099-12-31	
+37021307	Functional training plan to perform [Identifier]	Observation	LOINC	Clinical Observation	S	92556-0	2019-06-21	2099-12-31	
+37021365	K Ag inferred phenotype [Presence] in Blood or Tissue by Molecular genetics method	Measurement	LOINC	Lab Test	S	92496-9	2019-06-21	2099-12-31	
+37108921	Enthesopathy of left knee	Condition	SNOMED	Disorder	S	15724161000119107	2017-07-31	2099-12-31	
+37109676	Pierre Robin sequence faciodigital anomaly syndrome	Condition	SNOMED	Disorder	S	723461007	2017-07-31	2099-12-31	
+37109898	Primary chondrosarcoma of articular cartilage of limb	Condition	SNOMED	Disorder	S	723844004	2017-07-31	2099-12-31	
+37109948	Perceptual disturbances and seizures co-occurrent and due to alcohol withdrawal	Condition	SNOMED	Disorder	S	723926008	2017-07-31	2099-12-31	
+37110471	Perceptual disturbances and seizures co-occurrent and due to psychoactive substance withdrawal	Condition	SNOMED	Disorder	S	724728006	2017-07-31	2099-12-31	
+37110800	Occlusion of corpus cavernosum	Condition	SNOMED	Disorder	S	725220006	2017-07-31	2099-12-31	
+37110922	Congenital central hypothyroidism due to thyrotropin-releasing hormone receptor deficiency	Condition	SNOMED	Disorder	S	725462002	2017-07-31	2099-12-31	
+37111682	Rhubarb	Observation	SNOMED	Substance	S	726750009	2017-07-31	2099-12-31	
+37116365	Encephalopathy	Condition	SNOMED	Disorder	S	733049004	2017-07-31	2099-12-31	
+37116488	Traumatic dislocation of joint of thoracic wall	Condition	SNOMED	Disorder	S	733216002	2017-07-31	2099-12-31	
+37116655	Congenital nephrotic syndrome	Condition	SNOMED	Disorder	S	733453005	2017-07-31	2099-12-31	
+37116866	Non-mucinous minimally invasive adenocarcinoma	Observation	SNOMED	Morph Abnormality	S	733885003	2017-07-31	2099-12-31	
+37117017	Lacrimal sac mucocele fluid	Observation	SNOMED	Substance	S	734117006	2017-07-31	2099-12-31	
+37117151	Chronic rupture of anterior cruciate ligament of right knee	Condition	SNOMED	Disorder	S	1075411000119104	2017-07-31	2099-12-31	
+37117279	Fluoroquinolone resistant Campylobacter	Observation	SNOMED	Organism	S	726497006	2017-07-31	2099-12-31	
+37119080	Peritoneal pockets and endometriosis	Condition	SNOMED	Disorder	S	724455003	2017-07-31	2099-12-31	
+37151286	Clothing observable	Observation	SNOMED	Observable Entity	S	1172687009	2021-09-30	2099-12-31	
+37155216	Streptomyces andamanensis	Observation	SNOMED	Organism	S	1.831E+12	2022-11-30	2099-12-31	
+37155563	Nocardia jiangsuensis	Observation	SNOMED	Organism	S	2.5391E+13	2022-12-31	2099-12-31	
+37159486	Superior surgical margin	Observation	SNOMED	Morph Abnormality	S	2190001000004100	2021-10-31	2099-12-31	
+37159670	Ramularia-like organism	Observation	SNOMED	Organism	S	6.12311E+14	2022-09-01	2099-12-31	
+37160592	Accidental lithium and/or lithium compound overdose	Condition	SNOMED	Disorder	S	1162818005	2021-09-30	2099-12-31	
+37160711	Candida colitis	Condition	SNOMED	Disorder	S	1163116000	2021-09-30	2099-12-31	
+37160966	Neonatal Staphylococcus epidermidis mastitis	Condition	SNOMED	Disorder	S	1172639004	2021-09-30	2099-12-31	
+37161188	Left elbow joint ligament sprain	Condition	SNOMED	Disorder	S	11771091000119101	2021-09-30	2099-12-31	
+37161324	Right ring finger blister with infection	Condition	SNOMED	Disorder	S	11786601000119102	2022-08-31	2099-12-31	
+37162363	PEX12 deficiency	Condition	SNOMED	Disorder	S	1187530005	2022-01-31	2099-12-31	
+37162852	Drug induced anal ulceration	Condition	SNOMED	Disorder	S	1197693001	2022-02-28	2099-12-31	
+37162903	CIDEC-related familial partial lipodystrophy	Condition	SNOMED	Disorder	S	1197749008	2022-02-28	2099-12-31	
+37163554	Primary lymphedema with visceral involvement	Condition	SNOMED	Disorder	S	1217250003	2022-04-30	2099-12-31	
+37163672	Diffuse contracture of eye socket with volume and surface loss	Condition	SNOMED	Disorder	S	1217632002	2022-05-31	2099-12-31	
+37163738	Dislocation of left knee joint prosthesis	Condition	SNOMED	Disorder	S	12199041000119109	2022-09-30	2099-12-31	
+37164532	Traumatic entrapment of eyeball	Condition	SNOMED	Disorder	S	1231261008	2022-06-30	2099-12-31	
+37165053	Pressure collapse of lung due to anesthesia during labor and delivery	Condition	SNOMED	Disorder	S	1237363002	2022-08-31	2099-12-31	
+37165192	Acute pustular skin eruption	Condition	SNOMED	Disorder	S	1251376007	2022-09-30	2099-12-31	
+37165322	Weeverfish venom	Observation	SNOMED	Substance	S	1252697000	2022-10-31	2099-12-31	
+37165432	Ruxolitinib dependence	Condition	SNOMED	Disorder	S	1254815008	2022-10-31	2099-12-31	
+37165928	Superficial vegetating pyoderma gangrenosum	Condition	SNOMED	Disorder	S	1256045009	2022-11-30	2099-12-31	
+37165981	Surgical margin closest to primary malignant neoplasm in excised specimen of esophagus	Measurement	SNOMED	Observable Entity	S	1258866006	2023-01-31	2099-12-31	
+37166025	Sequestrum of permanent tooth bud due to and following dental trauma	Condition	SNOMED	Disorder	S	1258974008	2022-11-30	2099-12-31	
+37166064	Autonomic disorder due to leprosy	Condition	SNOMED	Disorder	S	1259055009	2023-01-31	2099-12-31	
+37166227	Primary carcinoma of duodenum	Condition	SNOMED	Disorder	S	1259357007	2022-12-31	2099-12-31	
+37166563	Primary lipid-rich urothelial carcinoma of urinary system	Condition	SNOMED	Disorder	S	1259713006	2022-12-31	2099-12-31	
+37166738	Carcinoma of ethmoidal sinus	Condition	SNOMED	Disorder	S	1260035002	2022-12-31	2099-12-31	
+37167254	Neonatal disorder caused by antibacterial transmitted via breast milk	Condition	SNOMED	Disorder	S	1264051004	2023-04-30	2099-12-31	
+37167364	Early neonatal disorder due to maternal epidural anesthesia during labor	Condition	SNOMED	Disorder	S	1264199001	2023-04-30	2099-12-31	
+37167469	Osteolysis of bone adjacent to knee joint prosthesis	Condition	SNOMED	Disorder	S	1264528008	2023-03-31	2099-12-31	
+37167659	Primary malignant dysgerminoma of ovary	Condition	SNOMED	Disorder	S	1268707007	2023-03-31	2099-12-31	
+37167709	Siberian elm (pollen) specific immunoglobulin E	Observation	SNOMED	Substance	S	1268868009	2023-03-31	2099-12-31	
+37168405	Histologic type of neoplasm of testis	Observation	SNOMED	Observable Entity	S	1279922003	2023-05-31	2099-12-31	
+37168569	Presence of primary malignant neoplasm of upper urinary tract at surgical margin in ureterectomy specimen	Measurement	SNOMED	Observable Entity	S	1285103009	2023-05-31	2099-12-31	
+37168846	Fracture of bone of shoulder girdle	Condition	SNOMED	Disorder	S	1286865009	2023-07-31	2099-12-31	
+37169361	Bilateral fallopian tube endometriosis	Condition	SNOMED	Disorder	S	15933461000119107	2023-06-30	2099-12-31	
+37170242	Megrim specific IgE antibody arbitrary concentration in serum	Measurement	SNOMED	Observable Entity	S	2.5091E+13	2023-06-07	2099-12-31	
+37170784	Pressure injury of right heel stage II	Condition	SNOMED	Disorder	S	2.9861E+13	2022-02-28	2099-12-31	
+37171606	Chronic visceral pain in abdominal region due to disorder	Condition	SNOMED	Disorder	S	3.9691E+13	2023-05-31	2099-12-31	
+37171681	Foreign body in left forearm	Condition	SNOMED	Disorder	S	4.0431E+13	2023-05-31	2099-12-31	
+37171687	Foreign body in right lower leg	Condition	SNOMED	Disorder	S	4.0501E+13	2023-05-31	2099-12-31	
+37171714	Hematoma of left elbow region	Condition	SNOMED	Disorder	S	4.1231E+13	2023-06-30	2099-12-31	
+37171722	Hematoma of left great toe	Condition	SNOMED	Disorder	S	4.1301E+13	2023-06-30	2099-12-31	
+37173575	Limited access to healthcare due to lack of time	Observation	SNOMED	Clinical Finding	S	6.21501E+14	2022-09-01	2099-12-31	
+37173606	Measles antigen qualitative result	Measurement	SNOMED	Observable Entity	S	6.2761E+13	2023-06-07	2099-12-31	
+37173865	Assistance with application for AmericaServes Program	Observation	SNOMED	Procedure	S	6.62141E+14	2023-03-01	2099-12-31	
+37174281	Visual field defect due to and following intracerebral hemorrhage	Condition	SNOMED	Disorder	S	745761781000119105	2023-06-30	2099-12-31	
+37174296	Acquired cerebellar atrophy	Condition	SNOMED	Disorder	S	800703961000119100	2023-06-30	2099-12-31	
+37204037	Vitamin K epoxide reductase complex 1 ultra-rapid metabolizer	Observation	SNOMED	Clinical Finding	S	787134009	2019-07-31	2099-12-31	
+37204403	Progressive myoclonic epilepsy type 5	Condition	SNOMED	Disorder	S	783055005	2019-07-31	2099-12-31	
+37205064	Familial infantile myoclonic epilepsy	Condition	SNOMED	Disorder	S	784342008	2019-07-31	2099-12-31	
+37208354	Royal College of Physicians NEWS2 (National Early Warning Score 2)	Measurement	SNOMED	Staging / Scales	S	1104061000000103	2019-06-01	2099-12-31	
+37209067	Abscess of pulp of left thumb	Condition	SNOMED	Disorder	S	10632271000119102	2019-07-31	2099-12-31	
+37209609	Bilateral hemorrhagic corpus luteum cysts	Condition	SNOMED	Disorder	S	16690641000119105	2019-07-31	2099-12-31	
+37309815	Chemical burn of left forearm	Condition	SNOMED	Disorder	S	12114201000119104	2020-01-31	2099-12-31	
+37309950	Hematoma of left foot	Condition	SNOMED	Disorder	S	11857301000119101	2020-01-31	2099-12-31	
+37310120	Open wound of left index finger due to dog bite	Condition	SNOMED	Disorder	S	10947331000119109	2020-01-31	2099-12-31	
+37310605	Benign neoplasm of left epididymis	Condition	SNOMED	Disorder	S	3.54141E+14	2020-01-31	2099-12-31	
+37310993	General pediatric specialty	Observation	SNOMED	Qualifier Value	S	2.4251E+13	2020-01-31	2099-12-31	
+37311250	Bilateral lower limb edema	Condition	SNOMED	Clinical Finding	S	816181009	2020-01-31	2099-12-31	
+37311343	Lasiobolidium	Observation	SNOMED	Organism	S	816048006	2020-01-31	2099-12-31	
+37311983	Henipavirus encephalitis	Condition	SNOMED	Disorder	S	788915008	2020-01-31	2099-12-31	
+37311987	Dissociative neurological symptom disorder co-occurrent with parkinsonism	Condition	SNOMED	Disorder	S	788911004	2020-01-31	2099-12-31	
+37394012	Has DOAC (direct-acting oral anticoagulant) alert card	Observation	SNOMED	Clinical Finding	S	1024711000000103	2016-04-01	2099-12-31	
+37394378	Hepatitis A IgM antibody test	Measurement	SNOMED	Observable Entity	S	1031141000000104	2016-04-01	2099-12-31	
+37395491	Arrival by helicopter air ambulance	Observation	SNOMED	Clinical Finding	S	1048051000000107	2016-04-01	2099-12-31	
+37395753	Carbapenem resistant Escherichia coli	Observation	SNOMED	Organism	S	715307006	2016-07-31	2099-12-31	
+37395759	Digitotalar dysmorphism	Condition	SNOMED	Disorder	S	715314008	2016-07-31	2099-12-31	
+37396131	Familial advanced sleep phase syndrome	Condition	SNOMED	Disorder	S	715829003	2016-07-31	2099-12-31	
+37396375	Morse Rawnsley Sargent syndrome	Condition	SNOMED	Disorder	S	716169009	2016-07-31	2099-12-31	
+37396891	Antineoplastic chemotherapy regimen	Observation	SNOMED	Procedure	S	716872004	2016-07-31	2099-12-31	
+37397198	Secondary intestinal lymphangiectasia	Condition	SNOMED	Disorder	S	717255008	2016-07-31	2099-12-31	
+37398551	HEp-2 (human epithelial type 2) cell autoantibody screening test	Measurement	SNOMED	Observable Entity	S	1009421000000106	2016-04-01	2099-12-31	
+37398939	Pituitary stalk interruption syndrome	Condition	SNOMED	Disorder	S	715727009	2016-07-31	2099-12-31	
+38003563	Hispanic or Latino	Ethnicity	Ethnicity	Ethnicity	S	Hispanic	1970-01-01	2099-12-31	
+38003564	Not Hispanic or Latino	Ethnicity	Ethnicity	Ethnicity	S	Not Hispanic	1970-01-01	2099-12-31	
+38003572	American Indian	Race	Race	Race	S	1.01	1970-01-01	2099-12-31	
+38003573	Alaska Native	Race	Race	Race	S	1.02	1970-01-01	2099-12-31	
+38003574	Asian Indian	Race	Race	Race	S	2.01	1970-01-01	2099-12-31	
+38003575	Bangladeshi	Race	Race	Race	S	2.02	1970-01-01	2099-12-31	
+38003576	Bhutanese	Race	Race	Race	S	2.03	1970-01-01	2099-12-31	
+38003577	Burmese	Race	Race	Race	S	2.04	1970-01-01	2099-12-31	
+38003578	Cambodian	Race	Race	Race	S	2.05	1970-01-01	2099-12-31	
+38003579	Chinese	Race	Race	Race	S	2.06	1970-01-01	2099-12-31	
+38003580	Taiwanese	Race	Race	Race	S	2.07	1970-01-01	2099-12-31	
+38003581	Filipino	Race	Race	Race	S	2.08	1970-01-01	2099-12-31	
+38003582	Hmong	Race	Race	Race	S	2.09	1970-01-01	2099-12-31	
+38003583	Indonesian	Race	Race	Race	S	2.1	1970-01-01	2099-12-31	
+38003584	Japanese	Race	Race	Race	S	2.11	1970-01-01	2099-12-31	
+38003585	Korean	Race	Race	Race	S	2.12	1970-01-01	2099-12-31	
+38003586	Laotian	Race	Race	Race	S	2.13	1970-01-01	2099-12-31	
+38003587	Malaysian	Race	Race	Race	S	2.14	1970-01-01	2099-12-31	
+38003588	Okinawan	Race	Race	Race	S	2.15	1970-01-01	2099-12-31	
+38003590	Sri Lankan	Race	Race	Race	S	2.17	1970-01-01	2099-12-31	
+38003591	Thai	Race	Race	Race	S	2.18	1970-01-01	2099-12-31	
+38003592	Vietnamese	Race	Race	Race	S	2.19	1970-01-01	2099-12-31	
+38003593	Iwo Jiman	Race	Race	Race	S	2.2	1970-01-01	2099-12-31	
+38003594	Maldivian	Race	Race	Race	S	2.21	1970-01-01	2099-12-31	
+38003595	Nepalese	Race	Race	Race	S	2.22	1970-01-01	2099-12-31	
+38003596	Singaporean	Race	Race	Race	S	2.23	1970-01-01	2099-12-31	
+38003597	Madagascar	Race	Race	Race	S	2.24	1970-01-01	2099-12-31	
+38003599	African American	Race	Race	Race	S	3.02	1970-01-01	2099-12-31	
+38003601	Bahamian	Race	Race	Race	S	3.04	1970-01-01	2099-12-31	
+38003602	Barbadian	Race	Race	Race	S	3.05	1970-01-01	2099-12-31	
+38003604	Dominica Islander	Race	Race	Race	S	3.07	1970-01-01	2099-12-31	
+38003605	Haitian	Race	Race	Race	S	3.08	1970-01-01	2099-12-31	
+38003606	Jamaican	Race	Race	Race	S	3.09	1970-01-01	2099-12-31	
+38003608	Trinidadian	Race	Race	Race	S	3.11	1970-01-01	2099-12-31	
+38003609	West Indian	Race	Race	Race	S	3.12	1970-01-01	2099-12-31	
+38003610	Polynesian	Race	Race	Race	S	4.01	1970-01-01	2099-12-31	
+38003611	Micronesian	Race	Race	Race	S	4.02	1970-01-01	2099-12-31	
+38003612	Melanesian	Race	Race	Race	S	4.03	1970-01-01	2099-12-31	
+38003613	Other Pacific Islander	Race	Race	Race	S	4.04	1970-01-01	2099-12-31	
+38003614	European	Race	Race	Race	S	5.01	1970-01-01	2099-12-31	
+38003615	Middle Eastern or North African	Race	Race	Race	S	5.02	1970-01-01	2099-12-31	
+38003616	Arab	Race	Race	Race	S	5.03	1970-01-01	2099-12-31	
+40219448	PANSS: General Psychopathology scale - Tension	Measurement	OMOP Extension	Staging / Scales	S	OMOP5000409	2020-10-18	2099-12-31	
+40391300	Glomangiomyoma	Condition	SNOMED	Disorder	S	189745002	2023-05-31	2099-12-31	
+40479565	Carrier of cystic fibrosis gene mutation	Observation	SNOMED	Clinical Finding	S	441520002	2009-07-31	2099-12-31	
+40481118	Testudo hermanni	Observation	SNOMED	Organism	S	444842006	2010-07-31	2099-12-31	
+40481302	Injury of superior glenoid labrum of shoulder joint	Condition	SNOMED	Disorder	S	441912008	2009-07-31	2099-12-31	
+40482223	Measurement of occult blood in gastric fluid specimen	Measurement	SNOMED	Procedure	S	442142008	2009-07-31	2099-12-31	
+40482440	Instability of foot joint	Condition	SNOMED	Clinical Finding	S	445153009	2010-07-31	2099-12-31	
+40482752	Equus caballus przewalskii	Observation	SNOMED	Organism	S	443650006	2010-01-31	2099-12-31	
+40483538	Atherosclerosis of bypass graft of limb	Condition	SNOMED	Disorder	S	442439008	2009-07-31	2099-12-31	
+40483548	Fracture of head of radius with dislocation of distal radioulnar joint and interosseous membrane disruption	Condition	SNOMED	Disorder	S	442448003	2009-07-31	2099-12-31	
+40484120	Small vessel cerebrovascular disease	Condition	SNOMED	Disorder	S	443929000	2010-01-31	2099-12-31	
+40486637	Non-Hodgkin's lymphoma of tonsil	Condition	SNOMED	Disorder	S	449292003	2011-07-31	2099-12-31	
+40486902	Psarocolius	Observation	SNOMED	Organism	S	446194008	2011-01-31	2099-12-31	
+40486949	Candida freyschussii	Observation	SNOMED	Organism	S	446236002	2011-01-31	2099-12-31	
+40487013	Ventricular septal defect of inlet of right aspect of ventricular septum	Condition	SNOMED	Disorder	S	447852001	2011-07-31	2099-12-31	
+40487960	Medication dosage interval too long	Observation	SNOMED	Clinical Finding	S	448056004	2011-07-31	2099-12-31	
+40490348	Measurement of Influenza A virus A/Port Chalmers/1/73 (H3N2) antibody	Measurement	SNOMED	Procedure	S	446943002	2011-01-31	2099-12-31	
+40491009	Thickened atrial septum	Condition	SNOMED	Disorder	S	448682007	2011-07-31	2099-12-31	
+40491466	Benign neoplasm of soft tissue of lower leg	Condition	SNOMED	Disorder	S	448732009	2011-07-31	2099-12-31	
+40491484	Sanguineous exudate from wound	Condition	SNOMED	Clinical Finding	S	448749002	2011-07-31	2099-12-31	
+40491866	Traumatic injury of celiac artery	Condition	SNOMED	Disorder	S	447260005	2011-01-31	2099-12-31	
+40492828	Aquila	Observation	SNOMED	Organism	S	447456005	2011-01-31	2099-12-31	
+40493255	Viral syndrome	Condition	SNOMED	Clinical Finding	S	445939008	2011-01-31	2099-12-31	
+40493303	Lutetium-177	Observation	SNOMED	Substance	S	447553000	2011-01-31	2099-12-31	
+40493516	Hemangioma of nose	Condition	SNOMED	Disorder	S	449175004	2011-07-31	2099-12-31	
+40661656	Patient treated for attention but not scored on the attention functional communication measure either at admission or at discharge (Deprecated)	Observation	HCPCS	HCPCS	S	G8608	2012-01-01	2013-12-31	
+40664691	Documentation that prophylactic antibiotics were given within 4 hours prior to surgical incision or intraoperatively (Deprecated)	Observation	HCPCS	HCPCS	S	G8702	2012-01-01	2014-12-31	
+40664732	Aneurysm minor diameter <= 5.5 cm for men (Deprecated)	Observation	HCPCS	HCPCS	S	G8827	2012-01-01	2013-12-31	
+40757668	Metabolic	Observation	LOINC	Survey	S	54537-6	2009-01-20	2099-12-31	
+40757985	Number of falls since admission or prior assessment [CMS Assessment]	Observation	LOINC	Survey	S	54854-5	2009-01-20	2099-12-31	
+40759216	Birth weight more or less than 9.0 pounds (4100 g) - Reported	Observation	LOINC	Clinical Observation	S	56095-3	2009-07-17	2099-12-31	
+40760000	Rickettsia typhi IgG Ab [Presence] in Serum by Immunofluorescence	Measurement	LOINC	Lab Test	S	56881-6	2009-08-17	2099-12-31	
+40761173	Rg sup(a) Ab [Presence] in Serum or Plasma	Measurement	LOINC	Lab Test	S	58072-0	2009-11-19	2099-12-31	
+40762939	chlordiazePOXIDE [Moles/volume] in Urine	Measurement	LOINC	Lab Test	S	59879-7	2010-06-24	2099-12-31	
+40763476	Honey bee phospholipase A2 recombinant (rApi m) 1 IgE Ab [Units/volume] in Serum	Measurement	LOINC	Lab Test	S	60421-5	2010-07-13	2099-12-31	
+40764185	Noroxycodone [Presence] in Urine by Confirmatory method	Measurement	LOINC	Lab Test	S	61424-8	2010-10-27	2099-12-31	
+40765814	Cayenne IgG Ab [Mass/volume] in Serum	Measurement	LOINC	Lab Test	S	63082-2	2011-01-10	2099-12-31	
+40765968	DNA double strand IgM Ab [Presence] in Serum by Immunofluorescence	Measurement	LOINC	Lab Test	S	63236-4	2011-01-18	2099-12-31	
+40766212	Methotrimeprazine [Mass/volume] in Serum or Plasma	Measurement	LOINC	Lab Test	S	63482-4	2011-02-14	2099-12-31	
+40766473	About how long did you work at that job or business	Observation	LOINC	Clinical Observation	S	63751-2	2011-03-08	2099-12-31	
+40766808	Cells analyzed [#] in Amniotic fluid by Molecular genetics method	Measurement	LOINC	Lab Test	S	64092-0	2011-03-30	2099-12-31	
+40767254	What time does your child usually get out of bed on weekend or vacation mornings [PhenX]	Observation	LOINC	Clinical Observation	S	64546-5	2011-04-20	2099-12-31	
+40767620	I am afraid to visit the dentist [SCARED-R]	Observation	LOINC	Clinical Observation	S	64919-4	2011-04-26	2099-12-31	
+40767717	When I talk	Observation	LOINC	Clinical Observation	S	65018-4	2011-04-28	2099-12-31	
+40767884	I see myself as someone who likes to cooperate with others [BFI]	Observation	LOINC	Clinical Observation	S	65186-9	2011-04-29	2099-12-31	
+40767975	I've gotten in trouble because I missed too much school [PhenX]	Observation	LOINC	Clinical Observation	S	65277-6	2011-04-29	2099-12-31	
+40768849	When did you have coffee or tea with cream and sugar [Date and time] [PhenX]	Observation	LOINC	Clinical Observation	S	66167-8	2011-06-02	2099-12-31	
+40769202	What color is an average spot of your psoriasis [PhenX]	Observation	LOINC	Clinical Observation	S	66542-2	2011-06-17	2099-12-31	
+40769212	Other biologicals - injected [PhenX]	Observation	LOINC	Clinical Observation	S	66552-1	2011-06-17	2099-12-31	
+40769478	In the last month	Observation	LOINC	Clinical Observation	S	66823-6	2011-06-22	2099-12-31	
+40769912	I almost always finish projects that I start [UPPS-R-Child]	Observation	LOINC	Clinical Observation	S	67283-2	2011-07-07	2099-12-31	
+40769993	Because of your problem	Observation	LOINC	Clinical Observation	S	67365-7	2011-07-08	2099-12-31	
+40770120	Cardiac arrest NEMSIS	Observation	LOINC	Clinical Observation	S	67502-5	2011-07-12	2099-12-31	
+40770121	Cardiac arrest cause NEMSIS	Observation	LOINC	Clinical Observation	S	67503-3	2011-07-12	2099-12-31	
+40770257	My school is usually clean and tidy [PhenX]	Observation	LOINC	Clinical Observation	S	67645-2	2011-07-25	2099-12-31	
+40770328	Reason for your hearing difficulty [PhenX]	Observation	LOINC	Clinical Observation	S	67718-7	2011-07-27	2099-12-31	
+40770549	How much difficulty do you currently have checking the accuracy of financial documents	Observation	LOINC	Survey	S	67953-0	2011-08-31	2099-12-31	
+40770798	My friends ignored me in the past 7 days [NeuroQol.Peds]	Observation	LOINC	Survey	S	68202-1	2011-09-01	2099-12-31	
+40771112	Are you always able to stop using drugs when you want to [SAMHSA]	Observation	LOINC	Survey	S	68527-1	2011-09-28	2099-12-31	
+40772159	Generalized anxiety disorder 7 item (GAD-7)	Observation	LOINC	Survey	S	69737-5	2011-12-02	2099-12-31	
+42527449	Can pronounce malapropism [NIH Toolbox]	Observation	LOINC	Clinical Observation	S	84643-6	2017-02-21	2099-12-31	
+42528758	Dicarboxyhexenoylcarnitine (C6:1-DC)/Creatinine [Molar ratio] in Urine	Measurement	LOINC	Lab Test	S	82584-4	2017-02-21	2099-12-31	
+42528768	FDA package insert REMS medication guide	Measurement	LOINC	Clinical Observation	S	82598-4	2017-02-21	2099-12-31	
+42528963	Sexual abuse--before 18 years old [ACE]	Observation	LOINC	Survey	S	82816-0	2017-02-21	2099-12-31	
+42534896	Bone cyst of left tibia	Condition	SNOMED	Disorder	S	1077131000119108	2018-01-31	2099-12-31	
+42534901	Osteomyelitis of right shoulder	Condition	SNOMED	Disorder	S	1077651000119107	2018-01-31	2099-12-31	
+42534978	Brachial neuritis of left upper limb	Condition	SNOMED	Disorder	S	12236641000119103	2018-01-31	2099-12-31	
+42537144	Injury of both visual cortices	Condition	SNOMED	Disorder	S	736321008	2018-01-31	2099-12-31	
+42538170	Infant of patient deceased	Observation	SNOMED	Context-dependent	S	739682007	2018-01-31	2099-12-31	
+42539154	Deep partial thickness burn of face	Condition	SNOMED	Disorder	S	762471001	2018-01-31	2099-12-31	
+42689824	Injury whilst cheerleading	Condition	SNOMED	Disorder	S	1068821000000102	2017-04-01	2099-12-31	
+42689876	Does stop use of energy	Condition	SNOMED	Clinical Finding	S	1069511000000102	2017-04-01	2099-12-31	
+42689903	Difficulty being optimistic	Observation	SNOMED	Clinical Finding	S	1069861000000102	2017-04-01	2099-12-31	
+42689973	Difficulty recognising generalised pain	Observation	SNOMED	Clinical Finding	S	1070721000000101	2017-04-01	2099-12-31	
+42690185	Does feel confident	Observation	SNOMED	Clinical Finding	S	1073391000000109	2017-04-01	2099-12-31	
+42690289	Unable to be hopeful for future	Observation	SNOMED	Clinical Finding	S	1074741000000103	2017-04-01	2099-12-31	
+42715927	Acetaminophen 0.0934 MG/MG / Ascorbic Acid 0.0333 MG/MG / Pheniramine 0.00333 MG/MG Oral Granules [FERVEX RHUME PARACETAMOL/VITAMINE C] Box of 8	Drug	RxNorm Extension	Branded Drug Box	S	OMOP2741590	2017-08-24	2099-12-31	
+42869234	I have had trouble recalling the name of an object while talking to someone in the past 7 days [FACIT]	Observation	LOINC	Survey	S	70766-1	2012-03-08	2099-12-31	
+42869709	Ages and Stages Questionnaires [ASQ]	Observation	LOINC	Survey	S	71954-2	2012-09-14	2099-12-31	
+42870020	Comprehensive care [FACIT]	Observation	LOINC	Survey	S	71076-4	2012-03-15	2099-12-31	
+42870149	The cancer-tumor experience makes my child a stronger person in the past 7 days [FACIT]	Observation	LOINC	Survey	S	71205-9	2012-03-20	2099-12-31	
+42870195	My child eats as much as s-he wants in the past 7 days [FACIT]	Observation	LOINC	Survey	S	71252-1	2012-03-20	2099-12-31	
+42870206	Social - family well-being - FAACT-parent_adoles [FACIT]	Observation	LOINC	Survey	S	71264-6	2012-09-14	2099-12-31	
+42870367	CMS - history of present illness panel	Observation	LOINC	Survey	S	71428-7	2012-03-26	2099-12-31	
+42872416	Non-allergic rhinitis	Condition	SNOMED	Disorder	S	3.11E+11	2012-07-31	2099-12-31	
+43020980	Escherichia coli serotype O111:H8	Observation	SNOMED	Organism	S	459088006	2013-01-31	2099-12-31	
+43021339	Abscess of wall of truncus arteriosus	Condition	SNOMED	Disorder	S	460619000	2013-01-31	2099-12-31	
+43021430	Anomalous origin of left common carotid artery from brachiocephalic artery	Condition	SNOMED	Disorder	S	460899002	2013-01-31	2099-12-31	
+43021636	Atresia of aortic arch with fibrous cord between left common carotid artery and right common carotid artery	Condition	SNOMED	Disorder	S	461577007	2013-01-31	2099-12-31	
+43021722	Acquired luminal obstruction of aortic arch between left common carotid artery and right common carotid artery	Condition	SNOMED	Disorder	S	461624009	2013-01-31	2099-12-31	
+43055314	Basophils/Leukocytes [Pure number fraction] in Synovial fluid by Manual count	Measurement	LOINC	Lab Test	S	71621-7	2012-05-07	2099-12-31	
+43055448	Oxazepam [Presence] in Saliva (oral fluid)	Measurement	LOINC	Lab Test	S	72614-1	2012-11-27	2099-12-31	
+43055545	I didn't believe in my right to live in last week [BSL-23]	Observation	LOINC	Survey	S	72711-5	2012-11-29	2099-12-31	
+43530624	Psychosocial dysfunction due to chronic pain	Observation	SNOMED	Clinical Finding	S	1.15491E+14	2013-07-31	2099-12-31	
+43530750	Bacteremia caused by Gram-negative bacteria	Condition	SNOMED	Clinical Finding	S	5.01E+11	2012-09-01	2099-12-31	
+43531010	Pre-existing type 2 diabetes mellitus in pregnancy	Condition	SNOMED	Disorder	S	609567009	2013-07-31	2099-12-31	
+43531284	Opisthorchis viverrini adult	Observation	SNOMED	Organism	S	608990004	2013-07-31	2099-12-31	
+43531684	Escherichia coli serotype O127:H21	Observation	SNOMED	Organism	S	609354007	2013-07-31	2099-12-31	
+43533327	Other physical or occupational therapy subsequent functional limitation	Observation	HCPCS	HCPCS	S	G8995	2013-01-01	2019-12-31	
+43533479	chlordiazePOXIDE induced platelet IgM Ab [Presence] in Serum or Plasma by Flow cytometry (FC)	Measurement	LOINC	Lab Test	S	73456-6	2013-01-25	2099-12-31	
+43533649	Ceftolozane+Tazobactam [Susceptibility] by Minimum inhibitory concentration (MIC)	Measurement	LOINC	Lab Test	S	73624-9	2013-03-08	2099-12-31	
+44782551	Embolism of middle cerebral artery	Condition	SNOMED	Disorder	S	699706000	2014-01-31	2099-12-31	
+44782555	Asymmetric mandibular arch form	Condition	SNOMED	Disorder	S	699718009	2014-01-31	2099-12-31	
+44783459	Genus Plasmodium schizont	Observation	SNOMED	Organism	S	699552009	2014-01-31	2099-12-31	
+44786871	Fondaparinux [Mass/volume] in Serum or Plasma by LC/MS/MS	Measurement	LOINC	Lab Test	S	74216-3	2013-10-28	2099-12-31	
+44788470	Procurator Fiscal report paid for	Observation	SNOMED	Clinical Finding	S	1.7481E+13	2004-01-31	2099-12-31	
+44789485	Letter sent to consultant	Observation	SNOMED	Clinical Finding	S	2.041E+12	2004-01-31	2099-12-31	
+44790091	GMS3 claim - immunisation (fee A) signed	Observation	SNOMED	Clinical Finding	S	2.2331E+13	2004-01-31	2099-12-31	
+44790677	Threshold assessment grid score: severe	Observation	SNOMED	Clinical Finding	S	2.05701E+14	2006-04-01	2099-12-31	
+44792143	In supported work	Observation	SNOMED	Clinical Finding	S	3.35881E+14	2008-04-01	2099-12-31	
+44792782	General practice physical activity questionnaire physical activity index: active	Observation	SNOMED	Clinical Finding	S	3.66241E+14	2008-10-01	2099-12-31	
+44792977	Seen in community disease modifying antirheumatic drug monitoring clinic	Observation	SNOMED	Clinical Finding	S	3.64831E+14	2008-10-01	2099-12-31	
+44793467	Newborn blood spot screening programme medium chain acyl-coenzyme A dehydrogenase deficiency repeat screening with further sample required	Observation	SNOMED	Clinical Finding	S	3.84371E+14	2009-04-01	2099-12-31	
+44800217	Combat signaller - Royal Engineers	Observation	SNOMED	Social Context	S	4.70441E+14	2009-04-01	2099-12-31	
+44802793	Osteoporosis enhanced services administration	Observation	SNOMED	Procedure	S	5.05141E+14	2009-10-01	2099-12-31	
+44803789	Lipid disorder monitoring second letter	Observation	SNOMED	Procedure	S	7.16751E+14	2010-10-01	2099-12-31	
+44803811	Patients' Association	Observation	SNOMED	Qualifier Value	S	7.22751E+14	2010-10-01	2099-12-31	
+44804636	Insulin sensitivity factor - breakfast	Observation	SNOMED	Observable Entity	S	7.68161E+14	2011-04-01	2099-12-31	
+44804861	Post-operative assessment at 6 weeks after secondary care discharge	Observation	SNOMED	Procedure	S	7.60301E+14	2011-04-01	2099-12-31	
+44804935	Bill paid	Observation	SNOMED	Clinical Finding	S	7.49171E+14	2010-10-01	2099-12-31	
+44806052	Referral by housing service	Observation	SNOMED	Procedure	S	7.90331E+14	2011-10-03	2099-12-31	
+44806542	Varicella zoster virus genotype determination by deoxyribonucleic acid analysis	Measurement	SNOMED	Procedure	S	8.21931E+14	2012-04-01	2099-12-31	
+44807136	Advice about speech	Observation	SNOMED	Procedure	S	8.15811E+14	2012-04-01	2099-12-31	
+44807236	Excepted from osteoarthritis quality indicators - patient unsuitable	Observation	SNOMED	Clinical Finding	S	8.05901E+14	2011-10-03	2099-12-31	
+44807421	Temperature of right foot	Measurement	SNOMED	Observable Entity	S	7.87151E+14	2011-10-03	2099-12-31	
+44808693	Education about urinary elimination care	Observation	SNOMED	Procedure	S	8.59911E+14	2013-04-01	2099-12-31	
+44809975	Stercoral perforation of colon	Condition	SNOMED	Disorder	S	8.95591E+14	2014-04-01	2099-12-31	
+44811206	Learning disability service	Observation	SNOMED	Qualifier Value	S	8.92581E+14	2014-04-01	2099-12-31	
+44811824	Right dorsalis pedis pulse palpable	Condition	SNOMED	Clinical Finding	S	9.15251E+14	2014-04-01	2099-12-31	
+44811900	Serum U1snRNP (uridine 1 small nuclear ribonucleoprotein) antibody measurement	Measurement	SNOMED	Procedure	S	9.08041E+14	2014-04-01	2099-12-31	
+44813051	PULHHEEMS - L6R	Observation	SNOMED	Clinical Finding	S	6.051E+12	2004-01-31	2099-12-31	
+44813837	Posterior tibial tendon insufficiency	Condition	SNOMED	Disorder	S	8.61061E+14	2013-04-01	2099-12-31	
+45757522	Noncompliant neuropathic urinary bladder	Condition	SNOMED	Disorder	S	1.7701E+13	2015-01-31	2099-12-31	
+45757581	Postoperative ptosis of eyelid	Condition	SNOMED	Disorder	S	2.2651E+13	2014-07-31	2099-12-31	
+45757630	Supernumerary permanent maxillary left first premolar tooth	Condition	SNOMED	Disorder	S	2.641E+12	2011-08-01	2099-12-31	
+45766184	Noninvoluting congenital hemangioma	Condition	SNOMED	Disorder	S	703295003	2014-07-31	2099-12-31	
+45766213	Mitral valve regurgitation due to infiltrative disease	Condition	SNOMED	Disorder	S	703327002	2014-07-31	2099-12-31	
+45766254	Berberine hydrochloride	Observation	SNOMED	Substance	S	703373000	2014-07-31	2099-12-31	
+45766449	Gardner fibroma	Observation	SNOMED	Morph Abnormality	S	703607009	2014-07-31	2099-12-31	
+45766738	Phonological awareness profile	Measurement	SNOMED	Staging / Scales	S	703964001	2015-01-31	2099-12-31	
+45766821	Stress fracture of shaft of femur	Condition	SNOMED	Disorder	S	704068005	2015-01-31	2099-12-31	
+45767057	At increased risk for environmental injury	Observation	SNOMED	Clinical Finding	S	704353000	2015-01-31	2099-12-31	
+45767603	Closed fracture of distal phalanx of lesser toe	Condition	SNOMED	Disorder	S	705067008	2015-01-31	2099-12-31	
+45768731	Invasive meningococcal disease	Condition	SNOMED	Disorder	S	707225006	2015-01-31	2099-12-31	
+45768842	Malignant melanoma of sphenoidal sinus	Condition	SNOMED	Disorder	S	707362006	2015-01-31	2099-12-31	
+45769045	Interleukin 1 receptor alpha chain	Observation	SNOMED	Substance	S	707611002	2015-01-31	2099-12-31	
+45770091	Pin prick sensation of left dermatome of second sacral nerve normal	Condition	SNOMED	Clinical Finding	S	9.23141E+14	2014-10-01	2099-12-31	
+45770265	Latent tuberculosis screening invitation email	Observation	SNOMED	Procedure	S	9.25641E+14	2014-10-01	2099-12-31	
+45770313	Pin prick sensation of left dermatome of seventh cervical nerve normal	Condition	SNOMED	Clinical Finding	S	9.26351E+14	2014-10-01	2099-12-31	
+45770914	Perforation of intraocular lens	Condition	SNOMED	Disorder	S	3.36751E+14	2014-07-31	2099-12-31	
+45771351	Congenital anomaly of precerebral vessel	Condition	SNOMED	Disorder	S	9.36271E+14	2014-10-01	2099-12-31	
+45772903	Sebaceous nevus	Condition	SNOMED	Disorder	S	707136009	2015-01-31	2099-12-31	
+45773084	Refusal of treatment by patient against dental advice	Observation	SNOMED	Context-dependent	S	703427001	2014-07-31	2099-12-31	
+46236309	HLA-C IgG Ab [Identifier] in Serum or Plasma by Immunoassay	Measurement	LOINC	Lab Test	S	77643-5	2015-06-06	2099-12-31	
+46236465	Could you get a friend or family member to help fix something at home if you need it [PROMIS]	Observation	LOINC	Survey	S	76879-6	2015-03-21	2099-12-31	
+46236749	t(12;21)(p13;q22.3)(ETV6	Measurement	LOINC	Lab Test	S	77039-6	2015-03-27	2099-12-31	
+46236973	Staphylococcus aureus.vancomycin resistance [Susceptibility] Qualitative	Measurement	LOINC	Lab Test	S	78004-9	2015-06-17	2099-12-31	
+46269742	Myocarditis caused by Influenza A virus	Condition	SNOMED	Disorder	S	10629351000119108	2015-07-31	2099-12-31	
+46270159	Acute ST segment elevation myocardial infarction of anterolateral wall	Condition	SNOMED	Disorder	S	15712881000119105	2015-07-31	2099-12-31	
+46270333	Stress fracture of tibia and fibula	Condition	SNOMED	Disorder	S	19350001000004107	2015-07-31	2099-12-31	
+46270406	Osteonecrosis of femur due to trauma	Condition	SNOMED	Disorder	S	2.98641E+14	2015-07-31	2099-12-31	
+46271041	More Than Words program	Observation	SNOMED	Procedure	S	709068007	2015-07-31	2099-12-31	
+46272280	Cardiolipin IgM	Observation	SNOMED	Substance	S	710615004	2015-07-31	2099-12-31	
+46272397	Family education about hygiene	Observation	SNOMED	Context-dependent	S	710753003	2015-07-31	2099-12-31	
+46272922	Thoracoabdominal organ finding	Condition	SNOMED	Clinical Finding	S	711373003	2015-07-31	2099-12-31	
+46272976	Apprehension test of knee positive	Condition	SNOMED	Clinical Finding	S	711439007	2015-07-31	2099-12-31	
+46272985	Language Steps program	Observation	SNOMED	Procedure	S	711450005	2015-07-31	2099-12-31	
+46273197	Malignant neoplasm of short bone of lower limb	Condition	SNOMED	Disorder	S	712525007	2015-07-31	2099-12-31	
+46273219	Liaising with patient	Observation	SNOMED	Procedure	S	712553007	2015-07-31	2099-12-31	
+46273741	Paracoccus chinensis	Observation	SNOMED	Organism	S	709308004	2015-07-31	2099-12-31	
+46284876	Dementia care plan agreed	Observation	SNOMED	Clinical Finding	S	9.56841E+14	2015-04-01	2099-12-31	
+46284885	Requires deafblind haptic communication interpreter	Observation	SNOMED	Clinical Finding	S	9.57111E+14	2015-04-01	2099-12-31	
+46285522	Reads Tahitian	Observation	SNOMED	Clinical Finding	S	9.72281E+14	2015-10-01	2099-12-31	
+46285560	Marshallese interpreter needed	Observation	SNOMED	Clinical Finding	S	9.72861E+14	2015-10-01	2099-12-31	
+46286844	Abdominal aortic aneurysm screening status	Observation	SNOMED	Clinical Finding	S	9.81961E+14	2015-10-01	2099-12-31	
+46287119	Reads Nuosu	Observation	SNOMED	Clinical Finding	S	9.72171E+14	2015-10-01	2099-12-31	
+4323688	Cough at rest	Condition	SNOMED	Clinical Finding	S	7142008	2002-01-31	2099-12-31	
+35626061	No cough strength	Condition	SNOMED	Clinical Finding	S	769211009	2018-07-31	2099-12-31	
+4266009	Ability to smell	Observation	SNOMED	Clinical Finding	S	397726002	2003-07-31	2099-12-31	
+21490742	Airway resistance --during inspiration	Measurement	LOINC	Clinical Observation	S	75948-0	2016-06-24	2099-12-31	
+32020	EHR encounter diagnosis	Type Concept	Condition Type	Condition Type		OMOP4822160	1970-01-01	2099-12-31	
+45905770	Patient Self-Reported Condition	Type Concept	Condition Type	Condition Type		OMOP4822157	1970-01-01	2099-12-31	
