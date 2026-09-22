@@ -60,11 +60,11 @@ class PGVectorQuery:
             n=self._top_k,
             describe_concept=describe_concept,
         )
-        try:
-            with get_session() as session:
+        with get_session() as session:
+            try:
                 query_results = session.execute(query).mappings().all()
-        except SQLAlchemyError as e:
-            raise SQLAlchemyError(f"Vector query execution failed: {str(e)}")
+            except SQLAlchemyError as e:
+                raise SQLAlchemyError(f"Vector query execution failed: {str(e)}")
         if describe_concept:
             return query_results
         else:
