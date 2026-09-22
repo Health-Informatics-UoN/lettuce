@@ -8,7 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from omop.omop_queries import query_vector
-from omop.db_manager import db_session
+from omop.db_manager import get_session
 
 from options.base_options import BaseOptions
 from options.pipeline_options import EmbeddingModelName, EmbeddingModel, EMBEDDING_MODELS
@@ -27,9 +27,7 @@ class PGVectorQuery:
     """
     def __init__(
             self,
-            connection: Session,
             ) -> None:
-        self._connection = connection
 
     @component.output_types(documents=List[Document])
     def run(
@@ -44,6 +42,12 @@ class PGVectorQuery:
             ):
         # only have cosine_similarity at the moment
         #TODO add selection of distance metric to query_vector
+        # Validate query_embedding type
+        if not isinstance(query_embedding, list):
+            raise TypeError("query_embedding must be a list of floats")
+        if not all(isinstance(x, (float, int)) for x in query_embedding):
+            raise TypeError("All elements of query_embedding must be floats or ints")
+
         query = query_vector(
                 query_embedding=query_embedding,
                 embed_vocab=embed_vocab,
@@ -52,11 +56,14 @@ class PGVectorQuery:
                 valid_concept=valid_concept,
                 n = top_k,
                 describe_concept=describe_concept,
-                ) 
-        try:
-            query_results = self._connection.execute(query).mappings().all()
-        except SQLAlchemyError as e:
-            raise SQLAlchemyError(f"Vector query execution failed: {str(e)}")
+                )
+
+        with get_session() as session:
+            try:
+                query_results = session.execute(query).mappings().all()
+            except SQLAlchemyError as e:
+                raise SQLAlchemyError(f"Vector query execution failed: {str(e)}")
+
         if describe_concept:
             return query_results
         else:
@@ -157,7 +164,6 @@ class Embeddings:
         try:
             assert(self._model.info.dimensions == settings.db_vecsize)
             return PGVectorQuery(
-                    db_session(),
                     )
         except AssertionError:
             raise AssertionError(f"Embedder dimensions {str(self._model.info.dimensions)} not equal to vector store dimensions {str()}")
