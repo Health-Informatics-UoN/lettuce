@@ -1,5 +1,7 @@
 from functools import lru_cache
 from typing import Annotated, List
+
+from haystack_integrations.components.embedders.fastembed import FastembedTextEmbedder
 from components.embeddings import Embeddings
 from fastapi import APIRouter, Depends, Query
 from haystack import Pipeline
@@ -26,6 +28,10 @@ def load_embeddings_model() -> Embeddings:
     return Embeddings(
         model_name=settings.embedding_model,
     )
+
+@lru_cache
+def load_embedder(embedding_model: Embeddings = Depends(load_embeddings_model)) -> FastembedTextEmbedder:
+    return embedding_model.get_embedder()
     
 @lru_cache
 def load_assistant(embedding_model: Embeddings= Depends(load_embeddings_model)) -> Pipeline:
@@ -104,9 +110,9 @@ async def vector_search(
     standard_concept: bool = True,
     valid_concept: bool = False,
     top_k: Annotated[int, Query(title="The number of responses to fetch", ge=1)] = 5,
-    embedding_handler: Embeddings = Depends(load_embeddings_model)
+    embedding_handler: Embeddings = Depends(load_embeddings_model),
+    embedder: FastembedTextEmbedder = Depends(load_embedder),
 ) -> ConceptSuggestionResponse:
-    embedder = embedding_handler.get_embedder()
     embedding = embedder.run(search_term)
     retriever = embedding_handler.get_retriever(
             )
