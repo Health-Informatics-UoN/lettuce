@@ -1,20 +1,23 @@
-import os 
-import pandas as pd 
+import csv
+import os
+
 import pytest 
 from haystack_integrations.components.embedders.fastembed.fastembed_text_embedder import FastembedTextEmbedder
 
-from components.embeddings import (
-    PGVectorQuery, 
-    Embeddings, 
-    EmbeddingModelName
-)
+from components.embeddings import PGVectorQuery, Embeddings, EmbeddingModelName
+from options.base_options import BaseOptions 
+
+
+settings = BaseOptions()
 
 
 TEST_EMBED_MODEL_NAME = EmbeddingModelName("BGESMALL") 
 TEST_EMBED_VOCAB = "RxNorm"
 TEST_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PATH_TO_TEST_DATA = os.path.join(TEST_DIR, "test_data", "acetaminophen_embedding_bgesmall.csv")
-ACETAMINOPHEN_BGESMALL_EMBED = pd.read_csv(PATH_TO_TEST_DATA, header=None)[0].tolist()
+
+with open(PATH_TO_TEST_DATA, newline="") as f:
+    ACETAMINOPHEN_BGESMALL_EMBED = [float(row[0]) for row in csv.reader(f) if row]
 
 
 @pytest.fixture
@@ -34,14 +37,14 @@ def embeddings_instance():
     )
 
 
-class TestPGVectorQuery(): 
+class TestPGVectorQuery: 
     def test_run(self, single_vector_query_result): 
         best_match = single_vector_query_result["documents"][0]
         assert best_match.content == "acetaminophen"
         assert best_match.score < 1e-6
 
 
-class TestEmbeddings(): 
+class TestEmbeddings: 
     def test_get_embedder(self, embeddings_instance): 
         vector_embedder = embeddings_instance.get_embedder() 
 
@@ -54,6 +57,6 @@ class TestEmbeddings():
         assert len(embedding) > 0
         assert isinstance(embedding, list)
         assert all(isinstance(x, float) for x in embedding)
-        assert len(embedding) ==  int(os.getenv("DB_VECSIZE"))
+        assert len(embedding) ==  settings.db_vecsize
         assert not all(x == 0.0 for x in embedding)
         
