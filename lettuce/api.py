@@ -1,15 +1,14 @@
+import importlib.metadata
 import os
-from typing import Set 
 
 from argon2 import PasswordHasher
-from fastapi import FastAPI, Depends, HTTPException, status  
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials 
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
-from routers import search_routes
 from options.base_options import BaseOptions
-import importlib.metadata
+from routers import search_routes
 
 settings = BaseOptions()
 
@@ -17,24 +16,28 @@ security = HTTPBearer()
 
 if os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"):
     from azure.monitor.opentelemetry import configure_azure_monitor
+
     configure_azure_monitor()
 
-def hash_api_key(api_key: str): 
+
+def hash_api_key(api_key: str):
     """Hash an API key for secure storage comparison."""
     ph = PasswordHasher()
     return ph.hash(api_key)
 
 
-def load_valid_api_keys() -> Set[str]: 
+def load_valid_api_keys() -> set[str]:
     """Load and return hashed API key from the environment."""
     api_key = settings.auth_api_key
     if not api_key:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Server configuration error: API_KEY not set"
+            detail="Server configuration error: API_KEY not set",
         )
-    
-    valid_key = {hash_api_key(api_key)}  # can include logic for handling additional keys
+
+    valid_key = {
+        hash_api_key(api_key)
+    }  # can include logic for handling additional keys
 
     return valid_key
 
@@ -44,14 +47,12 @@ def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)
     ph = PasswordHasher()
 
     is_valid = any(
-        ph.verify(valid_key, credentials.credentials)
-        for valid_key in valid_api_keys
+        ph.verify(valid_key, credentials.credentials) for valid_key in valid_api_keys
     )
-      
+
     if not is_valid:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid API key"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API key"
         )
 
     return credentials.credentials
@@ -78,10 +79,11 @@ app.add_middleware(
 app.include_router(
     router=search_routes.router,
     prefix="/search",
-    dependencies=[Depends(verify_api_key)]  
+    dependencies=[Depends(verify_api_key)],
 )
 
 FastAPIInstrumentor.instrument_app(app)
+
 
 @app.get("/health")
 def healthcheck() -> dict[str, str]:
@@ -93,10 +95,7 @@ def healthcheck() -> dict[str, str]:
     dict[str, str]
         Reports healthy status and the version of lettuce running
     """
-    return {
-            'status': 'healthy',
-            'version': importlib.metadata.version('lettuce')
-            }
+    return {"status": "healthy", "version": importlib.metadata.version("lettuce")}
 
 
 def main():
@@ -105,6 +104,5 @@ def main():
     uvicorn.run("api:app", host="0.0.0.0", port=8000, reload=True)
 
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     main()
-    

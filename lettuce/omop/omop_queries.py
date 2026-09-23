@@ -1,4 +1,3 @@
-
 import sqlalchemy as sa
 from sqlalchemy import distinct, func, literal, or_, select
 from sqlalchemy.sql import CompoundSelect, Select, null, text

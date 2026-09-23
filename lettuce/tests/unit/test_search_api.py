@@ -319,7 +319,7 @@ class TestTextSearchEndpoint:
         mock_ts_rank_query.return_value = mock_query
 
         # Make request - should raise exception (or handle gracefully depending on your error handling)
-        with pytest.raises(Exception): # noqa
+        with pytest.raises(Exception):  # noqa
             client.get("/text-search/diabetes")
 
     def test_invalid_top_k_parameter(self):
