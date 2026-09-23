@@ -6,7 +6,7 @@ ENV UV_CACHE_DIR=/tmp/uv_cache \
 
 WORKDIR /src
 COPY pyproject.toml ./
-RUN uv sync --no-dev --extra azure\
+RUN uv sync --no-dev --frozen --extra azure\
     && rm -rf /tmp/uv_cache ~/.cache/pip
 
 # Runtime stage 
