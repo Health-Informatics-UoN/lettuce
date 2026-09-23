@@ -1,21 +1,17 @@
-from typing import Any
-
-from haystack import component
-from haystack.dataclasses import Document
 from haystack_integrations.components.embedders.fastembed import (
     FastembedTextEmbedder,
 )
+from haystack import component
+from haystack.dataclasses import Document
+from typing import Any, List, Dict
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from omop.db_manager import db_session
 from omop.omop_queries import query_vector
+from omop.db_manager import get_session
+
 from options.base_options import BaseOptions
-from options.pipeline_options import (
-    EMBEDDING_MODELS,
-    EmbeddingModel,
-    EmbeddingModelName,
-)
+from options.pipeline_options import EmbeddingModelName, EmbeddingModel, EMBEDDING_MODELS
 
 settings = BaseOptions()
 
@@ -29,61 +25,63 @@ class PGVectorQuery:
     """
     A haystack component for retrieving concept information using embeddings in a postgres database with pgvector
     """
-
     def __init__(
-        self,
-        connection: Session,
-        embed_vocab: list[str] | None = None,
-        domain_id: list[str] | None = None,
-        standard_concept: bool = False,
-        valid_concept: bool = False,
-        top_k: int = 5,
-    ) -> None:
-        self._connection = connection
+            self,
+            embed_vocab: List[str] | None = None,
+            domain_id: List[str] | None = None,
+            standard_concept:bool = False,
+            valid_concept:bool = False,
+            top_k: int = 5,
+            ) -> None:
         self._embed_vocab = embed_vocab
         self._domain_id = domain_id
         self._standard_concept = standard_concept
         self._valid_concept = valid_concept
         self._top_k = top_k
 
-    @component.output_types(documents=list[Document])
+    @component.output_types(documents=List[Document])
     def run(
-        self,
-        query_embedding: list[float],
-        describe_concept: bool = False,
-    ):
+            self,
+            query_embedding: List[float],
+            describe_concept: bool = False,
+            ):
         # only have cosine_similarity at the moment
-        # TODO add selection of distance metric to query_vector
+        #TODO add selection of distance metric to query_vector
+        # Validate query_embedding type
+        if not isinstance(query_embedding, list):
+            raise TypeError("query_embedding must be a list of floats")
+        if not all(isinstance(x, (float, int)) for x in query_embedding):
+            raise TypeError("All elements of query_embedding must be floats or ints")
+
         query = query_vector(
-            query_embedding=query_embedding,
-            embed_vocab=self._embed_vocab,
-            domain_id=self._domain_id,
-            standard_concept=self._standard_concept,
-            valid_concept=self._valid_concept,
-            n=self._top_k,
-            describe_concept=describe_concept,
-        )
-        try:
-            query_results = self._connection.execute(query).mappings().all()
-        except SQLAlchemyError as e:
-            raise SQLAlchemyError(f"Vector query execution failed: {e!s}")
+                query_embedding=query_embedding,
+                embed_vocab=self._embed_vocab,
+                domain_id=self._domain_id,
+                standard_concept=self._standard_concept,
+                valid_concept=self._valid_concept,
+                n = self._top_k,
+                describe_concept=describe_concept,
+                ) 
+        
+        with get_session() as session: 
+            try:
+                query_results = session.execute(query).mappings().all()
+            except SQLAlchemyError as e:
+                raise SQLAlchemyError(f"Vector query execution failed: {str(e)}")
+
         if describe_concept:
             return query_results
         else:
             try:
-                return {
-                    "documents": [
-                        Document(
-                            id=res["id"],
-                            content=res["content"],
-                            score=res["score"],
-                        )
-                        for res in query_results
-                    ]
-                }
+                return {"documents": [
+                    Document(
+                        id=res["id"],
+                        content=res["content"],
+                        score=res["score"],
+                        ) for res in query_results]
+                    }
             except KeyError as e:
-                raise KeyError(f"Missing required key in query results: {e!s}")
-
+                raise KeyError(f"Missing required key in query results: {str(e)}")
 
 def get_embedding_model(name: EmbeddingModelName) -> EmbeddingModel:
     """
@@ -119,11 +117,11 @@ class Embeddings:
     def __init__(
         self,
         model_name: EmbeddingModelName,
-        embed_vocab: list[str] | None = None,
-        domain_id: list[str] | None = None,
-        standard_concept: bool = False,
+        embed_vocab: List[str] | None=None,
+        domain_id: List[str] | None = None,
+        standard_concept: bool=False,
         valid_concept: bool = False,
-        top_k: int = 5,
+        top_k: int=5,
     ) -> None:
         """
         Initialises the connection to an embeddings database
@@ -138,7 +136,7 @@ class Embeddings:
         force_rebuild: bool
             If true, the embeddings database will be rebuilt.
 
-        embed_vocab: list[str]
+        embed_vocab: List[str]
             A list of OMOP vocabulary_ids. If the embeddings database is
             built, these will be the vocabularies used in the OMOP query.
 
@@ -154,6 +152,7 @@ class Embeddings:
         self._standard_concept = standard_concept
         self._valid_concept = valid_concept
         self._top_k = top_k
+
 
     def get_embedder(self) -> FastembedTextEmbedder:
         """
@@ -176,32 +175,29 @@ class Embeddings:
         PGVectorQuery
         """
         try:
-            assert self._model.info.dimensions == settings.db_vecsize
+            assert(self._model.info.dimensions == settings.db_vecsize)
             return PGVectorQuery(
-                db_session(),
-                embed_vocab=self._embed_vocab,
-                domain_id=self._domain_id,
-                standard_concept=self._standard_concept,
-                valid_concept=self._valid_concept,
-                top_k=self._top_k,
-            )
+                    embed_vocab=self._embed_vocab,
+                    domain_id=self._domain_id,
+                    standard_concept=self._standard_concept,
+                    valid_concept=self._valid_concept,
+                    top_k=self._top_k,
+                    )
         except AssertionError:
-            raise AssertionError(
-                f"Embedder dimensions {self._model.info.dimensions!s} not equal to vector store dimensions {settings.db_vecsize!s}"
-            )
+            raise AssertionError(f"Embedder dimensions {str(self._model.info.dimensions)} not equal to vector store dimensions {str()}")
 
-    def search(self, query: list[str]) -> list[list[dict[str, Any]]]:
+    def search(self, query: List[str]) -> List[List[Dict[str, Any]]]:
         """
         Search the attached vector database with a list of informal medications
 
         Parameters
         ----------
-        query: list[str]
+        query: List[str]
             A list of informal medication names
 
         Returns
         -------
-        list[list[dict[str, Any]]]
+        List[List[Dict[str, Any]]]
             For each medication in the query, the result of searching the vector database
         """
         retriever = self.get_retriever()
