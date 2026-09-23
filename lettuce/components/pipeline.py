@@ -1,27 +1,30 @@
-from logging import Logger
 import time
-from typing import List, Dict
+from logging import Logger
 
 from haystack import Pipeline
 from haystack.components.generators import OpenAIGenerator
 from haystack.components.routers import ConditionalRouter
 from haystack_integrations.components.generators.ollama import OllamaGenerator
 
-from components.embeddings import Embeddings, EmbeddingModelName
+from components.embeddings import EmbeddingModelName, Embeddings
 from components.prompt import Prompts
-from options.pipeline_options import InferenceType
 from options.base_options import BaseOptions
+from options.pipeline_options import InferenceType
 
 settings = BaseOptions()
 
 if settings.inference_type == InferenceType.LLAMA_CPP:
     try:
-        from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
+        from haystack_integrations.components.generators.llama_cpp import (
+            LlamaCppGenerator,
+        )
     except ImportError:
-        raise ImportError("To use a Llama.cpp generator you have to install one of the optional dependency groups. Consult the documentation for details.")
-    type Generator = LlamaCppGenerator|OpenAIGenerator|OllamaGenerator
+        raise ImportError(
+            "To use a Llama.cpp generator you have to install one of the optional dependency groups. Consult the documentation for details."
+        )
+    type Generator = LlamaCppGenerator | OpenAIGenerator | OllamaGenerator
 else:
-    type Generator = OpenAIGenerator|OllamaGenerator
+    type Generator = OpenAIGenerator | OllamaGenerator
 
 
 class LLMPipeline:
@@ -39,7 +42,7 @@ class LLMPipeline:
         embed_vocab: list[str] | None = None,
         standard_concept: bool = False,
         embedding_model: EmbeddingModelName = settings.embedding_model,
-        top_k: int=5,
+        top_k: int = 5,
         verbose_llm: bool = False,
     ) -> None:
         """
@@ -56,7 +59,7 @@ class LLMPipeline:
         logger: logging.Logger|None
             Logger for the pipeline
 
-        embed_vocab: List[str] | None
+        embed_vocab: list[str] | None
             If a list of OMOP vocabulary_ids is provided, filters RAG results by those vocabularies.
 
         standard_concept: bool
@@ -79,13 +82,12 @@ class LLMPipeline:
         self._embed_vocab = embed_vocab
         self._standard_concept = standard_concept
         self._embedding_model = embedding_model
-        self._top_k=top_k
-        self._verbose_llm=verbose_llm
-
+        self._top_k = top_k
+        self._verbose_llm = verbose_llm
 
     @property
-    def llm(self): 
-        return self._model 
+    def llm(self):
+        return self._model
 
     def get_simple_assistant(self) -> Pipeline:
         """
@@ -98,22 +100,22 @@ class LLMPipeline:
         """
         start = time.time()
         pipeline = Pipeline()
-        self._logger.info(f"Pipeline initialized in {time.time()-start} seconds")
+        self._logger.info(f"Pipeline initialized in {time.time() - start} seconds")
         start = time.time()
 
         pipeline.add_component(
             "prompt",
             Prompts().get_prompt(),
         )
-        self._logger.info(f"Prompt added to pipeline in {time.time()-start} seconds")
+        self._logger.info(f"Prompt added to pipeline in {time.time() - start} seconds")
         start = time.time()
 
         pipeline.add_component("llm", self._model)
-        self._logger.info(f"LLM added to pipeline in {time.time()-start} seconds")
+        self._logger.info(f"LLM added to pipeline in {time.time() - start} seconds")
         start = time.time()
 
         pipeline.connect("prompt.prompt", "llm.prompt")
-        self._logger.info(f"Pipeline connected in {time.time()-start} seconds")
+        self._logger.info(f"Pipeline connected in {time.time() - start} seconds")
 
         return pipeline
 
@@ -128,7 +130,7 @@ class LLMPipeline:
         """
         start = time.time()
         pipeline = Pipeline()
-        self._logger.info(f"Pipeline initialized in {time.time()-start} seconds")
+        self._logger.info(f"Pipeline initialized in {time.time() - start} seconds")
         start = time.time()
 
         vec_search = Embeddings(
@@ -146,7 +148,7 @@ class LLMPipeline:
                     "condition": "{{vec_results[0].score < 0.05}}",
                     "output": "{{vec_results}}",
                     "output_name": "exact_match",
-                    "output_type": List[Dict],
+                    "output_type": list[dict],
                 },
                 {
                     "condition": "{{vec_results[0].score >=0.05}}",
@@ -156,7 +158,7 @@ class LLMPipeline:
                     {% endfor %}
                     """,
                     "output_name": "no_exact_match",
-                    "output_type": List[Dict],
+                    "output_type": list[dict],
                 },
             ]
         )

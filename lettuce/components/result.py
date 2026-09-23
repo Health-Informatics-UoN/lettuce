@@ -1,4 +1,5 @@
-from typing import List, Dict, Any
+from typing import Any
+
 from omop.omop_match import SearchResult
 
 
@@ -15,7 +16,7 @@ class LettuceResult:
     def __init__(self, search_term: str) -> None:
         self.search_term = search_term
 
-    def add_vector_search_results(self, vector_search_results: List[Dict[str, Any]]):
+    def add_vector_search_results(self, vector_search_results: list[dict[str, Any]]):
         self.vector_search_results = vector_search_results
 
     def add_llm_answer(self, llm_answer: str):
@@ -52,7 +53,7 @@ class LettuceResult:
         self.omop_fuzzy_threshold = threshold
         self.omop_matches = omop_matches
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """
         Serialises the result as a dictionary
 
@@ -61,8 +62,7 @@ class LettuceResult:
         dict
             Pipeline results serialised
         """
-        out = dict()
-        out["query"] = self.search_term
+        out = {"query": self.search_term}
         if hasattr(self, "vector_search_results"):
             out["Vector Search Results"] = self.vector_search_results
         if hasattr(self, "llm_answer"):
