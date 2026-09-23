@@ -1,8 +1,7 @@
 import os
-import secrets 
-import hashlib 
 from typing import Set 
 
+from argon2 import PasswordHasher
 from fastapi import FastAPI, Depends, HTTPException, status  
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials 
@@ -22,7 +21,8 @@ if os.getenv("APPLICATIONINSIGHTS_CONNECTION_STRING"):
 
 def hash_api_key(api_key: str): 
     """Hash an API key for secure storage comparison."""
-    return hashlib.sha256(api_key.encode()).hexdigest()
+    ph = PasswordHasher()
+    return ph.hash(api_key)
 
 
 def load_valid_api_keys() -> Set[str]: 
@@ -41,13 +41,10 @@ def load_valid_api_keys() -> Set[str]:
 
 def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)):
     valid_api_keys = load_valid_api_keys()
+    ph = PasswordHasher()
 
-    # Hash the provided API key
-    provided_key_hash = hash_api_key(credentials.credentials)
-
-    # Use constant-time comparison to prevent timing attacks
     is_valid = any(
-        secrets.compare_digest(provided_key_hash, valid_key)
+        ph.verify(valid_key, credentials.credentials)
         for valid_key in valid_api_keys
     )
       
