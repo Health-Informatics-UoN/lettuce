@@ -5,7 +5,6 @@ from haystack import component
 from haystack.dataclasses import Document
 from typing import Any, List, Dict
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import Session
 
 from omop.omop_queries import query_vector
 from omop.db_manager import get_session
@@ -28,6 +27,7 @@ class PGVectorQuery:
     def __init__(
             self,
             ) -> None:
+        pass
 
     @component.output_types(documents=List[Document])
     def run(
@@ -163,8 +163,7 @@ class Embeddings:
         """
         try:
             assert(self._model.info.dimensions == settings.db_vecsize)
-            return PGVectorQuery(
-                    )
+            return PGVectorQuery()
         except AssertionError:
             raise AssertionError(f"Embedder dimensions {str(self._model.info.dimensions)} not equal to vector store dimensions {str()}")
 
