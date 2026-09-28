@@ -13,8 +13,8 @@ permissions:
 
 on:
   push:
-    # branches:
-    #   - main
+    branches:
+      - main
 
 jobs:
   release:
@@ -45,13 +45,13 @@ jobs:
       platforms: linux/arm64
     secrets: inherit
 
-  # semver-container:
-  #   uses: health-informatics-uon/workflows/.github/workflows/semver-container.yml@1.5.1
-  #   needs: [release, publish-container]
-  #   if: needs.release.outputs.release-created == 'true'
-  #   with:
-  #     image-name: lettuce
-  #     registry: ghcr.io
-  #     tag: ${{ needs.release.outputs.release-tag }}
-  #     tag-latest: true
-  #   secrets: inherit
+  semver-container:
+    uses: health-informatics-uon/workflows/.github/workflows/semver-container.yml@1.5.1
+    needs: [release, publish-container]
+    if: needs.release.outputs.release-created == 'true'
+    with:
+      image-name: lettuce
+      registry: ghcr.io
+      tag: ${{ needs.release.outputs.release-tag }}
+      tag-latest: true
+    secrets: inherit
