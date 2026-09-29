@@ -22,6 +22,7 @@ dependencies = [
     "opentelemetry-api>=1.40.0",
     "opentelemetry-sdk>=1.40.0",
     "opentelemetry-instrumentation-fastapi>=0.61b0",
+    "argon2-cffi>=25.1.0",
 ]
 
 [project.optional-dependencies]

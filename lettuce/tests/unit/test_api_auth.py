@@ -1,5 +1,6 @@
 import os
 
+from argon2.exceptions import VerifyMismatchError
 import pytest 
 from fastapi.testclient import TestClient
 from unittest.mock import patch
@@ -57,13 +58,14 @@ class TestAuthentication:
     def test_invalid_api_key(self, mock_text_search):
         """Test with wrong API key"""
         headers = {"Authorization": "Bearer wrong_key"}
-        response = client.get(
-            "/search/text-search/coughing", 
-            headers=headers
-        )
+        with pytest.raises(VerifyMismatchError):
+            response = client.get(
+                "/search/text-search/coughing", 
+                headers=headers
+            )
         
-        assert response.status_code == 401
-        assert "Invalid API key" in response.json()["detail"]
+            assert response.status_code == 401
+            assert "Invalid API key" in response.json()["detail"]
     
     @patch.dict(os.environ, {"AUTH_API_KEY": "test_key_123"})
     def test_valid_api_key(self, mock_text_search):
