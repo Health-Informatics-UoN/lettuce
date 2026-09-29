@@ -53,6 +53,7 @@ class AncestorRelationship(BaseModel):
 
 class AncestorConcept(BaseModel):
     """Model for ancestor/descendant concept with relationship details"""
+
     model_config = ConfigDict(from_attributes=True)
     concept: ConceptDescription
     relationship: AncestorRelationship

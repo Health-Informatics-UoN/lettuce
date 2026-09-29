@@ -217,7 +217,10 @@ class OMOPMatcher:
         )
 
         with get_session() as session:
-            return [AncestorConcept.from_row_mapping(row) for row in session.execute(query).fetchall()]
+            return [
+                AncestorConcept.from_row_mapping(row)
+                for row in session.execute(query).fetchall()
+            ]
 
     def fetch_concept_relationships(self, concept_id: int) -> list[RelatedConcept]:
         """
@@ -236,7 +239,6 @@ class OMOPMatcher:
             A list of related concepts from the OMOP database
         """
         with get_session() as session:
-
             return [
                 RelatedConcept(
                     concept=ConceptDescription.model_validate(row[0]),

@@ -37,11 +37,11 @@ async def concept_ancestors(
     concept_query = bulk_concept_by_id_query(list(concept_set))
     with get_session() as session:
         concepts = [
-                ConceptDescription.model_validate(res._mapping)
-                for res in 
-                session.execute(concept_query).all()
-                ]
+            ConceptDescription.model_validate(res._mapping)
+            for res in session.execute(concept_query).all()
+        ]
     return HierarchyGraph(concepts=concepts, adjacency_list=adjacency_list)
+
 
 @router.get("/descendants/{concept_id}")
 async def concept_descendants(
@@ -64,8 +64,7 @@ async def concept_descendants(
     concept_query = bulk_concept_by_id_query(list(concept_set))
     with get_session() as session:
         concepts = [
-                ConceptDescription.model_validate(res._mapping)
-                for res in 
-                session.execute(concept_query).all()
-                ]
+            ConceptDescription.model_validate(res._mapping)
+            for res in session.execute(concept_query).all()
+        ]
     return HierarchyGraph(concepts=concepts, adjacency_list=adjacency_list)
