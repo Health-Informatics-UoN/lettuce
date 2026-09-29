@@ -74,7 +74,6 @@ def descendant_adjacency_query(concept_id: int) -> Select:
 def bulk_concept_by_id_query(concept_ids: list[int]) -> Select:
     """
     Build a query to fetch lots of concepts by ID.
-    Discards the text-search column, which isn't standard OMOP.
 
     Parameters
     ----------
@@ -86,15 +85,6 @@ def bulk_concept_by_id_query(concept_ids: list[int]) -> Select:
     Select
         A query for retrieving the concept_ids
     """
-    return select(
-            Concept.concept_id,
-            Concept.concept_name,
-            Concept.domain_id,
-            Concept.concept_class_id,
-            Concept.vocabulary_id,
-            Concept.standard_concept,
-            Concept.concept_code,
-            Concept.valid_start_date,
-            Concept.valid_end_date,
-            Concept.invalid_reason,
-            ).where(Concept.concept_id.in_(concept_ids))
+    return select(Concept).where(
+            Concept.concept_id.in_(concept_ids)
+            )

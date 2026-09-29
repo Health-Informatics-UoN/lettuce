@@ -153,12 +153,7 @@ def text_search_query(
     )
 
     # Base query
-    query = select(
-        Concept.concept_id,
-        Concept.concept_name,
-        Concept.vocabulary_id,
-        Concept.concept_code,
-    )
+    query = select(Concept)
     
     if standard_concept:
         query = query.where(Concept.standard_concept == "S")
@@ -401,12 +396,9 @@ def query_ancestors_and_descendants_by_id(
     ancestors = (
         select(
             literal('Ancestor').label('relationship_type'),
-            ConceptAncestor.ancestor_concept_id.label('concept_id'),
             ConceptAncestor.ancestor_concept_id,
             ConceptAncestor.descendant_concept_id,
-            Concept.concept_name,
-            Concept.vocabulary_id,
-            Concept.concept_code,
+            Concept,
             ConceptAncestor.min_levels_of_separation,
             ConceptAncestor.max_levels_of_separation
         )
@@ -425,12 +417,9 @@ def query_ancestors_and_descendants_by_id(
     descendants = (
         select(
             literal('Descendant').label('relationship_type'),
-            ConceptAncestor.descendant_concept_id.label('concept_id'),
             ConceptAncestor.ancestor_concept_id,
             ConceptAncestor.descendant_concept_id,
-            Concept.concept_name,
-            Concept.vocabulary_id,
-            Concept.concept_code,
+            Concept,
             ConceptAncestor.min_levels_of_separation,
             ConceptAncestor.max_levels_of_separation
         )
@@ -507,13 +496,10 @@ def query_related_by_id(concept_id: int) -> Select:
     """
     related = (
         select(
-            ConceptRelationship.concept_id_2.label("concept_id"), 
-            ConceptRelationship.concept_id_1, 
+            Concept,
+            ConceptRelationship.concept_id_1,
             ConceptRelationship.relationship_id, 
-            ConceptRelationship.concept_id_2, 
-            Concept.concept_name,
-            Concept.vocabulary_id,
-            Concept.concept_code
+            ConceptRelationship.concept_id_2,
         )
         .select_from(ConceptRelationship)
         .join(
