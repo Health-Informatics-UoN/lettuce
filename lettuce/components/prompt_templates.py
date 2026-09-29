@@ -10,8 +10,8 @@ Templates
 simple : str
     A few-shot learning template that provides examples of medication name standardization
     without external context. Uses conditional domain rendering.
-    
-top_n_RAG : str  
+
+top_n_RAG : str
     A retrieval-augmented generation template that includes potentially related OMOP
     concept names from vector similarity search. Allows the model to leverage external
     knowledge while making standardisation decisions.
@@ -33,7 +33,7 @@ for handling domain specification in a grammatically correct manner.
 """
 
 templates = {
-        "simple": """You are an assistant that suggests formal OMOP concept names for a source term. Respond only with the formal name of that {% if domain %}
+    "simple": """You are an assistant that suggests formal OMOP concept names for a source term. Respond only with the formal name of that {% if domain %}
     {%- if domain|length == 1 -%}
     {{ domain[0] }}
     {%- else -%}
@@ -66,7 +66,7 @@ Response: Naproxen
 Task:
 
 Informal name: {{informal_name}}""",
-            "top_n_RAG": """You are an assistant that suggests formal OMOP concept names for source terms. You will be given the name of a {% if domain %}
+    "top_n_RAG": """You are an assistant that suggests formal OMOP concept names for source terms. You will be given the name of a {% if domain %}
     {%- if domain|length == 1 -%}
     {{ domain[0] }}
     {%- else -%}
@@ -102,4 +102,4 @@ Possible related terms:
 Task:
 
 Informal name: {{informal_name}}""",
-        }
+}

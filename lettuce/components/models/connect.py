@@ -1,13 +1,16 @@
-import os 
 import logging
-from typing import Any 
+import os
+from typing import Any
+
 from haystack.components.generators import OpenAIGenerator
 from haystack_integrations.components.generators.ollama import OllamaGenerator
+
 from options.pipeline_options import InferenceType, LLMModel
 
+
 def connect_to_openai(
-    model_name: str, 
-    temperature: float, 
+    model_name: str,
+    temperature: float,
     logger: logging.Logger,
 ):
     """
@@ -31,7 +34,7 @@ def connect_to_openai(
     llm = OpenAIGenerator(
         model=model_name, generation_kwargs={"temperature": temperature}
     )
-    return llm 
+    return llm
 
 
 def connect_to_ollama(
@@ -72,22 +75,21 @@ def connect_to_ollama(
         return OllamaGenerator(
             model=model_name,
             url=url,
-            generation_kwargs = {
-                "max_tokens": max_tokens,
-                "temperature": temperature
-                }
-            )
+            generation_kwargs={"max_tokens": max_tokens, "temperature": temperature},
+        )
     except Exception as e:
-        logger.error(f"Couldn't communicate with an Ollama server: {str(e)} Is it running? Have you pulled {model_name} before?")
+        logger.error(
+            f"Couldn't communicate with an Ollama server: {e!s} Is it running? Have you pulled {model_name} before?"
+        )
         raise
 
 
 def get_model(
-    model: LLMModel, 
-    logger: logging.Logger, 
+    model: LLMModel,
+    logger: logging.Logger,
     inference_type: InferenceType,
-    url: str|None,
-    temperature: float = 0.7, 
+    url: str | None,
+    temperature: float = 0.7,
     path_to_local_weights: os.PathLike[Any] | str | None = None,
     verbose: bool = False,
 ):
@@ -125,9 +127,14 @@ def get_model(
         case InferenceType.OLLAMA:
             llm = connect_to_ollama(model.ollama_spec, url, temperature, logger)
         case InferenceType.LLAMA_CPP:
-            from .local_models import get_local_weights, download_model_from_huggingface
+            from .local_models import download_model_from_huggingface, get_local_weights
+
             if path_to_local_weights:
-                llm = get_local_weights(path_to_local_weights, temperature, logger, verbose)
+                llm = get_local_weights(
+                    path_to_local_weights, temperature, logger, verbose
+                )
             else:
-                llm = download_model_from_huggingface(model.filename, model.repo_id, temperature, logger, verbose)
+                llm = download_model_from_huggingface(
+                    model.filename, model.repo_id, temperature, logger, verbose
+                )
     return llm

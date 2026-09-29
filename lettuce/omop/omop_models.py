@@ -1,13 +1,15 @@
-from sqlalchemy.dialects.postgresql.types import TSVECTOR
-from sqlalchemy.orm import declarative_base, mapped_column
-from sqlalchemy import DATE, Column, Date, Integer, String
 from pgvector.sqlalchemy import Vector
+from sqlalchemy import DATE, Column, Date, Integer, String
+from sqlalchemy.dialects.postgresql.types import TSVECTOR
 from sqlalchemy.ext.hybrid import hybrid_method
+from sqlalchemy.orm import declarative_base, mapped_column
+
 from options.base_options import BaseOptions
 
 settings = BaseOptions()
 
 Base = declarative_base()
+
 
 class Concept(Base):
     """
@@ -84,6 +86,7 @@ class ConceptAncestor(Base):
     max_levels_of_separation = Column(Integer)
 
     dummy_primary = Column(Integer, primary_key=True)
+
 
 class Embedding(Base):
     """

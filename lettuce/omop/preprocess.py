@@ -23,7 +23,7 @@ def preprocess_search_term(term) -> str:
         "quick | brown | fox"
     """
     # Remove common stop words and split into individual terms
-    stop_words = set(["and", "or", "the", "a", "an"])
+    stop_words = {"and", "or", "the", "a", "an"}
     terms = re.findall(r"\w+", term.lower())
     terms = [t for t in terms if t not in stop_words]
     # Join terms with ' | ' for OR operation in to_tsquery

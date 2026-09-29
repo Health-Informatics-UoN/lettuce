@@ -131,5 +131,9 @@ build-backend = "hatchling.build"
 lettuce-cli = "cli.main:app"
 lettuce-api = "api:main"
 
+[tool.ruff.lint.flake8-bugbear]
+# Allow default arguments like, e.g., `data: List[str] = fastapi.Query(None)`.
+extend-immutable-calls = ["Depends", "fastapi.Depends", "Query", "fastapi.Query"]
+
 [tool.hatch.build.targets.wheel]
 packages = ["."]

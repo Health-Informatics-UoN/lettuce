@@ -1,9 +1,10 @@
 import os
-from unittest.mock import Mock, patch 
+from unittest.mock import Mock, patch
 
 import pytest
 from haystack.dataclasses import Document
 from sqlalchemy.orm import Session
+
 from components.embeddings import PGVectorQuery
 
 pytestmark = pytest.mark.skipif(
@@ -11,7 +12,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def mock_session(mock_results): 
+def mock_session(mock_results):
     mock_session = Mock(spec=Session)
 
     # Configure mock session to return the prepared results
@@ -23,28 +24,32 @@ def mock_session(mock_results):
 
 
 @pytest.fixture
-def mock_session_with_valid_results(): 
-    with patch("components.embeddings.get_session") as mock_get_session: 
+def mock_session_with_valid_results():
+    with patch("components.embeddings.get_session") as mock_get_session:
         # Prepare mock data
         mock_results = [
             {"id": "concept1", "content": "Sample Concept 1", "score": 0.1},
             {"id": "concept2", "content": "Sample Concept 2", "score": 0.2},
         ]
 
-        # Mimic the context manager behaviour 
-        mock_get_session.return_value.__enter__.return_value = mock_session(mock_results)
+        # Mimic the context manager behaviour
+        mock_get_session.return_value.__enter__.return_value = mock_session(
+            mock_results
+        )
 
         yield mock_get_session
 
 
 @pytest.fixture
-def mock_session_with_empty_results(): 
-    with patch("components.embeddings.get_session") as mock_get_session: 
+def mock_session_with_empty_results():
+    with patch("components.embeddings.get_session") as mock_get_session:
         # Prepare mock data
         mock_results = []
 
-        # Mimic the context manager behaviour 
-        mock_get_session.return_value.__enter__.return_value = mock_session(mock_results)
+        # Mimic the context manager behaviour
+        mock_get_session.return_value.__enter__.return_value = mock_session(
+            mock_results
+        )
 
         yield mock_get_session
 
@@ -83,7 +88,6 @@ class TestPGVectorQuery:
         result = query_component.run(query_embedding=query_embedding)
 
         assert result["documents"] == []
-
 
     def test_invalid_embedding_type(self, mock_session_with_valid_results):
         """
