@@ -18,7 +18,7 @@ on:
 
 jobs:
   release:
-    uses: health-informatics-uon/workflows/.github/workflows/semantic-release.yml@1.5.2
+    uses: health-informatics-uon/workflows/.github/workflows/semantic-release.yml@1.6.0
     with:
       node-version: "24"
     secrets: inherit
@@ -46,7 +46,7 @@ jobs:
     secrets: inherit
 
   semver-container:
-    uses: health-informatics-uon/workflows/.github/workflows/semver-container.yml@1.5.2
+    uses: health-informatics-uon/workflows/.github/workflows/semver-container.yml@1.6.0
     needs: [release, publish-container]
     if: needs.release.outputs.release-created == 'true'
     with:
