@@ -1,21 +1,8 @@
-from datetime import date
-from typing import Literal
 from pydantic import BaseModel
 from sqlalchemy import Select, select
 
 from omop.omop_models import Concept, ConceptAncestor
-
-class ConceptDescription(BaseModel):
-    concept_id: int
-    concept_name: str
-    domain_id: str
-    concept_class_id: str
-    vocabulary_id: str
-    standard_concept: Literal["S", "C"] | None
-    concept_code: str
-    valid_start_date: date
-    valid_end_date: date
-    invalid_reason: str|None
+from omop.result_models import ConceptDescription
 
 class HierarchyEdge(BaseModel):
     descendant_concept_id: int
