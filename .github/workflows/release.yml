@@ -23,17 +23,6 @@ jobs:
       node-version: "24"
     secrets: inherit
 
-  publish-container-amd:
-    uses: health-informatics-uon/workflows/.github/workflows/publish-container.yml@1.6.0
-    with:
-      image-name: lettuce
-      image-description: "Lettuce container image"
-      registry: ghcr.io
-      context: ./lettuce
-      dockerfile: ./lettuce/Dockerfile
-      platforms: linux/amd64
-    secrets: inherit
-
   publish-container-arm:
     uses: health-informatics-uon/workflows/.github/workflows/publish-container.yml@1.6.0
     with:
@@ -45,9 +34,20 @@ jobs:
       platforms: linux/arm64
     secrets: inherit
 
+  publish-container-amd:
+    uses: health-informatics-uon/workflows/.github/workflows/publish-container.yml@1.6.0
+    with:
+      image-name: lettuce
+      image-description: "Lettuce container image"
+      registry: ghcr.io
+      context: ./lettuce
+      dockerfile: ./lettuce/Dockerfile
+      platforms: linux/amd64
+    secrets: inherit
+
   semver-container:
     uses: health-informatics-uon/workflows/.github/workflows/semver-container.yml@1.6.0
-    needs: [release, publish-container]
+    needs: [release, publish-container-amd, publish-container-arm]
     if: needs.release.outputs.release-created == 'true'
     with:
       image-name: lettuce
