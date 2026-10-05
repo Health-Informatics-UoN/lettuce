@@ -34,6 +34,17 @@ jobs:
       platforms: linux/arm64
     secrets: inherit
 
+  semver-container-arm:
+    uses: health-informatics-uon/workflows/.github/workflows/semver-container.yml@1.6.0
+    needs: [release, publish-container-arm]
+    if: needs.release.outputs.release-created == 'true'
+    with:
+      image-name: lettuce
+      registry: ghcr.io
+      tag: ${{ needs.release.outputs.release-tag }}
+      tag-latest: true
+    secrets: inherit
+
   publish-container-amd:
     uses: health-informatics-uon/workflows/.github/workflows/publish-container.yml@1.6.0
     with:
@@ -45,9 +56,9 @@ jobs:
       platforms: linux/amd64
     secrets: inherit
 
-  semver-container:
+  semver-container-amd:
     uses: health-informatics-uon/workflows/.github/workflows/semver-container.yml@1.6.0
-    needs: [release, publish-container-amd, publish-container-arm]
+    needs: [release, publish-container-amd]
     if: needs.release.outputs.release-created == 'true'
     with:
       image-name: lettuce
