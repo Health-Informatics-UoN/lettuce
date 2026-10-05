@@ -5,7 +5,7 @@ from typing import List, Dict
 from haystack import Pipeline
 from haystack.components.generators.chat import OpenAIChatGenerator
 from haystack.components.routers import ConditionalRouter
-from haystack_integrations.components.generators.ollama import OllamaGenerator
+from haystack_integrations.components.generators.ollama import OllamaChatGenerator
 
 from components.embeddings import Embeddings, EmbeddingModelName
 from components.prompt import Prompts
@@ -23,9 +23,9 @@ if settings.inference_type == InferenceType.LLAMA_CPP:
         raise ImportError(
             "To use a Llama.cpp generator you have to install one of the optional dependency groups. Consult the documentation for details."
         )
-    type Generator = LlamaCppGenerator | OpenAIChatGenerator | OllamaGenerator
+    type Generator = LlamaCppGenerator | OpenAIChatGenerator | OllamaChatGenerator
 else:
-    type Generator = OpenAIChatGenerator | OllamaGenerator
+    type Generator = OpenAIChatGenerator | OllamaChatGenerator
 
 
 class LLMPipeline:
