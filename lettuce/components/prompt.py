@@ -1,3 +1,4 @@
+from typing import Literal
 from haystack.components.builders import PromptBuilder
 from components.prompt_templates import templates
 
@@ -5,14 +6,14 @@ from components.prompt_templates import templates
 class Prompts:
     """
     This class is used to generate prompts for the models.
-    
+
     The Prompts class manages template selection and prompt building for different LLM models,
     automatically handling model-specific formatting requirements such as end-of-turn tokens.
     It supports multiple prompt types including simple few-shot learning and retrieval-augmented
     generation approaches.
     """
 
-    def __init__(self, prompt_type: str = "simple") -> None:
+    def __init__(self) -> None:
         """
         Initializes the Prompts class.
 
@@ -26,10 +27,11 @@ class Prompts:
             - "simple": Few-shot learning prompt without external data
             - "top_n_RAG": Retrieval-augmented generation prompt with related terms
         """
-        self._prompt_type = prompt_type
         self._prompt_templates = templates
 
-    def get_prompt(self) -> PromptBuilder:
+    def get_prompt(
+        self, prompt_type: Literal["simple", "top_n_RAG"] = "simple"
+    ) -> PromptBuilder:
         """
         Get the prompt based on the prompt_type supplied to the object.
 
@@ -54,8 +56,11 @@ class Prompts:
         The method automatically appends the model's end-of-turn token and a "Response:"
         prompt to guide the model's output formatting.
         """
+        req_variables = ["informal_name"]
+        if prompt_type == "top_n_RAG":
+            req_variables.append("vec_results")
         try:
-            template = self._prompt_templates[self._prompt_type]
+            template = self._prompt_templates[prompt_type]
+            return PromptBuilder(template, required_variables=req_variables)
         except KeyError:
-            print(f"No prompt named {self._prompt_type}")
-        return PromptBuilder(template)
+            raise KeyError(f"No prompt named {prompt_type}")
