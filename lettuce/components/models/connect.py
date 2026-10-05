@@ -1,7 +1,7 @@
 import os 
 import logging
 from typing import Any 
-from haystack.components.generators import OpenAIGenerator
+from haystack.components.generators.chat import OpenAIChatGenerator
 from haystack_integrations.components.generators.ollama import OllamaGenerator
 from options.pipeline_options import InferenceType, LLMModel
 
@@ -11,7 +11,7 @@ def connect_to_openai(
     logger: logging.Logger,
 ):
     """
-    Connect to OpenAI API and return an OpenAIGenerator object.
+    Connect to OpenAI API and return an OpenAIChatGenerator object.
 
     Parameters
     ----------
@@ -24,11 +24,11 @@ def connect_to_openai(
 
     Returns
     -------
-    OpenAIGenerator
-        A configured OpenAIGenerator object for API-based inference.
+    OpenAIChatGenerator
+        A configured OpenAIChatGenerator object for API-based inference.
     """
     logger.info(f"Loading {model_name} model")
-    llm = OpenAIGenerator(
+    llm = OpenAIChatGenerator(
         model=model_name, generation_kwargs={"temperature": temperature}
     )
     return llm 
@@ -115,7 +115,7 @@ def get_model(
 
     Returns
     -------
-    OpenAIGenerator | LlamaCppGenerator | OllamaGenerator
+    OpenAIChatGenerator | LlamaCppGenerator | OllamaGenerator
         An interface to generate text using an LLM
     """
     # I know a match might seem like overkill, this is in case other inference engines are added

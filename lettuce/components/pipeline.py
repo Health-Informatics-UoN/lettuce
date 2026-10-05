@@ -3,7 +3,7 @@ import time
 from typing import List, Dict
 
 from haystack import Pipeline
-from haystack.components.generators import OpenAIGenerator
+from haystack.components.generators.chat import OpenAIChatGenerator
 from haystack.components.routers import ConditionalRouter
 from haystack_integrations.components.generators.ollama import OllamaGenerator
 
@@ -19,9 +19,9 @@ if settings.inference_type == InferenceType.LLAMA_CPP:
         from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
     except ImportError:
         raise ImportError("To use a Llama.cpp generator you have to install one of the optional dependency groups. Consult the documentation for details.")
-    type Generator = LlamaCppGenerator|OpenAIGenerator|OllamaGenerator
+    type Generator = LlamaCppGenerator|OpenAIChatGenerator|OllamaGenerator
 else:
-    type Generator = OpenAIGenerator|OllamaGenerator
+    type Generator = OpenAIChatGenerator|OllamaGenerator
 
 
 class LLMPipeline:

@@ -96,7 +96,7 @@ def test_download_model_from_huggingface_download_error(mock_download):
     mock_download.assert_called_once()
 
 
-@patch("components.models.connect.OpenAIGenerator")
+@patch("components.models.connect.OpenAIChatGenerator")
 def test_connect_to_openai_success(mock_openai): 
     mock_llm_instance = Mock()
     mock_openai.return_value = mock_llm_instance 
