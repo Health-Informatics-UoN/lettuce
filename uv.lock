@@ -190,15 +190,15 @@ wheels = [
 
 [[package]]
 name = "anyio"
-version = "4.13.0"
+version = "4.14.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "idna" },
     { name = "typing-extensions", marker = "python_full_version < '3.13' or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-cpu') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu121') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-cpp' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu121') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-cpu' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu122') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-gpu-cu121' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-cu123') or (extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-gpu-cu122' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu123' and extra == 'extra-7-lettuce-llama-gpu-cu124') or (extra == 'extra-7-lettuce-llama-gpu-cu123' and extra == 'extra-7-lettuce-llama-gpu-metal') or (extra == 'extra-7-lettuce-llama-gpu-cu124' and extra == 'extra-7-lettuce-llama-gpu-metal')" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/19/14/2c5dd9f512b66549ae92767a9c7b330ae88e1932ca57876909410251fe13/anyio-4.13.0.tar.gz", hash = "sha256:334b70e641fd2221c1505b3890c69882fe4a2df910cba14d97019b90b24439dc", size = 231622, upload-time = "2026-03-24T12:59:09.671Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/61/cc/a381afa6efea9f496eff839d4a6a1aed3bfafc7b3ab4b0d1b243a12573dd/anyio-4.14.2.tar.gz", hash = "sha256:cfa139f3ed1a23ee8f88a145ddb5ac7605b8bbfd8592baacd7ce3d8bb4313c7f", size = 260176, upload-time = "2026-07-12T20:29:07.082Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/da/42/e921fccf5015463e32a3cf6ee7f980a6ed0f395ceeaa45060b61d86486c2/anyio-4.13.0-py3-none-any.whl", hash = "sha256:08b310f9e24a9594186fd75b4f73f4a4152069e3853f1ed8bfbf58369f4ad708", size = 114353, upload-time = "2026-03-24T12:59:08.246Z" },
+    { url = "https://files.pythonhosted.org/packages/da/35/f2287558c17e29fafc8ef3daf819bb9834061cfa43bff8014f7df7f63bdc/anyio-4.14.2-py3-none-any.whl", hash = "sha256:9f505dda5ac9f0c8309b5e8bd445a8c2bf7246f3ce950121e45ea15bc41d1494", size = 125813, upload-time = "2026-07-12T20:29:05.763Z" },
 ]
 
 [[package]]
@@ -998,12 +998,12 @@ wheels = [
 
 [[package]]
 name = "haystack-ai"
-version = "2.30.1"
+version = "3.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "anyio" },
     { name = "docstring-parser" },
     { name = "filetype" },
-    { name = "haystack-experimental" },
     { name = "httpx" },
     { name = "jinja2" },
     { name = "jsonschema" },
@@ -1021,21 +1021,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e1/0b/7e7ff0bfcf483ec5c87887388ca654cb5b780e9e5b63f482804d5f7c8566/haystack_ai-2.30.1.tar.gz", hash = "sha256:60b3d7add807559f6a00a1e518e7f09d3eb3754b3e60b1de31f6cefdf9d86307", size = 498591, upload-time = "2026-06-09T13:26:43.336Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6d/b8/89a9afbafad781e85ada3a3c7ce99e2df5eec9447290ac8eee1ce44b96c3/haystack_ai-3.3.0.tar.gz", hash = "sha256:c4376ea13a95fe1e1df3efe383ad7b6af60ae0c971072eb1be53e3b0ccc9d96f", size = 533129, upload-time = "2026-10-01T10:39:37.579Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0f/52/0c8a371f3f8b54bccce5b9b5ab35a562a9a179529fc98cd336596d0df3ca/haystack_ai-2.30.1-py3-none-any.whl", hash = "sha256:7efe4d5e648fd1c48e936d325ecd91a38d2e22dcd8a90d848acf7d7e6ab08474", size = 720049, upload-time = "2026-06-09T13:26:41.324Z" },
-]
-
-[[package]]
-name = "haystack-experimental"
-version = "0.19.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "haystack-ai" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/71/a3/02eb86716f4856072feb852555f2d23855bb20c993264dcf4e83dfe87a8a/haystack_experimental-0.19.0.tar.gz", hash = "sha256:194f9074f9184a20d2f4efa7b5082dd33118bc886f87937d13e33616cd549067", size = 45328, upload-time = "2026-02-05T08:31:33.862Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/58/c4/6719e1b03b72ab31729b556a47fe3df1ab7fa233b1d01182f0c5ddadfda6/haystack_experimental-0.19.0-py3-none-any.whl", hash = "sha256:ebe1691a4b8d06f934bad792ff95fb4b6858a2ae08f08519e9cf35b7b439b4bd", size = 63150, upload-time = "2026-02-05T08:31:34.683Z" },
+    { url = "https://files.pythonhosted.org/packages/51/98/d798624a3a24439c8a2fd9d4c98432095112421d0d16f29855bb1c5f850a/haystack_ai-3.3.0-py3-none-any.whl", hash = "sha256:dc9d6e953babcfd67547159b2758eac42789dc6b0778a8bf3c3e91b576152bc7", size = 737985, upload-time = "2026-10-01T10:39:35.92Z" },
 ]
 
 [[package]]
@@ -1420,7 +1408,7 @@ requires-dist = [
     { name = "coverage", marker = "extra == 'test'", specifier = ">=7.6.12" },
     { name = "fastapi", specifier = ">=0.136.0" },
     { name = "fastembed-haystack", specifier = ">=1.2.0" },
-    { name = "haystack-ai", specifier = ">=2.7.0" },
+    { name = "haystack-ai", specifier = ">=3.3.0" },
     { name = "llama-cpp-haystack", marker = "extra == 'llama-cpp'", specifier = ">=1.1" },
     { name = "llama-cpp-haystack", marker = "extra == 'llama-cpu'", specifier = ">=1.1" },
     { name = "llama-cpp-haystack", marker = "extra == 'llama-gpu-cu121'", specifier = ">=1.1" },

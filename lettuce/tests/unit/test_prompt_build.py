@@ -4,28 +4,22 @@ from components.prompt import Prompts
 
 @pytest.fixture
 def llama_3_simple_prompt_builder():
-    return Prompts(
-        prompt_type="simple",
-    ).get_prompt()
+    return Prompts().get_prompt("simple")
 
 
 @pytest.fixture
 def llama_3_rag_prompt_builder():
-    return Prompts(
-        prompt_type="top_n_RAG",
-    ).get_prompt()
+    return Prompts().get_prompt("top_n_RAG")
 
 
 @pytest.fixture
 def llama_3_1_simple_prompt_builder():
-    return Prompts(prompt_type="simple").get_prompt()
+    return Prompts().get_prompt()
 
 
 @pytest.fixture
 def llama_3_1_rag_prompt_builder():
-    return Prompts(
-        prompt_type="top_n_RAG",
-    ).get_prompt()
+    return Prompts().get_prompt("top_n_RAG")
 
 
 @pytest.fixture
@@ -50,13 +44,23 @@ def test_rag_prompt_returned(llama_3_rag_prompt_builder, mock_rag_results):
 
 # Domain tests
 def test_no_domain_provided(llama_3_1_rag_prompt_builder):
-    result = llama_3_1_rag_prompt_builder.run()["prompt"]
+    result = llama_3_1_rag_prompt_builder.run(
+        informal_name="banana", vec_results=mock_rag_results
+    )["prompt"]
     assert "source term, along" in result
 
+
 def test_single_domain(llama_3_1_rag_prompt_builder):
-    result = llama_3_1_rag_prompt_builder.run(domain = ["Drug"])["prompt"]
+    result = llama_3_1_rag_prompt_builder.run(
+        informal_name="banana", vec_results=mock_rag_results, domain=["Drug"]
+    )["prompt"]
     assert "Drug, along" in result
 
+
 def test_multiple_domains(llama_3_1_rag_prompt_builder):
-    result = llama_3_1_rag_prompt_builder.run(domain = ["Drug", "Condition", "Observation"])["prompt"]
+    result = llama_3_1_rag_prompt_builder.run(
+        informal_name="banana",
+        vec_results=mock_rag_results,
+        domain=["Drug", "Condition", "Observation"],
+    )["prompt"]
     assert "Drug, Condition, or Observation, along" in result
