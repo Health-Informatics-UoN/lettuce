@@ -17,48 +17,62 @@ on:
       - main
 
 jobs:
+  cache:
+    name: Warm cache (${{ matrix.platform }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-latest
+            scope: lettuce-amd64
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+            scope: lettuce-arm64
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v7
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Warm cache
+        uses: docker/build-push-action@v7.4.0
+        with:
+          context: ./lettuce
+          file: ./lettuce/Dockerfile
+          platforms: ${{ matrix.platform }}
+          push: false
+          cache-from: type=gha,scope=${{ matrix.scope }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.scope }}
+
   release:
+    needs: [cache]
     uses: health-informatics-uon/workflows/.github/workflows/semantic-release.yml@1.6.0
     with:
       node-version: "24"
     secrets: inherit
 
-  publish-container-arm:
+
+  publish-container:
     uses: health-informatics-uon/workflows/.github/workflows/publish-container.yml@1.6.0
+    needs: [cache]
     with:
       image-name: lettuce
       image-description: "Lettuce container image"
       registry: ghcr.io
       context: ./lettuce
       dockerfile: ./lettuce/Dockerfile
-      platforms: linux/arm64
+      platforms: linux/amd64,linux/arm64
+      cache-from: |
+        type=gha,scope=lettuce-amd64
+        type=gha,scope=lettuce-arm64
     secrets: inherit
 
-  semver-container-arm:
+  semver-container:
     uses: health-informatics-uon/workflows/.github/workflows/semver-container.yml@1.6.0
-    needs: [release, publish-container-arm]
-    if: needs.release.outputs.release-created == 'true'
-    with:
-      image-name: lettuce
-      registry: ghcr.io
-      tag: ${{ needs.release.outputs.release-tag }}
-      tag-latest: true
-    secrets: inherit
-
-  publish-container-amd:
-    uses: health-informatics-uon/workflows/.github/workflows/publish-container.yml@1.6.0
-    with:
-      image-name: lettuce
-      image-description: "Lettuce container image"
-      registry: ghcr.io
-      context: ./lettuce
-      dockerfile: ./lettuce/Dockerfile
-      platforms: linux/amd64
-    secrets: inherit
-
-  semver-container-amd:
-    uses: health-informatics-uon/workflows/.github/workflows/semver-container.yml@1.6.0
-    needs: [release, publish-container-amd]
+    needs: [release, publish-container]
     if: needs.release.outputs.release-created == 'true'
     with:
       image-name: lettuce

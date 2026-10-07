@@ -32,6 +32,8 @@ jobs:
           platforms: linux/amd64
           load: true
           tags: lettuce:test 
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       
       - name: Test container startup 
         run: | 
