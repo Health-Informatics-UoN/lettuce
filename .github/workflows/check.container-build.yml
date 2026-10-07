@@ -29,9 +29,11 @@ jobs:
           context: ./lettuce 
           file: ./lettuce/Dockerfile
           push: false
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           load: true
           tags: lettuce:test 
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       
       - name: Test container startup 
         run: | 
