@@ -36,7 +36,7 @@ jobs:
 
   semver-container:
     uses: health-informatics-uon/workflows/.github/workflows/semver-container.yml@1.6.0
-    needs: [release, publish-container-arm]
+    needs: [release, publish-container]
     if: needs.release.outputs.release-created == 'true'
     with:
       image-name: lettuce
