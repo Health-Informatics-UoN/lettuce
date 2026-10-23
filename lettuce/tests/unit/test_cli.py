@@ -1,3 +1,5 @@
+from datetime import date
+
 from itertools import cycle
 import pytest
 from unittest.mock import patch, MagicMock
@@ -5,6 +7,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session as SQLAlchemySession
 import os
 from typer.testing import CliRunner
+
+from omop.result_models import ConceptDescription, ConceptResult, SearchResult
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -68,13 +72,20 @@ def mock_llm_pipeline():
 
 def create_mock_search_result(search_term, concept_id, concept_name):
     """Helper function to create mock SearchResult objects"""
-    from lettuce.omop.omop_match import SearchResult, OMOPConcept
     
-    concept = OMOPConcept(
-        concept_id=concept_id,
-        concept_name=concept_name,
-        vocabulary_id='RxNorm',
-        concept_code='12345',
+    concept = ConceptResult(
+        concept=ConceptDescription(
+            concept_id=concept_id,
+            concept_name=concept_name,
+            vocabulary_id='RxNorm',
+            domain_id="Drug",
+            concept_class_id="meds",
+            standard_concept="S",
+            concept_code='12345',
+            valid_start_date=date(1990, 1, 1),
+            valid_end_date=date(2030, 1, 1),
+            invalid_reason=None
+            ),
         concept_name_similarity_score=95.0
     )
     

@@ -1,7 +1,8 @@
 import os
+from omop.result_models import ConceptResult
 import pytest
 
-from omop.omop_match import OMOPConcept, OMOPMatcher, SearchResult 
+from omop.omop_match import OMOPMatcher, SearchResult 
 from utils.logging_utils import logger
 
 pytestmark = pytest.mark.skipif(os.getenv('SKIP_DATABASE_TESTS') == 'true', reason="Skipping database tests")
@@ -40,7 +41,7 @@ def test_single_query_concept_is_search_result(single_query_result):
 
 def test_single_query_concept_is_omop_concept(single_query_result):
     concept = single_query_result[0].concept[0]
-    assert isinstance(concept, OMOPConcept)
+    assert isinstance(concept, ConceptResult)
 
 def test_three_query_returns_three_results(three_query_result):
     assert len(three_query_result) == 3
