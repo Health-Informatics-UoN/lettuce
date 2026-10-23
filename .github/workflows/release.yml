@@ -49,14 +49,14 @@ jobs:
 
   release:
     needs: [cache]
-    uses: health-informatics-uon/workflows/.github/workflows/semantic-release.yml@1.6.0
+    uses: health-informatics-uon/workflows/.github/workflows/semantic-release.yml@1.6.1
     with:
       node-version: "24"
     secrets: inherit
 
 
   publish-container:
-    uses: health-informatics-uon/workflows/.github/workflows/publish-container.yml@1.6.0
+    uses: health-informatics-uon/workflows/.github/workflows/publish-container.yml@1.6.1
     needs: [cache]
     with:
       image-name: lettuce
@@ -71,7 +71,7 @@ jobs:
     secrets: inherit
 
   semver-container:
-    uses: health-informatics-uon/workflows/.github/workflows/semver-container.yml@1.6.0
+    uses: health-informatics-uon/workflows/.github/workflows/semver-container.yml@1.6.1
     needs: [release, publish-container]
     if: needs.release.outputs.release-created == 'true'
     with:
