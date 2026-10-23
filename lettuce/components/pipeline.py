@@ -3,9 +3,9 @@ import time
 from typing import List, Dict
 
 from haystack import Pipeline
-from haystack.components.generators import OpenAIGenerator
+from haystack.components.generators.chat import OpenAIChatGenerator
 from haystack.components.routers import ConditionalRouter
-from haystack_integrations.components.generators.ollama import OllamaGenerator
+from haystack_integrations.components.generators.ollama import OllamaChatGenerator
 
 from components.embeddings import Embeddings
 from components.prompt import Prompts
@@ -16,12 +16,16 @@ settings = BaseOptions()
 
 if settings.inference_type == InferenceType.LLAMA_CPP:
     try:
-        from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
+        from haystack_integrations.components.generators.llama_cpp import (
+            LlamaCppGenerator,
+        )
     except ImportError:
-        raise ImportError("To use a Llama.cpp generator you have to install one of the optional dependency groups. Consult the documentation for details.")
-    type Generator = LlamaCppGenerator|OpenAIGenerator|OllamaGenerator
+        raise ImportError(
+            "To use a Llama.cpp generator you have to install one of the optional dependency groups. Consult the documentation for details."
+        )
+    type Generator = LlamaCppGenerator | OpenAIChatGenerator | OllamaChatGenerator
 else:
-    type Generator = OpenAIGenerator|OllamaGenerator
+    type Generator = OpenAIChatGenerator | OllamaChatGenerator
 
 
 class LLMPipeline:
@@ -76,8 +80,8 @@ class LLMPipeline:
 
 
     @property
-    def llm(self): 
-        return self._model 
+    def llm(self):
+        return self._model
 
     def get_simple_assistant(self) -> Pipeline:
         """
@@ -90,22 +94,22 @@ class LLMPipeline:
         """
         start = time.time()
         pipeline = Pipeline()
-        self._logger.info(f"Pipeline initialized in {time.time()-start} seconds")
+        self._logger.info(f"Pipeline initialized in {time.time() - start} seconds")
         start = time.time()
 
         pipeline.add_component(
             "prompt",
-            Prompts().get_prompt(),
+            Prompts().get_prompt("simple"),
         )
-        self._logger.info(f"Prompt added to pipeline in {time.time()-start} seconds")
+        self._logger.info(f"Prompt added to pipeline in {time.time() - start} seconds")
         start = time.time()
 
         pipeline.add_component("llm", self._model)
-        self._logger.info(f"LLM added to pipeline in {time.time()-start} seconds")
+        self._logger.info(f"LLM added to pipeline in {time.time() - start} seconds")
         start = time.time()
 
         pipeline.connect("prompt.prompt", "llm.prompt")
-        self._logger.info(f"Pipeline connected in {time.time()-start} seconds")
+        self._logger.info(f"Pipeline connected in {time.time() - start} seconds")
 
         return pipeline
 
@@ -123,7 +127,7 @@ class LLMPipeline:
         """
         start = time.time()
         pipeline = Pipeline()
-        self._logger.info(f"Pipeline initialized in {time.time()-start} seconds")
+        self._logger.info(f"Pipeline initialized in {time.time() - start} seconds")
         start = time.time()
 
         vec_embedder = embedding_model.get_embedder()
@@ -154,9 +158,7 @@ class LLMPipeline:
         pipeline.add_component("router", router)
         pipeline.add_component(
             "prompt",
-            Prompts(
-                prompt_type="top_n_RAG",
-            ).get_prompt(),
+            Prompts().get_prompt("top_n_RAG"),
         )
         pipeline.add_component("llm", self._model)
 

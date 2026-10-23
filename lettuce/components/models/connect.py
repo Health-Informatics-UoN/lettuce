@@ -1,17 +1,18 @@
-import os 
+import os
 import logging
-from typing import Any 
-from haystack.components.generators import OpenAIGenerator
-from haystack_integrations.components.generators.ollama import OllamaGenerator
+from typing import Any
+from haystack.components.generators.chat import OpenAIChatGenerator
+from haystack_integrations.components.generators.ollama import OllamaChatGenerator
 from options.pipeline_options import InferenceType, LLMModel
 
+
 def connect_to_openai(
-    model_name: str, 
-    temperature: float, 
+    model_name: str,
+    temperature: float,
     logger: logging.Logger,
 ):
     """
-    Connect to OpenAI API and return an OpenAIGenerator object.
+    Connect to OpenAI API and return an OpenAIChatGenerator object.
 
     Parameters
     ----------
@@ -24,14 +25,14 @@ def connect_to_openai(
 
     Returns
     -------
-    OpenAIGenerator
-        A configured OpenAIGenerator object for API-based inference.
+    OpenAIChatGenerator
+        A configured OpenAIChatGenerator object for API-based inference.
     """
     logger.info(f"Loading {model_name} model")
-    llm = OpenAIGenerator(
+    llm = OpenAIChatGenerator(
         model=model_name, generation_kwargs={"temperature": temperature}
     )
-    return llm 
+    return llm
 
 
 def connect_to_ollama(
@@ -42,7 +43,7 @@ def connect_to_ollama(
     max_tokens: int = 128,
 ):
     """
-    Connect to an Ollama server and return an OllamaGenerator object.
+    Connect to an Ollama server and return an OllamaChatGenerator object.
 
     Parameters
     ----------
@@ -59,8 +60,8 @@ def connect_to_ollama(
 
     Returns
     -------
-    OllamaGenerator
-        A configured OllamaGenerator object for Ollama server-based inference.
+    OllamaChatGenerator
+        A configured OllamaChatGenerator object for Ollama server-based inference.
 
     Raises
     ------
@@ -69,25 +70,24 @@ def connect_to_ollama(
     """
     logger.info(f"Loading Ollama model: {model_name}")
     try:
-        return OllamaGenerator(
+        return OllamaChatGenerator(
             model=model_name,
             url=url,
-            generation_kwargs = {
-                "max_tokens": max_tokens,
-                "temperature": temperature
-                }
-            )
+            generation_kwargs={"max_tokens": max_tokens, "temperature": temperature},
+        )
     except Exception as e:
-        logger.error(f"Couldn't communicate with an Ollama server: {str(e)} Is it running? Have you pulled {model_name} before?")
+        logger.error(
+            f"Couldn't communicate with an Ollama server: {str(e)} Is it running? Have you pulled {model_name} before?"
+        )
         raise
 
 
 def get_model(
-    model: LLMModel, 
-    logger: logging.Logger, 
+    model: LLMModel,
+    logger: logging.Logger,
     inference_type: InferenceType,
-    url: str|None,
-    temperature: float = 0.7, 
+    url: str | None,
+    temperature: float = 0.7,
     path_to_local_weights: os.PathLike[Any] | str | None = None,
     verbose: bool = False,
 ):
@@ -115,7 +115,7 @@ def get_model(
 
     Returns
     -------
-    OpenAIGenerator | LlamaCppGenerator | OllamaGenerator
+    OpenAIChatGenerator | LlamaCppGenerator | OllamaChatGenerator
         An interface to generate text using an LLM
     """
     # I know a match might seem like overkill, this is in case other inference engines are added
@@ -126,8 +126,13 @@ def get_model(
             llm = connect_to_ollama(model.ollama_spec, url, temperature, logger)
         case InferenceType.LLAMA_CPP:
             from .local_models import get_local_weights, download_model_from_huggingface
+
             if path_to_local_weights:
-                llm = get_local_weights(path_to_local_weights, temperature, logger, verbose)
+                llm = get_local_weights(
+                    path_to_local_weights, temperature, logger, verbose
+                )
             else:
-                llm = download_model_from_huggingface(model.filename, model.repo_id, temperature, logger, verbose)
+                llm = download_model_from_huggingface(
+                    model.filename, model.repo_id, temperature, logger, verbose
+                )
     return llm
