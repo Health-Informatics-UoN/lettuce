@@ -5,7 +5,6 @@ from haystack import component
 from haystack.dataclasses import Document
 from typing import Any, List, Dict
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import Session
 
 from omop.omop_queries import query_vector
 from omop.db_manager import get_session
@@ -27,23 +26,19 @@ class PGVectorQuery:
     """
     def __init__(
             self,
-            embed_vocab: List[str] | None = None,
-            domain_id: List[str] | None = None,
-            standard_concept:bool = False,
-            valid_concept:bool = False,
-            top_k: int = 5,
             ) -> None:
-        self._embed_vocab = embed_vocab
-        self._domain_id = domain_id
-        self._standard_concept = standard_concept
-        self._valid_concept = valid_concept
-        self._top_k = top_k
+        pass
 
     @component.output_types(documents=List[Document])
     def run(
             self,
             query_embedding: List[float],
             describe_concept: bool = False,
+            embed_vocab: List[str] | None = None,
+            domain_id: List[str] | None = None,
+            standard_concept:bool = False,
+            valid_concept:bool = False,
+            top_k: int = 5,
             ):
         # only have cosine_similarity at the moment
         #TODO add selection of distance metric to query_vector
@@ -55,15 +50,15 @@ class PGVectorQuery:
 
         query = query_vector(
                 query_embedding=query_embedding,
-                embed_vocab=self._embed_vocab,
-                domain_id=self._domain_id,
-                standard_concept=self._standard_concept,
-                valid_concept=self._valid_concept,
-                n = self._top_k,
+                embed_vocab=embed_vocab,
+                domain_id=domain_id,
+                standard_concept=standard_concept,
+                valid_concept=valid_concept,
+                n = top_k,
                 describe_concept=describe_concept,
-                ) 
-        
-        with get_session() as session: 
+                )
+
+        with get_session() as session:
             try:
                 query_results = session.execute(query).mappings().all()
             except SQLAlchemyError as e:
@@ -117,11 +112,6 @@ class Embeddings:
     def __init__(
         self,
         model_name: EmbeddingModelName,
-        embed_vocab: List[str] | None=None,
-        domain_id: List[str] | None = None,
-        standard_concept: bool=False,
-        valid_concept: bool = False,
-        top_k: int=5,
     ) -> None:
         """
         Initialises the connection to an embeddings database
@@ -147,11 +137,6 @@ class Embeddings:
             kwargs for vector search.
         """
         self._model = get_embedding_model(model_name)
-        self._embed_vocab = embed_vocab
-        self._domain_id = domain_id
-        self._standard_concept = standard_concept
-        self._valid_concept = valid_concept
-        self._top_k = top_k
 
 
     def get_embedder(self) -> FastembedTextEmbedder:
@@ -166,7 +151,9 @@ class Embeddings:
         query_embedder.warm_up()
         return query_embedder
 
-    def get_retriever(self) -> PGVectorQuery:
+    def get_retriever(
+            self,
+        ) -> PGVectorQuery:
         """
         Get a retriever for LLM pipelines
 
@@ -176,13 +163,7 @@ class Embeddings:
         """
         try:
             assert(self._model.info.dimensions == settings.db_vecsize)
-            return PGVectorQuery(
-                    embed_vocab=self._embed_vocab,
-                    domain_id=self._domain_id,
-                    standard_concept=self._standard_concept,
-                    valid_concept=self._valid_concept,
-                    top_k=self._top_k,
-                    )
+            return PGVectorQuery()
         except AssertionError:
             raise AssertionError(f"Embedder dimensions {str(self._model.info.dimensions)} not equal to vector store dimensions {str()}")
 

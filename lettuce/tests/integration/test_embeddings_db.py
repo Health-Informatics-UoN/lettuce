@@ -22,27 +22,16 @@ with open(PATH_TO_TEST_DATA, newline="") as f:
 
 @pytest.fixture
 def single_vector_query_result():
-    return PGVectorQuery(
-        embed_vocab=[TEST_EMBED_VOCAB], 
-    ).run(query_embedding=ACETAMINOPHEN_BGESMALL_EMBED) 
+    return PGVectorQuery().run(query_embedding=ACETAMINOPHEN_BGESMALL_EMBED) 
 
 
 @pytest.fixture 
 def embeddings_instance(): 
-    return Embeddings(
-        model_name=TEST_EMBED_MODEL_NAME, 
-        embed_vocab=TEST_EMBED_VOCAB, 
-        standard_concept=False, 
-        top_k=5 
-    )
+    return Embeddings(TEST_EMBED_MODEL_NAME)
 
-
-class TestPGVectorQuery: 
-    def test_run(self, single_vector_query_result): 
-        best_match = single_vector_query_result["documents"][0]
-        assert best_match.content == "acetaminophen"
-        assert best_match.score < 1e-6
-
+@pytest.fixture
+def retriever(embeddings_instance):
+    return embeddings_instance.get_retriever()
 
 class TestEmbeddings: 
     def test_get_embedder(self, embeddings_instance): 
@@ -59,4 +48,31 @@ class TestEmbeddings:
         assert all(isinstance(x, float) for x in embedding)
         assert len(embedding) ==  settings.db_vecsize
         assert not all(x == 0.0 for x in embedding)
-        
+
+class TestPGVectorQuery: 
+    def test_run(self, single_vector_query_result): 
+        best_match = single_vector_query_result["documents"][0]
+        assert best_match.content.lower() == "acetaminophen"
+        assert best_match.score < 1e-6
+
+    def test_top_k(self, retriever):
+        for k in [1,3,5]:
+            results = retriever.run(
+                    ACETAMINOPHEN_BGESMALL_EMBED,
+                    domain_id=["Observation"],
+                    top_k = k)
+            assert len(results["documents"]) == k
+    
+    def test_domain_id(self, retriever):
+        for domain in [["Observation"], ["Condition"]]:
+            results = retriever.run(
+                    ACETAMINOPHEN_BGESMALL_EMBED,
+                    domain_id = domain,
+                    describe_concept=True
+                    )
+            retrieved_domains = [res["Concept"].domain_id for res in results]
+            print(retrieved_domains)
+            assert all(d in domain for d in retrieved_domains)
+    
+            
+    
