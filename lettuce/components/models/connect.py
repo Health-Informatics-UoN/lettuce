@@ -115,7 +115,7 @@ def get_model(
 
     Returns
     -------
-    OpenAIChatGenerator | LlamaCppGenerator | OllamaChatGenerator
+    OpenAIChatGenerator | LlamaCppChatGenerator | OllamaChatGenerator
         An interface to generate text using an LLM
     """
     # I know a match might seem like overkill, this is in case other inference engines are added

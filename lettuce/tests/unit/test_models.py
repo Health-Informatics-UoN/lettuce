@@ -32,7 +32,7 @@ def mock_file_exists(tmp_path):
     return str(file_path)
  
 
-@patch("components.models.local_models.LlamaCppGenerator")
+@patch("components.models.local_models.LlamaCppChatGenerator")
 @patch("components.models.local_models.os.path.isfile")
 @patch("components.models.local_models.torch.cuda.is_available")
 @pytest.mark.skipif(not_using_local_weights, reason="Not using local weights")
@@ -66,7 +66,7 @@ def test_get_local_weights_file_not_found(mock_isfile):
     mock_isfile.assert_called_once_with(path) 
 
 
-@patch("components.models.local_models.LlamaCppGenerator")
+@patch("components.models.local_models.LlamaCppChatGenerator")
 @patch("components.models.local_models.hf_hub_download")
 @pytest.mark.skipif(not_using_local_weights, reason="Not using local weights")
 def test_download_model_from_huggingface_success(mock_download, mock_llama): 

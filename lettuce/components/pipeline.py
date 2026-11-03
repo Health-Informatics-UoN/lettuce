@@ -17,13 +17,13 @@ settings = BaseOptions()
 if settings.inference_type == InferenceType.LLAMA_CPP:
     try:
         from haystack_integrations.components.generators.llama_cpp import (
-            LlamaCppGenerator,
+            LlamaCppChatGenerator,
         )
     except ImportError:
         raise ImportError(
             "To use a Llama.cpp generator you have to install one of the optional dependency groups. Consult the documentation for details."
         )
-    type Generator = LlamaCppGenerator | OpenAIChatGenerator | OllamaChatGenerator
+    type Generator = LlamaCppChatGenerator | OpenAIChatGenerator | OllamaChatGenerator
 else:
     type Generator = OpenAIChatGenerator | OllamaChatGenerator
 
