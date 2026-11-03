@@ -1,6 +1,7 @@
 from logging import Logger
 import time
 from typing import List, Dict
+import warnings
 
 from haystack import Pipeline
 from haystack.components.generators.chat import OpenAIChatGenerator
@@ -11,6 +12,7 @@ from components.embeddings import Embeddings
 from components.prompt import Prompts
 from options.pipeline_options import InferenceType
 from options.base_options import BaseOptions
+from utils import logging_utils
 
 settings = BaseOptions()
 
@@ -19,11 +21,14 @@ if settings.inference_type == InferenceType.LLAMA_CPP:
         from haystack_integrations.components.generators.llama_cpp import (
             LlamaCppGenerator,
         )
-    except ImportError:
-        raise ImportError(
+        type Generator = LlamaCppGenerator | OpenAIChatGenerator | OllamaChatGenerator
+    except ImportError as e:
+        logger = logging_utils.Logger().make_logger()
+        warning = ImportWarning(*e.args)
+        logger.warning(
             "To use a Llama.cpp generator you have to install one of the optional dependency groups. Consult the documentation for details."
         )
-    type Generator = LlamaCppGenerator | OpenAIChatGenerator | OllamaChatGenerator
+        type Generator = OpenAIChatGenerator | OllamaChatGenerator
 else:
     type Generator = OpenAIChatGenerator | OllamaChatGenerator
 
