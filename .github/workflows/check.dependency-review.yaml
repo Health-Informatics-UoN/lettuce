@@ -1,0 +1,10 @@
+name: "Dependency Review"
+on: [pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-review:
+    uses: health-informatics-uon/workflows/.github/workflows/dependency-review.yml@6411293719f0d3fc7fddb74530d4435333460e4f # v 1.4.1
+    secrets: inherit
