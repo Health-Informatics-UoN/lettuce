@@ -6,7 +6,7 @@ from options.base_options import BaseOptions
 settings = BaseOptions()
 
 try:
-    from haystack_integrations.components.generators.llama_cpp import LlamaCppGenerator
+    from haystack_integrations.components.generators.llama_cpp import LlamaCppChatGenerator
     import torch
 except ImportError:
     raise ImportError("To use a Llama.cpp generator you have to install one of the optional dependency groups. Consult the documentation for details.")
@@ -18,7 +18,7 @@ def get_local_weights(
     verbose: bool
 ):
     """
-    Load a local GGUF model weights file and return a LlamaCppGenerator object.
+    Load a local GGUF model weights file and return a LlamaCppChatGenerator object.
 
     Parameters
     ----------
@@ -33,8 +33,8 @@ def get_local_weights(
 
     Returns
     -------
-    LlamaCppGenerator
-        A loaded LlamaCppGenerator object ready for inference.
+    LlamaCppChatGenerator
+        A loaded LlamaCppChatGenerator object ready for inference.
 
     Raises
     ------
@@ -50,7 +50,7 @@ def get_local_weights(
     logger.info(f"Using {device} GPU layers")
 
     # Load the model using llama 
-    llm = LlamaCppGenerator(
+    llm = LlamaCppChatGenerator(
         model=path_to_weights, 
         model_kwargs={
             "n_ctx": 1024,
@@ -60,7 +60,7 @@ def get_local_weights(
         }, 
         generation_kwargs={"max_tokens": 128, "temperature": temperature}
     )
-    logger.info(f"Succesfully loaded LlamaCppGenerator from {path_to_weights}")
+    logger.info(f"Succesfully loaded LlamaCppChatGenerator from {path_to_weights}")
     return llm 
 
 
@@ -98,8 +98,8 @@ def download_model_from_huggingface(
 
     Returns
     -------
-    LlamaCppGenerator
-        A loaded LlamaCppGenerator object ready for inference.
+    LlamaCppChatGenerator
+        A loaded LlamaCppChatGenerator object ready for inference.
 
     Raises
     ------
@@ -117,7 +117,7 @@ def download_model_from_huggingface(
         raise ValueError(f"Failed to load model {filename}: {str(e)}")
     
     try: 
-        llm = LlamaCppGenerator(
+        llm = LlamaCppChatGenerator(
             model=model_path, 
             model_kwargs={
                 "n_ctx": n_ctx,
@@ -128,7 +128,7 @@ def download_model_from_huggingface(
             generation_kwargs={"max_tokens": max_tokens, "temperature": temperature}
         )
     except Exception as e: 
-        logger.error(f"Failed to initialize LlamaCppGenerator for {filename}: {str(e)}")
+        logger.error(f"Failed to initialize LlamaCppChatGenerator for {filename}: {str(e)}")
         raise ValueError(f"Failed to initialize local model {filename}: {str(e)}")
 
     return llm 
