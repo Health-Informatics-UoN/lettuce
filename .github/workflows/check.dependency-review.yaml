@@ -6,5 +6,5 @@ permissions:
 
 jobs:
   dependency-review:
-    uses: health-informatics-uon/workflows/.github/workflows/dependency-review.yml@6411293719f0d3fc7fddb74530d4435333460e4f # v 1.4.1
+    uses: health-informatics-uon/workflows/.github/workflows/dependency-review.yml@e0603aaa45d8ecfcb1797d0bf8b8206f551c41ef # v 1.8.2
     secrets: inherit
